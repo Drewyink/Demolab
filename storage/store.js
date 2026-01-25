@@ -6,7 +6,7 @@ export function loadJson(filePath, fallback){
     if(!fs.existsSync(filePath)) return fallback;
     const txt = fs.readFileSync(filePath, "utf-8");
     if(!txt.trim()) return fallback;
-    return JSON.parse(txt);
+    return /.parse(txt);
   }catch{
     return fallback;
   }
