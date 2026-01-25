@@ -1,209 +1,113 @@
-// server.js (ESM) - AI Face Aging Demo + Account System
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import multer from "multer";
-import { nanoid } from "nanoid";
-import fs from "fs";
-import cookieParser from "cookie-parser";
-import bcrypt from "bcryptjs";
-import { getPresets, applyAgePreset } from "./image/aging.js";
-import { loadJson, saveJson, nowIso } from "./storage/store.js";
+const express = require('express');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 
 const app = express();
-app.use(express.json({ limit: "1mb" }));
-app.use(cookieParser());
+const adapter = new FileSync('db.json');
+const db = low(adapter);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 3000;
+// Initialize DB
+db.defaults({ users: [], chain: [], logs: [] }).write();
 
-// Folders
-fs.mkdirSync(path.join(__dirname, "storage/uploads"), { recursive: true });
-fs.mkdirSync(path.join(__dirname, "storage/outputs"), { recursive: true });
-fs.mkdirSync(path.join(__dirname, "storage/data"), { recursive: true });
+app.use(express.json());
+app.use(express.static('public'));
+app.use(session({
+    secret: 'supply-chain-secret',
+    resave: false,
+    saveUninitialized: true
+}));
 
-// Static frontend + outputs
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/outputs", express.static(path.join(__dirname, "storage/outputs")));
+// Helper: Hashing
+const createHash = (data) => crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 
-// Data files (file-based persistence)
-const USERS_FILE = path.join(__dirname, "storage/data/users.json");
-const SESS_FILE  = path.join(__dirname, "storage/data/sessions.json");
-const RESULTS_FILE = path.join(__dirname, "storage/data/results.json");
+// Helper: Audit Logging
+const recordEvent = (user, action, details) => {
+    db.get('logs').push({
+        timestamp: new Date().toLocaleString(),
+        user: user || 'System',
+        action,
+        details
+    }).write();
+};
 
-function getUsers(){ return loadJson(USERS_FILE, { users: [] }); }
-function setUsers(d){ saveJson(USERS_FILE, d); }
-
-function getSessions(){ return loadJson(SESS_FILE, { sessions: [] }); }
-function setSessions(d){ saveJson(SESS_FILE, d); }
-
-function getResults(){ return loadJson(RESULTS_FILE, { results: [] }); }
-function setResults(d){ saveJson(RESULTS_FILE, d); }
-
-// Helpers
-function normalizeEmail(email){
-  return String(email || "").trim().toLowerCase();
-}
-
-function issueSession(userId){
-  const token = nanoid(32);
-  const sessions = getSessions();
-  sessions.sessions = sessions.sessions.filter(s => s.userId !== userId); // one active session per user (simple)
-  sessions.sessions.push({
-    token,
-    userId,
-    createdAt: nowIso(),
-    expiresAt: new Date(Date.now() + 1000*60*60*24*7).toISOString() // 7 days
-  });
-  setSessions(sessions);
-  return token;
-}
-
-function clearSession(token){
-  const sessions = getSessions();
-  sessions.sessions = sessions.sessions.filter(s => s.token !== token);
-  setSessions(sessions);
-}
-
-function authMiddleware(req, res, next){
-  const token = req.cookies?.sid;
-  if(!token) return res.status(401).json({ ok:false, error:"Not logged in" });
-  const sessions = getSessions();
-  const s = sessions.sessions.find(x => x.token === token);
-  if(!s) return res.status(401).json({ ok:false, error:"Session expired" });
-  if(new Date(s.expiresAt).getTime() < Date.now()){
-    clearSession(token);
-    return res.status(401).json({ ok:false, error:"Session expired" });
-  }
-  req.userId = s.userId;
-  next();
-}
-
-// Health
-app.get("/api/health", (req, res) => res.json({ ok:true, service:"ai-face-aging-accounts" }));
-
-// Auth: signup
-app.post("/api/auth/signup", async (req, res) => {
-  try{
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || "");
-    const name = String(req.body.name || "").trim() || "Student";
-    if(!email || !email.includes("@")) throw new Error("Enter a valid email");
-    if(password.length < 8) throw new Error("Password must be at least 8 characters");
-
-    const users = getUsers();
-    if(users.users.some(u => u.email === email)) throw new Error("Email already exists");
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    const userId = nanoid(10);
-    users.users.push({ id:userId, email, name, passwordHash, createdAt: nowIso() });
-    setUsers(users);
-
-    const token = issueSession(userId);
-    res.cookie("sid", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false, // set true behind HTTPS custom domain
-      maxAge: 1000*60*60*24*7
-    });
-
-    res.json({ ok:true, user: { id:userId, email, name } });
-  }catch(e){
-    res.status(400).json({ ok:false, error: e.message || "Signup failed" });
-  }
+// Auth Routes
+app.post('/api/signup', async (req, res) => {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    db.get('users').push({ username, password: hashedPassword }).write();
+    recordEvent(username, "SIGNUP", "New account created");
+    res.json({ success: true });
 });
 
-// Auth: login
-app.post("/api/auth/login", async (req, res) => {
-  try{
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || "");
-    const users = getUsers();
-    const u = users.users.find(x => x.email === email);
-    if(!u) throw new Error("Invalid email or password");
-    const ok = await bcrypt.compare(password, u.passwordHash);
-    if(!ok) throw new Error("Invalid email or password");
-
-    const token = issueSession(u.id);
-    res.cookie("sid", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 1000*60*60*24*7
-    });
-
-    res.json({ ok:true, user: { id:u.id, email:u.email, name:u.name } });
-  }catch(e){
-    res.status(400).json({ ok:false, error: e.message || "Login failed" });
-  }
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = db.get('users').find({ username }).value();
+    if (user && await bcrypt.compare(password, user.password)) {
+        req.session.user = username;
+        recordEvent(username, "LOGIN", "Successful login");
+        res.json({ success: true });
+    } else {
+        recordEvent(username, "FAILED_LOGIN", "Invalid attempt");
+        res.status(401).json({ error: "Invalid credentials" });
+    }
 });
 
-// Auth: logout
-app.post("/api/auth/logout", (req, res) => {
-  const token = req.cookies?.sid;
-  if(token) clearSession(token);
-  res.clearCookie("sid");
-  res.json({ ok:true });
+app.get('/api/me', (req, res) => res.json({ user: req.session.user || null }));
+
+app.post('/api/logout', (req, res) => {
+    recordEvent(req.session.user, "LOGOUT", "User logged out");
+    req.session.destroy();
+    res.json({ success: true });
 });
 
-// Current user
-app.get("/api/me", authMiddleware, (req, res) => {
-  const users = getUsers();
-  const u = users.users.find(x => x.id === req.userId);
-  if(!u) return res.status(401).json({ ok:false, error:"User not found" });
+// Supply Chain Routes
+app.get('/api/history', (req, res) => res.json(db.get('chain').value()));
 
-  const results = getResults().results.filter(r => r.userId === u.id).slice(-50).reverse();
-  res.json({ ok:true, user:{ id:u.id, email:u.email, name:u.name }, results });
+app.post('/api/update', (req, res) => {
+    if (!req.session.user) return res.status(403).json({ error: "Unauthorized" });
+    const { status, location, lat, lng } = req.body;
+    const chain = db.get('chain').value();
+    const prevHash = chain.length > 0 ? chain[chain.length - 1].hash : "0000-GENESIS";
+    
+    const newBlock = {
+        id: chain.length + 1,
+        timestamp: new Date().toLocaleString(),
+        status, location, lat, lng,
+        handler: req.session.user,
+        prevHash,
+        hash: ""
+    };
+    newBlock.hash = createHash(newBlock);
+    db.get('chain').push(newBlock).write();
+    recordEvent(req.session.user, "BLOCK_CREATED", `Added: ${status}`);
+    res.status(201).json(newBlock);
 });
 
-// Presets
-app.get("/api/presets", (req, res) => res.json({ presets: getPresets() }));
-
-// Upload config
-const upload = multer({
-  dest: path.join(__dirname, "storage/uploads"),
-  limits: { fileSize: 6 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const ok = ["image/jpeg","image/png","image/webp"].includes(file.mimetype);
-    cb(ok ? null : new Error("Only JPG/PNG/WebP allowed"), ok);
-  }
+app.get('/api/verify', (req, res) => {
+    const chain = db.get('chain').value();
+    let isValid = true;
+    for (let i = 0; i < chain.length; i++) {
+        const block = chain[i];
+        const currentHash = block.hash;
+        const checkBlock = { ...block, hash: "" };
+        if (currentHash !== createHash(checkBlock)) { isValid = false; break; }
+    }
+    res.json({ isValid });
 });
 
-// Generate (requires login so we can save history)
-app.post("/api/age", authMiddleware, upload.single("image"), async (req, res) => {
-  try{
-    if(!req.file) throw new Error("No image uploaded");
-    const preset = String(req.body.preset || "").trim();
-    const valid = getPresets().map(p => p.id);
-    if(!valid.includes(preset)) throw new Error(`Invalid preset. Use: ${valid.join(", ")}`);
+app.get('/api/logs', (req, res) => res.json(db.get('logs').value().reverse().slice(0, 50)));
 
-    const inPath = req.file.path;
-    const outId = nanoid(10);
-    const outName = `${outId}-${preset}.jpg`;
-    const outPath = path.join(__dirname, "storage/outputs", outName);
-
-    const meta = await applyAgePreset({ inputPath: inPath, outputPath: outPath, preset });
-    fs.unlink(inPath, ()=>{});
-
-    const results = getResults();
-    results.results.push({
-      id: outId,
-      userId: req.userId,
-      preset,
-      outputUrl: `/outputs/${outName}`,
-      createdAt: nowIso(),
-      meta
-    });
-    setResults(results);
-
-    res.json({ ok:true, preset, outputUrl: `/outputs/${outName}`, meta });
-  }catch(e){
-    res.status(400).json({ ok:false, error: e.message || "Failed" });
-  }
+app.post('/api/tamper', (req, res) => {
+    let chain = db.get('chain').value();
+    if(chain.length > 0) {
+        chain[0].location = "⚠️ TAMPERED DATA";
+        db.write();
+        recordEvent("SYSTEM", "TAMPER_DETECTED", "Database modified externally");
+        res.json({ success: true });
+    }
 });
 
-// Fallback
-app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
-
-app.listen(PORT, () => console.log("AI Face Aging + Accounts running on http://localhost:" + PORT));
+app.listen(3000, () => console.log('Server running on http://localhost:3000'));
