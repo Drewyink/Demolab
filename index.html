@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Tokenized Securities Exchange (Pro)</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header>
+    <h1>Tokenized Securities Exchange (Pro)</h1>
+    <p>Limit + Market Orders • INSTANT vs T+1 • Regulator Dashboard • Circuit Breakers • Permissioned Ledger • Multi-Agency</p>
+  </header>
+
+  <main class="grid">
+
+    <section class="card">
+      <h2>Agency (Tenant)</h2>
+      <div class="row">
+        <input id="newAgencyId" placeholder="agency id (e.g., nyse)"/>
+        <input id="newAgencyName" placeholder="agency name (e.g., NYSE Demo)"/>
+        <button id="btnCreateAgency">Create</button>
+      </div>
+      <div class="row">
+        <select id="agencySelect"></select>
+        <button id="btnRefresh">Refresh</button>
+      </div>
+      <div id="agencyInfo" class="mono small"></div>
+    </section>
+
+    <section class="card">
+      <h2>Create / Select User</h2>
+      <div class="row">
+        <input id="newUserId" placeholder="user id (e.g., drew)"/>
+        <input id="newUserName" placeholder="name (e.g., Drew)"/>
+        <button id="btnCreateUser">Create</button>
+      </div>
+
+      <div class="row">
+        <select id="userSelect"></select>
+      </div>
+
+      <div id="userInfo" class="mono small"></div>
+    </section>
+
+    <section class="card">
+      <h2>Admin / Regulator</h2>
+      <p class="small muted">Admin key: <span class="mono">ADMIN_DEMO_KEY</span></p>
+      <div class="row">
+        <input id="adminKey" value="ADMIN_DEMO_KEY"/>
+      </div>
+
+      <h3>Compliance controls</h3>
+      <div class="row">
+        <button id="btnVerify">Verify (KYC)</button>
+        <button id="btnRevokeKyc">Revoke KYC</button>
+        <button id="btnFreeze">Toggle Freeze</button>
+      </div>
+
+      <div class="row">
+        <button id="btnFlagSuspicious">Toggle Suspicious Flag</button>
+        <button id="btnClearFlags">Clear Velocity/Oversized</button>
+      </div>
+
+      <h3>Funding / Issuance</h3>
+      <div class="row">
+        <button id="btnCredit">Credit $10,000 USD</button>
+        <select id="mintSymbol"></select>
+        <input id="mintQty" type="number" value="100"/>
+        <button id="btnMint">Mint Tokens</button>
+      </div>
+
+      <h3>Market rules</h3>
+      <div class="row">
+        <label class="small muted">Settlement</label>
+        <select id="settlementMode">
+          <option value="INSTANT">INSTANT</option>
+          <option value="T_PLUS_1">T+1 (Simulated)</option>
+        </select>
+        <input id="tPlusDelay" type="number" value="30" min="5" title="Simulated delay seconds"/>
+        <button id="btnSetMode">Apply</button>
+      </div>
+
+      <div class="row">
+        <label class="small muted">Circuit breaker</label>
+        <input id="cbPct" type="number" value="10" min="1" title="% move"/>
+        <input id="cbHalt" type="number" value="30" min="5" title="halt seconds"/>
+        <button id="btnSetCB">Apply</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Place Order</h2>
+
+      <div class="row">
+        <select id="symbol"></select>
+        <select id="side">
+          <option>BUY</option>
+          <option>SELL</option>
+        </select>
+        <select id="orderType">
+          <option value="LIMIT">LIMIT</option>
+          <option value="MARKET">MARKET</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <input id="qty" type="number" value="10" min="1"/>
+        <input id="price" type="number" value="150" min="1"/>
+      </div>
+
+      <div class="row">
+        <button id="btnPlace">Place Order</button>
+      </div>
+
+      <div id="orderResult" class="mono small"></div>
+    </section>
+
+    <section class="card">
+      <h2>Order Books</h2>
+      <div class="row">
+        <select id="bookSymbol"></select>
+      </div>
+      <div id="haltBanner" class="banner small"></div>
+      <div class="books">
+        <div>
+          <h3>Bids</h3>
+          <div id="bids" class="mono small"></div>
+        </div>
+        <div>
+          <h3>Asks</h3>
+          <div id="asks" class="mono small"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card wide">
+      <h2>Trades</h2>
+      <div id="trades" class="mono small"></div>
+    </section>
+
+    <section class="card wide">
+      <h2>Audit Ledger (Permissioned Validator Signatures)</h2>
+      <div class="row">
+        <button id="btnLedger">Load Ledger</button>
+        <span id="ledgerVerify" class="small mono"></span>
+      </div>
+      <div id="ledger" class="mono small ledger"></div>
+    </section>
+  </main>
+
+  <footer class="small muted">
+    Educational simulation. Shows tokenization, on-exchange matching, delayed vs instant settlement, and regulatory controls.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

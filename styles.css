@@ -1,0 +1,92 @@
+:root{
+  --bg:#f6fbff;
+  --card:#ffffff;
+  --border:#dbeafe;
+  --text:#0f172a;
+  --muted:#475569;
+  --primary:#1f6feb;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+}
+
+*{ box-sizing:border-box; }
+body{
+  margin:0; padding:18px;
+  background:var(--bg);
+  font-family: Arial, sans-serif;
+  color:var(--text);
+}
+header{ margin-bottom:14px; }
+header h1{ margin:0 0 6px; color:var(--primary); }
+header p{ margin:0; color:var(--muted); }
+
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+.card.wide{ grid-column: 1 / -1; }
+
+.row{ display:flex; gap:10px; align-items:center; margin:8px 0; flex-wrap:wrap; }
+input, select{
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  min-width: 140px;
+}
+button{
+  padding:8px 12px;
+  border:0;
+  border-radius:10px;
+  background:var(--primary);
+  color:white;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover{ filter:brightness(0.95); }
+
+.small{ font-size:12px; }
+.muted{ color:var(--muted); }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+
+.books{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+.ledger{
+  max-height: 280px;
+  overflow:auto;
+  background:#0b1220;
+  color:#e5e7eb;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.banner{
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#fff7ed;
+  color:#7c2d12;
+  display:none;
+}
+.banner.danger{
+  background:#fee2e2;
+  color:#7f1d1d;
+  border-color:#fecaca;
+  display:block;
+}
+.banner.warn{
+  background:#fef3c7;
+  color:#78350f;
+  border-color:#fde68a;
+  display:block;
+}
