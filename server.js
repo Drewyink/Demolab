@@ -4,26 +4,26 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const path = require('path');
 
 const app = express();
-const adapter = new FileSync('db.json');
+// Using /tmp/ ensures the app has write permissions in most cloud environments
+const adapter = new FileSync(path.join(__dirname, 'db.json'));
 const db = low(adapter);
 
-// Initialize DB
 db.defaults({ users: [], chain: [], logs: [] }).write();
 
 app.use(express.json());
 app.use(express.static('public'));
 app.use(session({
-    secret: 'supply-chain-secret',
+    secret: process.env.SESSION_SECRET || 'provenance-secret-key',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true if using HTTPS/SSL
 }));
 
-// Helper: Hashing
 const createHash = (data) => crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 
-// Helper: Audit Logging
 const recordEvent = (user, action, details) => {
     db.get('logs').push({
         timestamp: new Date().toLocaleString(),
@@ -33,12 +33,13 @@ const recordEvent = (user, action, details) => {
     }).write();
 };
 
-// Auth Routes
+// --- ROUTES ---
 app.post('/api/signup', async (req, res) => {
     const { username, password } = req.body;
+    if (db.get('users').find({ username }).value()) return res.status(400).json({ error: "User exists" });
     const hashedPassword = await bcrypt.hash(password, 10);
     db.get('users').push({ username, password: hashedPassword }).write();
-    recordEvent(username, "SIGNUP", "New account created");
+    recordEvent(username, "SIGNUP", "Account created");
     res.json({ success: true });
 });
 
@@ -47,7 +48,7 @@ app.post('/api/login', async (req, res) => {
     const user = db.get('users').find({ username }).value();
     if (user && await bcrypt.compare(password, user.password)) {
         req.session.user = username;
-        recordEvent(username, "LOGIN", "Successful login");
+        recordEvent(username, "LOGIN", "Success");
         res.json({ success: true });
     } else {
         recordEvent(username, "FAILED_LOGIN", "Invalid attempt");
@@ -58,12 +59,10 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/me', (req, res) => res.json({ user: req.session.user || null }));
 
 app.post('/api/logout', (req, res) => {
-    recordEvent(req.session.user, "LOGOUT", "User logged out");
     req.session.destroy();
     res.json({ success: true });
 });
 
-// Supply Chain Routes
 app.get('/api/history', (req, res) => res.json(db.get('chain').value()));
 
 app.post('/api/update', (req, res) => {
@@ -103,11 +102,11 @@ app.get('/api/logs', (req, res) => res.json(db.get('logs').value().reverse().sli
 app.post('/api/tamper', (req, res) => {
     let chain = db.get('chain').value();
     if(chain.length > 0) {
-        chain[0].location = "⚠️ TAMPERED DATA";
+        chain[0].location = "⚠️ TAMPERED";
         db.write();
-        recordEvent("SYSTEM", "TAMPER_DETECTED", "Database modified externally");
         res.json({ success: true });
     }
 });
 
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server live on port ${PORT}`));
