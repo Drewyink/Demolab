@@ -1,89 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>AI Face Aging / De-Aging Lab</title>
-  <link rel="stylesheet" href="styles.css"/>
+    <meta charset="UTF-8">
+    <title>Supply Chain Sandbox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.autotable.min.js"></script>
 </head>
 <body>
-  <header class="top">
-    <div>
-      <h1>AI Face Aging / De-Aging Lab</h1>
-      <p class="muted">Create an account to save your results. Upload a selfie → generate age variants.</p>
+    <div id="auth-screen" class="overlay">
+        <div class="auth-box">
+            <h2 id="auth-title">Login to Sandbox</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn-main" onclick="handleAuth()">Submit</button>
+            <p id="auth-toggle" onclick="toggleAuthMode()">Need an account? Sign up</p>
+        </div>
     </div>
-    <div class="badge mono">Accounts • Saved History • Node + Sharp</div>
-  </header>
 
-  <main class="grid">
-    <section class="card">
-      <h2>Account</h2>
+    <div class="container" id="main-app" style="display:none;">
+        <header>
+            <h1>📦 Provenance Sandbox</h1>
+            <div><span id="user-display"></span> | <button onclick="logout()">Logout</button></div>
+        </header>
 
-      <div id="authState" class="status mono small"></div>
-
-      <div id="authForms" class="auth-forms">
-        <div class="auth-box">
-          <h3>Sign up</h3>
-          <input id="suName" placeholder="Name"/>
-          <input id="suEmail" placeholder="Email" type="email"/>
-          <input id="suPass" placeholder="Password (8+ chars)" type="password"/>
-          <button id="btnSignup" class="btn">Create Account</button>
+        <div class="integrity-bar">
+            <button onclick="verifyChain()">Verify Ledger</button>
+            <button onclick="generatePDF()">📜 Export PDF</button>
+            <button onclick="simulateTamper()" class="btn-danger">Simulate Hack</button>
+            <span id="v-status">System Standby</span>
         </div>
 
-        <div class="auth-box">
-          <h3>Log in</h3>
-          <input id="liEmail" placeholder="Email" type="email"/>
-          <input id="liPass" placeholder="Password" type="password"/>
-          <button id="btnLogin" class="btn">Log In</button>
+        <div class="main-layout">
+            <div class="form-panel">
+                <h3>Log New Shipment</h3>
+                <select id="stage"><option>Manufactured</option><option>Warehouse</option><option>Retail</option></select>
+                <input type="text" id="city" placeholder="City">
+                <input type="text" id="coords" readonly placeholder="Click map for Lat/Lng">
+                <button class="btn-main" onclick="addStep()">Seal Block</button>
+            </div>
+            <div id="map"></div>
         </div>
-      </div>
 
-      <div class="row">
-        <button id="btnLogout" class="btn secondary hidden">Log Out</button>
-        <button id="btnRefreshMe" class="btn secondary">Refresh</button>
-      </div>
+        <div id="timeline" class="timeline"></div>
 
-      <p class="small muted">
-        Security: passwords are hashed, sessions use httpOnly cookies. This is a lab demo (not enterprise auth).
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>Upload & Generate</h2>
-      <p class="small muted">You must be logged in to generate (so your results can be saved).</p>
-
-      <div class="uploader">
-        <input id="file" type="file" accept="image/*"/>
-        <button id="btnLoad" class="btn">Load Photo</button>
-      </div>
-
-      <div id="previewWrap" class="preview hidden">
-        <img id="preview" alt="preview"/>
-        <div class="row">
-          <button id="btnClear" class="btn secondary">Clear</button>
-        </div>
-      </div>
-
-      <div class="row">
-        <label class="small muted">Preset</label>
-        <select id="preset"></select>
-        <button id="btnGenerate" class="btn">Generate</button>
-      </div>
-
-      <div class="chips" id="presetChips"></div>
-      <div id="status" class="mono small status"></div>
-    </section>
-
-    <section class="card wide">
-      <h2>My Results</h2>
-      <div id="results" class="results"></div>
-    </section>
-  </main>
-
-  <footer class="footer small muted">
-    Educational demo. Aging effects are simulated (filters + overlays), not a real ML model.
-  </footer>
-
-  <script src="app.js"></script>
+        <section class="audit-trail">
+            <h3>Audit Trail</h3>
+            <table>
+                <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                <tbody id="audit-body"></tbody>
+            </table>
+        </section>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
