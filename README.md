@@ -1,11 +1,17 @@
-# AI Face Aging Demo + Accounts (Node + HTML/CSS)
+# AI Ethics Simulator (Web Sandbox) — v2
 
-Fully working lab demo with:
-- Email/password signup & login
-- Secure password hashing (bcryptjs)
-- Session tokens in httpOnly cookies
-- User-specific saved generation history ("My Results")
-- Face aging simulation using Sharp (filters + overlays) — no external AI API
+This is a web-based AI Ethics / Governance simulator with a blockchain-style audit ledger.
+
+## Features
+- 30+ scenarios (plus generated scenarios)
+- Approve / Override / Audit actions
+- Metrics: Trust / Fairness / Profit / Safety / Compliance
+- **Audit Budget / Credits** (prevents audit spam)
+- **Daily Challenge Mode** (deterministic scenario stream using daily seed)
+- **Compliance rule:** High-risk decisions must be audited; repeated breaches trigger shutdown
+- Blockchain-style **SHA-256 audit ledger** with chain validation
+- Node.js backend for leaderboard + score submissions
+- **Admin endpoint** to view recent score submissions (token-protected)
 
 ## Run locally
 ```bash
@@ -14,11 +20,22 @@ npm start
 ```
 Open: http://localhost:3000
 
-## Deploy (Render-style)
-Build: `npm install`
-Start: `npm start`
+## Deploy on Render (Web Service)
+- Build command: `npm install`
+- Start command: `npm start`
+- Add environment variable:
+  - `ADMIN_TOKEN` = a strong random string (for /api/admin/scores)
 
-## Data storage
-This kit uses file-based JSON storage under `storage/data/` for simplicity.
-On free hosts, disk can be ephemeral (may reset on redeploy). For “real” persistence,
-swap to Postgres later.
+Admin endpoint:
+- `https://YOUR-APP.onrender.com/api/admin/scores?token=YOUR_ADMIN_TOKEN`
+
+## Embed in WordPress
+Use a Custom HTML block:
+
+```html
+<iframe
+  src="https://yourgame.onrender.com"
+  style="width:100%; height:720px; border:0; border-radius:16px;"
+  allow="fullscreen"
+></iframe>
+```

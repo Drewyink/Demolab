@@ -1,0 +1,16 @@
+{
+  "name": "ai-ethics-simulator",
+  "version": "2.0.0",
+  "description": "AI Ethics Simulator (Corporate Compliance Dashboard) - Web sandbox with Node.js backend",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
