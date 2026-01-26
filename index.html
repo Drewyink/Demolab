@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Ethics Simulator — Corporate Compliance Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <div class="title">AI Ethics Simulator</div>
+          <div class="subtitle">Corporate Compliance Dashboard • Web Sandbox</div>
+        </div>
+      </div>
+
+      <div class="status">
+        <div class="pill" id="dayText">Day 1</div>
+        <div class="pill pill-ok" id="chainText">Ledger: VALID</div>
+        <div class="pill" id="bestText">Best: 0</div>
+        <div class="pill" id="creditsText">Audits: 3/5</div>
+        <div class="pill" id="modeText">Mode: Classic</div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- Left: Decision card -->
+      <section class="card decision">
+        <div class="card-h">
+          <div>
+            <div class="kicker" id="domainText">Domain: Finance</div>
+            <h2 id="eventTitle">Loading...</h2>
+          </div>
+          <div class="ai-box">
+            <div class="ai-label">AI Output</div>
+            <div class="ai-rec" id="aiRec">—</div>
+            <div class="ai-conf" id="aiConf">Confidence: —%</div>
+            <div class="ai-mini" id="riskLine">Risk: —</div>
+          </div>
+        </div>
+
+        <p class="body" id="eventBody">—</p>
+
+        <div class="audit" id="auditBox" style="display:none;">
+          <div class="audit-title">Audit Findings</div>
+          <div class="audit-text" id="auditText"></div>
+        </div>
+
+        <div class="policy" id="policyBox" style="display:none;">
+          <div class="policy-title">Policy Alert</div>
+          <div class="policy-text" id="policyText"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="approveBtn">Approve</button>
+          <button class="btn" id="overrideBtn">Override</button>
+          <button class="btn warn" id="auditBtn">Audit</button>
+        </div>
+
+        <div class="controls">
+          <label class="toggle">
+            <input type="checkbox" id="dailyToggle" />
+            <span>Daily Challenge</span>
+          </label>
+          <button class="btn small" id="newDailyBtn" title="Fetch today's seed and restart in Daily Challenge mode">Today’s Seed</button>
+          <span class="tiny" id="seedText">Seed: —</span>
+        </div>
+
+        <div class="note">
+          Rules: High-risk decisions should be audited. Repeated audit violations can trigger regulatory shutdown.
+        </div>
+      </section>
+
+      <!-- Middle: Meters -->
+      <section class="card meters">
+        <h3>Operational Metrics</h3>
+
+        <div class="meter">
+          <div class="meter-row">
+            <span>Trust</span><span id="trustVal">70</span>
+          </div>
+          <div class="bar"><div class="fill" id="trustBar"></div></div>
+        </div>
+
+        <div class="meter">
+          <div class="meter-row">
+            <span>Fairness</span><span id="fairVal">70</span>
+          </div>
+          <div class="bar"><div class="fill" id="fairBar"></div></div>
+        </div>
+
+        <div class="meter">
+          <div class="meter-row">
+            <span>Profit</span><span id="profitVal">55</span>
+          </div>
+          <div class="bar"><div class="fill" id="profitBar"></div></div>
+        </div>
+
+        <div class="meter">
+          <div class="meter-row">
+            <span>Safety</span><span id="safetyVal">70</span>
+          </div>
+          <div class="bar"><div class="fill" id="safetyBar"></div></div>
+        </div>
+
+        <div class="meter">
+          <div class="meter-row">
+            <span>Compliance</span><span id="compVal">70</span>
+          </div>
+          <div class="bar"><div class="fill" id="compBar"></div></div>
+        </div>
+
+        <div class="mini">
+          <div class="mini-h">Leaderboard (Valid Ledger Only)</div>
+          <div class="mini-sub">
+            <label class="toggle small">
+              <input type="checkbox" id="lbDailyToggle" />
+              <span>Daily only</span>
+            </label>
+          </div>
+          <div id="leaderboard" class="leaderboard">Loading…</div>
+        </div>
+      </section>
+
+      <!-- Right: Ledger -->
+      <section class="card ledger">
+        <div class="ledger-h">
+          <h3>Audit Ledger</h3>
+          <div class="ledger-actions">
+            <button class="btn small" id="validateBtn">Validate Chain</button>
+            <button class="btn small" id="exportBtn">Export Ledger</button>
+          </div>
+        </div>
+        <div class="ledger-box" id="ledgerBox"></div>
+      </section>
+    </main>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal" style="display:none;">
+      <div class="modal-card">
+        <h2>Game Over</h2>
+        <p id="gameOverReason"></p>
+
+        <div class="modal-grid">
+          <div class="modal-stat">
+            <div class="label">Days Survived</div>
+            <div class="value" id="daysSurvivedText">0</div>
+          </div>
+          <div class="modal-stat">
+            <div class="label">Best Day</div>
+            <div class="value" id="bestDayText">0</div>
+          </div>
+          <div class="modal-stat">
+            <div class="label">Ledger</div>
+            <div class="value" id="ledgerStatusText">VALID</div>
+          </div>
+        </div>
+
+        <div class="modal-grid2">
+          <div class="modal-stat">
+            <div class="label">Audit Credits Left</div>
+            <div class="value" id="creditsLeftText">0</div>
+          </div>
+          <div class="modal-stat">
+            <div class="label">Policy Breaches</div>
+            <div class="value" id="breachText">0</div>
+          </div>
+          <div class="modal-stat">
+            <div class="label">Mode / Seed</div>
+            <div class="value" id="modeSeedText">Classic</div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <input id="playerName" class="input" placeholder="Name for leaderboard (optional)" maxlength="24" />
+          <button class="btn primary" id="submitScoreBtn">Submit Score</button>
+          <button class="btn" id="restartBtn">Restart</button>
+        </div>
+
+        <div class="tiny" id="submitMsg"></div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>Hosted on Render • Embed-friendly for WordPress</span>
+      <span class="tiny" id="apiStatus">API: …</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
