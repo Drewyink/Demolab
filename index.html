@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ethical Governance Ledger — Demo</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="left">
+        <h1>Ethical Governance Ledger</h1>
+        <div class="sub">Make decisions, audit risks, and keep the ledger valid.</div>
+      </div>
+      <div class="right">
+        <div class="pill" id="dayText">Day 1</div>
+        <div class="pill" id="bestText">Best: 0</div>
+        <div class="pill" id="chainText">Ledger: …</div>
+        <div class="pill" id="apiStatus">API: …</div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <div class="cardTitle">Current Event</div>
+        <div class="tiny" id="domainText">Domain:</div>
+        <h2 id="eventTitle">—</h2>
+        <p id="eventBody" class="body">—</p>
+
+        <div class="aiBox">
+          <div class="row2">
+            <div class="label">AI Recommendation</div>
+            <div class="value" id="aiRec">—</div>
+          </div>
+          <div class="row2">
+            <div class="label">AI Confidence</div>
+            <div class="value" id="aiConf">—</div>
+          </div>
+        </div>
+
+        <div class="auditBox" id="auditBox" style="display:none;">
+          <div class="cardTitle">Audit Findings</div>
+          <div id="auditText" class="body">—</div>
+        </div>
+
+        <div class="actions">
+          <button id="approveBtn" class="btn primary">Approve</button>
+          <button id="overrideBtn" class="btn">Override</button>
+          <button id="auditBtn" class="btn warn">Audit</button>
+          <button id="validateBtn" class="btn ghost">Validate Ledger</button>
+          <button id="restartBtn" class="btn ghost">Restart</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardTitle">Metrics</div>
+
+        <div class="metric">
+          <div class="metricHead"><span>Trust</span><span id="trustVal">70</span></div>
+          <div class="bar"><div class="fill" id="trustBar" style="width:70%"></div></div>
+        </div>
+
+        <div class="metric">
+          <div class="metricHead"><span>Fairness</span><span id="fairVal">70</span></div>
+          <div class="bar"><div class="fill" id="fairBar" style="width:70%"></div></div>
+        </div>
+
+        <div class="metric">
+          <div class="metricHead"><span>Profit</span><span id="profitVal">55</span></div>
+          <div class="bar"><div class="fill" id="profitBar" style="width:55%"></div></div>
+        </div>
+
+        <div class="metric">
+          <div class="metricHead"><span>Safety</span><span id="safetyVal">70</span></div>
+          <div class="bar"><div class="fill" id="safetyBar" style="width:70%"></div></div>
+        </div>
+
+        <div class="metric">
+          <div class="metricHead"><span>Compliance</span><span id="compVal">70</span></div>
+          <div class="bar"><div class="fill" id="compBar" style="width:70%"></div></div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="cardTitle">Leaderboard</div>
+        <div id="leaderboard" class="leaderboard">
+          <div class="tiny">Loading…</div>
+        </div>
+      </section>
+
+      <section class="card full">
+        <div class="cardTitle">Ledger (latest blocks)</div>
+        <pre id="ledgerBox" class="ledger"></pre>
+      </section>
+    </main>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div class="modal" id="gameOverModal" style="display:none;">
+    <div class="modalCard">
+      <div class="modalTitle">Game Over</div>
+      <div class="body" id="gameOverReason"></div>
+
+      <div class="stats">
+        <div><span class="label">Days Survived</span><span id="daysSurvivedText">0</span></div>
+        <div><span class="label">Best Day</span><span id="bestDayText">0</span></div>
+        <div><span class="label">Ledger</span><span id="ledgerStatusText">—</span></div>
+      </div>
+
+      <div class="row3">
+        <input id="playerName" class="input" placeholder="Your name (optional)" />
+        <button id="submitScoreBtn" class="btn primary">Submit Score</button>
+        <button class="btn" onclick="document.getElementById('gameOverModal').style.display='none'">Close</button>
+      </div>
+
+      <div id="submitMsg" class="tiny"></div>
+      <div class="tiny dim">Tip: Run via <code>node server.js</code> for API + leaderboard.</div>
+    </div>
+  </div>
+
+  <script src="./game.js" defer></script>
+</body>
+</html>
