@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Products — Facets Mock</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Enrollment Admin Manager</h1>
+          <p>Products</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/index.html">Dashboard</a>
+        <a class="active" href="/products.html">Products</a>
+        <a href="/plans.html">Plans</a>
+        <a href="/benefits.html">Benefits</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/claims.html">Claims</a>
+        <a href="/audit.html">Audit</a>
+      </nav>
+      <div class="footer-note">Training simulator. Not TriZetto/Facets.</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h2>Products (Create + List)</h2>
+        <span class="badge">DB: SQLite</span>
+      </div>
+
+      <div class="grid">
+        <section class="card">
+          <h3>Create Product</h3>
+          <div class="form">
+            <div>
+              <label>Carrier</label>
+              <input id="carrier" value="EchoHealth Insurance" />
+            </div>
+            <div>
+              <label>LOB</label>
+              <select id="lob">
+                <option value="Commercial" selected>Commercial</option>
+                <option value="Medicaid">Medicaid</option>
+                <option value="Medicare">Medicare</option>
+              </select>
+            </div>
+            <div>
+              <label>Product ID</label>
+              <input id="product_id" value="PPOGOLD2026" />
+            </div>
+            <div>
+              <label>Product Name</label>
+              <input id="product_name" value="PPO Gold 2026" />
+            </div>
+            <div>
+              <label>Effective Date</label>
+              <input id="eff" type="date" value="2026-01-01" />
+            </div>
+            <div>
+              <label>Term Date</label>
+              <input id="term" type="date" value="2026-12-31" />
+            </div>
+            <div class="full">
+              <label>Network Model</label>
+              <select id="network_model">
+                <option value="INN_OON" selected>INN / OON</option>
+              </select>
+            </div>
+            <div class="full">
+              <button class="btn primary" id="saveBtn">Save Product</button>
+              <div id="msg" class="footer-note"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Products</h3>
+          <table class="table" id="tbl">
+            <thead>
+              <tr>
+                <th>Product</th><th>LOB</th><th>Carrier</th><th>Effective</th><th>Term</th><th>Network</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    const esc = (s)=>String(s??"").replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    async function api(path, opts={}){
+      const res = await fetch("/api"+path,{ headers:{ "Content-Type":"application/json" }, ...opts });
+      const txt = await res.text();
+      let data=null; try{ data=txt?JSON.parse(txt):null; }catch{ data={ raw:txt }; }
+      if(!res.ok) throw new Error(data?.error || res.statusText);
+      return data;
+    }
+
+    async function load(){
+      const products = await api("/products");
+      const tbody = $("#tbl tbody");
+      tbody.innerHTML = products.map(p=>`
+        <tr>
+          <td><b>${esc(p.product_id)}</b><div class="footer-note">${esc(p.product_name)}</div></td>
+          <td>${esc(p.lob)}</td>
+          <td>${esc(p.carrier)}</td>
+          <td>${esc(p.effective_date)}</td>
+          <td>${esc(p.term_date)}</td>
+          <td>${esc(p.network_model)}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" class="footer-note">No products</td></tr>`;
+    }
+
+    $("#saveBtn").addEventListener("click", async ()=>{
+      $("#msg").textContent = "Saving...";
+      try{
+        await api("/products",{
+          method:"POST",
+          body: JSON.stringify({
+            carrier: $("#carrier").value.trim(),
+            lob: $("#lob").value,
+            product_id: $("#product_id").value.trim(),
+            product_name: $("#product_name").value.trim(),
+            network_model: $("#network_model").value,
+            effective_date: $("#eff").value,
+            term_date: $("#term").value
+          })
+        });
+        $("#msg").textContent = "Saved ✅";
+        await load();
+      }catch(e){
+        $("#msg").textContent = "Error: " + e.message;
+      }
+    });
+
+    load().catch(e=>$("#msg").textContent = "Error: " + e.message);
+  </script>
+</body>
+</html>
