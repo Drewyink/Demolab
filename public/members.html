@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>View/Edit Members</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><div class="logo">e</div> TriZetto Elements<span class="title">Enrollment Administration Manager</span></div>
+    <div class="right">tmsadmin ▾ ⬚⬚⬚</div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebtn" data-nav="dash" onclick="location.href='/'"><div class="sideicon">🏠</div></div>
+      <div class="sidebtn active" data-nav="members" onclick="location.href='/members.html'"><div class="sideicon">👤</div></div>
+      <div class="sidebtn" data-nav="products" onclick="location.href='/products.html'"><div class="sideicon">📦</div></div>
+      <div class="sidebtn" data-nav="plans" onclick="location.href='/plans.html'"><div class="sideicon">🧾</div></div>
+      <div class="sidebtn" data-nav="benefits" onclick="location.href='/benefits.html'"><div class="sideicon">🧩</div></div>
+      <div class="sidebtn" data-nav="pricing" onclick="location.href='/pricing.html'"><div class="sideicon">💲</div></div>
+      <div class="sidebtn" data-nav="claims" onclick="location.href='/claims.html'"><div class="sideicon">📄</div></div>
+      <div class="sidebtn" data-nav="audit" onclick="location.href='/audit.html'"><div class="sideicon">🕘</div></div>
+    </div>
+
+    <div class="content">
+      <div class="breadcrumb">« Back to Member Search</div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h1>View/Edit Members</h1>
+          <div class="toolbar">
+            <button class="btn light" id="btnNotes">VIEW NOTES AND ACTIONS</button>
+            <button class="btn light" onclick="location.href='/claims.html'">VIEW OOA</button>
+            <button class="btn light" id="btnAttach">VIEW ATTACHMENTS</button>
+            <button class="btn light" onclick="location.href='/audit.html'">AUDIT HISTORY</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="row">
+            <div class="field w2">
+              <div class="label">Showing</div>
+              <input class="input" value="1" disabled>
+            </div>
+            <div class="field w2">
+              <div class="label">out of</div>
+              <input class="input" value="1" disabled>
+            </div>
+            <div class="field w4">
+              <div class="label">MBI</div>
+              <input class="input" id="q" placeholder="Search by MBI, Member ID, name">
+            </div>
+            <div class="field w2">
+              <button class="btn orange" style="width:100%" id="searchBtn">SEARCH</button>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="kv" id="meta"></div>
+
+          <div class="row" id="memberForm">
+            <!-- top row -->
+            <div class="field w4">
+              <div class="label">*MBI</div>
+              <input class="input mono" id="mbi" disabled>
+            </div>
+            <div class="field w4">
+              <div class="label">Member ID</div>
+              <input class="input mono" id="member_id" disabled>
+            </div>
+            <div class="field w2">
+              <div class="label">Sal.</div>
+              <input class="input" id="salutation">
+            </div>
+            <div class="field w4">
+              <div class="label">*First Name</div>
+              <input class="input" id="first_name">
+            </div>
+            <div class="field w2">
+              <div class="label">MI</div>
+              <input class="input" id="mi">
+            </div>
+            <div class="field w4">
+              <div class="label">*Last Name</div>
+              <input class="input" id="last_name">
+            </div>
+
+            <!-- Demographics -->
+            <div class="field w12"><div class="label"><b>Demographics</b> <span class="small">Next Section</span></div></div>
+
+            <div class="field w4">
+              <div class="label">*DOB</div>
+              <input class="input" id="dob" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="field w4">
+              <div class="label">*Sex</div>
+              <select id="sex">
+                <option value="">Select</option>
+                <option value="M">M</option>
+                <option value="F">F</option>
+              </select>
+            </div>
+            <div class="field w4">
+              <div class="label">SSN</div>
+              <input class="input" id="ssn" placeholder="">
+            </div>
+
+            <div class="field w4">
+              <div class="label">*Plan ID</div>
+              <select id="plan_id"></select>
+            </div>
+            <div class="field w2">
+              <div class="label">*PBP</div>
+              <input class="input" id="pbp">
+            </div>
+            <div class="field w3">
+              <div class="label">Segment ID</div>
+              <input class="input" id="segment_id">
+            </div>
+            <div class="field w3">
+              <div class="label">Status</div>
+              <select id="status">
+                <option>PENDING</option>
+                <option>ACTIVE</option>
+                <option>TERM</option>
+              </select>
+            </div>
+
+            <div class="field w4">
+              <div class="label">*Effective Date</div>
+              <input class="input" id="effective_date" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="field w4">
+              <div class="label">Term Date</div>
+              <input class="input" id="term_date" placeholder="YYYY-MM-DD">
+            </div>
+
+            <div class="field w12">
+              <button class="btn orange" id="saveBtn">SAVE</button>
+              <button class="btn light" id="loadBtn">LOAD DEFAULT MEMBER</button>
+            </div>
+          </div>
+
+          <hr>
+          <div class="label"><b>Accumulator Balances (YTD)</b></div>
+          <table class="table" id="accTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let currentMember = null;
+
+    async function loadPlans(){
+      const plans = await api("/api/plans");
+      $("#plan_id").innerHTML = plans.map(p => `<option value="${p.plan_id}">${p.plan_id} — ${p.plan_name}</option>`).join("");
+    }
+
+    function fillMember(m){
+      currentMember = m;
+      $("#mbi").value = m.mbi || "";
+      $("#member_id").value = m.member_id || "";
+      $("#salutation").value = m.salutation || "";
+      $("#first_name").value = m.first_name || "";
+      $("#mi").value = m.mi || "";
+      $("#last_name").value = m.last_name || "";
+      $("#dob").value = m.dob || "";
+      $("#sex").value = m.sex || "";
+      $("#ssn").value = m.ssn || "";
+      $("#plan_id").value = m.plan_id || "";
+      $("#pbp").value = m.pbp || "";
+      $("#segment_id").value = m.segment_id || "";
+      $("#status").value = m.status || "PENDING";
+      $("#effective_date").value = m.effective_date || "";
+      $("#term_date").value = m.term_date || "";
+
+      $("#meta").innerHTML = `
+        <div><span class="badge info">Member Status</span> <b>${m.status}</b></div>
+        <div><span class="badge info">Record Source</span> <b>${m.record_source}</b></div>
+        <div><span class="badge info">User Entered</span> <b>${m.user_entered}</b></div>
+        <div><span class="badge info">Date Entered</span> <b>${m.date_entered}</b></div>
+        <div><span class="badge info">User Modified</span> <b>${m.user_modified || "-"}</b></div>
+        <div><span class="badge info">Date Modified</span> <b>${m.date_modified || "-"}</b></div>
+      `;
+    }
+
+    function fillAcc(balances){
+      const rows = balances.map(b => `
+        <tr>
+          <td class="mono">${b.tier_code}</td>
+          <td class="mono">${b.accumulator_type}</td>
+          <td>${b.ytd}</td>
+        </tr>
+      `).join("");
+      $("#accTable").innerHTML = `
+        <tr><th>Tier</th><th>Type</th><th>YTD</th></tr>
+        ${rows || `<tr><td colspan="3" class="small">No balances yet</td></tr>`}
+      `;
+    }
+
+    async function loadMemberById(id){
+      const data = await api(`/api/members/${id}`);
+      fillMember(data.member);
+      fillAcc(data.balances.map(x => ({...x, ytd: money(x.ytd_cents/100)})));
+    }
+
+    async function search(){
+      const q = $("#q").value.trim();
+      const list = await api(`/api/members?q=${encodeURIComponent(q)}`);
+      if(!list.length){ alert("No members found"); return; }
+      await loadMemberById(list[0].member_id);
+    }
+
+    $("#searchBtn").onclick = search;
+
+    $("#loadBtn").onclick = () => loadMemberById("TMS00000583");
+
+    $("#saveBtn").onclick = async () => {
+      if(!currentMember) return alert("Load a member first");
+      const body = {
+        status: $("#status").value,
+        salutation: $("#salutation").value,
+        first_name: $("#first_name").value,
+        mi: $("#mi").value,
+        last_name: $("#last_name").value,
+        dob: $("#dob").value,
+        sex: $("#sex").value,
+        ssn: $("#ssn").value,
+        plan_id: $("#plan_id").value,
+        pbp: $("#pbp").value,
+        segment_id: $("#segment_id").value,
+        effective_date: $("#effective_date").value,
+        term_date: $("#term_date").value
+      };
+      await api(`/api/members/${currentMember.member_id}`, { method:"PUT", body: JSON.stringify(body) });
+      alert("Saved.");
+      await loadMemberById(currentMember.member_id);
+    };
+
+    (async () => {
+      await loadPlans();
+      await loadMemberById("TMS00000583");
+    })();
+  </script>
+</body>
+</html>
