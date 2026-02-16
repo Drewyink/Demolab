@@ -1,71 +1,130 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Facets Sandbox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Facets Mock Sandbox — Dashboard</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="topbar">
-    <div class="brand"><div class="logo">e</div> TriZetto Elements<span class="title">Enrollment Administration Manager</span></div>
-    <div class="right">tmsadmin ▾ ⬚⬚⬚</div>
-  </div>
-
-  <div class="layout">
-    <div class="sidebar">
-      <div class="sidebtn active" data-nav="dash" onclick="location.href='/'"><div class="sideicon">🏠</div></div>
-      <div class="sidebtn" data-nav="members" onclick="location.href='/members.html'"><div class="sideicon">👤</div></div>
-      <div class="sidebtn" data-nav="products" onclick="location.href='/products.html'"><div class="sideicon">📦</div></div>
-      <div class="sidebtn" data-nav="plans" onclick="location.href='/plans.html'"><div class="sideicon">🧾</div></div>
-      <div class="sidebtn" data-nav="benefits" onclick="location.href='/benefits.html'"><div class="sideicon">🧩</div></div>
-      <div class="sidebtn" data-nav="pricing" onclick="location.href='/pricing.html'"><div class="sideicon">💲</div></div>
-      <div class="sidebtn" data-nav="claims" onclick="location.href='/claims.html'"><div class="sideicon">📄</div></div>
-      <div class="sidebtn" data-nav="audit" onclick="location.href='/audit.html'"><div class="sideicon">🕘</div></div>
-    </div>
-
-    <div class="content">
-      <div class="breadcrumb">Home</div>
-
-      <div class="card">
-        <div class="cardHead">
-          <h1>System Dashboard</h1>
-          <div class="toolbar">
-            <button class="btn light" onclick="location.href='/members.html'">VIEW/EDIT MEMBERS</button>
-            <button class="btn light" onclick="location.href='/claims.html'">CLAIM SIMULATOR</button>
-            <button class="btn light" onclick="location.href='/audit.html'">AUDIT HISTORY</button>
-          </div>
-        </div>
-
-        <div class="section" id="out">
-          Loading...
+  <div class="container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Enrollment Admin Manager</h1>
+          <p>Dashboard</p>
         </div>
       </div>
-    </div>
+
+      <nav class="nav">
+        <a class="active" href="/index.html">Dashboard</a>
+        <a href="/products.html">Products</a>
+        <a href="/plans.html">Plans</a>
+        <a href="/benefits.html">Benefits</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/members.html">Members</a>
+        <a href="/claims.html">Claims</a>
+        <a href="/audit.html">Audit</a>
+      </nav>
+
+      <div class="footer-note">Training simulator. Not TriZetto/Facets.</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h2>Facets Mock Sandbox</h2>
+        <span class="badge" id="env">Loading…</span>
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+        <section class="card">
+          <h3>Plan Summary</h3>
+          <div id="summary" class="notice">Loading summary…</div>
+        </section>
+
+        <section class="card">
+          <h3>Quick Actions</h3>
+          <div class="form" style="grid-template-columns:1fr">
+            <a class="btn primary" href="/claims.html">Run Claim Simulator</a>
+            <a class="btn" href="/members.html">Search Members</a>
+            <a class="btn" href="/benefits.html">Edit Benefit Rules</a>
+            <a class="btn" href="/pricing.html">Edit Fee Schedule</a>
+          </div>
+          <div class="footer-note">Tip: Start with Benefits + Pricing, then run Claims.</div>
+        </section>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>System Counts</h3>
+        <table class="table">
+          <thead>
+            <tr><th>Entity</th><th>Count</th></tr>
+          </thead>
+          <tbody id="counts">
+            <tr><td colspan="2" class="footer-note">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
   </div>
 
-  <script src="app.js"></script>
   <script>
-    (async () => {
-      const s = await api("/api/summary");
-      $("#out").innerHTML = `
-        <div class="kv">
-          <div><span class="badge info">PRODUCT</span> <b>${s.product.product_id}</b> — ${s.product.product_name}</div>
-          <div><span class="badge info">LOB</span> <b>${s.product.lob}</b></div>
-          <div><span class="badge info">EFFECTIVE</span> <b>${s.product.effective_date}</b></div>
-          <div><span class="badge info">TERM</span> <b>${s.product.term_date}</b></div>
-        </div>
+    const esc = (s)=>String(s??"").replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    async function api(path){
+      const res = await fetch("/api" + path);
+      const txt = await res.text();
+      let data=null; try{ data = txt ? JSON.parse(txt) : null; } catch { data = { raw: txt }; }
+      if(!res.ok) throw new Error(data?.error || res.statusText);
+      return data;
+    }
 
+    function kvBlock(title, obj){
+      return `
         <div class="kv">
-          <div><span class="badge ok">PLAN</span> <b>${s.plan.plan_id}</b> — ${s.plan.plan_name}</div>
-          <div><span class="badge info">BENEFIT RULES</span> <b>${s.ruleCount}</b></div>
-          <div><span class="badge info">CLAIMS RUN</span> <b>${s.claimCount}</b></div>
-        </div>
-
-        <div class="small">
-          This sandbox demonstrates Plan/Product setup → Benefit config → Pricing → Claim adjudication → Accumulator updates → Audit trail.
+          ${Object.entries(obj).map(([k,v]) => `
+            <div>${esc(k)}</div><div class="${k.toLowerCase().includes('id') ? 'mono' : ''}">${esc(v)}</div>
+          `).join("")}
         </div>
       `;
-    })();
+    }
+
+    (async()=>{
+      const s = await api("/summary");
+      document.getElementById("env").textContent = "SQLite Connected ✅";
+
+      const product = s.product || {};
+      const plan = s.plan || {};
+
+      document.getElementById("summary").innerHTML = `
+        ${kvBlock("Product", {
+          "Carrier": product.carrier || "EchoHealth (mock)",
+          "LOB": product.lob || "-",
+          "Product ID": product.product_id || "-",
+          "Product Name": product.product_name || "-",
+          "Effective": product.effective_date || "-",
+          "Term": product.term_date || "-"
+        })}
+        <hr/>
+        ${kvBlock("Plan", {
+          "Plan ID": plan.plan_id || "-",
+          "Plan Name": plan.plan_name || "-",
+          "Network Model": plan.network_model || "-",
+          "Effective": plan.effective_date || "-",
+          "Term": plan.term_date || "-",
+          "Notes": plan.notes || "-"
+        })}
+      `;
+
+      document.getElementById("counts").innerHTML = `
+        <tr><td>Benefit Rules</td><td class="mono">${esc(s.ruleCount)}</td></tr>
+        <tr><td>Claims</td><td class="mono">${esc(s.claimCount)}</td></tr>
+      `;
+    })().catch(err=>{
+      document.getElementById("env").textContent = "API Error";
+      document.getElementById("summary").textContent = "Error: " + err.message;
+      document.getElementById("counts").innerHTML = `<tr><td colspan="2">Error: ${esc(err.message)}</td></tr>`;
+    });
   </script>
 </body>
 </html>
