@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Facets Sandbox</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><div class="logo">e</div> TriZetto Elements<span class="title">Enrollment Administration Manager</span></div>
+    <div class="right">tmsadmin ▾ ⬚⬚⬚</div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebtn active" data-nav="dash" onclick="location.href='/'"><div class="sideicon">🏠</div></div>
+      <div class="sidebtn" data-nav="members" onclick="location.href='/members.html'"><div class="sideicon">👤</div></div>
+      <div class="sidebtn" data-nav="products" onclick="location.href='/products.html'"><div class="sideicon">📦</div></div>
+      <div class="sidebtn" data-nav="plans" onclick="location.href='/plans.html'"><div class="sideicon">🧾</div></div>
+      <div class="sidebtn" data-nav="benefits" onclick="location.href='/benefits.html'"><div class="sideicon">🧩</div></div>
+      <div class="sidebtn" data-nav="pricing" onclick="location.href='/pricing.html'"><div class="sideicon">💲</div></div>
+      <div class="sidebtn" data-nav="claims" onclick="location.href='/claims.html'"><div class="sideicon">📄</div></div>
+      <div class="sidebtn" data-nav="audit" onclick="location.href='/audit.html'"><div class="sideicon">🕘</div></div>
+    </div>
+
+    <div class="content">
+      <div class="breadcrumb">Home</div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h1>System Dashboard</h1>
+          <div class="toolbar">
+            <button class="btn light" onclick="location.href='/members.html'">VIEW/EDIT MEMBERS</button>
+            <button class="btn light" onclick="location.href='/claims.html'">CLAIM SIMULATOR</button>
+            <button class="btn light" onclick="location.href='/audit.html'">AUDIT HISTORY</button>
+          </div>
+        </div>
+
+        <div class="section" id="out">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (async () => {
+      const s = await api("/api/summary");
+      $("#out").innerHTML = `
+        <div class="kv">
+          <div><span class="badge info">PRODUCT</span> <b>${s.product.product_id}</b> — ${s.product.product_name}</div>
+          <div><span class="badge info">LOB</span> <b>${s.product.lob}</b></div>
+          <div><span class="badge info">EFFECTIVE</span> <b>${s.product.effective_date}</b></div>
+          <div><span class="badge info">TERM</span> <b>${s.product.term_date}</b></div>
+        </div>
+
+        <div class="kv">
+          <div><span class="badge ok">PLAN</span> <b>${s.plan.plan_id}</b> — ${s.plan.plan_name}</div>
+          <div><span class="badge info">BENEFIT RULES</span> <b>${s.ruleCount}</b></div>
+          <div><span class="badge info">CLAIMS RUN</span> <b>${s.claimCount}</b></div>
+        </div>
+
+        <div class="small">
+          This sandbox demonstrates Plan/Product setup → Benefit config → Pricing → Claim adjudication → Accumulator updates → Audit trail.
+        </div>
+      `;
+    })();
+  </script>
+</body>
+</html>
