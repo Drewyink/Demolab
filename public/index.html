@@ -1,130 +1,362 @@
+<!-- public/index.html -->
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Facets Mock Sandbox — Dashboard</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>EcholinkSolutions | Facets Elements Sandbox</title>
+  <link rel="stylesheet" href="/styles.css"/>
 </head>
 <body>
   <div class="container">
-    <aside class="sidebar">
+    <div class="topbar">
       <div class="brand">
-        <div class="logo"></div>
+        <div class="logo" aria-hidden="true"></div>
         <div>
-          <h1>Enrollment Admin Manager</h1>
-          <p>Dashboard</p>
+          <h1>EcholinkSolutions, Facets Elements</h1>
+          <p>Products, Plans, Benefits, Pricing, Members, Claims, Audit</p>
         </div>
       </div>
-
-      <nav class="nav">
-        <a class="active" href="/index.html">Dashboard</a>
-        <a href="/products.html">Products</a>
-        <a href="/plans.html">Plans</a>
-        <a href="/benefits.html">Benefits</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/members.html">Members</a>
-        <a href="/claims.html">Claims</a>
-        <a href="/audit.html">Audit</a>
-      </nav>
-
-      <div class="footer-note">Training simulator. Not TriZetto/Facets.</div>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <h2>Facets Mock Sandbox</h2>
-        <span class="badge" id="env">Loading…</span>
+      <div class="row">
+        <span class="badge"><span id="who">—</span></span>
+        <button class="btn ghost" id="btnLogout">Logout</button>
       </div>
+    </div>
 
-      <div class="grid" style="margin-top:14px">
-        <section class="card">
-          <h3>Plan Summary</h3>
-          <div id="summary" class="notice">Loading summary…</div>
-        </section>
-
-        <section class="card">
-          <h3>Quick Actions</h3>
-          <div class="form" style="grid-template-columns:1fr">
-            <a class="btn primary" href="/claims.html">Run Claim Simulator</a>
-            <a class="btn" href="/members.html">Search Members</a>
-            <a class="btn" href="/benefits.html">Edit Benefit Rules</a>
-            <a class="btn" href="/pricing.html">Edit Fee Schedule</a>
+    <div class="card">
+      <div class="kpis">
+        <div class="kpi"><div class="label">Active Product</div><div class="val" id="kpiProduct">—</div></div>
+        <div class="kpi"><div class="label">Active Plan</div><div class="val" id="kpiPlan">—</div></div>
+        <div class="kpi"><div class="label">Counts</div>
+          <div class="val">
+            <span id="kpiMembers">0</span> members,
+            <span id="kpiRules">0</span> rules,
+            <span id="kpiClaims">0</span> claims
           </div>
-          <div class="footer-note">Tip: Start with Benefits + Pricing, then run Claims.</div>
-        </section>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="nav">
+        <button class="chip active" data-view="products">Products</button>
+        <button class="chip" data-view="plans">Plans</button>
+        <button class="chip" data-view="benefits">Benefits</button>
+        <button class="chip" data-view="pricing">Pricing</button>
+        <button class="chip" data-view="members">Members</button>
+        <button class="chip" data-view="claims">Claims</button>
+        <button class="chip" data-view="audit">Audit</button>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <div class="card">
+
+        <!-- PRODUCTS -->
+        <div class="view" id="view-products">
+          <h2>Products</h2>
+          <div class="form">
+            <div><label class="small">Product ID</label><input id="p_product_id" placeholder="PPOGOLD2026"></div>
+            <div><label class="small">Product Name</label><input id="p_product_name" placeholder="PPO Gold 2026"></div>
+            <div><label class="small">Carrier</label><input id="p_carrier" placeholder="EchoHealth Insurance"></div>
+            <div><label class="small">LOB</label><input id="p_lob" placeholder="Commercial"></div>
+            <div><label class="small">Network Model</label><select id="p_network_model"><option>INN_OON</option></select></div>
+            <div><label class="small">Effective</label><input id="p_eff" type="date" value="2026-01-01"></div>
+            <div><label class="small">Term</label><input id="p_term" type="date" value="2026-12-31"></div>
+            <div class="full row">
+              <button class="btn" id="btnProductCreate">Create Product</button>
+              <span class="small">Creates a product shell used by plans.</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblProducts">
+              <thead>
+                <tr><th>ID</th><th>Name</th><th>Carrier</th><th>LOB</th><th>Eff</th><th>Term</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PLANS -->
+        <div class="view" id="view-plans" style="display:none">
+          <h2>Plans</h2>
+          <div class="form">
+            <div><label class="small">Plan ID</label><input id="pl_plan_id" placeholder="PPO-GOLD-26"></div>
+            <div><label class="small">Product</label><select id="selPlanProduct"></select></div>
+            <div class="full"><label class="small">Plan Name</label><input id="pl_plan_name" placeholder="PPO Gold 2026"></div>
+            <div><label class="small">Benefit Year</label><select id="pl_by"><option>Calendar</option><option>Policy</option></select></div>
+            <div>
+              <label class="small">PCP Required</label>
+              <div class="row"><input id="pl_pcp" type="checkbox" style="width:auto"><span class="small">Yes</span></div>
+            </div>
+            <div><label class="small">Effective</label><input id="pl_eff" type="date" value="2026-01-01"></div>
+            <div><label class="small">Term</label><input id="pl_term" type="date" value="2026-12-31"></div>
+            <div class="full"><label class="small">Notes</label><textarea id="pl_notes" placeholder="Training notes..."></textarea></div>
+            <div class="full row">
+              <button class="btn" id="btnPlanCreate">Create Plan</button>
+              <span class="small">Plans hang off products and drive benefits/pricing.</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblPlans">
+              <thead>
+                <tr><th>Plan ID</th><th>Product</th><th>Name</th><th>BY</th><th>PCP</th><th>Eff</th><th>Term</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BENEFITS -->
+        <div class="view" id="view-benefits" style="display:none">
+          <h2>Benefit Rules</h2>
+
+          <div class="row" style="justify-content:space-between">
+            <div style="flex:1;min-width:240px">
+              <label class="small">Plan</label>
+              <select id="selBenefitPlan"></select>
+            </div>
+            <div style="width:180px">
+              <label class="small">Tier filter</label>
+              <select id="b_tier_filter"><option value="">All</option><option>INN</option><option>OON</option></select>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="form">
+            <div><label class="small">Tier</label><select id="b_tier"><option>INN</option><option>OON</option></select></div>
+            <div><label class="small">Service Category</label><input id="b_service" placeholder="Primary Care Visit"></div>
+            <div><label class="small">Code Type</label><select id="b_code_type"><option>CPT</option><option>REV</option></select></div>
+            <div><label class="small">Code Start</label><input id="b_code_start" type="number" placeholder="99200"></div>
+            <div><label class="small">Code End</label><input id="b_code_end" type="number" placeholder="99299"></div>
+
+            <div><label class="small">Covered</label><div class="row"><input id="b_covered" type="checkbox" checked style="width:auto"><span class="small">Yes</span></div></div>
+            <div><label class="small">Deductible Applies</label><div class="row"><input id="b_ded" type="checkbox" style="width:auto"><span class="small">Yes</span></div></div>
+
+            <div><label class="small">Copay ($)</label><input id="b_copay" type="number" step="0.01" value="0"></div>
+            <div><label class="small">Coins %</label><input id="b_coins" type="number" value="20"></div>
+
+            <div><label class="small">Accumulator Applied</label><select id="b_acc"><option>OOP</option><option>Both</option><option>None</option></select></div>
+
+            <div><label class="small">Prior Auth</label><div class="row"><input id="b_auth" type="checkbox" style="width:auto"><span class="small">Required</span></div></div>
+            <div><label class="small">ER waive copay if admit</label><div class="row"><input id="b_waive" type="checkbox" style="width:auto"><span class="small">Yes</span></div></div>
+
+            <div><label class="small">Priority</label><input id="b_pri" type="number" value="100"></div>
+            <div><label class="small">Effective</label><input id="b_eff" type="date" value="2026-01-01"></div>
+            <div><label class="small">Term</label><input id="b_term" type="date" value="2026-12-31"></div>
+
+            <div class="full"><label class="small">Notes</label><textarea id="b_notes" placeholder="Optional notes"></textarea></div>
+            <div class="full row">
+              <button class="btn" id="btnBenefitCreate">Add Benefit Rule</button>
+              <span class="small">Rules matched by tier + code range + dates + priority.</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblBenefits">
+              <thead>
+                <tr><th>ID</th><th>Tier</th><th>Service</th><th>Type</th><th>Range</th><th>Cov</th><th>Ded</th><th>Copay</th><th>Coins</th><th>Acc</th><th>Auth</th><th>Pri</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PRICING -->
+        <div class="view" id="view-pricing" style="display:none">
+          <h2>Pricing, Fee Schedule</h2>
+
+          <div class="row" style="justify-content:space-between">
+            <div style="flex:1;min-width:240px"><label class="small">Plan</label><select id="selPricePlan"></select></div>
+            <div style="width:180px"><label class="small">Tier filter</label>
+              <select id="pr_tier_filter"><option value="">All</option><option>INN</option><option>OON</option></select>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="form">
+            <div><label class="small">Tier</label><select id="pr_tier"><option>INN</option><option>OON</option></select></div>
+            <div><label class="small">Code Type</label><select id="pr_code_type"><option>CPT</option><option>REV</option></select></div>
+            <div><label class="small">Code Start</label><input id="pr_code_start" type="number" placeholder="99213"></div>
+            <div><label class="small">Code End</label><input id="pr_code_end" type="number" placeholder="99213"></div>
+            <div><label class="small">Allowed ($)</label><input id="pr_allowed" type="number" step="0.01" value="150"></div>
+            <div><label class="small">Priority</label><input id="pr_pri" type="number" value="100"></div>
+            <div class="full row">
+              <button class="btn" id="btnPriceCreate">Add Pricing Row</button>
+              <span class="small">Used to compute Allowed Amount during claims.</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblPricing">
+              <thead><tr><th>ID</th><th>Tier</th><th>Type</th><th>Range</th><th>Allowed</th><th>Pri</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MEMBERS -->
+        <div class="view" id="view-members" style="display:none">
+          <h2>Members</h2>
+
+          <div class="row" style="justify-content:space-between">
+            <div class="row" style="flex:1;min-width:280px">
+              <input id="m_search" placeholder="Search by Member ID, MBI, name"/>
+              <button class="btn ghost" id="btnMemberSearch">Search</button>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="form">
+            <div><label class="small">Member ID</label><input id="m_id" placeholder="M100999"></div>
+            <div><label class="small">Plan</label><select id="selMemberPlan"></select></div>
+            <div><label class="small">First Name</label><input id="m_fn" placeholder="Aisha"></div>
+            <div><label class="small">Last Name</label><input id="m_ln" placeholder="Okoro"></div>
+            <div><label class="small">Status</label><select id="m_status"><option>ACTIVE</option><option>TERM</option></select></div>
+            <div><label class="small">Tier</label><select id="m_tier"><option>INN</option><option>OON</option></select></div>
+            <div><label class="small">DOB</label><input id="m_dob" type="date"></div>
+            <div><label class="small">Sex</label><select id="m_sex"><option value="">—</option><option>M</option><option>F</option></select></div>
+            <div><label class="small">MBI</label><input id="m_mbi" placeholder="MBI123456"></div>
+            <div><label class="small">Effective</label><input id="m_eff" type="date" value="2026-01-01"></div>
+            <div><label class="small">Term</label><input id="m_term" type="date"></div>
+            <div class="full row">
+              <button class="btn" id="btnMemberCreate">Create Member</button>
+              <span class="small">Creates member + initializes DED/OOP balances.</span>
+            </div>
+          </div>
+
+          <div id="m_detail" style="display:none">
+            <div class="hr"></div>
+            <h3 id="md_title">Member</h3>
+            <div class="row">
+              <span class="badge">Plan: <b id="md_plan"></b></span>
+              <span class="badge">Tier: <b id="md_tier"></b></span>
+              <span class="badge">Status: <b id="md_status"></b></span>
+              <span class="badge">Dates: <b id="md_dates"></b></span>
+            </div>
+            <div class="hr"></div>
+            <div class="tableWrap">
+              <table id="tblBalances">
+                <thead><tr><th>Tier</th><th>Accumulator</th><th>YTD</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblMembers">
+              <thead><tr><th>Open</th><th>ID</th><th>First</th><th>Last</th><th>Status</th><th>Plan</th><th>Tier</th><th>Eff</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CLAIMS -->
+        <div class="view" id="view-claims" style="display:none">
+          <h2>Claims, Adjudication</h2>
+
+          <div class="form">
+            <div><label class="small">Member ID</label><input id="claim_member_id" placeholder="M100245"></div>
+            <div><label class="small">Plan (optional)</label><select id="selClaimPlan"></select></div>
+            <div><label class="small">Tier</label><select id="claim_tier"><option>INN</option><option>OON</option></select></div>
+            <div><label class="small">DOS</label><input id="claim_dos" type="date" value="2026-02-15"></div>
+            <div class="full"><label class="small">Provider Name</label><input id="claim_provider" placeholder="Downtown Clinic"></div>
+            <div><label class="small">Code Type</label><select id="claim_code_type"><option>CPT</option><option>REV</option></select></div>
+            <div><label class="small">Code</label><input id="claim_code" type="number" placeholder="99213"></div>
+            <div><label class="small">Billed ($)</label><input id="claim_billed" type="number" step="0.01" value="200"></div>
+            <div><label class="small">Admitted (ER only)</label>
+              <div class="row"><input id="claim_admit" type="checkbox" style="width:auto"><span class="small">Yes</span></div>
+            </div>
+            <div class="full row">
+              <button class="btn warn" id="btnClaimSubmit">Adjudicate & Save Claim</button>
+              <span class="small">Uses pricing + benefit rules + accumulators.</span>
+            </div>
+          </div>
+
+          <div id="claim_result" style="display:none">
+            <div class="hr"></div>
+            <h3>Claim Result</h3>
+            <div class="row">
+              <span id="cr_status"></span>
+              <span class="badge">Allowed: $<b id="cr_allowed"></b></span>
+              <span class="badge">Member: $<b id="cr_member"></b></span>
+              <span class="badge">Plan: $<b id="cr_plan"></b></span>
+            </div>
+            <div class="small" id="cr_detail" style="margin-top:10px"></div>
+
+            <div class="hr"></div>
+            <h3>Adjudication Trace</h3>
+            <div class="tableWrap">
+              <table id="tblTrace"><thead><tr><th>Step</th><th>Detail</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <div class="hr"></div>
+            <h3>Updated Balances</h3>
+            <div class="tableWrap">
+              <table id="tblBalances2"><thead><tr><th>Tier</th><th>Accumulator</th><th>YTD</th></tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <h3>Recent Claims</h3>
+          <div class="tableWrap">
+            <table id="tblClaims">
+              <thead><tr><th>ID</th><th>Member</th><th>Plan</th><th>Tier</th><th>DOS</th><th>Provider</th><th>Code</th><th>Billed</th><th>Allowed</th><th>Status</th><th>Member</th><th>Plan</th><th>Rule</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AUDIT -->
+        <div class="view" id="view-audit" style="display:none">
+          <h2>Audit Log</h2>
+          <div class="row">
+            <button class="btn ghost" id="btnAuditRefresh">Refresh</button>
+            <span class="small">Shows recent actions by logged-in users.</span>
+          </div>
+          <div class="hr"></div>
+          <div class="tableWrap">
+            <table id="tblAudit">
+              <thead><tr><th>#</th><th>Time</th><th>Actor</th><th>Action</th><th>Type</th><th>ID</th><th>Details</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
-      <div class="card" style="margin-top:14px">
-        <h3>System Counts</h3>
-        <table class="table">
-          <thead>
-            <tr><th>Entity</th><th>Count</th></tr>
-          </thead>
-          <tbody id="counts">
-            <tr><td colspan="2" class="footer-note">Loading…</td></tr>
-          </tbody>
-        </table>
+      <div class="card">
+        <h2>Quick Notes</h2>
+        <div class="small">
+          <b>Benefit matching:</b> tier + code type + code range + service date, lowest priority wins.<br/>
+          <b>Pricing:</b> fee schedule range match, lowest priority wins. If no pricing hit, Allowed = Billed.<br/>
+          <b>Accumulators:</b> simplified individual DED and OOP; applies updates on PAY claims only.
+        </div>
+
+        <div class="hr"></div>
+        <h3>Student workflow</h3>
+        <ol class="small">
+          <li>Create a Product and Plan.</li>
+          <li>Add Benefit Rules + Pricing rows.</li>
+          <li>Create a Member and open them.</li>
+          <li>Adjudicate claims and review trace.</li>
+          <li>Check audit for change history.</li>
+        </ol>
+
+        <div class="hr"></div>
+        <div class="small"><b>Disclaimer:</b> Training simulator only.</div>
       </div>
-    </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
   </div>
 
-  <script>
-    const esc = (s)=>String(s??"").replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-    async function api(path){
-      const res = await fetch("/api" + path);
-      const txt = await res.text();
-      let data=null; try{ data = txt ? JSON.parse(txt) : null; } catch { data = { raw: txt }; }
-      if(!res.ok) throw new Error(data?.error || res.statusText);
-      return data;
-    }
-
-    function kvBlock(title, obj){
-      return `
-        <div class="kv">
-          ${Object.entries(obj).map(([k,v]) => `
-            <div>${esc(k)}</div><div class="${k.toLowerCase().includes('id') ? 'mono' : ''}">${esc(v)}</div>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    (async()=>{
-      const s = await api("/summary");
-      document.getElementById("env").textContent = "SQLite Connected ✅";
-
-      const product = s.product || {};
-      const plan = s.plan || {};
-
-      document.getElementById("summary").innerHTML = `
-        ${kvBlock("Product", {
-          "Carrier": product.carrier || "EchoHealth (mock)",
-          "LOB": product.lob || "-",
-          "Product ID": product.product_id || "-",
-          "Product Name": product.product_name || "-",
-          "Effective": product.effective_date || "-",
-          "Term": product.term_date || "-"
-        })}
-        <hr/>
-        ${kvBlock("Plan", {
-          "Plan ID": plan.plan_id || "-",
-          "Plan Name": plan.plan_name || "-",
-          "Network Model": plan.network_model || "-",
-          "Effective": plan.effective_date || "-",
-          "Term": plan.term_date || "-",
-          "Notes": plan.notes || "-"
-        })}
-      `;
-
-      document.getElementById("counts").innerHTML = `
-        <tr><td>Benefit Rules</td><td class="mono">${esc(s.ruleCount)}</td></tr>
-        <tr><td>Claims</td><td class="mono">${esc(s.claimCount)}</td></tr>
-      `;
-    })().catch(err=>{
-      document.getElementById("env").textContent = "API Error";
-      document.getElementById("summary").textContent = "Error: " + err.message;
-      document.getElementById("counts").innerHTML = `<tr><td colspan="2">Error: ${esc(err.message)}</td></tr>`;
-    });
-  </script>
+  <script src="/app.js"></script>
 </body>
 </html>
