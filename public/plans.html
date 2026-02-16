@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plans — Facets Mock</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo"></div><div><h1>Enrollment Admin Manager</h1><p>Plans</p></div></div>
+      <nav class="nav">
+        <a href="/index.html">Dashboard</a>
+        <a href="/products.html">Products</a>
+        <a class="active" href="/plans.html">Plans</a>
+        <a href="/benefits.html">Benefits</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/claims.html">Claims</a>
+        <a href="/audit.html">Audit</a>
+      </nav>
+      <div class="footer-note">Training simulator. Not TriZetto/Facets.</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h2>Plans (Create + List)</h2>
+        <span class="badge">DB: SQLite</span>
+      </div>
+
+      <div class="grid">
+        <section class="card">
+          <h3>Create Plan</h3>
+          <div class="form">
+            <div class="full">
+              <label>Product</label>
+              <select id="product"></select>
+            </div>
+            <div>
+              <label>Plan ID</label>
+              <input id="plan_id" value="PPO-GOLD-26" />
+            </div>
+            <div>
+              <label>Plan Name</label>
+              <input id="plan_name" value="PPO Gold 2026" />
+            </div>
+            <div>
+              <label>Benefit Year Type</label>
+              <select id="by">
+                <option value="Calendar" selected>Calendar</option>
+                <option value="Policy">Policy</option>
+              </select>
+            </div>
+            <div>
+              <label>PCP Required</label>
+              <select id="pcp">
+                <option value="1" selected>Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div>
+              <label>Effective</label>
+              <input id="eff" type="date" value="2026-01-01" />
+            </div>
+            <div>
+              <label>Term</label>
+              <input id="term" type="date" value="2026-12-31" />
+            </div>
+            <div class="full">
+              <label>Notes</label>
+              <input id="notes" value="Mock configuration for training. Simplified adjudication." />
+            </div>
+            <div class="full">
+              <button class="btn primary" id="saveBtn">Save Plan</button>
+              <div id="msg" class="footer-note"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Plans</h3>
+          <table class="table" id="tbl">
+            <thead><tr><th>Plan</th><th>Product</th><th>Benefit Year</th><th>Effective</th><th>Term</th><th>PCP</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    const esc = (s)=>String(s??"").replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    async function api(path, opts={}){
+      const res = await fetch("/api"+path,{ headers:{ "Content-Type":"application/json" }, ...opts });
+      const txt = await res.text();
+      let data=null; try{ data=txt?JSON.parse(txt):null; }catch{ data={ raw:txt }; }
+      if(!res.ok) throw new Error(data?.error || res.statusText);
+      return data;
+    }
+
+    async function loadProducts(){
+      const products = await api("/products");
+      $("#product").innerHTML = products.map(p=>`<option value="${esc(p.product_id)}">${esc(p.product_id)} — ${esc(p.product_name)}</option>`).join("");
+    }
+
+    async function loadPlans(){
+      const plans = await api("/plans");
+      const tbody = $("#tbl tbody");
+      tbody.innerHTML = plans.map(p=>`
+        <tr>
+          <td><b>${esc(p.plan_id)}</b><div class="footer-note">${esc(p.plan_name)}</div></td>
+          <td><span class="mono">${esc(p.product_id)}</span></td>
+          <td>${esc(p.benefit_year_type)}</td>
+          <td>${esc(p.effective_date)}</td>
+          <td>${esc(p.term_date)}</td>
+          <td>${p.pcp_required ? "Yes" : "No"}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" class="footer-note">No plans</td></tr>`;
+    }
+
+    $("#saveBtn").addEventListener("click", async ()=>{
+      $("#msg").textContent = "Saving...";
+      try{
+        await api("/plans",{
+          method:"POST",
+          body: JSON.stringify({
+            plan_id: $("#plan_id").value.trim(),
+            plan_name: $("#plan_name").value.trim(),
+            product_id: $("#product").value,
+            benefit_year_type: $("#by").value,
+            effective_date: $("#eff").value,
+            term_date: $("#term").value,
+            pcp_required: Number($("#pcp").value),
+            notes: $("#notes").value.trim()
+          })
+        });
+        $("#msg").textContent = "Saved ✅";
+        await loadPlans();
+      }catch(e){
+        $("#msg").textContent = "Error: " + e.message;
+      }
+    });
+
+    (async()=>{ await loadProducts(); await loadPlans(); })().catch(e=>$("#msg").textContent="Error: "+e.message);
+  </script>
+</body>
+</html>
