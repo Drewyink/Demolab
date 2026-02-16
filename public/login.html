@@ -1,0 +1,79 @@
+<!-- public/login.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>EcholinkSolutions | Facets Elements Sandbox - Login</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+  <div class="authShell">
+    <div class="hero">
+      <div class="brand" style="margin-bottom:10px">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>EcholinkSolutions, Facets Elements Sandbox</h1>
+          <p>Products, Plans, Benefits, Pricing, Members, Claims, Audit</p>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="small"><b>Training simulator</b>, simplified adjudication logic, safe for classroom use.</div>
+      <ul>
+        <li>Student sign up + login</li>
+        <li>Create members, products, plans, benefits, pricing</li>
+        <li>Adjudicate claims with a transparent trace</li>
+        <li>Audit log of actions</li>
+      </ul>
+      <div class="footerNote">
+        Default demo users after init: <b>admin@echolink.local</b> / <b>Passw0rd!</b> and <b>student@echolink.local</b> / <b>Passw0rd!</b>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Sign in</h2>
+      <div class="form">
+        <div class="full">
+          <label class="small">Email</label>
+          <input id="email" placeholder="you@example.com" autocomplete="username"/>
+        </div>
+        <div class="full">
+          <label class="small">Password</label>
+          <input id="password" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <div class="full row">
+          <button class="btn" id="btnLogin">Login</button>
+          <button class="btn ghost" id="btnGoRegister">Create student account</button>
+        </div>
+        <div class="small">Tip: if you run <code>npm run initdb</code>, demo accounts are loaded.</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+<script>
+const $=(s)=>document.querySelector(s);
+async function api(path, opts={}){
+  const res = await fetch(path, { headers:{ "Content-Type":"application/json" }, ...opts });
+  const ct=res.headers.get("content-type")||"";
+  const data = ct.includes("application/json") ? await res.json() : await res.text();
+  if(!res.ok) throw new Error(data?.error || data || `HTTP ${res.status}`);
+  return data;
+}
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2600); }
+
+$("#btnGoRegister").addEventListener("click",()=>location.href="/register.html");
+
+$("#btnLogin").addEventListener("click", async ()=>{
+  try{
+    const email=$("#email").value.trim();
+    const password=$("#password").value;
+    await api("/api/auth/login",{ method:"POST", body: JSON.stringify({ email, password })});
+    location.href="/";
+  }catch(e){ toast(e.message); }
+});
+</script>
+</body>
+</html>
+
