@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benefits — Facets Sandbox</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
+      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">??</div>
+        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    </div>
+  </aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div><div class="page-title">Benefits</div><div class="page-subtitle">Plan benefit configuration & coverage rules</div></div>
+      <div class="top-bar-actions"><button class="btn btn-primary btn-sm" id="btn-new">+ Add Benefit</button></div>
+    </div>
+    <div class="page-content">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-body" style="padding:14px 20px">
+          <div class="filters-row">
+            <div style="display:flex;align-items:center;gap:8px">
+              <label style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;margin-bottom:0;color:var(--gray-300)">Plan:</label>
+              <select id="filter-plan" style="width:auto;min-width:200px"><option value="">All Plans</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <label style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;margin-bottom:0;color:var(--gray-300)">Category:</label>
+              <select id="filter-category" style="width:auto;min-width:160px">
+                <option value="">All Categories</option>
+                <option value="preventive">Preventive</option>
+                <option value="primary_care">Primary Care</option>
+                <option value="specialist">Specialist</option>
+                <option value="emergency">Emergency</option>
+                <option value="hospital">Hospital</option>
+                <option value="mental_health">Mental Health</option>
+                <option value="prescription">Prescription</option>
+                <option value="lab">Lab</option>
+                <option value="imaging">Imaging</option>
+                <option value="therapy">Therapy</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Benefit Configurations</div>
+          <div id="benefit-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Plan</th><th>Benefit Name</th><th>Category</th><th>Coverage Type</th><th>Coverage Value</th><th>Copay</th><th>Coinsurance</th><th>Prior Auth</th><th>Actions</th></tr></thead>
+            <tbody id="benefits-tbody"><tr><td colspan="9" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-form">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="form-title">Add Benefit</span>
+      <button class="modal-close" onclick="closeModal('modal-form')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="form-error" class="alert alert-error hidden"></div>
+      <form id="benefit-form">
+        <div class="form-row">
+          <div class="form-group"><label>Plan *</label>
+            <select name="plan_id" id="form-plan-select" required><option value="">Select Plan</option></select>
+          </div>
+          <div class="form-group"><label>Benefit Name *</label><input name="name" required placeholder="e.g. Primary Care Visit"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Category</label>
+            <select name="category">
+              <option value="">Select</option>
+              <option value="preventive">Preventive</option><option value="primary_care">Primary Care</option>
+              <option value="specialist">Specialist</option><option value="emergency">Emergency</option>
+              <option value="hospital">Hospital</option><option value="mental_health">Mental Health</option>
+              <option value="prescription">Prescription</option><option value="lab">Lab</option>
+              <option value="imaging">Imaging</option><option value="therapy">Therapy</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Coverage Type</label>
+            <select name="coverage_type">
+              <option value="">Select</option>
+              <option value="percentage">Percentage</option><option value="flat_amount">Flat Amount</option>
+              <option value="not_covered">Not Covered</option><option value="unlimited">Unlimited</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Coverage Value (%/$)</label><input name="coverage_value" type="number" min="0" step="0.01"></div>
+          <div class="form-group"><label>Copay ($)</label><input name="copay" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Coinsurance (%)</label><input name="coinsurance" type="number" min="0" max="100" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" name="prior_auth_required" id="prior-auth">
+            <label for="prior-auth">Prior Authorization Required</label>
+          </div>
+        </div>
+        <div class="form-group"><label>Notes</label><textarea name="notes" rows="3"></textarea></div>
+        <input type="hidden" name="id">
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save">Save Benefit</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+if (!requireAuth()) throw new Error('redirect');
+let benefits = [];
+const catLabels = {preventive:'Preventive',primary_care:'Primary Care',specialist:'Specialist',emergency:'Emergency',hospital:'Hospital',mental_health:'Mental Health',prescription:'Prescription',lab:'Lab',imaging:'Imaging',therapy:'Therapy',other:'Other'};
+
+async function loadPlans() {
+  try {
+    const plans = await Auth.get('/api/plans');
+    const sel1 = document.getElementById('filter-plan');
+    const sel2 = document.getElementById('form-plan-select');
+    plans.forEach(p => { sel1.innerHTML += `<option value="${p.id}">${p.name}</option>`; sel2.innerHTML += `<option value="${p.id}">${p.name}</option>`; });
+  } catch(e) {}
+}
+
+async function loadBenefits() {
+  const planId = document.getElementById('filter-plan').value;
+  const category = document.getElementById('filter-category').value;
+  let qs = planId ? `?plan_id=${planId}` : '';
+  const tbody = document.getElementById('benefits-tbody');
+  try {
+    let data = await Auth.get(`/api/benefits${qs}`);
+    if (category) data = data.filter(b => b.category === category);
+    benefits = data;
+    document.getElementById('benefit-count').textContent = `${data.length} benefits`;
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="9" class="table-empty">No benefits found</td></tr>`; return; }
+    tbody.innerHTML = data.map(b => `
+      <tr>
+        <td style="font-size:12px;color:var(--gray-300)">${b.plan_name||'—'}</td>
+        <td><strong>${b.name}</strong></td>
+        <td>${badge(catLabels[b.category]||b.category||'—', b.category||'other')}</td>
+        <td style="font-size:12px;text-transform:capitalize">${(b.coverage_type||'—').replace('_',' ')}</td>
+        <td class="mono">${b.coverage_value != null ? (b.coverage_type==='percentage'?b.coverage_value+'%':fmtMoney(b.coverage_value)) : '—'}</td>
+        <td class="mono">${b.copay > 0 ? fmtMoney(b.copay) : '—'}</td>
+        <td class="mono">${b.coinsurance > 0 ? b.coinsurance+'%' : '—'}</td>
+        <td>${b.prior_auth_required ? '<span class="badge badge-pending">Required</span>' : '<span style="font-size:12px;color:var(--gray-400)">No</span>'}</td>
+        <td><div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick="editBenefit('${b.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBenefit('${b.id}','${b.name}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="9" class="table-empty">Error: ${e.message}</td></tr>`; }
+}
+
+function editBenefit(id) {
+  const b = benefits.find(x => x.id === id);
+  if (!b) return;
+  document.getElementById('form-title').textContent = 'Edit Benefit';
+  const form = document.getElementById('benefit-form');
+  Object.keys(b).forEach(k => {
+    const el = form.elements[k];
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = !!b[k];
+    else el.value = b[k] != null ? b[k] : '';
+  });
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+}
+
+document.getElementById('btn-new').onclick = () => {
+  document.getElementById('form-title').textContent = 'Add Benefit';
+  document.getElementById('benefit-form').reset();
+  document.getElementById('benefit-form').elements['id'].value = '';
+  const planId = document.getElementById('filter-plan').value;
+  if (planId) document.getElementById('form-plan-select').value = planId;
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+};
+
+document.getElementById('btn-save').onclick = async () => {
+  const form = document.getElementById('benefit-form');
+  const data = {};
+  new FormData(form).forEach((v,k) => data[k] = v);
+  data.prior_auth_required = document.getElementById('prior-auth').checked;
+  const id = data.id; delete data.id;
+  const btn = document.getElementById('btn-save');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    if (id) await Auth.put(`/api/benefits/${id}`, data);
+    else await Auth.post('/api/benefits', data);
+    closeModal('modal-form'); toast(id ? 'Benefit updated' : 'Benefit added', 'success'); loadBenefits();
+  } catch(e) { document.getElementById('form-error').textContent = e.message; document.getElementById('form-error').classList.remove('hidden'); }
+  finally { btn.textContent = 'Save Benefit'; btn.disabled = false; }
+};
+
+async function deleteBenefit(id, name) {
+  const ok = await confirm(`Delete benefit <strong>${name}</strong>?`);
+  if (!ok) return;
+  try { await Auth.delete(`/api/benefits/${id}`); toast('Benefit deleted','success'); loadBenefits(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+document.getElementById('filter-plan').onchange = loadBenefits;
+document.getElementById('filter-category').onchange = loadBenefits;
+loadPlans().then(loadBenefits);
+</script>
+</body>
+</html>
