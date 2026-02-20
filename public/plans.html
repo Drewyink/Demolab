@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans — Facets Sandbox</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
+      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">??</div>
+        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    </div>
+  </aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div><div class="page-title">Plans</div><div class="page-subtitle">Health plan configuration & management</div></div>
+      <div class="top-bar-actions"><button class="btn btn-primary btn-sm" id="btn-new">+ New Plan</button></div>
+    </div>
+    <div class="page-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Plan Configurations</div>
+          <div id="plan-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Code</th><th>Plan Name</th><th>Product</th><th>Type</th><th>Deductible</th><th>OOP Max</th><th>Premium (Ind.)</th><th>Premium (Fam.)</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="plans-tbody"><tr><td colspan="10" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-form">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="form-title">Add Plan</span>
+      <button class="modal-close" onclick="closeModal('modal-form')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="form-error" class="alert alert-error hidden"></div>
+      <form id="plan-form">
+        <div class="form-row">
+          <div class="form-group"><label>Plan Name *</label><input name="name" required></div>
+          <div class="form-group"><label>Plan Code *</label><input name="code" required placeholder="e.g. PPO-GOLD-500"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Product *</label>
+            <select name="product_id" id="form-product-select" required><option value="">Select Product</option></select>
+          </div>
+          <div class="form-group"><label>Plan Type</label>
+            <select name="plan_type">
+              <option value="">Select</option>
+              <option value="HMO">HMO</option><option value="PPO">PPO</option>
+              <option value="EPO">EPO</option><option value="HDHP">HDHP</option>
+              <option value="POS">POS</option><option value="INDEMNITY">Indemnity</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Deductible ($)</label><input name="deductible" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="form-group"><label>OOP Maximum ($)</label><input name="oop_max" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Premium — Individual ($/mo)</label><input name="premium_individual" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="form-group"><label>Premium — Family ($/mo)</label><input name="premium_family" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea name="description" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Effective Date</label><input name="effective_date" type="date"></div>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" name="is_active" id="is-active" checked>
+            <label for="is-active">Active Plan</label>
+          </div>
+        </div>
+        <input type="hidden" name="id">
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save">Save Plan</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+if (!requireAuth()) throw new Error('redirect');
+let plans = [];
+
+async function loadProducts() {
+  try {
+    const prods = await Auth.get('/api/products');
+    const sel = document.getElementById('form-product-select');
+    prods.forEach(p => sel.innerHTML += `<option value="${p.id}">${p.name}</option>`);
+  } catch(e) {}
+}
+
+async function loadPlans() {
+  const tbody = document.getElementById('plans-tbody');
+  try {
+    plans = await Auth.get('/api/plans');
+    document.getElementById('plan-count').textContent = `${plans.length} plans`;
+    if (!plans.length) { tbody.innerHTML = `<tr><td colspan="10" class="table-empty">No plans found</td></tr>`; return; }
+    tbody.innerHTML = plans.map(p => `
+      <tr>
+        <td><span class="mono" style="color:var(--cyan-400)">${p.code}</span></td>
+        <td><strong>${p.name}</strong></td>
+        <td style="font-size:12px;color:var(--gray-300)">${p.product_name||'—'}</td>
+        <td>${p.plan_type?badge(p.plan_type,p.plan_type.toLowerCase()):'—'}</td>
+        <td class="mono">${fmtMoney(p.deductible)}</td>
+        <td class="mono">${fmtMoney(p.oop_max)}</td>
+        <td class="mono money-positive">${fmtMoney(p.premium_individual)}</td>
+        <td class="mono money-positive">${fmtMoney(p.premium_family)}</td>
+        <td>${badge(p.is_active?'Active':'Inactive',p.is_active?'active':'inactive')}</td>
+        <td><div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick="editPlan('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePlan('${p.id}','${p.name}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="10" class="table-empty">Error: ${e.message}</td></tr>`; }
+}
+
+function editPlan(id) {
+  const p = plans.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('form-title').textContent = 'Edit Plan';
+  const form = document.getElementById('plan-form');
+  Object.keys(p).forEach(k => {
+    const el = form.elements[k];
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = p[k];
+    else el.value = p[k] != null ? (k.includes('date') && p[k] ? p[k].slice(0,10) : p[k]) : '';
+  });
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+}
+
+document.getElementById('btn-new').onclick = () => {
+  document.getElementById('form-title').textContent = 'Add Plan';
+  document.getElementById('plan-form').reset();
+  document.getElementById('is-active').checked = true;
+  document.getElementById('plan-form').elements['id'].value = '';
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+};
+
+document.getElementById('btn-save').onclick = async () => {
+  const form = document.getElementById('plan-form');
+  const data = {};
+  new FormData(form).forEach((v,k) => data[k] = v);
+  data.is_active = document.getElementById('is-active').checked;
+  const id = data.id; delete data.id;
+  const btn = document.getElementById('btn-save');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    if (id) await Auth.put(`/api/plans/${id}`, data);
+    else await Auth.post('/api/plans', data);
+    closeModal('modal-form'); toast(id ? 'Plan updated' : 'Plan created', 'success'); loadPlans();
+  } catch(e) { document.getElementById('form-error').textContent = e.message; document.getElementById('form-error').classList.remove('hidden'); }
+  finally { btn.textContent = 'Save Plan'; btn.disabled = false; }
+};
+
+async function deletePlan(id, name) {
+  const ok = await confirm(`Delete plan <strong>${name}</strong>?`);
+  if (!ok) return;
+  try { await Auth.delete(`/api/plans/${id}`); toast('Plan deleted','success'); loadPlans(); }
+  catch(e) { toast(e.message,'error'); }
+}
+loadProducts(); loadPlans();
+</script>
+</body>
+</html>
