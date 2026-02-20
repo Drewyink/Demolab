@@ -1,7 +1,6 @@
 {
   "name": "facets-sandbox",
   "version": "1.0.0",
-  "description": "Facet Configuration Software",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -18,9 +17,6 @@
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
     "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
   },
   "engines": {
     "node": ">=18.0.0"
