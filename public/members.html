@@ -30,7 +30,10 @@
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb">Configuration → <span>Members</span></span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-right">
+        <span id="api-status" style="font-size:11px;font-family:'IBM Plex Mono',monospace;margin-right:12px"></span>
+        <span class="topbar-clock" id="clock"></span>
+      </div>
     </div>
     <div class="page-content">
       <div class="page-header">
@@ -40,6 +43,13 @@
         </div>
         <button class="btn btn-primary" onclick="openModal()">+ New Member</button>
       </div>
+
+      <!-- API ERROR BANNER -->
+      <div id="api-error-banner" style="display:none;background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.4);border-radius:8px;padding:14px 18px;margin-bottom:16px;color:#ff4757;font-size:13px;">
+        <strong>⚠ API Error:</strong> <span id="api-error-text"></span>
+        <br><small style="color:var(--text3);margin-top:4px;display:block">Check Render Logs → your service → Logs tab for details.</small>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">👤 Members <span class="count-label" id="count"></span></span>
@@ -69,6 +79,8 @@
     </div>
   </main>
 </div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
@@ -76,10 +88,13 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
+      <!-- SAVE ERROR DISPLAY -->
+      <div id="save-error" style="display:none;background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:16px;color:#ff4757;font-size:12px;"></div>
+
       <form id="member-form" class="form-grid">
         <input type="hidden" id="f-id">
         <div class="form-group">
-          <label class="form-label">Member ID</label>
+          <label class="form-label">Member ID *</label>
           <input type="text" class="form-input" id="f-member_id" placeholder="MBR-001" required>
         </div>
         <div class="form-group">
@@ -91,11 +106,11 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">First Name</label>
+          <label class="form-label">First Name *</label>
           <input type="text" class="form-input" id="f-first_name" required>
         </div>
         <div class="form-group">
-          <label class="form-label">Last Name</label>
+          <label class="form-label">Last Name *</label>
           <input type="text" class="form-input" id="f-last_name" required>
         </div>
         <div class="form-group">
@@ -114,18 +129,44 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMember()">Save Member</button>
+      <button class="btn btn-primary" id="save-btn" onclick="saveMember()">Save Member</button>
     </div>
   </div>
 </div>
+
 <script src="app.js"></script>
 <script>
 let members = [];
 let statusFilter = 'all';
 
 async function loadMembers() {
-  members = await apiFetch('/api/members');
-  renderMembers();
+  const tbody = document.getElementById('members-tbody');
+  const banner = document.getElementById('api-error-banner');
+  const statusEl = document.getElementById('api-status');
+
+  try {
+    const res = await fetch('/api/members');
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+    members = await res.json();
+    banner.style.display = 'none';
+    statusEl.textContent = '● API connected';
+    statusEl.style.color = 'var(--green)';
+    renderMembers();
+  } catch (e) {
+    console.error('loadMembers error:', e);
+    document.getElementById('api-error-text').textContent = e.message;
+    banner.style.display = 'block';
+    statusEl.textContent = '● API error';
+    statusEl.style.color = 'var(--red)';
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+      <div class="empty-icon">⚠</div>
+      <p style="color:var(--red)">Failed to load members — ${e.message}</p>
+      <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="loadMembers()">↻ Retry</button>
+    </div></td></tr>`;
+  }
 }
 
 function renderMembers() {
@@ -163,6 +204,8 @@ function filterStatus(s, btn) {
 }
 
 function openModal(data = null) {
+  document.getElementById('save-error').style.display = 'none';
+  document.getElementById('save-error').textContent = '';
   document.getElementById('modal-title').textContent = data ? 'Edit Member' : 'New Member';
   document.getElementById('f-id').value = data?.id || '';
   document.getElementById('f-member_id').value = data?.member_id || genCode('MBR');
@@ -174,36 +217,88 @@ function openModal(data = null) {
   document.getElementById('f-status').value = data?.status || 'active';
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('save-error').style.display = 'none';
+}
+
 function editMember(id) { openModal(members.find(m => m.id === id)); }
 
 async function saveMember() {
+  const saveBtn = document.getElementById('save-btn');
+  const errorEl = document.getElementById('save-error');
+
+  // Validate
+  const member_id = document.getElementById('f-member_id').value.trim();
+  const first_name = document.getElementById('f-first_name').value.trim();
+  const last_name = document.getElementById('f-last_name').value.trim();
+
+  if (!member_id || !first_name || !last_name) {
+    errorEl.textContent = '⚠ Member ID, First Name and Last Name are required.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
   const id = document.getElementById('f-id').value;
   const body = {
-    member_id: document.getElementById('f-member_id').value,
-    first_name: document.getElementById('f-first_name').value,
-    last_name: document.getElementById('f-last_name').value,
-    dob: document.getElementById('f-dob').value,
-    email: document.getElementById('f-email').value,
-    phone: document.getElementById('f-phone').value,
+    member_id,
+    first_name,
+    last_name,
+    dob: document.getElementById('f-dob').value || null,
+    email: document.getElementById('f-email').value.trim() || null,
+    phone: document.getElementById('f-phone').value.trim() || null,
     status: document.getElementById('f-status').value
   };
-  if (id) {
-    await apiFetch(`/api/members/${id}`, { method: 'PUT', body: JSON.stringify(body) });
-    toast('Member updated', 'success');
-  } else {
-    await apiFetch('/api/members', { method: 'POST', body: JSON.stringify(body) });
-    toast('Member created', 'success');
+
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
+  errorEl.style.display = 'none';
+
+  try {
+    const url = id ? `/api/members/${id}` : '/api/members';
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}`;
+      try {
+        const errData = await res.json();
+        errMsg = errData.error || errData.message || errMsg;
+      } catch {
+        errMsg = await res.text() || errMsg;
+      }
+      throw new Error(errMsg);
+    }
+
+    await res.json();
+    toast(id ? 'Member updated ✓' : 'Member created ✓', 'success');
+    closeModal();
+    loadMembers();
+  } catch (e) {
+    console.error('saveMember error:', e);
+    errorEl.textContent = `⚠ Save failed: ${e.message}`;
+    errorEl.style.display = 'block';
+  } finally {
+    saveBtn.textContent = 'Save Member';
+    saveBtn.disabled = false;
   }
-  closeModal();
-  loadMembers();
 }
 
 async function deleteMember(id) {
   if (!await confirmDialog('Delete this member? This action cannot be undone.')) return;
-  await apiFetch(`/api/members/${id}`, { method: 'DELETE' });
-  toast('Member deleted', 'info');
-  loadMembers();
+  try {
+    const res = await fetch(`/api/members/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    toast('Member deleted', 'info');
+    loadMembers();
+  } catch (e) {
+    toast(`Delete failed: ${e.message}`, 'error');
+  }
 }
 
 document.getElementById('search-input').addEventListener('input', renderMembers);
