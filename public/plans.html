@@ -4,6 +4,22 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facets — Plans</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* OVERRIDE: force modal above everything */
+    #overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(0,0,0,0.75) !important;
+      z-index: 99999 !important;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #overlay.open { display: flex !important; }
+    /* OVERRIDE: force sidebar below modal */
+    .sidebar { z-index: 50 !important; }
+    .topbar  { z-index: 40 !important; }
+  </style>
 </head>
 <body>
 <div class="app-layout">
@@ -15,7 +31,7 @@
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item active" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
       <div class="nav-section-label">Operations</div>
@@ -32,7 +48,10 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Plan Configuration</div><div class="page-subtitle">DEDUCTIBLES · OOP MAXIMUMS · PREMIUMS</div></div>
+        <div>
+          <div class="page-title">Plan Configuration</div>
+          <div class="page-subtitle">DEDUCTIBLES · OOP MAXIMUMS · PREMIUMS</div>
+        </div>
         <button class="btn btn-primary" id="new-btn">+ New Plan</button>
       </div>
       <div class="card">
@@ -60,15 +79,15 @@
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="overlay">
-  <div class="modal" id="modal-box">
+<div id="overlay">
+  <div class="modal">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">New Plan</span>
       <button class="modal-close" id="btn-x">✕</button>
     </div>
     <div class="modal-body">
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
-      <form class="form-grid" id="the-form" onsubmit="return false">
+      <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
         <div class="form-group">
           <label class="form-label">Plan Code *</label>
@@ -119,44 +138,41 @@
 <script>
 let records = [];
 
-// ── MODAL ──────────────────────────────────────────────────────────────────────
 function openModal(id) {
   const d = id ? records.find(r => r.id === id) : null;
   document.getElementById('form-error').style.display = 'none';
   document.getElementById('modal-title').textContent = d ? 'Edit Plan' : 'New Plan';
-  document.getElementById('f-id').value = d?.id || '';
-  document.getElementById('f-plan_code').value = d?.plan_code || genCode('PLN');
-  document.getElementById('f-plan_name').value = d?.plan_name || '';
-  document.getElementById('f-effective_date').value = d?.effective_date?.split('T')[0] || '';
+  document.getElementById('f-id').value            = d?.id || '';
+  document.getElementById('f-plan_code').value     = d?.plan_code || genCode('PLN');
+  document.getElementById('f-plan_name').value     = d?.plan_name || '';
+  document.getElementById('f-effective_date').value   = d?.effective_date?.split('T')[0] || '';
   document.getElementById('f-termination_date').value = d?.termination_date?.split('T')[0] || '';
-  document.getElementById('f-deductible').value = d?.deductible || '';
-  document.getElementById('f-oop_max').value = d?.oop_max || '';
-  document.getElementById('f-premium').value = d?.premium || '';
-  document.getElementById('f-status').value = d?.status || 'active';
-  document.getElementById('btn-save').textContent = 'Save Plan';
-  document.getElementById('btn-save').disabled = false;
-  document.getElementById('overlay').style.display = 'flex';
+  document.getElementById('f-deductible').value    = d?.deductible ?? '';
+  document.getElementById('f-oop_max').value       = d?.oop_max ?? '';
+  document.getElementById('f-premium').value       = d?.premium ?? '';
+  document.getElementById('f-status').value        = d?.status || 'active';
+  document.getElementById('btn-save').textContent  = 'Save Plan';
+  document.getElementById('btn-save').disabled     = false;
+  document.getElementById('overlay').classList.add('open');
 }
 
 function closeModal() {
-  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('overlay').classList.remove('open');
   document.getElementById('form-error').style.display = 'none';
 }
 
-// Wire up every close trigger
+document.getElementById('new-btn').addEventListener('click', () => openModal(null));
 document.getElementById('btn-cancel').addEventListener('click', closeModal);
 document.getElementById('btn-x').addEventListener('click', closeModal);
+document.getElementById('btn-save').addEventListener('click', save);
+document.getElementById('search-input').addEventListener('input', render);
 document.getElementById('overlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeModal();
 });
-document.getElementById('new-btn').addEventListener('click', function() { openModal(null); });
-document.getElementById('btn-save').addEventListener('click', save);
-document.getElementById('search-input').addEventListener('input', render);
 
-// ── DATA ───────────────────────────────────────────────────────────────────────
 async function load() {
   try {
     records = await apiFetch('/api/plans');
@@ -177,4 +193,95 @@ function render() {
   document.getElementById('count').textContent = `· ${data.length} records`;
   const tbody = document.getElementById('tbody');
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans yet — click + New Plan</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(r => `
+    <tr style="${r._saving ? 'opacity:0.5' : ''}">
+      <td class="mono">${r.plan_code}${r._saving ? ' ⏳' : ''}</td>
+      <td><strong>${r.plan_name}</strong></td>
+      <td class="mono amount-allowed">${currency(r.deductible)}</td>
+      <td class="mono" style="color:var(--orange)">${currency(r.oop_max)}</td>
+      <td class="mono amount-paid">${currency(r.premium)}</td>
+      <td class="mono" style="font-size:11px">${fmtDate(r.effective_date)}</td>
+      <td class="mono" style="font-size:11px">${fmtDate(r.termination_date)}</td>
+      <td>${badge(r.status, r.status)}</td>
+      <td><div class="actions">
+        <button class="btn btn-sm btn-secondary" onclick="openModal('${r.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function save() {
+  const errEl = document.getElementById('form-error');
+  errEl.style.display = 'none';
+
+  const plan_code = document.getElementById('f-plan_code').value.trim();
+  const plan_name = document.getElementById('f-plan_name').value.trim();
+
+  if (!plan_code || !plan_name) {
+    errEl.textContent = '⚠ Plan Code and Plan Name are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const id = document.getElementById('f-id').value;
+  const body = {
+    plan_code,
+    plan_name,
+    effective_date:   document.getElementById('f-effective_date').value || null,
+    termination_date: document.getElementById('f-termination_date').value || null,
+    deductible: parseFloat(document.getElementById('f-deductible').value) || 0,
+    oop_max:    parseFloat(document.getElementById('f-oop_max').value)    || 0,
+    premium:    parseFloat(document.getElementById('f-premium').value)    || 0,
+    status:     document.getElementById('f-status').value
+  };
+
+  if (!id) {
+    records.unshift({ id: '_tmp_' + Date.now(), ...body, created_at: new Date().toISOString(), _saving: true });
+    render();
+  }
+  closeModal();
+  toast(id ? 'Saving changes...' : 'Creating plan...', 'info');
+
+  try {
+    const res = await fetch(id ? `/api/plans/${id}` : '/api/plans', {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      let msg = `HTTP ${res.status}`;
+      try { const d = await res.json(); msg = d.error || msg; } catch {}
+      throw new Error(msg);
+    }
+    toast(id ? 'Plan updated ✓' : 'Plan created ✓', 'success');
+    await load();
+  } catch(e) {
+    records = records.filter(r => !r._saving);
+    render();
+    toast(`Save failed: ${e.message}`, 'error');
+  }
+}
+
+async function del(id) {
+  if (!await confirmDialog('Delete this plan? This cannot be undone.')) return;
+  const backup = [...records];
+  records = records.filter(r => r.id !== id);
+  render();
+  try {
+    await fetch(`/api/plans/${id}`, { method: 'DELETE' });
+    toast('Plan deleted', 'info');
+    await load();
+  } catch(e) {
+    records = backup;
+    render();
+    toast(`Delete failed: ${e.message}`, 'error');
+  }
+}
+
+load();
+</script>
+</body>
+</html>
