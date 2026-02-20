@@ -1,304 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claims — Facets Sandbox</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Claims</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
-      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
-      <div class="nav-section-label">Operations</div>
-      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
-      <div class="nav-section-label">System</div>
-      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar">??</div>
-        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
-      </div>
-      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    <div class="sidebar-logo">
+      <div class="logo-icon">FX</div>
+      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
     </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
-  <div class="main-content">
-    <div class="top-bar">
-      <div><div class="page-title">Claims</div><div class="page-subtitle">Claims processing & adjudication</div></div>
-      <div class="top-bar-actions">
-        <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Export</button>
-        <button class="btn btn-primary btn-sm" id="btn-new">+ New Claim</button>
-      </div>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Claims</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
-      <div class="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card"><span class="stat-icon">📄</span><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Claims</div></div>
-        <div class="stat-card highlight-amber"><span class="stat-icon">⏳</span><div class="stat-value" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
-        <div class="stat-card highlight-green"><span class="stat-icon">✓</span><div class="stat-value" id="stat-approved">—</div><div class="stat-label">Approved/Paid</div></div>
-        <div class="stat-card highlight-red"><span class="stat-icon">✕</span><div class="stat-value" id="stat-denied">—</div><div class="stat-label">Denied</div></div>
-        <div class="stat-card"><span class="stat-icon">💰</span><div class="stat-value" id="stat-billed" style="font-size:18px">—</div><div class="stat-label">Total Billed</div></div>
-        <div class="stat-card highlight-green"><span class="stat-icon">💵</span><div class="stat-value" id="stat-paid" style="font-size:18px">—</div><div class="stat-label">Total Paid</div></div>
-      </div>
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-body" style="padding:14px 20px">
-          <div class="filters-row">
-            <div class="search-bar">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="search" placeholder="Search claim #, member...">
-            </div>
-            <select id="filter-status">
-              <option value="">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="in_review">In Review</option>
-              <option value="approved">Approved</option>
-              <option value="denied">Denied</option>
-              <option value="paid">Paid</option>
-              <option value="appealed">Appealed</option>
-            </select>
-          </div>
+      <div class="page-header">
+        <div>
+          <div class="page-title">Claims Processing</div>
+          <div class="page-subtitle">SUBMIT · REVIEW · ADJUDICATE</div>
         </div>
+        <button class="btn btn-primary" onclick="openModal()">+ New Claim</button>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="stat-card yellow"><div class="stat-label">Total Billed</div><div class="stat-value" id="s-billed" style="font-size:18px">—</div></div>
+        <div class="stat-card green"><div class="stat-label">Total Paid</div><div class="stat-value" id="s-paid" style="font-size:18px">—</div></div>
+        <div class="stat-card orange"><div class="stat-label">Pending</div><div class="stat-value" id="s-pending">—</div></div>
+        <div class="stat-card red"><div class="stat-label">Denied</div><div class="stat-value" id="s-denied">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Claims Queue</div>
-          <div id="claim-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+          <span class="card-title">📄 Claims <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="filter-tabs">
+              <button class="filter-tab active" onclick="filterStatus('all',this)">All</button>
+              <button class="filter-tab" onclick="filterStatus('pending',this)">Pending</button>
+              <button class="filter-tab" onclick="filterStatus('paid',this)">Paid</button>
+              <button class="filter-tab" onclick="filterStatus('denied',this)">Denied</button>
+            </div>
+            <div class="search-bar" style="margin:0;width:200px">
+              <span class="search-icon">🔎</span>
+              <input type="text" placeholder="Search claims..." id="search-input">
+            </div>
+          </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Claim #</th><th>Member</th><th>Provider</th><th>Service Date</th><th>Diagnosis</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="claims-tbody"><tr><td colspan="10" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            <thead><tr>
+              <th>Claim #</th><th>Provider</th><th>Service Date</th><th>DX Code</th><th>Proc Code</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
           </table>
-        </div>
-        <div class="pagination">
-          <div class="pagination-info" id="pagination-info"></div>
-          <div class="pagination-btns" id="pagination-btns"></div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
-
-<!-- ADJUDICATE MODAL -->
-<div class="modal-overlay hidden" id="modal-adjudicate">
-  <div class="modal modal-lg">
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="width:680px">
     <div class="modal-header">
-      <span class="modal-title" id="adj-title">Process Claim</span>
-      <button class="modal-close" onclick="closeModal('modal-adjudicate')">✕</button>
-    </div>
-    <div class="modal-body" id="adj-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-adjudicate')">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- NEW CLAIM MODAL -->
-<div class="modal-overlay hidden" id="modal-form">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <span class="modal-title">Submit New Claim</span>
-      <button class="modal-close" onclick="closeModal('modal-form')">✕</button>
+      <span class="modal-title" id="modal-title">New Claim</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div id="form-error" class="alert alert-error hidden"></div>
-      <form id="claim-form">
-        <div class="form-row">
-          <div class="form-group"><label>Member *</label>
-            <select name="member_id" id="form-member-select" required><option value="">Select Member</option></select>
-          </div>
-          <div class="form-group"><label>Plan *</label>
-            <select name="plan_id" id="form-plan-select" required><option value="">Select Plan</option></select>
-          </div>
+      <form class="form-grid">
+        <input type="hidden" id="f-id">
+        <div class="form-group">
+          <label class="form-label">Claim Number</label>
+          <input type="text" class="form-input" id="f-claim_number" required>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Service Date *</label><input name="service_date" type="date" required></div>
-          <div class="form-group"><label>Provider Name</label><input name="provider_name" placeholder="Provider or facility name"></div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="f-status">
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
+            <option value="denied">Denied</option>
+            <option value="void">Void</option>
+            <option value="in_review">In Review</option>
+          </select>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Diagnosis Code (ICD-10)</label><input name="diagnosis_code" placeholder="e.g. Z00.00"></div>
-          <div class="form-group"><label>Procedure Code (CPT)</label><input name="procedure_code" placeholder="e.g. 99213"></div>
+        <div class="form-group full">
+          <label class="form-label">Provider</label>
+          <input type="text" class="form-input" id="f-provider" required>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Billed Amount ($) *</label><input name="billed_amount" type="number" min="0" step="0.01" required></div>
-          <div class="form-group"><label>Allowed Amount ($)</label><input name="allowed_amount" type="number" min="0" step="0.01"></div>
+        <div class="form-group">
+          <label class="form-label">Service Date</label>
+          <input type="date" class="form-input" id="f-service_date" required>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Paid Amount ($)</label><input name="paid_amount" type="number" min="0" step="0.01"></div>
+        <div class="form-group">
+          <label class="form-label">Claim Date</label>
+          <input type="date" class="form-input" id="f-claim_date">
         </div>
-        <div class="form-group"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <div class="form-group">
+          <label class="form-label">Diagnosis Code (ICD-10)</label>
+          <input type="text" class="form-input" id="f-diagnosis_code" placeholder="Z00.00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Procedure Code (CPT)</label>
+          <input type="text" class="form-input" id="f-procedure_code" placeholder="99213">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Billed Amount ($)</label>
+          <input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Allowed Amount ($)</label>
+          <input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paid Amount ($)</label>
+          <input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="f-notes"></textarea>
+        </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-form')">Cancel</button>
-      <button class="btn btn-primary" id="btn-save">Submit Claim</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="save()">Save Claim</button>
     </div>
   </div>
 </div>
-
-<script src="/app.js"></script>
+<script src="app.js"></script>
 <script>
-if (!requireAuth()) throw new Error('redirect');
-let claims = [];
-let currentPage = 1;
-const paginator = new Paginator({
-  container: document.getElementById('pagination-btns'),
-  infoEl: document.getElementById('pagination-info'),
-  onPage: p => { currentPage = p; loadClaims(); }
-});
+let records = [];
+let statusFilter = 'all';
 
-async function loadFormData() {
-  try {
-    const [members, plans] = await Promise.all([Auth.get('/api/members?limit=200'), Auth.get('/api/plans')]);
-    const mSel = document.getElementById('form-member-select');
-    members.data.forEach(m => mSel.innerHTML += `<option value="${m.id}">${m.first_name} ${m.last_name} (${m.member_id})</option>`);
-    const pSel = document.getElementById('form-plan-select');
-    plans.forEach(p => pSel.innerHTML += `<option value="${p.id}">${p.name}</option>`);
-  } catch(e) {}
+async function load() {
+  records = await apiFetch('/api/claims');
+  updateSummary();
+  render();
 }
 
-async function loadClaims() {
-  const search = document.getElementById('search').value;
-  const status = document.getElementById('filter-status').value;
-  let qs = `?page=${currentPage}&limit=20`;
-  if (search) qs += `&search=${encodeURIComponent(search)}`;
-  if (status) qs += `&status=${status}`;
-  const tbody = document.getElementById('claims-tbody');
-  tbody.innerHTML = `<tr><td colspan="10" class="table-empty"><div class="loading"><div class="spinner"></div></div></td></tr>`;
-  try {
-    const data = await Auth.get(`/api/claims${qs}`);
-    claims = data.data;
-    document.getElementById('claim-count').textContent = `${data.total} claims`;
-    paginator.update(data.total, data.page);
-    let pending=0,approved=0,denied=0,billed=0,paid=0;
-    claims.forEach(c => {
-      if (c.status==='pending'||c.status==='in_review') pending++;
-      if (c.status==='approved'||c.status==='paid') approved++;
-      if (c.status==='denied') denied++;
-      billed += parseFloat(c.billed_amount||0);
-      paid += parseFloat(c.paid_amount||0);
-    });
-    document.getElementById('stat-total').textContent = data.total;
-    document.getElementById('stat-pending').textContent = pending;
-    document.getElementById('stat-approved').textContent = approved;
-    document.getElementById('stat-denied').textContent = denied;
-    document.getElementById('stat-billed').textContent = fmtMoney(billed);
-    document.getElementById('stat-paid').textContent = fmtMoney(paid);
-    if (!claims.length) { tbody.innerHTML = `<tr><td colspan="10" class="table-empty">No claims found</td></tr>`; return; }
-    tbody.innerHTML = claims.map(c => `
-      <tr>
-        <td><span class="mono" style="color:var(--cyan-400);font-size:12px">${c.claim_number}</span></td>
-        <td><div style="font-weight:500">${c.member_name||'—'}</div><div style="font-size:11px;color:var(--gray-400)">${c.member_number||''}</div></td>
-        <td style="font-size:12px;color:var(--gray-300)">${c.provider_name||'—'}</td>
-        <td class="mono" style="font-size:12px">${fmtDate(c.service_date)}</td>
-        <td class="mono" style="font-size:11px;color:var(--gray-400)">${c.diagnosis_code||'—'}</td>
-        <td class="mono">${fmtMoney(c.billed_amount)}</td>
-        <td class="mono" style="color:var(--gray-400)">${fmtMoney(c.allowed_amount)}</td>
-        <td class="mono money-positive">${c.paid_amount > 0 ? fmtMoney(c.paid_amount) : '—'}</td>
-        <td>${badge(c.status.replace('_',' '), c.status)}</td>
-        <td><div style="display:flex;gap:4px">
-          <button class="btn btn-secondary btn-sm" onclick="viewClaim('${c.id}')">View</button>
-          ${c.status==='pending'||c.status==='in_review' ? `<button class="btn btn-primary btn-sm" onclick="viewClaim('${c.id}')">Adjudicate</button>` : ''}
-        </div></td>
-      </tr>`).join('');
-  } catch(e) { tbody.innerHTML = `<tr><td colspan="10" class="table-empty">Error: ${e.message}</td></tr>`; }
+function updateSummary() {
+  const billed = records.reduce((s,r)=>s+parseFloat(r.billed_amount||0),0);
+  const paid = records.reduce((s,r)=>s+parseFloat(r.paid_amount||0),0);
+  document.getElementById('s-billed').textContent = currency(billed);
+  document.getElementById('s-paid').textContent = currency(paid);
+  document.getElementById('s-pending').textContent = records.filter(r=>r.status==='pending').length;
+  document.getElementById('s-denied').textContent = records.filter(r=>r.status==='denied').length;
 }
 
-function viewClaim(id) {
-  const c = claims.find(x => x.id === id);
-  if (!c) return;
-  document.getElementById('adj-title').textContent = `Claim ${c.claim_number}`;
-  document.getElementById('adj-body').innerHTML = `
-    <div class="detail-grid" style="margin-bottom:20px">
-      <div class="detail-item"><div class="detail-label">Claim #</div><div class="detail-value mono">${c.claim_number}</div></div>
-      <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${badge(c.status.replace('_',' '),c.status)}</div></div>
-      <div class="detail-item"><div class="detail-label">Member</div><div class="detail-value">${c.member_name||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Plan</div><div class="detail-value">${c.plan_name||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Service Date</div><div class="detail-value">${fmtDate(c.service_date)}</div></div>
-      <div class="detail-item"><div class="detail-label">Provider</div><div class="detail-value">${c.provider_name||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Diagnosis (ICD-10)</div><div class="detail-value mono">${c.diagnosis_code||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Procedure (CPT)</div><div class="detail-value mono">${c.procedure_code||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Billed</div><div class="detail-value mono" style="font-size:18px;font-weight:600">${fmtMoney(c.billed_amount)}</div></div>
-      <div class="detail-item"><div class="detail-label">Allowed</div><div class="detail-value mono">${fmtMoney(c.allowed_amount)}</div></div>
-      <div class="detail-item"><div class="detail-label">Paid</div><div class="detail-value mono money-positive">${fmtMoney(c.paid_amount)}</div></div>
-      <div class="detail-item"><div class="detail-label">Processed</div><div class="detail-value">${fmtDateTime(c.processed_date)}</div></div>
-    </div>
-    ${c.denial_reason ? `<div class="alert alert-error">⚠ ${c.denial_reason}</div>` : ''}
-    ${c.status==='pending'||c.status==='in_review' ? `
-      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
-        <div class="card-title" style="margin-bottom:16px">Adjudicate Claim</div>
-        <div class="form-row">
-          <div class="form-group"><label>Decision</label>
-            <select id="adj-status">
-              <option value="in_review">In Review</option>
-              <option value="approved">Approve</option>
-              <option value="denied">Deny</option>
-              <option value="paid">Mark Paid</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Allowed Amount ($)</label>
-            <input type="number" id="adj-allowed" value="${c.allowed_amount||''}" min="0" step="0.01">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Paid Amount ($)</label>
-            <input type="number" id="adj-paid" value="${c.paid_amount||''}" min="0" step="0.01">
-          </div>
-        </div>
-        <div class="form-group"><label>Denial Reason</label>
-          <textarea id="adj-denial" rows="2" placeholder="Required if denying">${c.denial_reason||''}</textarea>
-        </div>
-        <div class="form-group"><label>Notes</label>
-          <textarea id="adj-notes" rows="2">${c.notes||''}</textarea>
-        </div>
-        <button class="btn btn-primary" onclick="saveAdjudication('${c.id}')">Save Decision</button>
-      </div>` : ''}`;
-  openModal('modal-adjudicate');
+function filterStatus(s, btn) {
+  statusFilter = s;
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
 }
 
-async function saveAdjudication(id) {
-  const status = document.getElementById('adj-status').value;
-  const allowed_amount = document.getElementById('adj-allowed').value;
-  const paid_amount = document.getElementById('adj-paid').value;
-  const denial_reason = document.getElementById('adj-denial').value;
-  const notes = document.getElementById('adj-notes').value;
-  try {
-    await Auth.put(`/api/claims/${id}`, {status, allowed_amount, paid_amount, denial_reason, notes});
-    closeModal('modal-adjudicate'); toast('Claim updated','success'); loadClaims();
-  } catch(e) { toast(e.message,'error'); }
+function render() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let data = statusFilter !== 'all' ? records.filter(r=>r.status===statusFilter) : records;
+  if (q) data = data.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+  document.getElementById('count').textContent = `· ${data.length} records`;
+  const tbody = document.getElementById('tbody');
+  if (!data.length) { tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📄</div><p>No claims found</p></div></td></tr>`; return; }
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td class="mono" style="color:var(--accent)">${r.claim_number}</td>
+      <td>${r.provider || '—'}</td>
+      <td class="mono" style="font-size:11px">${fmtDate(r.service_date)}</td>
+      <td class="mono">${r.diagnosis_code || '—'}</td>
+      <td class="mono">${r.procedure_code || '—'}</td>
+      <td class="mono amount-billed">${currency(r.billed_amount)}</td>
+      <td class="mono amount-allowed">${currency(r.allowed_amount)}</td>
+      <td class="mono amount-paid">${currency(r.paid_amount)}</td>
+      <td>${badge(r.status, r.status)}</td>
+      <td><div class="actions">
+        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
+      </div></td>
+    </tr>`).join('');
 }
 
-document.getElementById('btn-new').onclick = () => {
-  document.getElementById('claim-form').reset();
-  document.getElementById('form-error').classList.add('hidden');
-  openModal('modal-form');
-};
+function openModal(data = null) {
+  document.getElementById('modal-title').textContent = data ? 'Edit Claim' : 'New Claim';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-id').value = data?.id || '';
+  document.getElementById('f-claim_number').value = data?.claim_number || `CLM-${new Date().getFullYear()}-${String(Math.floor(Math.random()*9000+1000))}`;
+  document.getElementById('f-status').value = data?.status || 'pending';
+  document.getElementById('f-provider').value = data?.provider || '';
+  document.getElementById('f-service_date').value = data?.service_date?.split('T')[0] || today;
+  document.getElementById('f-claim_date').value = data?.claim_date?.split('T')[0] || today;
+  document.getElementById('f-diagnosis_code').value = data?.diagnosis_code || '';
+  document.getElementById('f-procedure_code').value = data?.procedure_code || '';
+  document.getElementById('f-billed_amount').value = data?.billed_amount || '';
+  document.getElementById('f-allowed_amount').value = data?.allowed_amount || '';
+  document.getElementById('f-paid_amount').value = data?.paid_amount || '';
+  document.getElementById('f-notes').value = data?.notes || '';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function edit(id) { openModal(records.find(r=>r.id===id)); }
 
-document.getElementById('btn-save').onclick = async () => {
-  const form = document.getElementById('claim-form');
-  const data = {};
-  new FormData(form).forEach((v,k) => data[k] = v);
-  const btn = document.getElementById('btn-save');
-  btn.textContent = 'Submitting...'; btn.disabled = true;
-  try {
-    await Auth.post('/api/claims', data);
-    closeModal('modal-form'); toast('Claim submitted','success'); loadClaims();
-  } catch(e) { document.getElementById('form-error').textContent = e.message; document.getElementById('form-error').classList.remove('hidden'); }
-  finally { btn.textContent = 'Submit Claim'; btn.disabled = false; }
-};
+async function save() {
+  const id = document.getElementById('f-id').value;
+  const body = {
+    claim_number: document.getElementById('f-claim_number').value,
+    status: document.getElementById('f-status').value,
+    provider: document.getElementById('f-provider').value,
+    service_date: document.getElementById('f-service_date').value,
+    claim_date: document.getElementById('f-claim_date').value,
+    diagnosis_code: document.getElementById('f-diagnosis_code').value,
+    procedure_code: document.getElementById('f-procedure_code').value,
+    billed_amount: document.getElementById('f-billed_amount').value,
+    allowed_amount: document.getElementById('f-allowed_amount').value,
+    paid_amount: document.getElementById('f-paid_amount').value,
+    notes: document.getElementById('f-notes').value
+  };
+  if (id) { await apiFetch(`/api/claims/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Claim updated', 'success'); }
+  else { await apiFetch('/api/claims', { method: 'POST', body: JSON.stringify(body) }); toast('Claim created', 'success'); }
+  closeModal(); load();
+}
 
-document.getElementById('btn-export').onclick = () => exportCSV(claims,'claims.csv');
-let searchTimeout;
-document.getElementById('search').oninput = () => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { currentPage=1; loadClaims(); },350); };
-document.getElementById('filter-status').onchange = () => { currentPage=1; loadClaims(); };
-loadFormData(); loadClaims();
+async function del(id) {
+  if (!await confirmDialog('Delete this claim?')) return;
+  await apiFetch(`/api/claims/${id}`, { method: 'DELETE' });
+  toast('Claim deleted', 'info'); load();
+}
+
+document.getElementById('search-input').addEventListener('input', render);
+load();
 </script>
 </body>
 </html>
