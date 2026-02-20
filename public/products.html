@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — Facets Sandbox</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
+      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">??</div>
+        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    </div>
+  </aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div><div class="page-title">Products</div><div class="page-subtitle">Insurance product catalog management</div></div>
+      <div class="top-bar-actions">
+        <button class="btn btn-primary btn-sm" id="btn-new">+ New Product</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Product Catalog</div>
+          <div id="product-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Code</th><th>Product Name</th><th>Type</th><th>Carrier</th><th>Effective Date</th><th>Termination</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="products-tbody"><tr><td colspan="8" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-form">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="form-title">Add Product</span>
+      <button class="modal-close" onclick="closeModal('modal-form')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="form-error" class="alert alert-error hidden"></div>
+      <form id="product-form">
+        <div class="form-row">
+          <div class="form-group"><label>Product Name *</label><input name="name" required></div>
+          <div class="form-group"><label>Product Code *</label><input name="code" required placeholder="e.g. MED-2024"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Type *</label>
+            <select name="type" required>
+              <option value="">Select type</option>
+              <option value="medical">Medical</option>
+              <option value="dental">Dental</option>
+              <option value="vision">Vision</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="behavioral">Behavioral Health</option>
+              <option value="life">Life</option>
+              <option value="disability">Disability</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Carrier</label><input name="carrier"></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea name="description" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Effective Date</label><input name="effective_date" type="date"></div>
+          <div class="form-group"><label>Termination Date</label><input name="termination_date" type="date"></div>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" name="is_active" id="is-active" checked>
+            <label for="is-active">Active Product</label>
+          </div>
+        </div>
+        <input type="hidden" name="id">
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+if (!requireAuth()) throw new Error('redirect');
+let products = [];
+
+async function loadProducts() {
+  const tbody = document.getElementById('products-tbody');
+  try {
+    products = await Auth.get('/api/products');
+    document.getElementById('product-count').textContent = `${products.length} products`;
+    if (!products.length) { tbody.innerHTML = `<tr><td colspan="8" class="table-empty">No products found</td></tr>`; return; }
+    tbody.innerHTML = products.map(p => `
+      <tr>
+        <td><span class="mono" style="color:var(--cyan-400)">${p.code}</span></td>
+        <td><strong>${p.name}</strong>${p.description?`<div style="font-size:11px;color:var(--gray-400);margin-top:2px">${p.description.slice(0,60)}...</div>`:''}</td>
+        <td>${badge(p.type.charAt(0).toUpperCase()+p.type.slice(1), p.type)}</td>
+        <td style="color:var(--gray-300)">${p.carrier||'—'}</td>
+        <td class="mono" style="font-size:12px">${fmtDate(p.effective_date)}</td>
+        <td class="mono" style="font-size:12px">${fmtDate(p.termination_date)}</td>
+        <td>${badge(p.is_active?'Active':'Inactive',p.is_active?'active':'inactive')}</td>
+        <td><div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}','${p.name}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="8" class="table-empty">Error: ${e.message}</td></tr>`; }
+}
+
+function editProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('form-title').textContent = 'Edit Product';
+  const form = document.getElementById('product-form');
+  Object.keys(p).forEach(k => {
+    const el = form.elements[k];
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = p[k];
+    else el.value = p[k] != null ? (k.includes('date') && p[k] ? p[k].slice(0,10) : p[k]) : '';
+  });
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+}
+
+document.getElementById('btn-new').onclick = () => {
+  document.getElementById('form-title').textContent = 'Add Product';
+  document.getElementById('product-form').reset();
+  document.getElementById('is-active').checked = true;
+  document.getElementById('product-form').elements['id'].value = '';
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+};
+
+document.getElementById('btn-save').onclick = async () => {
+  const form = document.getElementById('product-form');
+  const data = {};
+  new FormData(form).forEach((v,k) => data[k] = v);
+  data.is_active = document.getElementById('is-active').checked;
+  const id = data.id; delete data.id;
+  const btn = document.getElementById('btn-save');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    if (id) await Auth.put(`/api/products/${id}`, data);
+    else await Auth.post('/api/products', data);
+    closeModal('modal-form'); toast(id ? 'Product updated' : 'Product created', 'success'); loadProducts();
+  } catch(e) { document.getElementById('form-error').textContent = e.message; document.getElementById('form-error').classList.remove('hidden'); }
+  finally { btn.textContent = 'Save Product'; btn.disabled = false; }
+};
+
+async function deleteProduct(id, name) {
+  const ok = await confirm(`Delete product <strong>${name}</strong>?`);
+  if (!ok) return;
+  try { await Auth.delete(`/api/products/${id}`); toast('Product deleted','success'); loadProducts(); }
+  catch(e) { toast(e.message,'error'); }
+}
+loadProducts();
+</script>
+</body>
+</html>
