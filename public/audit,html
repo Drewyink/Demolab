@@ -1,214 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audit Log — Facets Sandbox</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Audit Log</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
-      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
-      <div class="nav-section-label">Operations</div>
-      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
-      <div class="nav-section-label">System</div>
-      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar">??</div>
-        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
-      </div>
-      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    <div class="sidebar-logo">
+      <div class="logo-icon">FX</div>
+      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
     </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
-  <div class="main-content">
-    <div class="top-bar">
-      <div><div class="page-title">Audit Log</div><div class="page-subtitle">Complete activity trail for compliance & review</div></div>
-      <div class="top-bar-actions">
-        <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Export</button>
-      </div>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Audit Log</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-body" style="padding:14px 20px">
-          <div class="filters-row">
-            <select id="filter-entity" style="width:auto;min-width:120px">
-              <option value="">All Entities</option>
-              <option value="member">Members</option>
-              <option value="product">Products</option>
-              <option value="plan">Plans</option>
-              <option value="benefit">Benefits</option>
-              <option value="pricing">Pricing</option>
-              <option value="claim">Claims</option>
-            </select>
-            <select id="filter-action" style="width:auto;min-width:120px">
-              <option value="">All Actions</option>
-              <option value="CREATE">Create</option>
-              <option value="UPDATE">Update</option>
-              <option value="DELETE">Delete</option>
-              <option value="DEACTIVATE">Deactivate</option>
-            </select>
-            <select id="filter-user" style="width:auto;min-width:160px">
-              <option value="">All Users</option>
-            </select>
-            <div style="display:flex;align-items:center;gap:6px">
-              <label style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:500;margin-bottom:0;color:var(--gray-400)">From:</label>
-              <input type="date" id="filter-from" style="width:140px">
-            </div>
-            <div style="display:flex;align-items:center;gap:6px">
-              <label style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:500;margin-bottom:0;color:var(--gray-400)">To:</label>
-              <input type="date" id="filter-to" style="width:140px">
-            </div>
-            <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
-          </div>
+      <div class="page-header">
+        <div>
+          <div class="page-title">Audit Trail</div>
+          <div class="page-subtitle">IMMUTABLE · TIMESTAMPED · TRACEABLE</div>
         </div>
+        <button class="btn btn-secondary" onclick="load()">↻ Refresh</button>
       </div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Activity Log</div>
-          <div id="audit-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+          <span class="card-title">🔍 Audit Log <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="filter-tabs">
+              <button class="filter-tab active" onclick="filterAction('all',this)">All</button>
+              <button class="filter-tab" onclick="filterAction('CREATE',this)">Create</button>
+              <button class="filter-tab" onclick="filterAction('UPDATE',this)">Update</button>
+              <button class="filter-tab" onclick="filterAction('DELETE',this)">Delete</button>
+            </div>
+            <div class="search-bar" style="margin:0;width:200px">
+              <span class="search-icon">🔎</span>
+              <input type="text" placeholder="Search log..." id="search-input">
+            </div>
+          </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Entity Type</th><th>Entity ID</th><th>IP Address</th><th>Details</th></tr></thead>
-            <tbody id="audit-tbody"><tr><td colspan="7" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            <thead><tr>
+              <th>Time</th><th>Action</th><th>Table</th><th>Record ID</th><th>Performed By</th><th>Changes</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
           </table>
-        </div>
-        <div class="pagination">
-          <div class="pagination-info" id="pagination-info"></div>
-          <div class="pagination-btns" id="pagination-btns"></div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
-
-<!-- DIFF MODAL -->
-<div class="modal-overlay hidden" id="modal-diff">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <span class="modal-title" id="diff-title">Change Details</span>
-      <button class="modal-close" onclick="closeModal('modal-diff')">✕</button>
-    </div>
-    <div class="modal-body" id="diff-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-diff')">Close</button>
-    </div>
-  </div>
-</div>
-
-<script src="/app.js"></script>
+<script src="app.js"></script>
 <script>
-if (!requireAuth()) throw new Error('redirect');
-let auditLogs = [];
-let currentPage = 1;
-const paginator = new Paginator({
-  container: document.getElementById('pagination-btns'),
-  infoEl: document.getElementById('pagination-info'),
-  onPage: p => { currentPage = p; loadAudit(); }
-});
-const actionColors = {CREATE:'active',UPDATE:'in_review',DELETE:'denied',DEACTIVATE:'denied'};
+let records = [];
+let actionFilter = 'all';
 
-async function loadUsers() {
-  try {
-    const users = await Auth.get('/api/users');
-    const sel = document.getElementById('filter-user');
-    users.forEach(u => sel.innerHTML += `<option value="${u.id}">${u.full_name}</option>`);
-  } catch(e) {}
+async function load() {
+  records = await apiFetch('/api/audit');
+  render();
 }
 
-async function loadAudit() {
-  const entity = document.getElementById('filter-entity').value;
-  const action = document.getElementById('filter-action').value;
-  const userId = document.getElementById('filter-user').value;
-  const from = document.getElementById('filter-from').value;
-  const to = document.getElementById('filter-to').value;
-  let qs = `?page=${currentPage}&limit=50`;
-  if (entity) qs += `&entity=${entity}`;
-  if (action) qs += `&action=${action}`;
-  if (userId) qs += `&user_id=${userId}`;
-  if (from) qs += `&date_from=${from}`;
-  if (to) qs += `&date_to=${to}T23:59:59`;
-  const tbody = document.getElementById('audit-tbody');
-  tbody.innerHTML = `<tr><td colspan="7" class="table-empty"><div class="loading"><div class="spinner"></div></div></td></tr>`;
-  try {
-    const data = await Auth.get(`/api/audit${qs}`);
-    auditLogs = data.data;
-    document.getElementById('audit-count').textContent = `${data.total} events`;
-    paginator.update(data.total, data.page);
-    if (!data.data.length) { tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No audit events found</td></tr>`; return; }
-    tbody.innerHTML = data.data.map(a => `
-      <tr>
-        <td class="mono" style="font-size:11px;white-space:nowrap">${fmtDateTime(a.created_at)}</td>
-        <td><div style="font-weight:500;font-size:13px">${a.full_name||'System'}</div><div style="font-size:11px;color:var(--gray-400)">${a.username||''}</div></td>
-        <td>${badge(a.action, actionColors[a.action]||'other')}</td>
-        <td><span class="mono" style="font-size:12px;text-transform:capitalize">${a.entity_type}</span></td>
-        <td class="mono" style="font-size:11px;color:var(--gray-400)">${a.entity_id ? a.entity_id.slice(0,8)+'...' : '—'}</td>
-        <td class="mono" style="font-size:11px;color:var(--gray-400)">${a.ip_address||'—'}</td>
-        <td>${(a.old_data||a.new_data) ? `<button class="btn btn-secondary btn-sm" onclick="viewDiff('${a.id}')">View Changes</button>` : '<span style="font-size:12px;color:var(--gray-400)">—</span>'}</td>
-      </tr>`).join('');
-  } catch(e) { tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Error: ${e.message}</td></tr>`; }
+function actionBadge(a) {
+  const map = { CREATE:'active', UPDATE:'pending', DELETE:'inactive' };
+  return badge(a, map[a]||'');
 }
 
-function viewDiff(id) {
-  const a = auditLogs.find(x => x.id === id);
-  if (!a) return;
-  document.getElementById('diff-title').textContent = `${a.action} ${a.entity_type} — ${fmtDateTime(a.created_at)}`;
-  const oldData = a.old_data ? (typeof a.old_data==='string' ? JSON.parse(a.old_data) : a.old_data) : null;
-  const newData = a.new_data ? (typeof a.new_data==='string' ? JSON.parse(a.new_data) : a.new_data) : null;
-  const allKeys = new Set([...Object.keys(oldData||{}), ...Object.keys(newData||{})]);
-  const systemKeys = new Set(['id','created_at','updated_at','password_hash']);
-  const changedKeys = [...allKeys].filter(k => {
-    if (systemKeys.has(k)) return false;
-    return JSON.stringify((oldData||{})[k]) !== JSON.stringify((newData||{})[k]);
-  });
-  let html = `<div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap">
-    <div><span style="color:var(--gray-400);font-size:12px">User: </span><strong>${a.full_name||'System'}</strong></div>
-    <div><span style="color:var(--gray-400);font-size:12px">Action: </span>${badge(a.action, actionColors[a.action]||'other')}</div>
-    <div><span style="color:var(--gray-400);font-size:12px">Entity: </span><span class="mono">${a.entity_type}</span></div>
-  </div>`;
-  if (changedKeys.length > 0) {
-    html += `<div style="margin-bottom:12px;font-size:12px;color:var(--gray-400)">Changed fields: <strong style="color:var(--white)">${changedKeys.length}</strong></div>
-    <div class="table-wrapper"><table><thead><tr>
-      <th style="text-align:left;padding:8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gray-400);border-bottom:1px solid var(--border)">Field</th>
-      <th style="text-align:left;padding:8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--red-500);border-bottom:1px solid var(--border)">Before</th>
-      <th style="text-align:left;padding:8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green-500);border-bottom:1px solid var(--border)">After</th>
-    </tr></thead><tbody>
-      ${changedKeys.map(k=>`<tr>
-        <td style="padding:8px;font-family:var(--font-mono);font-size:12px;border-bottom:1px solid rgba(0,212,255,0.06)">${k}</td>
-        <td style="padding:8px;font-family:var(--font-mono);font-size:12px;color:var(--red-500);background:var(--red-dim);border-bottom:1px solid rgba(0,212,255,0.06)">${oldData&&oldData[k]!=null?String(oldData[k]).slice(0,80):'<em style="opacity:0.5">null</em>'}</td>
-        <td style="padding:8px;font-family:var(--font-mono);font-size:12px;color:var(--green-500);background:var(--green-dim);border-bottom:1px solid rgba(0,212,255,0.06)">${newData&&newData[k]!=null?String(newData[k]).slice(0,80):'<em style="opacity:0.5">null</em>'}</td>
-      </tr>`).join('')}
-    </tbody></table></div>`;
-  } else {
-    html += `<div class="alert alert-info">No field-level changes detected.</div>`;
+function filterAction(a, btn) {
+  actionFilter = a;
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let data = actionFilter !== 'all' ? records.filter(r=>r.action===actionFilter) : records;
+  if (q) data = data.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+  document.getElementById('count').textContent = `· ${data.length} entries`;
+  const tbody = document.getElementById('tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔍</div><p>No audit entries found. Start making changes to see the trail.</p></div></td></tr>`;
+    return;
   }
-  document.getElementById('diff-body').innerHTML = html;
-  openModal('modal-diff');
+  tbody.innerHTML = data.map(r => {
+    let changesHtml = '—';
+    if (r.changes) {
+      try {
+        const obj = JSON.parse(r.changes);
+        changesHtml = `<details><summary style="cursor:pointer;color:var(--accent);font-size:11px">View changes</summary>
+          <pre style="margin-top:6px;font-size:10px;color:var(--text2);white-space:pre-wrap;max-width:300px">${JSON.stringify(obj,null,2)}</pre></details>`;
+      } catch {
+        changesHtml = `<span style="font-size:11px;color:var(--text2)">${r.changes.substring(0,60)}${r.changes.length>60?'…':''}</span>`;
+      }
+    }
+    return `<tr>
+      <td class="mono" style="font-size:11px;white-space:nowrap">${new Date(r.created_at).toLocaleString()}</td>
+      <td>${actionBadge(r.action)}</td>
+      <td class="mono" style="color:var(--accent)">${r.table_name}</td>
+      <td class="mono" style="font-size:10px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis">${r.record_id || '—'}</td>
+      <td style="color:var(--text2)">${r.performed_by || 'system'}</td>
+      <td>${changesHtml}</td>
+    </tr>`;
+  }).join('');
 }
 
-function clearFilters() {
-  ['filter-entity','filter-action','filter-user','filter-from','filter-to'].forEach(id => document.getElementById(id).value = '');
-  currentPage = 1; loadAudit();
-}
-
-document.getElementById('btn-export').onclick = () => exportCSV(auditLogs.map(a => ({
-  timestamp: a.created_at, user: a.full_name, action: a.action, entity_type: a.entity_type, entity_id: a.entity_id, ip: a.ip_address
-})), 'audit-log.csv');
-
-['filter-entity','filter-action','filter-user','filter-from','filter-to'].forEach(id => {
-  document.getElementById(id).addEventListener('change', () => { currentPage=1; loadAudit(); });
-});
-loadUsers(); loadAudit();
+document.getElementById('search-input').addEventListener('input', render);
+load();
 </script>
 </body>
 </html>
