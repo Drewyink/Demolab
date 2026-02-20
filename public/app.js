@@ -278,4 +278,3 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('btn-logout');
   if (logoutBtn) logoutBtn.onclick = () => Auth.logout();
 });
-
