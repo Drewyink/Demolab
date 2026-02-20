@@ -1,5 +1,12 @@
+Schema · SQL
+Copy
+
+-- Facets Configuration Software Database Schema
+-- PostgreSQL
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -13,6 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Products table
 CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
@@ -27,6 +35,7 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Plans table
 CREATE TABLE IF NOT EXISTS plans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
@@ -44,6 +53,7 @@ CREATE TABLE IF NOT EXISTS plans (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Members table
 CREATE TABLE IF NOT EXISTS members (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     member_id VARCHAR(30) UNIQUE NOT NULL,
@@ -52,7 +62,7 @@ CREATE TABLE IF NOT EXISTS members (
     email VARCHAR(100),
     phone VARCHAR(20),
     date_of_birth DATE,
-    gender VARCHAR(20),
+    gender VARCHAR(10) CHECK (gender IN ('male','female','non-binary','other','prefer_not_to_say')),
     address VARCHAR(200),
     city VARCHAR(100),
     state VARCHAR(2),
@@ -66,12 +76,13 @@ CREATE TABLE IF NOT EXISTS members (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Benefits table
 CREATE TABLE IF NOT EXISTS benefits (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     plan_id UUID REFERENCES plans(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
-    category VARCHAR(50),
-    coverage_type VARCHAR(30),
+    category VARCHAR(50) CHECK (category IN ('preventive','primary_care','specialist','emergency','hospital','mental_health','prescription','lab','imaging','therapy','other')),
+    coverage_type VARCHAR(30) CHECK (coverage_type IN ('percentage','flat_amount','not_covered','unlimited')),
     coverage_value DECIMAL(10,2),
     copay DECIMAL(10,2),
     coinsurance DECIMAL(5,2),
@@ -81,11 +92,12 @@ CREATE TABLE IF NOT EXISTS benefits (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Pricing table
 CREATE TABLE IF NOT EXISTS pricing (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     plan_id UUID REFERENCES plans(id) ON DELETE CASCADE,
-    tier VARCHAR(30),
-    rate_type VARCHAR(30),
+    tier VARCHAR(30) CHECK (tier IN ('individual','individual_spouse','individual_children','family')),
+    rate_type VARCHAR(30) CHECK (rate_type IN ('monthly','annual','weekly','per_pay_period')),
     amount DECIMAL(10,2) NOT NULL,
     effective_date DATE NOT NULL,
     termination_date DATE,
@@ -96,6 +108,7 @@ CREATE TABLE IF NOT EXISTS pricing (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Claims table
 CREATE TABLE IF NOT EXISTS claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     claim_number VARCHAR(30) UNIQUE NOT NULL,
@@ -118,6 +131,7 @@ CREATE TABLE IF NOT EXISTS claims (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Audit logs table
 CREATE TABLE IF NOT EXISTS audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id),
@@ -131,11 +145,14 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Indexes
 CREATE INDEX IF NOT EXISTS idx_members_plan ON members(plan_id);
+CREATE INDEX IF NOT EXISTS idx_members_email ON members(email);
 CREATE INDEX IF NOT EXISTS idx_members_active ON members(is_active);
 CREATE INDEX IF NOT EXISTS idx_claims_member ON claims(member_id);
 CREATE INDEX IF NOT EXISTS idx_claims_status ON claims(status);
 CREATE INDEX IF NOT EXISTS idx_benefits_plan ON benefits(plan_id);
 CREATE INDEX IF NOT EXISTS idx_pricing_plan ON pricing(plan_id);
 CREATE INDEX IF NOT EXISTS idx_audit_entity ON audit_logs(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at DESC);
