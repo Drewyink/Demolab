@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — Facets Sandbox</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">FACETS</div><div class="logo-env">Sandbox</div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" data-page="members" href="/members"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" data-page="products" href="/products"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" data-page="plans" href="/plans"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" data-page="benefits" href="/benefits"><span class="nav-icon">🛡️</span> Benefits</a>
+      <a class="nav-item" data-page="pricing" href="/pricing"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" data-page="claims" href="/claims"><span class="nav-icon">📄</span> Claims</a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" data-page="audit" href="/audit"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">??</div>
+        <div><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role"></div></div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Sign Out</button>
+    </div>
+  </aside>
+  <div class="main-content">
+    <div class="top-bar">
+      <div><div class="page-title">Pricing</div><div class="page-subtitle">Premium rate tables & tier configuration</div></div>
+      <div class="top-bar-actions">
+        <button class="btn btn-secondary btn-sm" id="btn-export">⬇ Export</button>
+        <button class="btn btn-primary btn-sm" id="btn-new">+ Add Rate</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-body" style="padding:14px 20px">
+          <div class="filters-row">
+            <div style="display:flex;align-items:center;gap:8px">
+              <label style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;margin-bottom:0;color:var(--gray-300)">Plan:</label>
+              <select id="filter-plan" style="width:auto;min-width:200px"><option value="">All Plans</option></select>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <label style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;margin-bottom:0;color:var(--gray-300)">Tier:</label>
+              <select id="filter-tier" style="width:auto;min-width:160px">
+                <option value="">All Tiers</option>
+                <option value="individual">Individual</option>
+                <option value="individual_spouse">Ind. + Spouse</option>
+                <option value="individual_children">Ind. + Children</option>
+                <option value="family">Family</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Rate Table</div>
+          <div id="pricing-count" style="font-size:12px;color:var(--gray-400);font-family:var(--font-mono)"></div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Plan</th><th>Tier</th><th>Rate Type</th><th>Amount</th><th>Annual Equiv.</th><th>Effective</th><th>Terminates</th><th>Age Band</th><th>Actions</th></tr></thead>
+            <tbody id="pricing-tbody"><tr><td colspan="9" class="table-empty"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="modal-form">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="form-title">Add Rate</span>
+      <button class="modal-close" onclick="closeModal('modal-form')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="form-error" class="alert alert-error hidden"></div>
+      <form id="pricing-form">
+        <div class="form-row">
+          <div class="form-group"><label>Plan *</label>
+            <select name="plan_id" id="form-plan-select" required><option value="">Select Plan</option></select>
+          </div>
+          <div class="form-group"><label>Tier *</label>
+            <select name="tier" required>
+              <option value="">Select</option>
+              <option value="individual">Individual</option>
+              <option value="individual_spouse">Individual + Spouse</option>
+              <option value="individual_children">Individual + Children</option>
+              <option value="family">Family</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Rate Type *</label>
+            <select name="rate_type" required>
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+              <option value="weekly">Weekly</option>
+              <option value="per_pay_period">Per Pay Period</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Amount ($) *</label><input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Effective Date *</label><input name="effective_date" type="date" required></div>
+          <div class="form-group"><label>Termination Date</label><input name="termination_date" type="date"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Age Band Min</label><input name="age_band_min" type="number" min="0" max="120" placeholder="e.g. 18"></div>
+          <div class="form-group"><label>Age Band Max</label><input name="age_band_max" type="number" min="0" max="120" placeholder="e.g. 64"></div>
+        </div>
+        <div class="form-group"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
+        <input type="hidden" name="id">
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save">Save Rate</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+if (!requireAuth()) throw new Error('redirect');
+let pricing = [];
+const tierLabels = {individual:'Individual',individual_spouse:'Ind.+Spouse',individual_children:'Ind.+Children',family:'Family'};
+
+function getAnnual(amount, rateType) {
+  const v = parseFloat(amount);
+  switch(rateType) { case 'monthly': return v*12; case 'annual': return v; case 'weekly': return v*52; case 'per_pay_period': return v*26; default: return null; }
+}
+
+async function loadPlans() {
+  try {
+    const plans = await Auth.get('/api/plans');
+    const sel1 = document.getElementById('filter-plan');
+    const sel2 = document.getElementById('form-plan-select');
+    plans.forEach(p => { sel1.innerHTML += `<option value="${p.id}">${p.name}</option>`; sel2.innerHTML += `<option value="${p.id}">${p.name}</option>`; });
+  } catch(e) {}
+}
+
+async function loadPricing() {
+  const filterPlan = document.getElementById('filter-plan').value;
+  const filterTier = document.getElementById('filter-tier').value;
+  const tbody = document.getElementById('pricing-tbody');
+  try {
+    let data = await Auth.get('/api/pricing');
+    if (filterPlan) data = data.filter(p => p.plan_id === filterPlan);
+    if (filterTier) data = data.filter(p => p.tier === filterTier);
+    pricing = data;
+    document.getElementById('pricing-count').textContent = `${data.length} rates`;
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="9" class="table-empty">No rates found</td></tr>`; return; }
+    tbody.innerHTML = data.map(p => {
+      const annual = getAnnual(p.amount, p.rate_type);
+      return `<tr>
+        <td style="font-size:12px">${p.plan_name||'—'}</td>
+        <td>${badge(tierLabels[p.tier]||p.tier, p.tier||'other')}</td>
+        <td style="font-size:12px;text-transform:capitalize;color:var(--gray-300)">${(p.rate_type||'').replace('_',' ')}</td>
+        <td class="mono money-positive" style="font-size:15px;font-weight:600">${fmtMoney(p.amount)}</td>
+        <td class="mono" style="color:var(--gray-400)">${annual ? fmtMoney(annual)+'/yr' : '—'}</td>
+        <td class="mono" style="font-size:12px">${fmtDate(p.effective_date)}</td>
+        <td class="mono" style="font-size:12px">${fmtDate(p.termination_date)}</td>
+        <td style="font-size:12px;color:var(--gray-400)">${p.age_band_min && p.age_band_max ? `${p.age_band_min}–${p.age_band_max}` : '—'}</td>
+        <td><div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick="editRate('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRate('${p.id}')">Delete</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="9" class="table-empty">Error: ${e.message}</td></tr>`; }
+}
+
+function editRate(id) {
+  const p = pricing.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('form-title').textContent = 'Edit Rate';
+  const form = document.getElementById('pricing-form');
+  Object.keys(p).forEach(k => {
+    const el = form.elements[k];
+    if (!el) return;
+    el.value = p[k] != null ? (k.includes('date') && p[k] ? p[k].slice(0,10) : p[k]) : '';
+  });
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+}
+
+document.getElementById('btn-new').onclick = () => {
+  document.getElementById('form-title').textContent = 'Add Rate';
+  document.getElementById('pricing-form').reset();
+  document.getElementById('pricing-form').elements['id'].value = '';
+  document.getElementById('form-error').classList.add('hidden');
+  openModal('modal-form');
+};
+
+document.getElementById('btn-save').onclick = async () => {
+  const form = document.getElementById('pricing-form');
+  const data = {};
+  new FormData(form).forEach((v,k) => data[k] = v);
+  const id = data.id; delete data.id;
+  const btn = document.getElementById('btn-save');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    if (id) await Auth.put(`/api/pricing/${id}`, data);
+    else await Auth.post('/api/pricing', data);
+    closeModal('modal-form'); toast(id ? 'Rate updated' : 'Rate added', 'success'); loadPricing();
+  } catch(e) { document.getElementById('form-error').textContent = e.message; document.getElementById('form-error').classList.remove('hidden'); }
+  finally { btn.textContent = 'Save Rate'; btn.disabled = false; }
+};
+
+async function deleteRate(id) {
+  const ok = await confirm('Delete this pricing rate?');
+  if (!ok) return;
+  try { await Auth.delete(`/api/pricing/${id}`); toast('Rate deleted','success'); loadPricing(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+document.getElementById('btn-export').onclick = () => exportCSV(pricing, 'pricing.csv');
+document.getElementById('filter-plan').onchange = loadPricing;
+document.getElementById('filter-tier').onchange = loadPricing;
+loadPlans().then(loadPricing);
+</script>
+</body>
+</html>
