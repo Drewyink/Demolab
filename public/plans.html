@@ -8,10 +8,7 @@
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
@@ -34,10 +31,7 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Plan Configuration</div>
-          <div class="page-subtitle">DEDUCTIBLES · OOP MAXIMUMS · PREMIUMS</div>
-        </div>
+        <div><div class="page-title">Plan Configuration</div><div class="page-subtitle">DEDUCTIBLES · OOP MAXIMUMS · PREMIUMS</div></div>
         <button class="btn btn-primary" onclick="openModal()">+ New Plan</button>
       </div>
       <div class="card">
@@ -53,13 +47,17 @@
             <thead><tr>
               <th>Code</th><th>Plan Name</th><th>Deductible</th><th>OOP Max</th><th>Premium</th><th>Effective</th><th>Terminates</th><th>Status</th><th>Actions</th>
             </tr></thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody">
+              <tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr>
+            </tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
@@ -67,10 +65,11 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <form class="form-grid">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
         <div class="form-group">
-          <label class="form-label">Plan Code</label>
+          <label class="form-label">Plan Code *</label>
           <input type="text" class="form-input" id="f-plan_code" required>
         </div>
         <div class="form-group">
@@ -82,7 +81,7 @@
           </select>
         </div>
         <div class="form-group full">
-          <label class="form-label">Plan Name</label>
+          <label class="form-label">Plan Name *</label>
           <input type="text" class="form-input" id="f-plan_name" required>
         </div>
         <div class="form-group">
@@ -95,31 +94,41 @@
         </div>
         <div class="form-group">
           <label class="form-label">Deductible ($)</label>
-          <input type="number" class="form-input" id="f-deductible" step="0.01" min="0">
+          <input type="number" class="form-input" id="f-deductible" step="0.01" min="0" placeholder="0.00">
         </div>
         <div class="form-group">
           <label class="form-label">OOP Maximum ($)</label>
-          <input type="number" class="form-input" id="f-oop_max" step="0.01" min="0">
+          <input type="number" class="form-input" id="f-oop_max" step="0.01" min="0" placeholder="0.00">
         </div>
         <div class="form-group">
           <label class="form-label">Monthly Premium ($)</label>
-          <input type="number" class="form-input" id="f-premium" step="0.01" min="0">
+          <input type="number" class="form-input" id="f-premium" step="0.01" min="0" placeholder="0.00">
         </div>
       </form>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="save()">Save Plan</button>
+      <button class="btn btn-primary" id="save-btn" onclick="save()">Save Plan</button>
     </div>
   </div>
 </div>
+
 <script src="app.js"></script>
 <script>
 let records = [];
 
 async function load() {
-  records = await apiFetch('/api/plans');
-  render();
+  const tbody = document.getElementById('tbody');
+  try {
+    records = await apiFetch('/api/plans');
+    render();
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+      <div class="empty-icon">⚠</div>
+      <p style="color:var(--red)">${e.message}</p>
+      <button class="btn btn-sm btn-secondary" style="margin-top:10px" onclick="load()">↻ Retry</button>
+    </div></td></tr>`;
+  }
 }
 
 function render() {
@@ -127,25 +136,29 @@ function render() {
   const data = q ? records.filter(r => JSON.stringify(r).toLowerCase().includes(q)) : records;
   document.getElementById('count').textContent = `· ${data.length} records`;
   const tbody = document.getElementById('tbody');
-  if (!data.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans configured</p></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td class="mono">${r.plan_code}</td>
-      <td><strong>${r.plan_name}</strong></td>
-      <td class="mono amount-allowed">${currency(r.deductible)}</td>
-      <td class="mono" style="color:var(--orange)">${currency(r.oop_max)}</td>
-      <td class="mono amount-paid">${currency(r.premium)}</td>
-      <td class="mono" style="font-size:11px">${fmtDate(r.effective_date)}</td>
-      <td class="mono" style="font-size:11px">${fmtDate(r.termination_date)}</td>
-      <td>${badge(r.status, r.status)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
-      </div></td>
-    </tr>`).join('');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans yet — click + New Plan to create one</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(r => `<tr>
+    <td class="mono">${r.plan_code}</td>
+    <td><strong>${r.plan_name}</strong></td>
+    <td class="mono amount-allowed">${currency(r.deductible)}</td>
+    <td class="mono" style="color:var(--orange)">${currency(r.oop_max)}</td>
+    <td class="mono amount-paid">${currency(r.premium)}</td>
+    <td class="mono" style="font-size:11px">${fmtDate(r.effective_date)}</td>
+    <td class="mono" style="font-size:11px">${fmtDate(r.termination_date)}</td>
+    <td>${badge(r.status, r.status)}</td>
+    <td><div class="actions">
+      <button class="btn btn-sm btn-secondary" onclick="openModal('${r.id}')">Edit</button>
+      <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
 }
 
-function openModal(data = null) {
+function openModal(id = null) {
+  const data = id ? records.find(r => r.id === id) : null;
+  document.getElementById('form-error').style.display = 'none';
   document.getElementById('modal-title').textContent = data ? 'Edit Plan' : 'New Plan';
   document.getElementById('f-id').value = data?.id || '';
   document.getElementById('f-plan_code').value = data?.plan_code || genCode('PLN');
@@ -156,32 +169,93 @@ function openModal(data = null) {
   document.getElementById('f-oop_max').value = data?.oop_max || '';
   document.getElementById('f-premium').value = data?.premium || '';
   document.getElementById('f-status').value = data?.status || 'active';
+  document.getElementById('save-btn').textContent = 'Save Plan';
+  document.getElementById('save-btn').disabled = false;
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function edit(id) { openModal(records.find(r => r.id === id)); }
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('form-error').style.display = 'none';
+}
 
 async function save() {
+  const errEl = document.getElementById('form-error');
+  const btn = document.getElementById('save-btn');
+  errEl.style.display = 'none';
+
+  // Validate first
+  const plan_code = document.getElementById('f-plan_code').value.trim();
+  const plan_name = document.getElementById('f-plan_name').value.trim();
+  if (!plan_code || !plan_name) {
+    errEl.textContent = '⚠ Plan Code and Plan Name are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
   const id = document.getElementById('f-id').value;
   const body = {
-    plan_code: document.getElementById('f-plan_code').value,
-    plan_name: document.getElementById('f-plan_name').value,
-    effective_date: document.getElementById('f-effective_date').value,
-    termination_date: document.getElementById('f-termination_date').value,
-    deductible: document.getElementById('f-deductible').value,
-    oop_max: document.getElementById('f-oop_max').value,
-    premium: document.getElementById('f-premium').value,
+    plan_code,
+    plan_name,
+    effective_date: document.getElementById('f-effective_date').value || null,
+    termination_date: document.getElementById('f-termination_date').value || null,
+    deductible: parseFloat(document.getElementById('f-deductible').value) || 0,
+    oop_max: parseFloat(document.getElementById('f-oop_max').value) || 0,
+    premium: parseFloat(document.getElementById('f-premium').value) || 0,
     status: document.getElementById('f-status').value
   };
-  if (id) { await apiFetch(`/api/plans/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Plan updated', 'success'); }
-  else { await apiFetch('/api/plans', { method: 'POST', body: JSON.stringify(body) }); toast('Plan created', 'success'); }
-  closeModal(); load();
+
+  // ✅ KEY FIX: Close modal immediately, show optimistic update in table
+  // Add to local records right away so UI feels instant
+  if (!id) {
+    const optimistic = { id: 'saving-' + Date.now(), ...body, created_at: new Date().toISOString(), _saving: true };
+    records.unshift(optimistic);
+    render();
+  }
+  closeModal(); // Close immediately — don't wait for API
+  toast(id ? 'Saving changes...' : 'Creating plan...', 'info');
+
+  try {
+    const result = await fetch(id ? `/api/plans/${id}` : '/api/plans', {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!result.ok) {
+      let errMsg = `HTTP ${result.status}`;
+      try { const d = await result.json(); errMsg = d.error || errMsg; } catch {}
+      throw new Error(errMsg);
+    }
+
+    toast(id ? 'Plan updated ✓' : 'Plan created ✓', 'success');
+    // Reload from server to get real IDs and data
+    await load();
+
+  } catch(e) {
+    toast(`Save failed: ${e.message}`, 'error');
+    // Remove optimistic entry on failure
+    records = records.filter(r => !r._saving);
+    render();
+  }
 }
 
 async function del(id) {
-  if (!await confirmDialog('Delete this plan?')) return;
-  await apiFetch(`/api/plans/${id}`, { method: 'DELETE' });
-  toast('Plan deleted', 'info'); load();
+  if (!await confirmDialog('Delete this plan? This cannot be undone.')) return;
+  // Optimistic remove
+  const backup = [...records];
+  records = records.filter(r => r.id !== id);
+  render();
+  toast('Deleting...', 'info');
+  try {
+    await fetch(`/api/plans/${id}`, { method: 'DELETE' });
+    toast('Plan deleted', 'info');
+    await load();
+  } catch(e) {
+    records = backup;
+    render();
+    toast(`Delete failed: ${e.message}`, 'error');
+  }
 }
 
 document.getElementById('search-input').addEventListener('input', render);
