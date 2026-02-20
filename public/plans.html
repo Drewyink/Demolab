@@ -32,7 +32,7 @@
     <div class="page-content">
       <div class="page-header">
         <div><div class="page-title">Plan Configuration</div><div class="page-subtitle">DEDUCTIBLES · OOP MAXIMUMS · PREMIUMS</div></div>
-        <button class="btn btn-primary" onclick="openModal()">+ New Plan</button>
+        <button class="btn btn-primary" id="new-plan-btn">+ New Plan</button>
       </div>
       <div class="card">
         <div class="card-header">
@@ -57,16 +57,16 @@
   </main>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
+<!-- MODAL OVERLAY — clicking the dark background also closes -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">New Plan</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" id="modal-x-btn">✕</button>
     </div>
     <div class="modal-body">
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
-      <form class="form-grid" onsubmit="return false">
+      <form class="form-grid" id="plan-form" onsubmit="return false">
         <input type="hidden" id="f-id">
         <div class="form-group">
           <label class="form-label">Plan Code *</label>
@@ -107,8 +107,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" id="save-btn" onclick="save()">Save Plan</button>
+      <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="save-btn">Save Plan</button>
     </div>
   </div>
 </div>
@@ -117,6 +117,64 @@
 <script>
 let records = [];
 
+// ─── MODAL OPEN / CLOSE ──────────────────────────────────────────────────────
+// All close triggers wired up with addEventListener — no inline onclick
+function openModal(id) {
+  const data = id ? records.find(r => r.id === id) : null;
+  document.getElementById('form-error').style.display = 'none';
+  document.getElementById('modal-title').textContent = data ? 'Edit Plan' : 'New Plan';
+  document.getElementById('f-id').value = data?.id || '';
+  document.getElementById('f-plan_code').value = data?.plan_code || genCode('PLN');
+  document.getElementById('f-plan_name').value = data?.plan_name || '';
+  document.getElementById('f-effective_date').value = data?.effective_date?.split('T')[0] || '';
+  document.getElementById('f-termination_date').value = data?.termination_date?.split('T')[0] || '';
+  document.getElementById('f-deductible').value = data?.deductible || '';
+  document.getElementById('f-oop_max').value = data?.oop_max || '';
+  document.getElementById('f-premium').value = data?.premium || '';
+  document.getElementById('f-status').value = data?.status || 'active';
+  document.getElementById('save-btn').textContent = 'Save Plan';
+  document.getElementById('save-btn').disabled = false;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('form-error').style.display = 'none';
+}
+
+// Wire ALL close triggers here — no inline onclick attributes at all
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Cancel button
+  document.getElementById('cancel-btn').addEventListener('click', closeModal);
+
+  // ✕ button
+  document.getElementById('modal-x-btn').addEventListener('click', closeModal);
+
+  // Click outside the modal box (on the dark overlay itself)
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal(); // only if clicking the overlay, not the modal box
+  });
+
+  // Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // + New Plan button
+  document.getElementById('new-plan-btn').addEventListener('click', () => openModal(null));
+
+  // Save button
+  document.getElementById('save-btn').addEventListener('click', save);
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', render);
+
+  // Load data
+  load();
+});
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
 async function load() {
   const tbody = document.getElementById('tbody');
   try {
@@ -137,11 +195,11 @@ function render() {
   document.getElementById('count').textContent = `· ${data.length} records`;
   const tbody = document.getElementById('tbody');
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans yet — click + New Plan to create one</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans yet — click + New Plan to add one</p></div></td></tr>`;
     return;
   }
-  tbody.innerHTML = data.map(r => `<tr>
-    <td class="mono">${r.plan_code}</td>
+  tbody.innerHTML = data.map(r => `<tr ${r._saving ? 'style="opacity:0.5"' : ''}>
+    <td class="mono">${r.plan_code}${r._saving ? ' ⏳' : ''}</td>
     <td><strong>${r.plan_name}</strong></td>
     <td class="mono amount-allowed">${currency(r.deductible)}</td>
     <td class="mono" style="color:var(--orange)">${currency(r.oop_max)}</td>
@@ -156,37 +214,14 @@ function render() {
   </tr>`).join('');
 }
 
-function openModal(id = null) {
-  const data = id ? records.find(r => r.id === id) : null;
-  document.getElementById('form-error').style.display = 'none';
-  document.getElementById('modal-title').textContent = data ? 'Edit Plan' : 'New Plan';
-  document.getElementById('f-id').value = data?.id || '';
-  document.getElementById('f-plan_code').value = data?.plan_code || genCode('PLN');
-  document.getElementById('f-plan_name').value = data?.plan_name || '';
-  document.getElementById('f-effective_date').value = data?.effective_date?.split('T')[0] || '';
-  document.getElementById('f-termination_date').value = data?.termination_date?.split('T')[0] || '';
-  document.getElementById('f-deductible').value = data?.deductible || '';
-  document.getElementById('f-oop_max').value = data?.oop_max || '';
-  document.getElementById('f-premium').value = data?.premium || '';
-  document.getElementById('f-status').value = data?.status || 'active';
-  document.getElementById('save-btn').textContent = 'Save Plan';
-  document.getElementById('save-btn').disabled = false;
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  document.getElementById('form-error').style.display = 'none';
-}
-
+// ─── SAVE ────────────────────────────────────────────────────────────────────
 async function save() {
   const errEl = document.getElementById('form-error');
-  const btn = document.getElementById('save-btn');
   errEl.style.display = 'none';
 
-  // Validate first
   const plan_code = document.getElementById('f-plan_code').value.trim();
   const plan_name = document.getElementById('f-plan_name').value.trim();
+
   if (!plan_code || !plan_name) {
     errEl.textContent = '⚠ Plan Code and Plan Name are required.';
     errEl.style.display = 'block';
@@ -205,48 +240,40 @@ async function save() {
     status: document.getElementById('f-status').value
   };
 
-  // ✅ KEY FIX: Close modal immediately, show optimistic update in table
-  // Add to local records right away so UI feels instant
+  // Close immediately — optimistic update
   if (!id) {
-    const optimistic = { id: 'saving-' + Date.now(), ...body, created_at: new Date().toISOString(), _saving: true };
-    records.unshift(optimistic);
+    records.unshift({ id: '_tmp_' + Date.now(), ...body, created_at: new Date().toISOString(), _saving: true });
     render();
   }
-  closeModal(); // Close immediately — don't wait for API
+  closeModal();
   toast(id ? 'Saving changes...' : 'Creating plan...', 'info');
 
   try {
-    const result = await fetch(id ? `/api/plans/${id}` : '/api/plans', {
+    const res = await fetch(id ? `/api/plans/${id}` : '/api/plans', {
       method: id ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-
-    if (!result.ok) {
-      let errMsg = `HTTP ${result.status}`;
-      try { const d = await result.json(); errMsg = d.error || errMsg; } catch {}
-      throw new Error(errMsg);
+    if (!res.ok) {
+      let msg = `HTTP ${res.status}`;
+      try { const d = await res.json(); msg = d.error || msg; } catch {}
+      throw new Error(msg);
     }
-
     toast(id ? 'Plan updated ✓' : 'Plan created ✓', 'success');
-    // Reload from server to get real IDs and data
     await load();
-
   } catch(e) {
-    toast(`Save failed: ${e.message}`, 'error');
-    // Remove optimistic entry on failure
     records = records.filter(r => !r._saving);
     render();
+    toast(`Save failed: ${e.message}`, 'error');
   }
 }
 
+// ─── DELETE ──────────────────────────────────────────────────────────────────
 async function del(id) {
   if (!await confirmDialog('Delete this plan? This cannot be undone.')) return;
-  // Optimistic remove
   const backup = [...records];
   records = records.filter(r => r.id !== id);
   render();
-  toast('Deleting...', 'info');
   try {
     await fetch(`/api/plans/${id}`, { method: 'DELETE' });
     toast('Plan deleted', 'info');
@@ -257,9 +284,6 @@ async function del(id) {
     toast(`Delete failed: ${e.message}`, 'error');
   }
 }
-
-document.getElementById('search-input').addEventListener('input', render);
-load();
 </script>
 </body>
 </html>
