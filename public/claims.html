@@ -4,14 +4,57 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facets — Claims</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay {
+      position: fixed !important; inset: 0 !important;
+      background: rgba(0,0,0,0.75) !important; z-index: 99999 !important;
+      display: none; align-items: center; justify-content: center;
+    }
+    #overlay.open { display: flex !important; }
+    .sidebar { z-index: 50 !important; }
+    .topbar  { z-index: 40 !important; }
+    #adj-panel {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 8px; padding: 16px; margin-top: 12px;
+    }
+    #adj-panel h4 {
+      font-size: 11px; font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 10px;
+    }
+    .adj-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); font-size: 12px;
+    }
+    .adj-row:last-child { border-bottom: none; }
+    .adj-label { color: var(--text2); }
+    .adj-value { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text); }
+    .adj-value.green  { color: var(--green); }
+    .adj-value.red    { color: var(--red); }
+    .adj-value.yellow { color: var(--yellow); }
+    .adj-value.cyan   { color: var(--accent); }
+    .rule-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px; padding: 2px 7px; font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace; color: var(--accent); margin: 2px;
+    }
+    .rule-tag.warn { background: rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.25); color: var(--yellow); }
+    .rule-tag.deny { background: rgba(255,71,87,0.08); border-color: rgba(255,71,87,0.25); color: var(--red); }
+    .claims-summary {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
+    }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px; text-align: center;
+    }
+    .summary-card .s-val { font-size: 24px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; margin: 4px 0; }
+    .summary-card .s-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; }
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
@@ -22,11 +65,12 @@
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item active" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Claims</span></span></div>
@@ -34,213 +78,167 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Claims Processing</div>
-          <div class="page-subtitle">SUBMIT · REVIEW · ADJUDICATE</div>
+        <div><div class="page-title">Claims Processing</div><div class="page-subtitle">ADJUDICATE · REVIEW · CLOSE</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Claim</button>
+      </div>
+
+      <div class="claims-summary">
+        <div class="summary-card">
+          <div class="s-lbl">Total Claims</div>
+          <div class="s-val" id="s-total">—</div>
         </div>
-        <button class="btn btn-primary" onclick="openModal()">+ New Claim</button>
+        <div class="summary-card">
+          <div class="s-lbl">Total Billed</div>
+          <div class="s-val" style="font-size:18px" id="s-billed">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="s-lbl">Total Paid</div>
+          <div class="s-val" style="font-size:18px;color:var(--green)" id="s-paid">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="s-lbl">Pending Review</div>
+          <div class="s-val" style="color:var(--yellow)" id="s-pending">—</div>
+        </div>
       </div>
-      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-        <div class="stat-card yellow"><div class="stat-label">Total Billed</div><div class="stat-value" id="s-billed" style="font-size:18px">—</div></div>
-        <div class="stat-card green"><div class="stat-label">Total Paid</div><div class="stat-value" id="s-paid" style="font-size:18px">—</div></div>
-        <div class="stat-card orange"><div class="stat-label">Pending</div><div class="stat-value" id="s-pending">—</div></div>
-        <div class="stat-card red"><div class="stat-label">Denied</div><div class="stat-value" id="s-denied">—</div></div>
-      </div>
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">📄 Claims <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="filter-tabs">
-              <button class="filter-tab active" onclick="filterStatus('all',this)">All</button>
-              <button class="filter-tab" onclick="filterStatus('pending',this)">Pending</button>
-              <button class="filter-tab" onclick="filterStatus('paid',this)">Paid</button>
-              <button class="filter-tab" onclick="filterStatus('denied',this)">Denied</button>
-            </div>
             <div class="search-bar" style="margin:0;width:200px">
               <span class="search-icon">🔎</span>
               <input type="text" placeholder="Search claims..." id="search-input">
+            </div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-paid">Paid</button>
+              <button class="filter-tab" id="tab-pending">Pending</button>
+              <button class="filter-tab" id="tab-review">In Review</button>
+              <button class="filter-tab" id="tab-denied">Denied</button>
             </div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
             <thead><tr>
-              <th>Claim #</th><th>Provider</th><th>Service Date</th><th>DX Code</th><th>Proc Code</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>Status</th><th>Actions</th>
+              <th>Claim #</th><th>Member</th><th>Provider</th>
+              <th>Diag / Proc</th><th>Service Date</th>
+              <th>Billed</th><th>Allowed</th><th>Paid</th>
+              <th>Status</th><th>Actions</th>
             </tr></thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody">
+              <tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr>
+            </tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-<div class="modal-overlay" id="modal">
-  <div class="modal" style="width:680px">
+
+<!-- MODAL -->
+<div id="overlay">
+  <div class="modal" style="width:700px;max-height:92vh;overflow-y:auto">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">New Claim</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" id="btn-x">✕</button>
     </div>
     <div class="modal-body">
-      <form class="form-grid">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
+
         <div class="form-group">
-          <label class="form-label">Claim Number</label>
-          <input type="text" class="form-input" id="f-claim_number" required>
+          <label class="form-label">Claim Number *</label>
+          <input type="text" class="form-input" id="f-claim_number" placeholder="CLM-2025-001">
         </div>
         <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="f-status">
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
-            <option value="denied">Denied</option>
-            <option value="void">Void</option>
-            <option value="in_review">In Review</option>
-          </select>
-        </div>
-        <div class="form-group full">
           <label class="form-label">Provider</label>
-          <input type="text" class="form-input" id="f-provider" required>
+          <input type="text" class="form-input" id="f-provider" placeholder="City Medical Center">
         </div>
         <div class="form-group">
           <label class="form-label">Service Date</label>
-          <input type="date" class="form-input" id="f-service_date" required>
+          <input type="date" class="form-input" id="f-service_date">
         </div>
         <div class="form-group">
           <label class="form-label">Claim Date</label>
           <input type="date" class="form-input" id="f-claim_date">
         </div>
+
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <label class="form-label" style="color:var(--accent);letter-spacing:2px">MEMBER &amp; PLAN</label>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Member</label>
+          <select class="form-select" id="f-member_id">
+            <option value="">— Select Member —</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Plan</label>
+          <select class="form-select" id="f-plan_id">
+            <option value="">— Select Plan —</option>
+          </select>
+          <span id="plan-hint" style="font-size:11px;color:var(--accent);margin-top:4px;display:none">✓ Plan auto-filled from member enrollment</span>
+        </div>
+
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <label class="form-label" style="color:var(--accent);letter-spacing:2px">CLINICAL CODES</label>
+        </div>
         <div class="form-group">
           <label class="form-label">Diagnosis Code (ICD-10)</label>
-          <input type="text" class="form-input" id="f-diagnosis_code" placeholder="Z00.00">
+          <input type="text" class="form-input" id="f-diagnosis_code" placeholder="e.g. Z00.00">
         </div>
         <div class="form-group">
           <label class="form-label">Procedure Code (CPT)</label>
-          <input type="text" class="form-input" id="f-procedure_code" placeholder="99213">
+          <input type="text" class="form-input" id="f-procedure_code" placeholder="e.g. 99213">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Claim Type</label>
+          <select class="form-select" id="f-claim_type" onchange="runAdjudication()">
+            <option value="medical_pcp">Medical — Primary Care Visit</option>
+            <option value="medical_specialist">Medical — Specialist Visit</option>
+            <option value="medical_er">Medical — Emergency Room</option>
+            <option value="medical_urgent">Medical — Urgent Care</option>
+            <option value="medical_preventive">Medical — Preventive / Wellness</option>
+            <option value="medical_surgery">Medical — Outpatient Surgery</option>
+            <option value="medical_inpatient">Medical — Inpatient Hospital</option>
+            <option value="medical_imaging">Medical — MRI / CT / Imaging</option>
+            <option value="medical_lab">Medical — Lab / Pathology</option>
+            <option value="medical_pt">Medical — Physical Therapy</option>
+            <option value="rx_generic">Pharmacy — Generic Rx</option>
+            <option value="rx_brand">Pharmacy — Brand Rx</option>
+            <option value="rx_specialty">Pharmacy — Specialty Rx</option>
+            <option value="dental_preventive">Dental — Preventive</option>
+            <option value="dental_basic">Dental — Basic Restorative</option>
+            <option value="dental_major">Dental — Major Restorative</option>
+            <option value="oon_medical">Out-of-Network — Medical</option>
+          </select>
+        </div>
+
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <label class="form-label" style="color:var(--accent);letter-spacing:2px">AMOUNTS</label>
         </div>
         <div class="form-group">
-          <label class="form-label">Billed Amount ($)</label>
-          <input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0">
+          <label class="form-label">Billed Amount ($) *</label>
+          <input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0" placeholder="0.00" oninput="runAdjudication()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">PA On File?</label>
+          <select class="form-select" id="f-pa_on_file" onchange="runAdjudication()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="na">N/A — Not Required</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label">Allowed Amount ($)</label>
-          <input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0">
+          <input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0" placeholder="Auto-calculated">
         </div>
         <div class="form-group">
           <label class="form-label">Paid Amount ($)</label>
-          <input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0">
+          <input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0" placeholder="Auto-calculated">
         </div>
+
         <div class="form-group full">
-          <label class="form-label">Notes</label>
-          <textarea class="form-textarea" id="f-notes"></textarea>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="save()">Save Claim</button>
-    </div>
-  </div>
-</div>
-<script src="app.js"></script>
-<script>
-let records = [];
-let statusFilter = 'all';
-
-async function load() {
-  records = await apiFetch('/api/claims');
-  updateSummary();
-  render();
-}
-
-function updateSummary() {
-  const billed = records.reduce((s,r)=>s+parseFloat(r.billed_amount||0),0);
-  const paid = records.reduce((s,r)=>s+parseFloat(r.paid_amount||0),0);
-  document.getElementById('s-billed').textContent = currency(billed);
-  document.getElementById('s-paid').textContent = currency(paid);
-  document.getElementById('s-pending').textContent = records.filter(r=>r.status==='pending').length;
-  document.getElementById('s-denied').textContent = records.filter(r=>r.status==='denied').length;
-}
-
-function filterStatus(s, btn) {
-  statusFilter = s;
-  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  let data = statusFilter !== 'all' ? records.filter(r=>r.status===statusFilter) : records;
-  if (q) data = data.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-  document.getElementById('count').textContent = `· ${data.length} records`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) { tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📄</div><p>No claims found</p></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td class="mono" style="color:var(--accent)">${r.claim_number}</td>
-      <td>${r.provider || '—'}</td>
-      <td class="mono" style="font-size:11px">${fmtDate(r.service_date)}</td>
-      <td class="mono">${r.diagnosis_code || '—'}</td>
-      <td class="mono">${r.procedure_code || '—'}</td>
-      <td class="mono amount-billed">${currency(r.billed_amount)}</td>
-      <td class="mono amount-allowed">${currency(r.allowed_amount)}</td>
-      <td class="mono amount-paid">${currency(r.paid_amount)}</td>
-      <td>${badge(r.status, r.status)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
-      </div></td>
-    </tr>`).join('');
-}
-
-function openModal(data = null) {
-  document.getElementById('modal-title').textContent = data ? 'Edit Claim' : 'New Claim';
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('f-id').value = data?.id || '';
-  document.getElementById('f-claim_number').value = data?.claim_number || `CLM-${new Date().getFullYear()}-${String(Math.floor(Math.random()*9000+1000))}`;
-  document.getElementById('f-status').value = data?.status || 'pending';
-  document.getElementById('f-provider').value = data?.provider || '';
-  document.getElementById('f-service_date').value = data?.service_date?.split('T')[0] || today;
-  document.getElementById('f-claim_date').value = data?.claim_date?.split('T')[0] || today;
-  document.getElementById('f-diagnosis_code').value = data?.diagnosis_code || '';
-  document.getElementById('f-procedure_code').value = data?.procedure_code || '';
-  document.getElementById('f-billed_amount').value = data?.billed_amount || '';
-  document.getElementById('f-allowed_amount').value = data?.allowed_amount || '';
-  document.getElementById('f-paid_amount').value = data?.paid_amount || '';
-  document.getElementById('f-notes').value = data?.notes || '';
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function edit(id) { openModal(records.find(r=>r.id===id)); }
-
-async function save() {
-  const id = document.getElementById('f-id').value;
-  const body = {
-    claim_number: document.getElementById('f-claim_number').value,
-    status: document.getElementById('f-status').value,
-    provider: document.getElementById('f-provider').value,
-    service_date: document.getElementById('f-service_date').value,
-    claim_date: document.getElementById('f-claim_date').value,
-    diagnosis_code: document.getElementById('f-diagnosis_code').value,
-    procedure_code: document.getElementById('f-procedure_code').value,
-    billed_amount: document.getElementById('f-billed_amount').value,
-    allowed_amount: document.getElementById('f-allowed_amount').value,
-    paid_amount: document.getElementById('f-paid_amount').value,
-    notes: document.getElementById('f-notes').value
-  };
-  if (id) { await apiFetch(`/api/claims/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Claim updated', 'success'); }
-  else { await apiFetch('/api/claims', { method: 'POST', body: JSON.stringify(body) }); toast('Claim created', 'success'); }
-  closeModal(); load();
-}
-
-async function del(id) {
-  if (!await confirmDialog('Delete this claim?')) return;
-  await apiFetch(`/api/claims/${id}`, { method: 'DELETE' });
-  toast('Claim deleted', 'info'); load();
-}
-
-document.getElementById('search-input').addEventListener('input', render);
-load();
-</script>
-</body>
-</html>
+          <div id="adj-panel" style="display:none">
