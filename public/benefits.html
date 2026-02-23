@@ -110,6 +110,8 @@
     </div>
   </main>
 </div>
+
+<!-- MODAL -->
 <div id="overlay">
   <div class="modal" style="width:820px;max-height:93vh;overflow-y:auto">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Benefit</span><button class="modal-close" id="btn-x">✕</button></div>
@@ -123,6 +125,8 @@
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
+
+      <!-- TAB 1: COST-SHARING -->
       <div class="tab-panel active" id="tab-cost">
         <form class="form-grid" onsubmit="return false">
           <div class="form-group"><label class="form-label">Benefit Code *</label><input type="text" class="form-input" id="f-benefit_code" placeholder="BEN-PCP-001"></div>
@@ -172,8 +176,10 @@
           <div class="form-group"><label class="form-label">Dollar Limit (Annual $)</label><input type="number" class="form-input" id="f-dollar_limit" step="0.01" min="0" placeholder="Unlimited"></div>
         </form>
       </div>
+
+      <!-- TAB 2: ACCUMULATORS -->
       <div class="tab-panel" id="tab-accum">
-        <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Configure which accumulator buckets this benefit contributes to.</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Configure which accumulator buckets this benefit contributes to for deductible and OOP tracking.</p>
         <form class="form-grid" onsubmit="return false">
           <div class="form-group"><label class="form-label">Accumulator Group</label>
             <select class="form-select" id="f-accumulator_group">
@@ -208,9 +214,11 @@
         </form>
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:14px">
           <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Accumulator Flow</div>
-          <div id="accum-flow" style="font-size:12px;color:var(--text2);line-height:1.9"></div>
+          <div id="accum-flow" style="font-size:12px;color:var(--text2);line-height:1.9">Switch to this tab to generate flow.</div>
         </div>
       </div>
+
+      <!-- TAB 3: RULES & EXCEPTIONS -->
       <div class="tab-panel" id="tab-rules">
         <form class="form-grid" onsubmit="return false">
           <div class="form-group"><label class="form-label">Prior Authorization Required</label>
@@ -234,10 +242,12 @@
               <option value="none">None</option><option value="experimental">Experimental / Investigational</option>
               <option value="cosmetic">Cosmetic / Elective</option><option value="custodial">Custodial Care</option>
               <option value="dental_medical">Dental when medically necessary</option>
-              <option value="pediatric">Pediatric ACA mandate</option>
+              <option value="pediatric">Pediatric ACA mandate</option><option value="women_health">Women's Health mandate</option>
             </select>
           </div>
-          <div class="form-group full"><label class="form-label">Override / Exception Notes</label><textarea class="form-textarea" id="f-exception_notes" rows="2" placeholder="e.g., Covered only when medically necessary..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Override / Exception Notes</label>
+            <textarea class="form-textarea" id="f-exception_notes" rows="2" placeholder="e.g., Covered only when medically necessary per ICD-10 code Z34.xx..."></textarea>
+          </div>
         </form>
         <div style="margin-top:16px">
           <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Active Rule Flags</div>
@@ -248,8 +258,10 @@
           <div class="toggle-row"><div><div class="t-label">Network Adequacy Override</div><div class="t-sub">Allow OON at in-network rates if in-network unavailable</div></div><label class="toggle"><input type="checkbox" id="f-network_override"><span class="toggle-slider"></span></label></div>
         </div>
       </div>
+
+      <!-- TAB 4: COB / MEDICARE -->
       <div class="tab-panel" id="tab-cob">
-        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Configure COB rules and Medicare/Medicaid interactions.</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Configure Coordination of Benefits rules and Medicare / Medicaid interactions.</p>
         <form class="form-grid" onsubmit="return false">
           <div class="form-group"><label class="form-label">COB Applies?</label>
             <select class="form-select" id="f-cob_applies">
@@ -278,139 +290,105 @@
               <option value="dual_eligible">Dual Eligible (Medicare + Medicaid)</option>
             </select>
           </div>
-          <div class="form-group full"><label class="form-label">Medicare Supplement Description</label><textarea class="form-textarea" id="f-medicare_supp_desc" rows="2" placeholder="e.g., Covers Part A deductible gap, Part B coinsurance..."></textarea></div>
-          <div class="form-group full"><label class="form-label">COB / Coordination Notes</label><textarea class="form-textarea" id="f-cob_notes" rows="2" placeholder="e.g., When secondary payer, reduce so combined total does not exceed 100%..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Medicare Supplement Description</label>
+            <textarea class="form-textarea" id="f-medicare_supp_desc" rows="2" placeholder="e.g., Covers Part A deductible gap, Part B coinsurance, excess charges for Plan G..."></textarea>
+          </div>
+          <div class="form-group full"><label class="form-label">COB / Coordination Notes</label>
+            <textarea class="form-textarea" id="f-cob_notes" rows="2" placeholder="e.g., When secondary payer, reduce payment so combined total does not exceed 100% of allowed amount..."></textarea>
+          </div>
         </form>
       </div>
+
+      <!-- TAB 5: PREVIEW -->
       <div class="tab-panel" id="tab-preview">
-        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Live benefit summary. Simulates a $500 claim to show member and plan responsibility.</p>
-        <div id="preview-content"></div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Live benefit summary based on values entered. Simulates a $500 claim to show member and plan responsibility.</p>
+        <div id="preview-content"><div style="color:var(--text3);font-size:12px">Fill in Cost-Sharing fields then click Preview to see adjudication simulation.</div></div>
       </div>
     </div>
     <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Benefit</button></div>
   </div>
 </div>
+
 <script src="app.js"></script>
 <script>
-var records=[],typeFilter='all';
-document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
-document.getElementById('btn-cancel').addEventListener('click',closeModal);
-document.getElementById('btn-x').addEventListener('click',closeModal);
-document.getElementById('btn-save').addEventListener('click',save);
-document.getElementById('search-input').addEventListener('input',render);
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
-document.getElementById('tab-medical').addEventListener('click',function(){setFilter('medical',this);});
-document.getElementById('tab-pharmacy').addEventListener('click',function(){setFilter('pharmacy',this);});
-document.getElementById('tab-dental').addEventListener('click',function(){setFilter('dental',this);});
-document.getElementById('tab-pa').addEventListener('click',function(){setFilter('pa',this);});
-function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');if(name==='preview')buildPreview();if(name==='accum')buildAccumFlow();}
-function setFilter(s,btn){typeFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
-async function load(){try{records=await apiFetch('/api/benefits');updateSummary();render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
-function updateSummary(){
-  document.getElementById('s-total').textContent=records.length;
-  document.getElementById('s-medical').textContent=records.filter(function(r){return r.benefit_type==='medical';}).length;
-  document.getElementById('s-pharmacy').textContent=records.filter(function(r){return r.benefit_type==='pharmacy';}).length;
-  document.getElementById('s-pa').textContent=records.filter(function(r){return r.prior_auth_required==='yes';}).length;
-  document.getElementById('s-noncovered').textContent=records.filter(function(r){return r.covered==='no';}).length;
+var records = [], typeFilter = 'all';
+
+document.getElementById('new-btn').addEventListener('click', function(){ openModal(null); });
+document.getElementById('btn-cancel').addEventListener('click', closeModal);
+document.getElementById('btn-x').addEventListener('click', closeModal);
+document.getElementById('btn-save').addEventListener('click', save);
+document.getElementById('search-input').addEventListener('input', render);
+document.getElementById('overlay').addEventListener('click', function(e){ if(e.target===document.getElementById('overlay')) closeModal(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+document.getElementById('tab-all').addEventListener('click', function(){ setFilter('all',this); });
+document.getElementById('tab-medical').addEventListener('click', function(){ setFilter('medical',this); });
+document.getElementById('tab-pharmacy').addEventListener('click', function(){ setFilter('pharmacy',this); });
+document.getElementById('tab-dental').addEventListener('click', function(){ setFilter('dental',this); });
+document.getElementById('tab-pa').addEventListener('click', function(){ setFilter('pa',this); });
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.modal-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='preview') buildPreview();
+  if(name==='accum') buildAccumFlow();
 }
-function ptClass(t){var m={hmo:'pt-hmo',ppo:'pt-ppo',epo:'pt-epo',hdhp:'pt-hdhp'};return'pt-badge '+(m[(t||'all').toLowerCase()]||'pt-all');}
-function render(){
-  var q=document.getElementById('search-input').value.toLowerCase();
-  var data=[].concat(records);
-  if(typeFilter==='pa')data=data.filter(function(r){return r.prior_auth_required==='yes';});
-  else if(typeFilter!=='all')data=data.filter(function(r){return(r.benefit_type||'').indexOf(typeFilter)>-1;});
-  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
-  document.getElementById('count').textContent='· '+data.length+' records';
-  var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">✚</div><p>No benefits found</p></div></td></tr>';return;}
-  tbody.innerHTML=data.map(function(b){
-    var cc=b.covered==='yes'?'var(--green)':b.covered==='no'?'var(--red)':'var(--yellow)';
-    var pc=b.prior_auth_required==='yes'?'var(--yellow)':'var(--text3)';
-    var cbc=b.cob_applies==='yes'?'var(--accent)':'var(--text3)';
-    return'<tr>'+
-    '<td class="mono" style="font-size:11px;color:var(--accent)">'+b.benefit_code+'</td>'+
-    '<td><strong style="font-size:13px">'+b.benefit_name+'</strong></td>'+
-    '<td><span class="'+ptClass(b.plan_type)+'">'+((b.plan_type||'all').toUpperCase())+'</span></td>'+
-    '<td>'+badge(b.benefit_type||'medical',b.benefit_type)+'</td>'+
-    '<td class="mono">'+(b.copay>0?'$'+parseFloat(b.copay).toFixed(0):'—')+'</td>'+
-    '<td class="mono">'+(b.coinsurance>0?b.coinsurance+'%':'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(b.deductible_individual>0?'$'+parseFloat(b.deductible_individual).toLocaleString():'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(b.oop_max_individual>0?'$'+parseFloat(b.oop_max_individual).toLocaleString():'—')+'</td>'+
-    '<td><span style="font-size:11px;font-weight:600;color:'+pc+'">'+(b.prior_auth_required||'no').toUpperCase()+'</span></td>'+
-    '<td><span style="font-size:11px;font-weight:600;color:'+cbc+'">'+(b.cob_applies||'no').toUpperCase()+'</span></td>'+
-    '<td><span style="font-size:12px;font-weight:600;color:'+cc+'">'+(b.covered||'yes').toUpperCase()+'</span></td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+b.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+b.id+'\')">Del</button></div></td>'+
-    '</tr>';
-  }).join('');
+
+function setFilter(s, btn) {
+  typeFilter = s;
+  document.querySelectorAll('.filter-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  render();
 }
-function buildAccumFlow(){
-  var da=document.getElementById('f-deductible_applies').value,ag=document.getElementById('f-accumulator_group').value,ctd=document.getElementById('f-counts_toward_deductible').value,cto=document.getElementById('f-counts_toward_oop').value,hsa=document.getElementById('f-hsa_eligible').value;
-  var steps=['1. Member submits claim for this benefit'];
-  if(da==='waived_preventive')steps.push('2. ACA Preventive → deductible waived, 100% plan pays');
-  else if(da==='yes')steps.push('2. Deductible applies → member pays '+ag+' deductible first');
-  else steps.push('2. Deductible waived → copay/coinsurance applies immediately');
-  if(ctd==='yes')steps.push('3. Member cost share counts toward '+ag+' deductible accumulator');
-  steps.push('4. After deductible met → coinsurance/copay applies');
-  if(cto==='yes')steps.push('5. All member cost share counts toward '+ag+' OOP max');
-  steps.push('6. After OOP max met → plan pays 100%');
-  if(hsa==='yes')steps.push('★ HSA-qualified: member may use HSA funds for cost share');
-  document.getElementById('accum-flow').innerHTML=steps.map(function(s){return'<div style="margin-bottom:4px">'+s+'</div>';}).join('');
+
+async function load() {
+  try {
+    records = await apiFetch('/api/benefits');
+    updateSummary();
+    render();
+  } catch(e) {
+    document.getElementById('tbody').innerHTML = '<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">' + e.message + '</p><button class="btn btn-sm btn-secondary" onclick="load()">↻ Retry</button></div></td></tr>';
+  }
 }
-function buildPreview(){
-  var name=document.getElementById('f-benefit_name').value||'Benefit';
-  var copay=parseFloat(document.getElementById('f-copay').value)||0;
-  var coins=parseFloat(document.getElementById('f-coinsurance').value)||0;
-  var ded=parseFloat(document.getElementById('f-deductible_individual').value)||0;
-  var oop=parseFloat(document.getElementById('f-oop_max_individual').value)||0;
-  var covered=document.getElementById('f-covered').value;
-  var aca=document.getElementById('f-aca_preventive').value;
-  var da=document.getElementById('f-deductible_applies').value;
-  var pt=document.getElementById('f-plan_type').value;
-  var SAMPLE=500,allowed=SAMPLE*0.85,tags=[],rows=[],memberPays=0,planPays=0;
-  rows.push({l:'Sample Claim',v:'$'+SAMPLE.toFixed(2),c:''});
-  rows.push({l:'Allowed Amount (~85%)',v:'$'+allowed.toFixed(2),c:'yellow'});
-  rows.push({l:'Plan Type',v:pt.toUpperCase(),c:'cyan'});
-  if(covered==='no'){tags.push({t:'NOT COVERED',d:true});rows.push({l:'Plan Pays',v:'$0.00',c:'red'});rows.push({l:'Member Pays',v:'$'+allowed.toFixed(2)+' (100%)',c:'red'});}
-  else if(aca==='yes'){tags.push({t:'ACA PREVENTIVE',g:true});tags.push({t:'NO COST SHARE',g:true});rows.push({l:'Plan Pays',v:'$'+allowed.toFixed(2)+' (100%)',c:'green'});rows.push({l:'Member Cost Share',v:'$0.00',c:'green'});}
-  else if(copay>0&&coins===0){tags.push({t:'$'+copay+' COPAY'});if(da!=='yes')tags.push({t:'DED WAIVED',g:true});memberPays=Math.min(copay,allowed);planPays=allowed-memberPays;rows.push({l:'Member Copay',v:'$'+memberPays.toFixed(2),c:'yellow'});rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
-  else if(coins>0){tags.push({t:coins+'% COINSURANCE'});if(da==='yes'&&ded>0)rows.push({l:'First: Member pays toward ded.',v:'$'+ded.toFixed(2)+' (if unmet)',c:'yellow'});memberPays=parseFloat((allowed*(coins/100)).toFixed(2));planPays=allowed-memberPays;rows.push({l:'Member Coinsurance ('+coins+'%)',v:'$'+memberPays.toFixed(2),c:'yellow'});rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
-  else{tags.push({t:'NO COST SHARE',g:true});planPays=allowed;rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
-  if(oop>0)rows.push({l:'Indiv. OOP Max',v:'$'+oop.toLocaleString(),c:''});
-  var html='<div style="margin-bottom:12px">'+tags.map(function(t){return'<span class="rule-tag'+(t.d?' danger':t.g?' green':'')+'">'+t.t+'</span>';}).join('')+'</div>';
-  html+='<div class="cost-preview"><h4>Adjudication Preview — $'+SAMPLE+' Claim</h4>'+rows.map(function(r){return'<div class="cost-row"><span class="cost-label">'+r.l+'</span><span class="cost-val '+r.c+'">'+r.v+'</span></div>';}).join('')+'</div>';
-  document.getElementById('preview-content').innerHTML=html;
+
+function updateSummary() {
+  document.getElementById('s-total').textContent = records.length;
+  document.getElementById('s-medical').textContent = records.filter(function(r){ return r.benefit_type==='medical'; }).length;
+  document.getElementById('s-pharmacy').textContent = records.filter(function(r){ return r.benefit_type==='pharmacy'; }).length;
+  document.getElementById('s-pa').textContent = records.filter(function(r){ return r.prior_auth_required==='yes'; }).length;
+  document.getElementById('s-noncovered').textContent = records.filter(function(r){ return r.covered==='no'; }).length;
 }
-function openModal(id){
-  var d=id?records.find(function(r){return r.id===id;}):null;
-  document.getElementById('form-error').style.display='none';
-  document.getElementById('modal-title').textContent=d?'Edit Benefit':'New Benefit';
-  var fields={benefit_code:d?d.benefit_code:genCode('BEN'),benefit_name:d?(d.benefit_name||''):'',benefit_type:d?(d.benefit_type||'medical'):'medical',plan_type:d?(d.plan_type||'all'):'all',network_tier:d?(d.network_tier||'in_network'):'in_network',copay:d?(d.copay||''):'',coinsurance:d?(d.coinsurance||''):'',deductible_individual:d?(d.deductible_individual||''):'',deductible_family:d?(d.deductible_family||''):'',oop_max_individual:d?(d.oop_max_individual||''):'',oop_max_family:d?(d.oop_max_family||''):'',covered:d?(d.covered||'yes'):'yes',aca_preventive:d?(d.aca_preventive||'no'):'no',visit_limit:d?(d.visit_limit||''):'',dollar_limit:d?(d.dollar_limit||''):'',status:d?(d.status||'active'):'active',accumulator_group:d?(d.accumulator_group||'medical'):'medical',deductible_applies:d?(d.deductible_applies||'yes'):'yes',counts_toward_deductible:d?(d.counts_toward_deductible||'yes'):'yes',counts_toward_oop:d?(d.counts_toward_oop||'yes'):'yes',embedded_deductible:d?(d.embedded_deductible||'yes'):'yes',hsa_eligible:d?(d.hsa_eligible||'na'):'na',prior_auth_required:d?(d.prior_auth_required||'no'):'no',referral_required:d?(d.referral_required||'no'):'no',medical_necessity:d?(d.medical_necessity||'no'):'no',exception_category:d?(d.exception_category||'none'):'none',exception_notes:d?(d.exception_notes||''):'',cob_applies:d?(d.cob_applies||'no'):'no',cob_method:d?(d.cob_method||'coordination'):'coordination',medicare_interaction:d?(d.medicare_interaction||'none'):'none',medicaid_interaction:d?(d.medicaid_interaction||'none'):'none',medicare_supp_desc:d?(d.medicare_supp_desc||''):'',cob_notes:d?(d.cob_notes||''):''};
-  Object.keys(fields).forEach(function(k){var el=document.getElementById('f-'+k);if(el)el.value=fields[k];});
-  document.getElementById('f-id').value=d?d.id:'';
-  document.getElementById('f-dup_detection').checked=d?d.dup_detection!==false:true;
-  document.getElementById('f-concurrent_care').checked=d?!!d.concurrent_care:false;
-  document.getElementById('f-age_gender_edit').checked=d?!!d.age_gender_edit:false;
-  document.getElementById('f-subrogation').checked=d?!!d.subrogation:false;
-  document.getElementById('f-network_override').checked=d?!!d.network_override:false;
-  switchTab('cost',document.querySelector('.modal-tab'));
-  document.getElementById('overlay').classList.add('open');
+
+function ptClass(t) {
+  var m = { hmo:'pt-hmo', ppo:'pt-ppo', epo:'pt-epo', hdhp:'pt-hdhp' };
+  return 'pt-badge ' + (m[(t||'all').toLowerCase()] || 'pt-all');
 }
-function closeModal(){document.getElementById('overlay').classList.remove('open');}
-async function save(){
-  var errEl=document.getElementById('form-error');errEl.style.display='none';
-  var bc=document.getElementById('f-benefit_code').value.trim(),bn=document.getElementById('f-benefit_name').value.trim();
-  if(!bc||!bn){errEl.textContent='⚠ Benefit Code and Name are required.';errEl.style.display='block';return;}
-  var id=document.getElementById('f-id').value;
-  var body={benefit_code:bc,benefit_name:bn,benefit_type:document.getElementById('f-benefit_type').value,plan_type:document.getElementById('f-plan_type').value,network_tier:document.getElementById('f-network_tier').value,copay:parseFloat(document.getElementById('f-copay').value)||0,coinsurance:parseFloat(document.getElementById('f-coinsurance').value)||0,deductible_individual:parseFloat(document.getElementById('f-deductible_individual').value)||0,deductible_family:parseFloat(document.getElementById('f-deductible_family').value)||0,oop_max_individual:parseFloat(document.getElementById('f-oop_max_individual').value)||0,oop_max_family:parseFloat(document.getElementById('f-oop_max_family').value)||0,covered:document.getElementById('f-covered').value,aca_preventive:document.getElementById('f-aca_preventive').value,visit_limit:parseInt(document.getElementById('f-visit_limit').value)||null,dollar_limit:parseFloat(document.getElementById('f-dollar_limit').value)||null,status:document.getElementById('f-status').value,accumulator_group:document.getElementById('f-accumulator_group').value,deductible_applies:document.getElementById('f-deductible_applies').value,counts_toward_deductible:document.getElementById('f-counts_toward_deductible').value,counts_toward_oop:document.getElementById('f-counts_toward_oop').value,embedded_deductible:document.getElementById('f-embedded_deductible').value,hsa_eligible:document.getElementById('f-hsa_eligible').value,prior_auth_required:document.getElementById('f-prior_auth_required').value,referral_required:document.getElementById('f-referral_required').value,medical_necessity:document.getElementById('f-medical_necessity').value,exception_category:document.getElementById('f-exception_category').value,exception_notes:document.getElementById('f-exception_notes').value.trim(),dup_detection:document.getElementById('f-dup_detection').checked,concurrent_care:document.getElementById('f-concurrent_care').checked,age_gender_edit:document.getElementById('f-age_gender_edit').checked,subrogation:document.getElementById('f-subrogation').checked,network_override:document.getElementById('f-network_override').checked,cob_applies:document.getElementById('f-cob_applies').value,cob_method:document.getElementById('f-cob_method').value,medicare_interaction:document.getElementById('f-medicare_interaction').value,medicaid_interaction:document.getElementById('f-medicaid_interaction').value,medicare_supp_desc:document.getElementById('f-medicare_supp_desc').value.trim(),cob_notes:document.getElementById('f-cob_notes').value.trim()};
-  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});updateSummary();render();}
-  closeModal();toast(id?'Saving...':'Creating benefit...','info');
-  try{var res=await fetch(id?'/api/benefits/'+id:'/api/benefits',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Benefit updated ✓':'Benefit created ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
-}
-async function del(id){if(!await confirmDialog('Delete this benefit?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/benefits/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed: '+e.message,'error');}}
-load();
-</script>
-</body>
-</html>
+
+function render() {
+  var q = document.getElementById('search-input').value.toLowerCase();
+  var data = [].concat(records);
+  if(typeFilter==='pa') data = data.filter(function(r){ return r.prior_auth_required==='yes'; });
+  else if(typeFilter!=='all') data = data.filter(function(r){ return (r.benefit_type||'').indexOf(typeFilter) > -1; });
+  if(q) data = data.filter(function(r){ return JSON.stringify(r).toLowerCase().includes(q); });
+  document.getElementById('count').textContent = '· ' + data.length + ' records';
+  var tbody = document.getElementById('tbody');
+  if(!data.length) { tbody.innerHTML = '<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">✚</div><p>No benefits found</p></div></td></tr>'; return; }
+  tbody.innerHTML = data.map(function(b) {
+    var cc = b.covered==='yes' ? 'var(--green)' : b.covered==='no' ? 'var(--red)' : 'var(--yellow)';
+    var pc = b.prior_auth_required==='yes' ? 'var(--yellow)' : 'var(--text3)';
+    var cbc = b.cob_applies==='yes' ? 'var(--accent)' : 'var(--text3)';
+    return '<tr>' +
+      '<td class="mono" style="font-size:11px;color:var(--accent)">' + (b.benefit_code||'') + '</td>' +
+      '<td><strong style="font-size:13px">' + (b.benefit_name||'') + '</strong></td>' +
+      '<td><span class="' + ptClass(b.plan_type) + '">' + ((b.plan_type||'all').toUpperCase()) + '</span></td>' +
+      '<td>' + badge(b.benefit_type||'medical', b.benefit_type) + '</td>' +
+      '<td class="mono">' + (b.copay>0 ? '$'+parseFloat(b.copay).toFixed(0) : '—') + '</td>' +
+      '<td class="mono">' + (b.coinsurance>0 ? b.coinsurance+'%' : '—') + '</td>' +
+      '<td class="mono" style="font-size:11px">' + (b.deductible_individual>0 ? '$'+parseFloat(b.deductible_individual).toLocaleString() : '—') + '</td>' +
+      '<td class="mono" style="font-size:11px">' + (b.oop_max_individual>0 ? '$'+parseFloat(b.oop_max_individual).toLocaleString() : '—') + '</td>' +
+      '<td><span style="font-size:11px;font-weight:600;color:'+pc+'">' + (b.prior_auth_required||'no').toUpperCase() + '</span></td>' +
+      '<td><span style="font-size:11px;font-weight:600;color:'+cbc+'">' + (b.cob_applies||'no').toUpperCase() + '</span></td>' +
+      '<td><span style="font-size:12px;font-weight:600;color:'+cc+'">' + (b.covered||'yes').toUpperCase() + '</span></td>' +
+      '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + b.id + '\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + b.id + '\')">Del</button></div></td>' +
+      '</tr>';
