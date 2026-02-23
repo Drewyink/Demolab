@@ -4,25 +4,32 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facets — Pricing</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
       <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
-      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item active" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
@@ -34,189 +41,107 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Pricing Tiers</div>
-          <div class="page-subtitle">EMPLOYER / EMPLOYEE CONTRIBUTION SPLITS</div>
-        </div>
-        <button class="btn btn-primary" onclick="openModal()">+ New Pricing Tier</button>
+        <div><div class="page-title">Pricing Tiers</div><div class="page-subtitle">PREMIUM RATES · EMPLOYER CONTRIBUTIONS · EMPLOYEE SHARE</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Pricing Tier</button>
       </div>
       <div class="card">
         <div class="card-header">
           <span class="card-title">💲 Pricing <span class="count-label" id="count"></span></span>
-          <div class="search-bar" style="margin:0;width:260px">
-            <span class="search-icon">🔎</span>
-            <input type="text" placeholder="Search pricing..." id="search-input">
-          </div>
+          <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search pricing..." id="search-input"></div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr>
-              <th>Code</th><th>Tier</th><th>Base Premium</th><th>Employer</th><th>Employee</th><th>Effective</th><th>Split %</th><th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="tbody"></tbody>
+            <thead><tr><th>Code</th><th>Tier</th><th>Base Premium</th><th>Employer Share</th><th>Employee Share</th><th>Effective Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Pricing Tier</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+<div id="overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Pricing Tier</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body">
-      <form class="form-grid">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
-        <div class="form-group">
-          <label class="form-label">Pricing Code</label>
-          <input type="text" class="form-input" id="f-pricing_code" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="f-status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Coverage Tier</label>
+        <div class="form-group"><label class="form-label">Pricing Code *</label><input type="text" class="form-input" id="f-pricing_code" placeholder="PRC-005"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+        <div class="form-group full"><label class="form-label">Enrollment Tier</label>
           <select class="form-select" id="f-tier">
             <option value="employee_only">Employee Only</option>
             <option value="employee_spouse">Employee + Spouse</option>
-            <option value="employee_child">Employee + Child(ren)</option>
+            <option value="employee_child">Employee + Child</option>
             <option value="family">Family</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Base Premium ($)</label>
-          <input type="number" class="form-input" id="f-base_premium" step="0.01" min="0" oninput="calcSplit()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Effective Date</label>
-          <input type="date" class="form-input" id="f-effective_date">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Employer Contribution ($)</label>
-          <input type="number" class="form-input" id="f-employer_contribution" step="0.01" min="0" oninput="calcSplit()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Employee Contribution ($)</label>
-          <input type="number" class="form-input" id="f-employee_contribution" step="0.01" min="0" oninput="calcSplit()">
-        </div>
-        <div class="form-group full">
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px">
-            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'IBM Plex Mono',monospace">Split Preview</div>
-            <div class="progress-bar"><div class="progress-fill" id="split-bar" style="width:0%"></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;font-family:'IBM Plex Mono',monospace">
-              <span style="color:var(--green)">Employer: <span id="split-emp">—</span></span>
-              <span style="color:var(--accent)">Employee: <span id="split-ee">—</span></span>
-            </div>
-          </div>
-        </div>
+        <div class="form-group"><label class="form-label">Base Premium ($)</label><input type="number" class="form-input" id="f-base_premium" step="0.01" min="0"></div>
+        <div class="form-group"><label class="form-label">Employer Contribution ($)</label><input type="number" class="form-input" id="f-employer_contribution" step="0.01" min="0"></div>
+        <div class="form-group"><label class="form-label">Employee Contribution ($)</label><input type="number" class="form-input" id="f-employee_contribution" step="0.01" min="0"></div>
+        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
       </form>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="save()">Save Pricing</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Pricing</button></div>
   </div>
 </div>
 <script src="app.js"></script>
 <script>
-let records = [];
-
-function calcSplit() {
-  const base = parseFloat(document.getElementById('f-base_premium').value)||0;
-  const emp = parseFloat(document.getElementById('f-employer_contribution').value)||0;
-  if (!base) return;
-  const pct = Math.min((emp/base)*100,100);
-  document.getElementById('split-bar').style.width = pct + '%';
-  document.getElementById('split-emp').textContent = pct.toFixed(0) + '%';
-  document.getElementById('split-ee').textContent = (100-pct).toFixed(0) + '%';
-}
-
-async function load() {
-  records = await apiFetch('/api/pricing');
-  render();
-}
-
-function tierLabel(t) {
-  return { employee_only:'Employee Only', employee_spouse:'Emp + Spouse', employee_child:'Emp + Child', family:'Family' }[t] || t;
-}
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const data = q ? records.filter(r => JSON.stringify(r).toLowerCase().includes(q)) : records;
-  document.getElementById('count').textContent = `· ${data.length} records`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">💲</div><p>No pricing tiers</p></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => {
-    const base = parseFloat(r.base_premium||0);
-    const emp = parseFloat(r.employer_contribution||0);
-    const pct = base ? Math.round((emp/base)*100) : 0;
-    return `<tr>
-      <td class="mono">${r.pricing_code}</td>
-      <td><strong>${tierLabel(r.tier)}</strong></td>
-      <td class="mono amount-billed">${currency(r.base_premium)}</td>
-      <td class="mono amount-paid">${currency(r.employer_contribution)}</td>
-      <td class="mono amount-allowed">${currency(r.employee_contribution)}</td>
-      <td class="mono" style="font-size:11px">${fmtDate(r.effective_date)}</td>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="progress-bar" style="width:60px"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <span class="mono" style="font-size:11px;color:var(--text2)">${pct}%</span>
-        </div>
-      </td>
-      <td>${badge(r.status, r.status)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
-      </div></td>
-    </tr>`;
+var records=[];
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+async function load(){try{records=await apiFetch('/api/pricing');render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=q?records.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);}):([].concat(records));
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">💲</div><p>No pricing found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(p){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+p.pricing_code+'</td>'+
+    '<td style="text-transform:capitalize">'+(p.tier||'').replace(/_/g,' ')+'</td>'+
+    '<td class="mono">$'+parseFloat(p.base_premium||0).toFixed(2)+'</td>'+
+    '<td class="mono" style="color:#4ade80">$'+parseFloat(p.employer_contribution||0).toFixed(2)+'</td>'+
+    '<td class="mono" style="color:#fbbf24">$'+parseFloat(p.employee_contribution||0).toFixed(2)+'</td>'+
+    '<td style="font-size:12px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
+    '<td>'+badge(p.status,p.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+p.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+p.id+'\')">Del</button></div></td>'+
+    '</tr>';
   }).join('');
 }
-
-function openModal(data = null) {
-  document.getElementById('modal-title').textContent = data ? 'Edit Pricing Tier' : 'New Pricing Tier';
-  document.getElementById('f-id').value = data?.id || '';
-  document.getElementById('f-pricing_code').value = data?.pricing_code || genCode('PRC');
-  document.getElementById('f-tier').value = data?.tier || 'employee_only';
-  document.getElementById('f-base_premium').value = data?.base_premium || '';
-  document.getElementById('f-employer_contribution').value = data?.employer_contribution || '';
-  document.getElementById('f-employee_contribution').value = data?.employee_contribution || '';
-  document.getElementById('f-effective_date').value = data?.effective_date?.split('T')[0] || '';
-  document.getElementById('f-status').value = data?.status || 'active';
-  document.getElementById('modal').classList.add('open');
-  calcSplit();
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Pricing':'New Pricing Tier';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-pricing_code').value=d?d.pricing_code:genCode('PRC');
+  document.getElementById('f-tier').value=d?(d.tier||'employee_only'):'employee_only';
+  document.getElementById('f-base_premium').value=d?(d.base_premium||''):'';
+  document.getElementById('f-employer_contribution').value=d?(d.employer_contribution||''):'';
+  document.getElementById('f-employee_contribution').value=d?(d.employee_contribution||''):'';
+  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  document.getElementById('overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function edit(id) { openModal(records.find(r => r.id === id)); }
-
-async function save() {
-  const id = document.getElementById('f-id').value;
-  const body = {
-    pricing_code: document.getElementById('f-pricing_code').value,
-    tier: document.getElementById('f-tier').value,
-    base_premium: document.getElementById('f-base_premium').value,
-    employer_contribution: document.getElementById('f-employer_contribution').value,
-    employee_contribution: document.getElementById('f-employee_contribution').value,
-    effective_date: document.getElementById('f-effective_date').value,
-    status: document.getElementById('f-status').value
-  };
-  if (id) { await apiFetch(`/api/pricing/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Pricing updated', 'success'); }
-  else { await apiFetch('/api/pricing', { method: 'POST', body: JSON.stringify(body) }); toast('Pricing created', 'success'); }
-  closeModal(); load();
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var pc=document.getElementById('f-pricing_code').value.trim();
+  if(!pc){errEl.textContent='⚠ Pricing Code is required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={pricing_code:pc,tier:document.getElementById('f-tier').value,base_premium:parseFloat(document.getElementById('f-base_premium').value)||0,employer_contribution:parseFloat(document.getElementById('f-employer_contribution').value)||0,employee_contribution:parseFloat(document.getElementById('f-employee_contribution').value)||0,effective_date:document.getElementById('f-effective_date').value||null,status:document.getElementById('f-status').value};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});render();}
+  closeModal();toast(id?'Saving...':'Creating...','info');
+  try{var res=await fetch(id?'/api/pricing/'+id:'/api/pricing',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Updated ✓':'Created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
-
-async function del(id) {
-  if (!await confirmDialog('Delete this pricing tier?')) return;
-  await apiFetch(`/api/pricing/${id}`, { method: 'DELETE' });
-  toast('Pricing deleted', 'info'); load();
-}
-
-document.getElementById('search-input').addEventListener('input', render);
+async function del(id){if(!await confirmDialog('Delete this pricing tier?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/pricing/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
 load();
 </script>
 </body>
