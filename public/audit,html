@@ -8,22 +8,24 @@
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
       <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item active" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
@@ -34,34 +36,18 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Audit Trail</div>
-          <div class="page-subtitle">IMMUTABLE · TIMESTAMPED · TRACEABLE</div>
-        </div>
+        <div><div class="page-title">Audit Log</div><div class="page-subtitle">ALL SYSTEM CHANGES · CREATE · UPDATE · DELETE</div></div>
         <button class="btn btn-secondary" onclick="load()">↻ Refresh</button>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">🔍 Audit Log <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="filter-tabs">
-              <button class="filter-tab active" onclick="filterAction('all',this)">All</button>
-              <button class="filter-tab" onclick="filterAction('CREATE',this)">Create</button>
-              <button class="filter-tab" onclick="filterAction('UPDATE',this)">Update</button>
-              <button class="filter-tab" onclick="filterAction('DELETE',this)">Delete</button>
-            </div>
-            <div class="search-bar" style="margin:0;width:200px">
-              <span class="search-icon">🔎</span>
-              <input type="text" placeholder="Search log..." id="search-input">
-            </div>
-          </div>
+          <span class="card-title">🔍 Activity <span class="count-label" id="count"></span></span>
+          <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search logs..." id="search-input"></div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr>
-              <th>Time</th><th>Action</th><th>Table</th><th>Record ID</th><th>Performed By</th><th>Changes</th>
-            </tr></thead>
-            <tbody id="tbody"></tbody>
+            <thead><tr><th>Timestamp</th><th>Action</th><th>Table</th><th>Record ID</th><th>Performed By</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -70,59 +56,29 @@
 </div>
 <script src="app.js"></script>
 <script>
-let records = [];
-let actionFilter = 'all';
-
-async function load() {
-  records = await apiFetch('/api/audit');
-  render();
+var records=[];
+document.getElementById('search-input').addEventListener('input',render);
+async function load(){
+  try{records=await apiFetch('/api/audit');render();}
+  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
 }
-
-function actionBadge(a) {
-  const map = { CREATE:'active', UPDATE:'pending', DELETE:'inactive' };
-  return badge(a, map[a]||'');
-}
-
-function filterAction(a, btn) {
-  actionFilter = a;
-  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  let data = actionFilter !== 'all' ? records.filter(r=>r.action===actionFilter) : records;
-  if (q) data = data.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-  document.getElementById('count').textContent = `· ${data.length} entries`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔍</div><p>No audit entries found. Start making changes to see the trail.</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = data.map(r => {
-    let changesHtml = '—';
-    if (r.changes) {
-      try {
-        const obj = JSON.parse(r.changes);
-        changesHtml = `<details><summary style="cursor:pointer;color:var(--accent);font-size:11px">View changes</summary>
-          <pre style="margin-top:6px;font-size:10px;color:var(--text2);white-space:pre-wrap;max-width:300px">${JSON.stringify(obj,null,2)}</pre></details>`;
-      } catch {
-        changesHtml = `<span style="font-size:11px;color:var(--text2)">${r.changes.substring(0,60)}${r.changes.length>60?'…':''}</span>`;
-      }
-    }
-    return `<tr>
-      <td class="mono" style="font-size:11px;white-space:nowrap">${new Date(r.created_at).toLocaleString()}</td>
-      <td>${actionBadge(r.action)}</td>
-      <td class="mono" style="color:var(--accent)">${r.table_name}</td>
-      <td class="mono" style="font-size:10px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis">${r.record_id || '—'}</td>
-      <td style="color:var(--text2)">${r.performed_by || 'system'}</td>
-      <td>${changesHtml}</td>
-    </tr>`;
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=q?records.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);}):([].concat(records));
+  document.getElementById('count').textContent='· '+data.length+' entries';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🔍</div><p>No audit entries yet — make some changes!</p></div></td></tr>';return;}
+  var ac={CREATE:'var(--green)',UPDATE:'var(--accent)',DELETE:'var(--red)'};
+  tbody.innerHTML=data.map(function(l){
+    return'<tr>'+
+    '<td class="mono" style="font-size:11px;color:var(--text3)">'+new Date(l.created_at).toLocaleString()+'</td>'+
+    '<td><span style="font-weight:700;color:'+(ac[l.action]||'var(--text2)')+'">'+l.action+'</span></td>'+
+    '<td style="font-size:12px;color:var(--text2)">'+l.table_name+'</td>'+
+    '<td class="mono" style="font-size:10px;color:var(--text3)">'+l.record_id+'</td>'+
+    '<td style="font-size:12px">'+l.performed_by+'</td>'+
+    '</tr>';
   }).join('');
 }
-
-document.getElementById('search-input').addEventListener('input', render);
 load();
 </script>
 </body>
