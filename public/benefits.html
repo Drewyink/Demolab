@@ -2,27 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Benefits</title>
+  <title>Facets — Benefits Configuration</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .ben-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+    .b-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .b-card .b-val{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .b-card .b-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .toggle-row .t-label{font-size:13px;color:var(--text);}.toggle-row .t-sub{font-size:11px;color:var(--text3);}
+    .toggle{position:relative;width:40px;height:22px;}.toggle input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:var(--surface);border:1px solid var(--border2);border-radius:11px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{position:absolute;content:'';height:16px;width:16px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:.2s;}
+    .toggle input:checked+.toggle-slider{background:rgba(0,212,255,0.25);border-color:var(--accent);}
+    .toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:var(--accent);}
+    .cost-preview{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:12px;}
+    .cost-preview h4{font-size:11px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:12px;}
+    .cost-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(30,45,69,0.4);font-size:12px;}
+    .cost-row:last-child{border-bottom:none;}.cost-label{color:var(--text2);}
+    .cost-val{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--text);}
+    .cost-val.green{color:#4ade80;}.cost-val.yellow{color:#fbbf24;}.cost-val.red{color:var(--red);}
+    .rule-tag{display:inline-flex;align-items:center;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:4px;padding:2px 7px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--accent);margin:2px;}
+    .rule-tag.warn{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;}
+    .rule-tag.danger{background:rgba(255,71,87,0.1);border-color:rgba(255,71,87,0.3);color:var(--red);}
+    .rule-tag.green{background:rgba(0,255,136,0.08);border-color:rgba(0,255,136,0.2);color:var(--green);}
+    .pt-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+    .pt-hmo{background:rgba(0,212,255,0.12);color:var(--accent);}
+    .pt-ppo{background:rgba(160,100,255,0.12);color:#a064ff;}
+    .pt-epo{background:rgba(0,255,136,0.12);color:var(--green);}
+    .pt-hdhp{background:rgba(255,215,0,0.12);color:var(--yellow);}
+    .pt-all{background:rgba(255,255,255,0.08);color:var(--text2);}
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
       <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item active" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
@@ -34,158 +72,344 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Benefits Configuration</div>
-          <div class="page-subtitle">COPAYS · COINSURANCE · PRIOR AUTH</div>
-        </div>
-        <button class="btn btn-primary" onclick="openModal()">+ New Benefit</button>
+        <div><div class="page-title">Benefits Configuration</div><div class="page-subtitle">COST-SHARING · ACCUMULATORS · COB · EXCEPTIONS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Benefit</button>
+      </div>
+      <div class="ben-cards">
+        <div class="b-card"><div class="b-lbl">Total Benefits</div><div class="b-val" id="s-total">—</div></div>
+        <div class="b-card"><div class="b-lbl">Medical</div><div class="b-val" style="color:var(--accent)" id="s-medical">—</div></div>
+        <div class="b-card"><div class="b-lbl">Pharmacy</div><div class="b-val" style="color:#4ade80" id="s-pharmacy">—</div></div>
+        <div class="b-card"><div class="b-lbl">PA Required</div><div class="b-val" style="color:#fbbf24" id="s-pa">—</div></div>
+        <div class="b-card"><div class="b-lbl">Non-Covered</div><div class="b-val" style="color:var(--red)" id="s-noncovered">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
           <span class="card-title">✚ Benefits <span class="count-label" id="count"></span></span>
-          <div class="search-bar" style="margin:0;width:260px">
-            <span class="search-icon">🔎</span>
-            <input type="text" placeholder="Search benefits..." id="search-input">
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search benefits..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-medical">Medical</button>
+              <button class="filter-tab" id="tab-pharmacy">Pharmacy</button>
+              <button class="filter-tab" id="tab-dental">Dental</button>
+              <button class="filter-tab" id="tab-pa">PA Required</button>
+            </div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
             <thead><tr>
-              <th>Code</th><th>Benefit Name</th><th>Type</th><th>Copay</th><th>Coinsurance</th><th>Covered</th><th>Prior Auth</th><th>Actions</th>
+              <th>Code</th><th>Benefit Name</th><th>Plan Type</th><th>Type</th>
+              <th>Copay</th><th>Coinsurance</th><th>Deductible</th><th>OOP Max</th>
+              <th>PA Req</th><th>COB</th><th>Covered</th><th>Actions</th>
             </tr></thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody"><tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Benefit</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+<div id="overlay">
+  <div class="modal" style="width:820px;max-height:93vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Benefit</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('cost',this)">Cost-Sharing</button>
+        <button class="modal-tab" onclick="switchTab('accum',this)">Accumulators</button>
+        <button class="modal-tab" onclick="switchTab('rules',this)">Rules &amp; Exceptions</button>
+        <button class="modal-tab" onclick="switchTab('cob',this)">COB / Medicare</button>
+        <button class="modal-tab" onclick="switchTab('preview',this)">Preview</button>
+      </div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+      <div class="tab-panel active" id="tab-cost">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Benefit Code *</label><input type="text" class="form-input" id="f-benefit_code" placeholder="BEN-PCP-001"></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="form-group full"><label class="form-label">Benefit Name *</label><input type="text" class="form-input" id="f-benefit_name" placeholder="Primary Care Visit"></div>
+          <div class="form-group"><label class="form-label">Benefit Type</label>
+            <select class="form-select" id="f-benefit_type">
+              <option value="medical">Medical</option><option value="pharmacy">Pharmacy</option>
+              <option value="dental">Dental</option><option value="vision">Vision</option>
+              <option value="mental_health">Mental Health / BH</option><option value="preventive">Preventive (ACA)</option>
+              <option value="surgical">Surgical</option><option value="imaging">Imaging / Radiology</option>
+              <option value="lab">Lab / Pathology</option><option value="inpatient">Inpatient</option>
+              <option value="physical_therapy">Physical / OT Therapy</option><option value="dme">DME</option>
+              <option value="ambulance">Ambulance</option><option value="telehealth">Telehealth</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Plan Type (applies to)</label>
+            <select class="form-select" id="f-plan_type">
+              <option value="all">All Plan Types</option><option value="hmo">HMO</option>
+              <option value="ppo">PPO</option><option value="epo">EPO</option>
+              <option value="hdhp">HDHP / HSA</option><option value="pos">POS</option>
+              <option value="medicaid">Medicaid</option><option value="medicare_supp">Medicare Supplement</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Network Tier</label>
+            <select class="form-select" id="f-network_tier">
+              <option value="in_network">In-Network</option><option value="out_of_network">Out-of-Network</option>
+              <option value="preferred">Preferred Network</option><option value="both">Both (same cost)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Copay ($)</label><input type="number" class="form-input" id="f-copay" step="0.01" min="0" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">Coinsurance (%)</label><input type="number" class="form-input" id="f-coinsurance" step="1" min="0" max="100" placeholder="20"></div>
+          <div class="form-group"><label class="form-label">Individual Deductible ($)</label><input type="number" class="form-input" id="f-deductible_individual" step="0.01" min="0" placeholder="1500.00"></div>
+          <div class="form-group"><label class="form-label">Family Deductible ($)</label><input type="number" class="form-input" id="f-deductible_family" step="0.01" min="0" placeholder="3000.00"></div>
+          <div class="form-group"><label class="form-label">Individual OOP Max ($)</label><input type="number" class="form-input" id="f-oop_max_individual" step="0.01" min="0" placeholder="6000.00"></div>
+          <div class="form-group"><label class="form-label">Family OOP Max ($)</label><input type="number" class="form-input" id="f-oop_max_family" step="0.01" min="0" placeholder="12000.00"></div>
+          <div class="form-group"><label class="form-label">Covered?</label>
+            <select class="form-select" id="f-covered">
+              <option value="yes">Yes — Covered</option><option value="no">No — Not Covered</option>
+              <option value="conditional">Conditional (see exceptions)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">ACA Preventive</label>
+            <select class="form-select" id="f-aca_preventive"><option value="no">No</option><option value="yes">Yes — ACA §2713</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Visit Limit</label><input type="number" class="form-input" id="f-visit_limit" min="0" placeholder="Unlimited"></div>
+          <div class="form-group"><label class="form-label">Dollar Limit (Annual $)</label><input type="number" class="form-input" id="f-dollar_limit" step="0.01" min="0" placeholder="Unlimited"></div>
+        </form>
+      </div>
+      <div class="tab-panel" id="tab-accum">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Configure which accumulator buckets this benefit contributes to.</p>
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Accumulator Group</label>
+            <select class="form-select" id="f-accumulator_group">
+              <option value="medical">Medical Accumulator</option><option value="pharmacy">Pharmacy Accumulator</option>
+              <option value="dental">Dental Accumulator</option><option value="combined">Combined Medical + Rx</option>
+              <option value="none">None (does not accumulate)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Deductible Applies?</label>
+            <select class="form-select" id="f-deductible_applies">
+              <option value="yes">Yes — deductible must be met first</option>
+              <option value="no">No — copay/coins applies immediately</option>
+              <option value="waived_preventive">Waived (ACA Preventive)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Counts Toward Deductible?</label>
+            <select class="form-select" id="f-counts_toward_deductible"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Counts Toward OOP Max?</label>
+            <select class="form-select" id="f-counts_toward_oop"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Embedded Deductible?</label>
+            <select class="form-select" id="f-embedded_deductible">
+              <option value="yes">Yes — per-member cap within family</option><option value="no">No — aggregate only</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">HSA / HDHP Eligible?</label>
+            <select class="form-select" id="f-hsa_eligible">
+              <option value="yes">Yes — qualifies under IRS HDHP rules</option><option value="no">No</option><option value="na">N/A</option>
+            </select>
+          </div>
+        </form>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Accumulator Flow</div>
+          <div id="accum-flow" style="font-size:12px;color:var(--text2);line-height:1.9"></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-rules">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Prior Authorization Required</label>
+            <select class="form-select" id="f-prior_auth_required">
+              <option value="no">No</option><option value="yes">Yes — PA required</option>
+              <option value="conditional">Conditional (quantity/setting-based)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Referral Required (HMO)</label>
+            <select class="form-select" id="f-referral_required">
+              <option value="no">No</option><option value="yes">Yes — PCP referral required</option><option value="hmo_only">HMO only</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medical Necessity Review</label>
+            <select class="form-select" id="f-medical_necessity">
+              <option value="no">No</option><option value="yes">Yes — UM review required</option><option value="inpatient_only">Inpatient only</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Exception Category</label>
+            <select class="form-select" id="f-exception_category">
+              <option value="none">None</option><option value="experimental">Experimental / Investigational</option>
+              <option value="cosmetic">Cosmetic / Elective</option><option value="custodial">Custodial Care</option>
+              <option value="dental_medical">Dental when medically necessary</option>
+              <option value="pediatric">Pediatric ACA mandate</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Override / Exception Notes</label><textarea class="form-textarea" id="f-exception_notes" rows="2" placeholder="e.g., Covered only when medically necessary..."></textarea></div>
+        </form>
+        <div style="margin-top:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Active Rule Flags</div>
+          <div class="toggle-row"><div><div class="t-label">Duplicate Claim Detection</div><div class="t-sub">Reject duplicate claims for same member, provider, date, code</div></div><label class="toggle"><input type="checkbox" id="f-dup_detection" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="t-label">Concurrent Care Protection</div><div class="t-sub">Transition coverage when switching plans mid-year</div></div><label class="toggle"><input type="checkbox" id="f-concurrent_care"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="t-label">Age / Gender Eligibility Edit</div><div class="t-sub">Apply age or gender restrictions to this benefit</div></div><label class="toggle"><input type="checkbox" id="f-age_gender_edit"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="t-label">Subrogation Eligible</div><div class="t-sub">Plan may seek recovery from liable third party</div></div><label class="toggle"><input type="checkbox" id="f-subrogation"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="t-label">Network Adequacy Override</div><div class="t-sub">Allow OON at in-network rates if in-network unavailable</div></div><label class="toggle"><input type="checkbox" id="f-network_override"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-cob">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Configure COB rules and Medicare/Medicaid interactions.</p>
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">COB Applies?</label>
+            <select class="form-select" id="f-cob_applies">
+              <option value="yes">Yes — coordinate with other payers</option><option value="no">No — this plan always primary</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">COB Method</label>
+            <select class="form-select" id="f-cob_method">
+              <option value="non_duplication">Non-Duplication</option><option value="coordination">Coordination (standard)</option>
+              <option value="maintenance_of_benefits">Maintenance of Benefits (MOB)</option>
+              <option value="birthday_rule">Birthday Rule (dependent children)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicare Interaction</label>
+            <select class="form-select" id="f-medicare_interaction">
+              <option value="none">None</option><option value="primary">This plan primary (MSP)</option>
+              <option value="secondary">Medicare primary (Medigap)</option>
+              <option value="supplement">Medicare Supplement benefit</option>
+              <option value="advantage">Medicare Advantage (Part C)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicaid Interaction</label>
+            <select class="form-select" id="f-medicaid_interaction">
+              <option value="none">None</option><option value="primary_over_medicaid">Primary over Medicaid</option>
+              <option value="medicaid_supplement">Medicaid supplement / wrap-around</option>
+              <option value="dual_eligible">Dual Eligible (Medicare + Medicaid)</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Medicare Supplement Description</label><textarea class="form-textarea" id="f-medicare_supp_desc" rows="2" placeholder="e.g., Covers Part A deductible gap, Part B coinsurance..."></textarea></div>
+          <div class="form-group full"><label class="form-label">COB / Coordination Notes</label><textarea class="form-textarea" id="f-cob_notes" rows="2" placeholder="e.g., When secondary payer, reduce so combined total does not exceed 100%..."></textarea></div>
+        </form>
+      </div>
+      <div class="tab-panel" id="tab-preview">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Live benefit summary. Simulates a $500 claim to show member and plan responsibility.</p>
+        <div id="preview-content"></div>
+      </div>
     </div>
-    <div class="modal-body">
-      <form class="form-grid">
-        <input type="hidden" id="f-id">
-        <div class="form-group">
-          <label class="form-label">Benefit Code</label>
-          <input type="text" class="form-input" id="f-benefit_code" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Benefit Type</label>
-          <select class="form-select" id="f-benefit_type">
-            <option value="medical">Medical</option>
-            <option value="dental">Dental</option>
-            <option value="vision">Vision</option>
-            <option value="pharmacy">Pharmacy</option>
-            <option value="imaging">Imaging</option>
-            <option value="surgical">Surgical</option>
-            <option value="behavioral">Behavioral Health</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Benefit Name</label>
-          <input type="text" class="form-input" id="f-benefit_name" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Copay ($)</label>
-          <input type="number" class="form-input" id="f-copay" step="0.01" min="0" value="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Coinsurance (0–1)</label>
-          <input type="number" class="form-input" id="f-coinsurance" step="0.01" min="0" max="1" placeholder="e.g. 0.20">
-        </div>
-        <div class="form-group" style="align-items:flex-start;padding-top:8px">
-          <label class="form-label">Covered</label>
-          <label class="form-toggle"><input type="checkbox" id="f-covered" checked><div class="toggle-track"></div><span style="font-size:12px;color:var(--text2)">Service covered</span></label>
-        </div>
-        <div class="form-group" style="align-items:flex-start;padding-top:8px">
-          <label class="form-label">Prior Authorization</label>
-          <label class="form-toggle"><input type="checkbox" id="f-prior_auth"><div class="toggle-track"></div><span style="font-size:12px;color:var(--text2)">Required</span></label>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="save()">Save Benefit</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Benefit</button></div>
   </div>
 </div>
 <script src="app.js"></script>
 <script>
-let records = [];
-
-async function load() {
-  records = await apiFetch('/api/benefits');
-  render();
+var records=[],typeFilter='all';
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
+document.getElementById('tab-medical').addEventListener('click',function(){setFilter('medical',this);});
+document.getElementById('tab-pharmacy').addEventListener('click',function(){setFilter('pharmacy',this);});
+document.getElementById('tab-dental').addEventListener('click',function(){setFilter('dental',this);});
+document.getElementById('tab-pa').addEventListener('click',function(){setFilter('pa',this);});
+function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');if(name==='preview')buildPreview();if(name==='accum')buildAccumFlow();}
+function setFilter(s,btn){typeFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+async function load(){try{records=await apiFetch('/api/benefits');updateSummary();render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-medical').textContent=records.filter(function(r){return r.benefit_type==='medical';}).length;
+  document.getElementById('s-pharmacy').textContent=records.filter(function(r){return r.benefit_type==='pharmacy';}).length;
+  document.getElementById('s-pa').textContent=records.filter(function(r){return r.prior_auth_required==='yes';}).length;
+  document.getElementById('s-noncovered').textContent=records.filter(function(r){return r.covered==='no';}).length;
 }
-
-function boolBadge(v) {
-  return v ? `<span class="badge badge-active">Yes</span>` : `<span class="badge badge-inactive">No</span>`;
+function ptClass(t){var m={hmo:'pt-hmo',ppo:'pt-ppo',epo:'pt-epo',hdhp:'pt-hdhp'};return'pt-badge '+(m[(t||'all').toLowerCase()]||'pt-all');}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(typeFilter==='pa')data=data.filter(function(r){return r.prior_auth_required==='yes';});
+  else if(typeFilter!=='all')data=data.filter(function(r){return(r.benefit_type||'').indexOf(typeFilter)>-1;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">✚</div><p>No benefits found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(b){
+    var cc=b.covered==='yes'?'var(--green)':b.covered==='no'?'var(--red)':'var(--yellow)';
+    var pc=b.prior_auth_required==='yes'?'var(--yellow)':'var(--text3)';
+    var cbc=b.cob_applies==='yes'?'var(--accent)':'var(--text3)';
+    return'<tr>'+
+    '<td class="mono" style="font-size:11px;color:var(--accent)">'+b.benefit_code+'</td>'+
+    '<td><strong style="font-size:13px">'+b.benefit_name+'</strong></td>'+
+    '<td><span class="'+ptClass(b.plan_type)+'">'+((b.plan_type||'all').toUpperCase())+'</span></td>'+
+    '<td>'+badge(b.benefit_type||'medical',b.benefit_type)+'</td>'+
+    '<td class="mono">'+(b.copay>0?'$'+parseFloat(b.copay).toFixed(0):'—')+'</td>'+
+    '<td class="mono">'+(b.coinsurance>0?b.coinsurance+'%':'—')+'</td>'+
+    '<td class="mono" style="font-size:11px">'+(b.deductible_individual>0?'$'+parseFloat(b.deductible_individual).toLocaleString():'—')+'</td>'+
+    '<td class="mono" style="font-size:11px">'+(b.oop_max_individual>0?'$'+parseFloat(b.oop_max_individual).toLocaleString():'—')+'</td>'+
+    '<td><span style="font-size:11px;font-weight:600;color:'+pc+'">'+(b.prior_auth_required||'no').toUpperCase()+'</span></td>'+
+    '<td><span style="font-size:11px;font-weight:600;color:'+cbc+'">'+(b.cob_applies||'no').toUpperCase()+'</span></td>'+
+    '<td><span style="font-size:12px;font-weight:600;color:'+cc+'">'+(b.covered||'yes').toUpperCase()+'</span></td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+b.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+b.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
 }
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const data = q ? records.filter(r => JSON.stringify(r).toLowerCase().includes(q)) : records;
-  document.getElementById('count').textContent = `· ${data.length} records`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) { tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">✚</div><p>No benefits configured</p></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td class="mono">${r.benefit_code}</td>
-      <td><strong>${r.benefit_name}</strong></td>
-      <td>${badge(r.benefit_type, r.benefit_type)}</td>
-      <td class="mono amount-allowed">${currency(r.copay)}</td>
-      <td class="mono">${(parseFloat(r.coinsurance||0)*100).toFixed(0)}%</td>
-      <td>${boolBadge(r.covered)}</td>
-      <td>${boolBadge(r.prior_auth_required)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
-      </div></td>
-    </tr>`).join('');
+function buildAccumFlow(){
+  var da=document.getElementById('f-deductible_applies').value,ag=document.getElementById('f-accumulator_group').value,ctd=document.getElementById('f-counts_toward_deductible').value,cto=document.getElementById('f-counts_toward_oop').value,hsa=document.getElementById('f-hsa_eligible').value;
+  var steps=['1. Member submits claim for this benefit'];
+  if(da==='waived_preventive')steps.push('2. ACA Preventive → deductible waived, 100% plan pays');
+  else if(da==='yes')steps.push('2. Deductible applies → member pays '+ag+' deductible first');
+  else steps.push('2. Deductible waived → copay/coinsurance applies immediately');
+  if(ctd==='yes')steps.push('3. Member cost share counts toward '+ag+' deductible accumulator');
+  steps.push('4. After deductible met → coinsurance/copay applies');
+  if(cto==='yes')steps.push('5. All member cost share counts toward '+ag+' OOP max');
+  steps.push('6. After OOP max met → plan pays 100%');
+  if(hsa==='yes')steps.push('★ HSA-qualified: member may use HSA funds for cost share');
+  document.getElementById('accum-flow').innerHTML=steps.map(function(s){return'<div style="margin-bottom:4px">'+s+'</div>';}).join('');
 }
-
-function openModal(data = null) {
-  document.getElementById('modal-title').textContent = data ? 'Edit Benefit' : 'New Benefit';
-  document.getElementById('f-id').value = data?.id || '';
-  document.getElementById('f-benefit_code').value = data?.benefit_code || genCode('BEN');
-  document.getElementById('f-benefit_name').value = data?.benefit_name || '';
-  document.getElementById('f-benefit_type').value = data?.benefit_type || 'medical';
-  document.getElementById('f-copay').value = data?.copay || 0;
-  document.getElementById('f-coinsurance').value = data?.coinsurance || 0;
-  document.getElementById('f-covered').checked = data ? data.covered : true;
-  document.getElementById('f-prior_auth').checked = data?.prior_auth_required || false;
-  document.getElementById('modal').classList.add('open');
+function buildPreview(){
+  var name=document.getElementById('f-benefit_name').value||'Benefit';
+  var copay=parseFloat(document.getElementById('f-copay').value)||0;
+  var coins=parseFloat(document.getElementById('f-coinsurance').value)||0;
+  var ded=parseFloat(document.getElementById('f-deductible_individual').value)||0;
+  var oop=parseFloat(document.getElementById('f-oop_max_individual').value)||0;
+  var covered=document.getElementById('f-covered').value;
+  var aca=document.getElementById('f-aca_preventive').value;
+  var da=document.getElementById('f-deductible_applies').value;
+  var pt=document.getElementById('f-plan_type').value;
+  var SAMPLE=500,allowed=SAMPLE*0.85,tags=[],rows=[],memberPays=0,planPays=0;
+  rows.push({l:'Sample Claim',v:'$'+SAMPLE.toFixed(2),c:''});
+  rows.push({l:'Allowed Amount (~85%)',v:'$'+allowed.toFixed(2),c:'yellow'});
+  rows.push({l:'Plan Type',v:pt.toUpperCase(),c:'cyan'});
+  if(covered==='no'){tags.push({t:'NOT COVERED',d:true});rows.push({l:'Plan Pays',v:'$0.00',c:'red'});rows.push({l:'Member Pays',v:'$'+allowed.toFixed(2)+' (100%)',c:'red'});}
+  else if(aca==='yes'){tags.push({t:'ACA PREVENTIVE',g:true});tags.push({t:'NO COST SHARE',g:true});rows.push({l:'Plan Pays',v:'$'+allowed.toFixed(2)+' (100%)',c:'green'});rows.push({l:'Member Cost Share',v:'$0.00',c:'green'});}
+  else if(copay>0&&coins===0){tags.push({t:'$'+copay+' COPAY'});if(da!=='yes')tags.push({t:'DED WAIVED',g:true});memberPays=Math.min(copay,allowed);planPays=allowed-memberPays;rows.push({l:'Member Copay',v:'$'+memberPays.toFixed(2),c:'yellow'});rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
+  else if(coins>0){tags.push({t:coins+'% COINSURANCE'});if(da==='yes'&&ded>0)rows.push({l:'First: Member pays toward ded.',v:'$'+ded.toFixed(2)+' (if unmet)',c:'yellow'});memberPays=parseFloat((allowed*(coins/100)).toFixed(2));planPays=allowed-memberPays;rows.push({l:'Member Coinsurance ('+coins+'%)',v:'$'+memberPays.toFixed(2),c:'yellow'});rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
+  else{tags.push({t:'NO COST SHARE',g:true});planPays=allowed;rows.push({l:'Plan Pays',v:'$'+planPays.toFixed(2),c:'green'});}
+  if(oop>0)rows.push({l:'Indiv. OOP Max',v:'$'+oop.toLocaleString(),c:''});
+  var html='<div style="margin-bottom:12px">'+tags.map(function(t){return'<span class="rule-tag'+(t.d?' danger':t.g?' green':'')+'">'+t.t+'</span>';}).join('')+'</div>';
+  html+='<div class="cost-preview"><h4>Adjudication Preview — $'+SAMPLE+' Claim</h4>'+rows.map(function(r){return'<div class="cost-row"><span class="cost-label">'+r.l+'</span><span class="cost-val '+r.c+'">'+r.v+'</span></div>';}).join('')+'</div>';
+  document.getElementById('preview-content').innerHTML=html;
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function edit(id) { openModal(records.find(r => r.id === id)); }
-
-async function save() {
-  const id = document.getElementById('f-id').value;
-  const body = {
-    benefit_code: document.getElementById('f-benefit_code').value,
-    benefit_name: document.getElementById('f-benefit_name').value,
-    benefit_type: document.getElementById('f-benefit_type').value,
-    copay: document.getElementById('f-copay').value,
-    coinsurance: document.getElementById('f-coinsurance').value,
-    covered: document.getElementById('f-covered').checked,
-    prior_auth_required: document.getElementById('f-prior_auth').checked
-  };
-  if (id) { await apiFetch(`/api/benefits/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Benefit updated', 'success'); }
-  else { await apiFetch('/api/benefits', { method: 'POST', body: JSON.stringify(body) }); toast('Benefit created', 'success'); }
-  closeModal(); load();
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Benefit':'New Benefit';
+  var fields={benefit_code:d?d.benefit_code:genCode('BEN'),benefit_name:d?(d.benefit_name||''):'',benefit_type:d?(d.benefit_type||'medical'):'medical',plan_type:d?(d.plan_type||'all'):'all',network_tier:d?(d.network_tier||'in_network'):'in_network',copay:d?(d.copay||''):'',coinsurance:d?(d.coinsurance||''):'',deductible_individual:d?(d.deductible_individual||''):'',deductible_family:d?(d.deductible_family||''):'',oop_max_individual:d?(d.oop_max_individual||''):'',oop_max_family:d?(d.oop_max_family||''):'',covered:d?(d.covered||'yes'):'yes',aca_preventive:d?(d.aca_preventive||'no'):'no',visit_limit:d?(d.visit_limit||''):'',dollar_limit:d?(d.dollar_limit||''):'',status:d?(d.status||'active'):'active',accumulator_group:d?(d.accumulator_group||'medical'):'medical',deductible_applies:d?(d.deductible_applies||'yes'):'yes',counts_toward_deductible:d?(d.counts_toward_deductible||'yes'):'yes',counts_toward_oop:d?(d.counts_toward_oop||'yes'):'yes',embedded_deductible:d?(d.embedded_deductible||'yes'):'yes',hsa_eligible:d?(d.hsa_eligible||'na'):'na',prior_auth_required:d?(d.prior_auth_required||'no'):'no',referral_required:d?(d.referral_required||'no'):'no',medical_necessity:d?(d.medical_necessity||'no'):'no',exception_category:d?(d.exception_category||'none'):'none',exception_notes:d?(d.exception_notes||''):'',cob_applies:d?(d.cob_applies||'no'):'no',cob_method:d?(d.cob_method||'coordination'):'coordination',medicare_interaction:d?(d.medicare_interaction||'none'):'none',medicaid_interaction:d?(d.medicaid_interaction||'none'):'none',medicare_supp_desc:d?(d.medicare_supp_desc||''):'',cob_notes:d?(d.cob_notes||''):''};
+  Object.keys(fields).forEach(function(k){var el=document.getElementById('f-'+k);if(el)el.value=fields[k];});
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-dup_detection').checked=d?d.dup_detection!==false:true;
+  document.getElementById('f-concurrent_care').checked=d?!!d.concurrent_care:false;
+  document.getElementById('f-age_gender_edit').checked=d?!!d.age_gender_edit:false;
+  document.getElementById('f-subrogation').checked=d?!!d.subrogation:false;
+  document.getElementById('f-network_override').checked=d?!!d.network_override:false;
+  switchTab('cost',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
 }
-
-async function del(id) {
-  if (!await confirmDialog('Delete this benefit?')) return;
-  await apiFetch(`/api/benefits/${id}`, { method: 'DELETE' });
-  toast('Benefit deleted', 'info'); load();
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var bc=document.getElementById('f-benefit_code').value.trim(),bn=document.getElementById('f-benefit_name').value.trim();
+  if(!bc||!bn){errEl.textContent='⚠ Benefit Code and Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={benefit_code:bc,benefit_name:bn,benefit_type:document.getElementById('f-benefit_type').value,plan_type:document.getElementById('f-plan_type').value,network_tier:document.getElementById('f-network_tier').value,copay:parseFloat(document.getElementById('f-copay').value)||0,coinsurance:parseFloat(document.getElementById('f-coinsurance').value)||0,deductible_individual:parseFloat(document.getElementById('f-deductible_individual').value)||0,deductible_family:parseFloat(document.getElementById('f-deductible_family').value)||0,oop_max_individual:parseFloat(document.getElementById('f-oop_max_individual').value)||0,oop_max_family:parseFloat(document.getElementById('f-oop_max_family').value)||0,covered:document.getElementById('f-covered').value,aca_preventive:document.getElementById('f-aca_preventive').value,visit_limit:parseInt(document.getElementById('f-visit_limit').value)||null,dollar_limit:parseFloat(document.getElementById('f-dollar_limit').value)||null,status:document.getElementById('f-status').value,accumulator_group:document.getElementById('f-accumulator_group').value,deductible_applies:document.getElementById('f-deductible_applies').value,counts_toward_deductible:document.getElementById('f-counts_toward_deductible').value,counts_toward_oop:document.getElementById('f-counts_toward_oop').value,embedded_deductible:document.getElementById('f-embedded_deductible').value,hsa_eligible:document.getElementById('f-hsa_eligible').value,prior_auth_required:document.getElementById('f-prior_auth_required').value,referral_required:document.getElementById('f-referral_required').value,medical_necessity:document.getElementById('f-medical_necessity').value,exception_category:document.getElementById('f-exception_category').value,exception_notes:document.getElementById('f-exception_notes').value.trim(),dup_detection:document.getElementById('f-dup_detection').checked,concurrent_care:document.getElementById('f-concurrent_care').checked,age_gender_edit:document.getElementById('f-age_gender_edit').checked,subrogation:document.getElementById('f-subrogation').checked,network_override:document.getElementById('f-network_override').checked,cob_applies:document.getElementById('f-cob_applies').value,cob_method:document.getElementById('f-cob_method').value,medicare_interaction:document.getElementById('f-medicare_interaction').value,medicaid_interaction:document.getElementById('f-medicaid_interaction').value,medicare_supp_desc:document.getElementById('f-medicare_supp_desc').value.trim(),cob_notes:document.getElementById('f-cob_notes').value.trim()};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});updateSummary();render();}
+  closeModal();toast(id?'Saving...':'Creating benefit...','info');
+  try{var res=await fetch(id?'/api/benefits/'+id:'/api/benefits',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Benefit updated ✓':'Benefit created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
 }
-
-document.getElementById('search-input').addEventListener('input', render);
+async function del(id){if(!await confirmDialog('Delete this benefit?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/benefits/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed: '+e.message,'error');}}
 load();
 </script>
 </body>
