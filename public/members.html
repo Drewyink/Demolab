@@ -5,21 +5,9 @@
   <title>Facets — Members</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay {
-      position: fixed !important; inset: 0 !important;
-      background: rgba(0,0,0,0.75) !important; z-index: 99999 !important;
-      display: none; align-items: center; justify-content: center;
-    }
-    #overlay.open { display: flex !important; }
-    .sidebar { z-index: 50 !important; }
-    .topbar  { z-index: 40 !important; }
-    .plan-chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 4px; padding: 2px 8px; font-size: 11px;
-      font-family: 'IBM Plex Mono', monospace; color: var(--accent);
-    }
-    .plan-chip.none { background: rgba(74,106,138,0.15); border-color: rgba(74,106,138,0.3); color: var(--text3); }
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
   </style>
 </head>
 <body>
@@ -29,19 +17,23 @@
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item active" href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
       <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb">Configuration → <span>Members</span></span></div>
@@ -49,17 +41,14 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Member Management</div><div class="page-subtitle">ENROLL · MANAGE · TERMINATE</div></div>
+        <div><div class="page-title">Member Management</div><div class="page-subtitle">ENROLLMENT · ELIGIBILITY · PLAN ASSIGNMENT</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Member</button>
       </div>
       <div class="card">
         <div class="card-header">
           <span class="card-title">👤 Members <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;min-width:220px">
-              <span class="search-icon">🔎</span>
-              <input type="text" placeholder="Search members..." id="search-input">
-            </div>
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search members..." id="search-input"></div>
             <div class="filter-tabs">
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-active">Active</button>
@@ -69,276 +58,108 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr>
-              <th>Member ID</th><th>Name</th><th>DOB</th><th>Plan Enrolled</th>
-              <th>Email</th><th>Phone</th><th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="tbody">
-              <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr>
-            </tbody>
+            <thead><tr><th>Member ID</th><th>Name</th><th>DOB</th><th>Email</th><th>Phone</th><th>Enrollment Tier</th><th>Enrollment Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-
-<!-- MODAL -->
 <div id="overlay">
   <div class="modal" style="width:640px">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Member</span>
-      <button class="modal-close" id="btn-x">✕</button>
-    </div>
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Member</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body">
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
-        <div class="form-group">
-          <label class="form-label">Member ID *</label>
-          <input type="text" class="form-input" id="f-member_id" placeholder="MBR-001">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="f-status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="terminated">Terminated</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">First Name *</label>
-          <input type="text" class="form-input" id="f-first_name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Last Name *</label>
-          <input type="text" class="form-input" id="f-last_name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date of Birth</label>
-          <input type="date" class="form-input" id="f-dob">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Phone</label>
-          <input type="text" class="form-input" id="f-phone" placeholder="555-0100">
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="f-email">
-        </div>
-
-        <!-- PLAN ENROLLMENT -->
-        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px">
-          <label class="form-label" style="color:var(--accent);font-size:10px;letter-spacing:2px">PLAN ENROLLMENT</label>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Assigned Plan</label>
-          <select class="form-select" id="f-plan_id">
-            <option value="">— No Plan Assigned —</option>
-          </select>
-          <span style="font-size:11px;color:var(--text3);margin-top:4px;display:block">Plans must be created first on the Plans page.</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Enrollment Tier</label>
+        <div class="form-group"><label class="form-label">Member ID *</label><input type="text" class="form-input" id="f-member_id" placeholder="MBR-005"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="pending">Pending</option></select></div>
+        <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="f-first_name"></div>
+        <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="f-last_name"></div>
+        <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="f-dob"></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-input" id="f-email"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="f-phone"></div>
+        <div class="form-group"><label class="form-label">Enrollment Tier</label>
           <select class="form-select" id="f-enrollment_tier">
-            <option value="">— Select Tier —</option>
+            <option value="">— Select —</option>
             <option value="employee_only">Employee Only</option>
             <option value="employee_spouse">Employee + Spouse</option>
-            <option value="employee_child">Employee + Child(ren)</option>
+            <option value="employee_child">Employee + Child</option>
             <option value="family">Family</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Enrollment Effective Date</label>
-          <input type="date" class="form-input" id="f-enrollment_date">
-        </div>
+        <div class="form-group"><label class="form-label">Enrollment Date</label><input type="date" class="form-input" id="f-enrollment_date"></div>
       </form>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
-      <button class="btn btn-primary" id="btn-save">Save Member</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Member</button></div>
   </div>
 </div>
-
 <script src="app.js"></script>
 <script>
-let records = [];
-let plans = [];
-let statusFilter = 'all';
-
-document.getElementById('new-btn').addEventListener('click', () => openModal(null));
-document.getElementById('btn-cancel').addEventListener('click', closeModal);
-document.getElementById('btn-x').addEventListener('click', closeModal);
-document.getElementById('btn-save').addEventListener('click', save);
-document.getElementById('search-input').addEventListener('input', render);
-document.getElementById('overlay').addEventListener('click', e => { if (e.target === document.getElementById('overlay')) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-document.getElementById('tab-all').addEventListener('click',      function() { setFilter('all', this); });
-document.getElementById('tab-active').addEventListener('click',   function() { setFilter('active', this); });
-document.getElementById('tab-inactive').addEventListener('click', function() { setFilter('inactive', this); });
-
-function setFilter(s, btn) {
-  statusFilter = s;
-  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
-async function load() {
-  try {
-    [records, plans] = await Promise.all([
-      apiFetch('/api/members'),
-      apiFetch('/api/plans')
-    ]);
-    render();
-  } catch(e) {
-    document.getElementById('tbody').innerHTML = `
-      <tr><td colspan="8"><div class="empty-state">
-        <div class="empty-icon">⚠</div>
-        <p style="color:var(--red)">${e.message}</p>
-        <button class="btn btn-sm btn-secondary" style="margin-top:10px" onclick="load()">↻ Retry</button>
-      </div></td></tr>`;
-  }
-}
-
-function planName(plan_id) {
-  if (!plan_id) return null;
-  const p = plans.find(p => p.id === plan_id);
-  return p ? p.plan_name : null;
-}
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  let data = statusFilter !== 'all' ? records.filter(r => r.status === statusFilter) : [...records];
-  if (q) data = data.filter(r => JSON.stringify(r).toLowerCase().includes(q));
-  document.getElementById('count').textContent = `· ${data.length} records`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👤</div><p>No members found</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = data.map(m => {
-    const pName = planName(m.plan_id);
-    const planCell = pName
-      ? `<span class="plan-chip">📋 ${pName}</span>`
-      : `<span class="plan-chip none">Unassigned</span>`;
-    const tierLabel = m.enrollment_tier
-      ? `<br><span style="font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace">${m.enrollment_tier.replace(/_/g,' ')}</span>`
-      : '';
-    return `<tr>
-      <td class="mono">${m.member_id}</td>
-      <td><strong>${m.first_name} ${m.last_name}</strong></td>
-      <td style="font-size:12px">${fmtDate(m.dob)}</td>
-      <td>${planCell}${tierLabel}</td>
-      <td style="font-size:12px">${m.email || '—'}</td>
-      <td class="mono" style="font-size:11px">${m.phone || '—'}</td>
-      <td>${badge(m.status, m.status)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="openModal('${m.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${m.id}')">Del</button>
-      </div></td>
-    </tr>`;
+var records=[], statusFilter='all';
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
+document.getElementById('tab-active').addEventListener('click',function(){setFilter('active',this);});
+document.getElementById('tab-inactive').addEventListener('click',function(){setFilter('inactive',this);});
+function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+async function load(){try{records=await apiFetch('/api/members');render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">👤</div><p>No members found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(m){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+m.member_id+'</td>'+
+    '<td><strong>'+m.first_name+' '+m.last_name+'</strong></td>'+
+    '<td style="font-size:12px">'+(m.dob||'—')+'</td>'+
+    '<td style="font-size:12px">'+(m.email||'—')+'</td>'+
+    '<td style="font-size:12px">'+(m.phone||'—')+'</td>'+
+    '<td style="font-size:12px;text-transform:capitalize">'+(m.enrollment_tier||'—').replace(/_/g,' ')+'</td>'+
+    '<td style="font-size:12px">'+(m.enrollment_date?m.enrollment_date.split('T')[0]:'—')+'</td>'+
+    '<td>'+badge(m.status,m.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+m.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+m.id+'\')">Del</button></div></td>'+
+    '</tr>';
   }).join('');
 }
-
-function openModal(id) {
-  const data = id ? records.find(r => r.id === id) : null;
-  document.getElementById('form-error').style.display = 'none';
-  document.getElementById('modal-title').textContent  = data ? 'Edit Member' : 'New Member';
-  document.getElementById('f-id').value               = data?.id || '';
-  document.getElementById('f-member_id').value        = data?.member_id || genCode('MBR');
-  document.getElementById('f-first_name').value       = data?.first_name || '';
-  document.getElementById('f-last_name').value        = data?.last_name || '';
-  document.getElementById('f-dob').value              = data?.dob?.split('T')[0] || '';
-  document.getElementById('f-email').value            = data?.email || '';
-  document.getElementById('f-phone').value            = data?.phone || '';
-  document.getElementById('f-status').value           = data?.status || 'active';
-  document.getElementById('f-enrollment_tier').value  = data?.enrollment_tier || '';
-  document.getElementById('f-enrollment_date').value  = data?.enrollment_date?.split('T')[0] || '';
-
-  const sel = document.getElementById('f-plan_id');
-  sel.innerHTML = '<option value="">— No Plan Assigned —</option>';
-  plans.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.id;
-    opt.textContent = `${p.plan_code}  —  ${p.plan_name}`;
-    if (data?.plan_id === p.id) opt.selected = true;
-    sel.appendChild(opt);
-  });
-
-  document.getElementById('btn-save').textContent = 'Save Member';
-  document.getElementById('btn-save').disabled    = false;
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Member':'New Member';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-member_id').value=d?d.member_id:genCode('MBR');
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  document.getElementById('f-first_name').value=d?(d.first_name||''):'';
+  document.getElementById('f-last_name').value=d?(d.last_name||''):'';
+  document.getElementById('f-dob').value=d&&d.dob?d.dob.split('T')[0]:'';
+  document.getElementById('f-email').value=d?(d.email||''):'';
+  document.getElementById('f-phone').value=d?(d.phone||''):'';
+  document.getElementById('f-enrollment_tier').value=d?(d.enrollment_tier||''):'';
+  document.getElementById('f-enrollment_date').value=d&&d.enrollment_date?d.enrollment_date.split('T')[0]:'';
   document.getElementById('overlay').classList.add('open');
 }
-
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  document.getElementById('form-error').style.display = 'none';
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var mid=document.getElementById('f-member_id').value.trim(),fn=document.getElementById('f-first_name').value.trim(),ln=document.getElementById('f-last_name').value.trim();
+  if(!mid||!fn||!ln){errEl.textContent='⚠ Member ID, First Name and Last Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={member_id:mid,first_name:fn,last_name:ln,dob:document.getElementById('f-dob').value||null,email:document.getElementById('f-email').value.trim(),phone:document.getElementById('f-phone').value.trim(),enrollment_tier:document.getElementById('f-enrollment_tier').value||null,enrollment_date:document.getElementById('f-enrollment_date').value||null,status:document.getElementById('f-status').value};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});render();}
+  closeModal();toast(id?'Saving...':'Creating...','info');
+  try{var res=await fetch(id?'/api/members/'+id:'/api/members',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Member updated ✓':'Member created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
-
-async function save() {
-  const errEl = document.getElementById('form-error');
-  errEl.style.display = 'none';
-  const member_id  = document.getElementById('f-member_id').value.trim();
-  const first_name = document.getElementById('f-first_name').value.trim();
-  const last_name  = document.getElementById('f-last_name').value.trim();
-  if (!member_id || !first_name || !last_name) {
-    errEl.textContent = '⚠ Member ID, First Name and Last Name are required.';
-    errEl.style.display = 'block'; return;
-  }
-  const id = document.getElementById('f-id').value;
-  const body = {
-    member_id, first_name, last_name,
-    dob:             document.getElementById('f-dob').value || null,
-    email:           document.getElementById('f-email').value.trim() || null,
-    phone:           document.getElementById('f-phone').value.trim() || null,
-    status:          document.getElementById('f-status').value,
-    plan_id:         document.getElementById('f-plan_id').value || null,
-    enrollment_tier: document.getElementById('f-enrollment_tier').value || null,
-    enrollment_date: document.getElementById('f-enrollment_date').value || null,
-  };
-  if (!id) {
-    records.unshift({ id: '_tmp_' + Date.now(), ...body, created_at: new Date().toISOString(), _saving: true });
-    render();
-  }
-  closeModal();
-  toast(id ? 'Saving changes...' : 'Enrolling member...', 'info');
-  try {
-    const res = await fetch(id ? `/api/members/${id}` : '/api/members', {
-      method: id ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      let msg = `HTTP ${res.status}`;
-      try { const d = await res.json(); msg = d.error || msg; } catch {}
-      throw new Error(msg);
-    }
-    toast(id ? 'Member updated ✓' : 'Member enrolled ✓', 'success');
-    await load();
-  } catch(e) {
-    records = records.filter(r => !r._saving);
-    render();
-    toast(`Save failed: ${e.message}`, 'error');
-  }
-}
-
-async function del(id) {
-  if (!await confirmDialog('Delete this member? This cannot be undone.')) return;
-  const backup = [...records];
-  records = records.filter(r => r.id !== id);
-  render();
-  try {
-    await fetch(`/api/members/${id}`, { method: 'DELETE' });
-    toast('Member deleted', 'info');
-    await load();
-  } catch(e) {
-    records = backup; render();
-    toast(`Delete failed: ${e.message}`, 'error');
-  }
-}
-
+async function del(id){if(!await confirmDialog('Delete this member?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/members/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed: '+e.message,'error');}}
 load();
 </script>
 </body>
