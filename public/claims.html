@@ -5,50 +5,21 @@
   <title>Facets — Claims</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay {
-      position: fixed !important; inset: 0 !important;
-      background: rgba(0,0,0,0.75) !important; z-index: 99999 !important;
-      display: none; align-items: center; justify-content: center;
-    }
-    #overlay.open { display: flex !important; }
-    .sidebar { z-index: 50 !important; }
-    .topbar  { z-index: 40 !important; }
-    #adj-panel {
-      background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 8px; padding: 16px; margin-top: 12px;
-    }
-    #adj-panel h4 {
-      font-size: 11px; font-family: 'IBM Plex Mono', monospace;
-      text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 10px;
-    }
-    .adj-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); font-size: 12px;
-    }
-    .adj-row:last-child { border-bottom: none; }
-    .adj-label { color: var(--text2); }
-    .adj-value { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text); }
-    .adj-value.green  { color: var(--green); }
-    .adj-value.red    { color: var(--red); }
-    .adj-value.yellow { color: var(--yellow); }
-    .adj-value.cyan   { color: var(--accent); }
-    .rule-tag {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 4px; padding: 2px 7px; font-size: 10px;
-      font-family: 'IBM Plex Mono', monospace; color: var(--accent); margin: 2px;
-    }
-    .rule-tag.warn { background: rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.25); color: var(--yellow); }
-    .rule-tag.deny { background: rgba(255,71,87,0.08); border-color: rgba(255,71,87,0.25); color: var(--red); }
-    .claims-summary {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
-    }
-    .summary-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 16px; text-align: center;
-    }
-    .summary-card .s-val { font-size: 24px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; margin: 4px 0; }
-    .summary-card .s-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; }
+    #overlay { position:fixed!important;inset:0!important;background:rgba(0,0,0,0.75)!important;z-index:99999!important;display:none;align-items:center;justify-content:center; }
+    #overlay.open { display:flex!important; }
+    .sidebar { z-index:50!important; } .topbar { z-index:40!important; }
+    #adj-panel { background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:16px;margin-top:12px; }
+    #adj-panel h4 { font-size:11px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px; }
+    .adj-row { display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(30,45,69,0.5);font-size:12px; }
+    .adj-row:last-child { border-bottom:none; }
+    .adj-label { color:var(--text2); } .adj-value { font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--text); }
+    .adj-value.green { color:#4ade80; } .adj-value.yellow { color:#fbbf24; } .adj-value.cyan { color:var(--accent); }
+    .rule-tag { display:inline-flex;align-items:center;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:4px;padding:2px 7px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--accent);margin:2px; }
+    .rule-tag.warn { background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24; }
+    .claims-summary { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px; }
+    .summary-card { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center; }
+    .summary-card .s-val { font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0; }
+    .summary-card .s-lbl { font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px; }
   </style>
 </head>
 <body>
@@ -70,7 +41,6 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Claims</span></span></div>
@@ -81,34 +51,17 @@
         <div><div class="page-title">Claims Processing</div><div class="page-subtitle">ADJUDICATE · REVIEW · CLOSE</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Claim</button>
       </div>
-
       <div class="claims-summary">
-        <div class="summary-card">
-          <div class="s-lbl">Total Claims</div>
-          <div class="s-val" id="s-total">—</div>
-        </div>
-        <div class="summary-card">
-          <div class="s-lbl">Total Billed</div>
-          <div class="s-val" style="font-size:18px" id="s-billed">—</div>
-        </div>
-        <div class="summary-card">
-          <div class="s-lbl">Total Paid</div>
-          <div class="s-val" style="font-size:18px;color:var(--green)" id="s-paid">—</div>
-        </div>
-        <div class="summary-card">
-          <div class="s-lbl">Pending Review</div>
-          <div class="s-val" style="color:var(--yellow)" id="s-pending">—</div>
-        </div>
+        <div class="summary-card"><div class="s-lbl">Total Claims</div><div class="s-val" id="s-total">—</div></div>
+        <div class="summary-card"><div class="s-lbl">Total Billed</div><div class="s-val" style="font-size:17px" id="s-billed">—</div></div>
+        <div class="summary-card"><div class="s-lbl">Total Paid</div><div class="s-val" style="font-size:17px;color:#4ade80" id="s-paid">—</div></div>
+        <div class="summary-card"><div class="s-lbl">Pending Review</div><div class="s-val" style="color:#fbbf24" id="s-pending">—</div></div>
       </div>
-
       <div class="card">
         <div class="card-header">
           <span class="card-title">📄 Claims <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:200px">
-              <span class="search-icon">🔎</span>
-              <input type="text" placeholder="Search claims..." id="search-input">
-            </div>
+            <div class="search-bar" style="margin:0;width:200px"><span class="search-icon">🔎</span><input type="text" placeholder="Search claims..." id="search-input"></div>
             <div class="filter-tabs">
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-paid">Paid</button>
@@ -120,15 +73,8 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr>
-              <th>Claim #</th><th>Member</th><th>Provider</th>
-              <th>Diag / Proc</th><th>Service Date</th>
-              <th>Billed</th><th>Allowed</th><th>Paid</th>
-              <th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="tbody">
-              <tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr>
-            </tbody>
+            <thead><tr><th>Claim #</th><th>Member</th><th>Provider</th><th>Diag / Proc</th><th>Service Date</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -136,66 +82,25 @@
   </main>
 </div>
 
-<!-- MODAL -->
 <div id="overlay">
   <div class="modal" style="width:700px;max-height:92vh;overflow-y:auto">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Claim</span>
-      <button class="modal-close" id="btn-x">✕</button>
-    </div>
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Claim</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body">
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
-
-        <div class="form-group">
-          <label class="form-label">Claim Number *</label>
-          <input type="text" class="form-input" id="f-claim_number" placeholder="CLM-2025-001">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Provider</label>
-          <input type="text" class="form-input" id="f-provider" placeholder="City Medical Center">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Service Date</label>
-          <input type="date" class="form-input" id="f-service_date">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Claim Date</label>
-          <input type="date" class="form-input" id="f-claim_date">
-        </div>
-
-        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <label class="form-label" style="color:var(--accent);letter-spacing:2px">MEMBER &amp; PLAN</label>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Member</label>
-          <select class="form-select" id="f-member_id">
-            <option value="">— Select Member —</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Plan</label>
-          <select class="form-select" id="f-plan_id">
-            <option value="">— Select Plan —</option>
-          </select>
-          <span id="plan-hint" style="font-size:11px;color:var(--accent);margin-top:4px;display:none">✓ Plan auto-filled from member enrollment</span>
-        </div>
-
-        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <label class="form-label" style="color:var(--accent);letter-spacing:2px">CLINICAL CODES</label>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Diagnosis Code (ICD-10)</label>
-          <input type="text" class="form-input" id="f-diagnosis_code" placeholder="e.g. Z00.00">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Procedure Code (CPT)</label>
-          <input type="text" class="form-input" id="f-procedure_code" placeholder="e.g. 99213">
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Claim Type</label>
-          <select class="form-select" id="f-claim_type" onchange="runAdjudication()">
+        <div class="form-group"><label class="form-label">Claim Number *</label><input type="text" class="form-input" id="f-claim_number" placeholder="CLM-2026-001"></div>
+        <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f-provider" placeholder="City Medical Center"></div>
+        <div class="form-group"><label class="form-label">Service Date</label><input type="date" class="form-input" id="f-service_date"></div>
+        <div class="form-group"><label class="form-label">Claim Date</label><input type="date" class="form-input" id="f-claim_date"></div>
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px"><label class="form-label" style="color:var(--accent);letter-spacing:2px;font-size:10px">MEMBER &amp; PLAN</label></div>
+        <div class="form-group full"><label class="form-label">Member</label><select class="form-select" id="f-member_id"><option value="">— Select Member —</option></select></div>
+        <div class="form-group full"><label class="form-label">Plan</label><select class="form-select" id="f-plan_id"><option value="">— Select Plan —</option></select><span id="plan-hint" style="display:none;font-size:11px;color:var(--accent);margin-top:4px">✓ Auto-filled from member enrollment</span></div>
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px"><label class="form-label" style="color:var(--accent);letter-spacing:2px;font-size:10px">CLINICAL</label></div>
+        <div class="form-group"><label class="form-label">Diagnosis Code (ICD-10)</label><input type="text" class="form-input" id="f-diagnosis_code" placeholder="Z00.00"></div>
+        <div class="form-group"><label class="form-label">Procedure Code (CPT)</label><input type="text" class="form-input" id="f-procedure_code" placeholder="99213"></div>
+        <div class="form-group full"><label class="form-label">Claim Type</label>
+          <select class="form-select" id="f-claim_type">
             <option value="medical_pcp">Medical — Primary Care Visit</option>
             <option value="medical_specialist">Medical — Specialist Visit</option>
             <option value="medical_er">Medical — Emergency Room</option>
@@ -215,30 +120,256 @@
             <option value="oon_medical">Out-of-Network — Medical</option>
           </select>
         </div>
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px"><label class="form-label" style="color:var(--accent);letter-spacing:2px;font-size:10px">AMOUNTS &amp; ADJUDICATION</label></div>
+        <div class="form-group"><label class="form-label">Billed Amount ($) *</label><input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0" placeholder="0.00"></div>
+        <div class="form-group"><label class="form-label">PA On File?</label>
+          <select class="form-select" id="f-pa_on_file"><option value="no">No</option><option value="yes">Yes</option><option value="na" selected>N/A — Not Required</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Allowed Amount ($)</label><input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0" placeholder="Auto-calculated"></div>
+        <div class="form-group"><label class="form-label">Paid Amount ($)</label><input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0" placeholder="Auto-calculated"></div>
+        <div class="form-group full"><div id="adj-panel" style="display:none"><h4>⚡ Adjudication Result</h4><div id="adj-content"></div></div></div>
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px"><label class="form-label" style="color:var(--accent);letter-spacing:2px;font-size:10px">OUTCOME</label></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" id="f-status"><option value="pending">Pending</option><option value="paid">Paid</option><option value="in_review">In Review</option><option value="denied">Denied</option></select>
+        </div>
+        <div class="form-group full"><label class="form-label">Notes / Remarks</label><textarea class="form-textarea" id="f-notes" placeholder="Adjudication notes, denial reason, PA reference..."></textarea></div>
+      </form>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Claim</button></div>
+  </div>
+</div>
 
-        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <label class="form-label" style="color:var(--accent);letter-spacing:2px">AMOUNTS</label>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Billed Amount ($) *</label>
-          <input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0" placeholder="0.00" oninput="runAdjudication()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">PA On File?</label>
-          <select class="form-select" id="f-pa_on_file" onchange="runAdjudication()">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-            <option value="na">N/A — Not Required</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Allowed Amount ($)</label>
-          <input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0" placeholder="Auto-calculated">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Paid Amount ($)</label>
-          <input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0" placeholder="Auto-calculated">
-        </div>
+<script src="app.js"></script>
+<script>
+var records=[],members=[],plans=[],statusFilter='all';
 
-        <div class="form-group full">
-          <div id="adj-panel" style="display:none">
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
+document.getElementById('tab-paid').addEventListener('click',function(){setFilter('paid',this);});
+document.getElementById('tab-pending').addEventListener('click',function(){setFilter('pending',this);});
+document.getElementById('tab-review').addEventListener('click',function(){setFilter('in_review',this);});
+document.getElementById('tab-denied').addEventListener('click',function(){setFilter('denied',this);});
+document.getElementById('f-member_id').addEventListener('change',function(){
+  var m=members.find(function(x){return x.id===this.value;},this);
+  if(m&&m.plan_id){document.getElementById('f-plan_id').value=m.plan_id;document.getElementById('plan-hint').style.display='block';}
+  else{document.getElementById('plan-hint').style.display='none';}
+});
+document.getElementById('f-billed_amount').addEventListener('input',runAdjudication);
+document.getElementById('f-claim_type').addEventListener('change',runAdjudication);
+document.getElementById('f-pa_on_file').addEventListener('change',runAdjudication);
+
+function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+
+var RULES={
+  medical_pcp:       {copay:20, coins:0,   pa:false,pct:0.85,label:'PCP Visit'},
+  medical_specialist:{copay:50, coins:0,   pa:false,pct:0.80,label:'Specialist'},
+  medical_er:        {copay:250,coins:0,   pa:false,pct:0.90,label:'Emergency Room'},
+  medical_urgent:    {copay:75, coins:0,   pa:false,pct:0.85,label:'Urgent Care'},
+  medical_preventive:{copay:0,  coins:0,   pa:false,pct:1.00,label:'Preventive (ACA)',preventive:true},
+  medical_surgery:   {copay:0,  coins:0.20,pa:true, pct:0.75,label:'Outpatient Surgery'},
+  medical_inpatient: {copay:0,  coins:0.20,pa:true, pct:0.75,label:'Inpatient Hospital'},
+  medical_imaging:   {copay:0,  coins:0.20,pa:true, pct:0.80,label:'MRI/CT Imaging'},
+  medical_lab:       {copay:0,  coins:0,   pa:false,pct:0.90,label:'Lab/Pathology'},
+  medical_pt:        {copay:40, coins:0,   pa:false,pct:0.80,label:'Physical Therapy'},
+  rx_generic:        {copay:10, coins:0,   pa:false,pct:0.90,label:'Generic Rx'},
+  rx_brand:          {copay:40, coins:0,   pa:false,pct:0.85,label:'Brand Rx'},
+  rx_specialty:      {copay:0,  coins:0.20,pa:true, pct:0.80,label:'Specialty Rx'},
+  dental_preventive: {copay:0,  coins:0,   pa:false,pct:1.00,label:'Dental Preventive',preventive:true},
+  dental_basic:      {copay:0,  coins:0.20,pa:false,pct:0.80,label:'Dental Basic'},
+  dental_major:      {copay:0,  coins:0.50,pa:true, pct:0.70,label:'Dental Major'},
+  oon_medical:       {copay:0,  coins:0.40,pa:false,pct:0.60,label:'Out-of-Network',oon:true}
+};
+
+function runAdjudication(){
+  var billed=parseFloat(document.getElementById('f-billed_amount').value)||0;
+  var type=document.getElementById('f-claim_type').value;
+  var pa=document.getElementById('f-pa_on_file').value;
+  var panel=document.getElementById('adj-panel');
+  var content=document.getElementById('adj-content');
+  if(!billed||billed<=0){panel.style.display='none';return;}
+  var rule=RULES[type];
+  if(!rule){panel.style.display='none';return;}
+  var allowed=parseFloat((billed*rule.pct).toFixed(2));
+  var tags=[],rows=[];
+  rows.push({l:'Claim Type',v:rule.label,c:'cyan'});
+  rows.push({l:'Billed',v:'$'+billed.toFixed(2),c:''});
+  rows.push({l:'Allowed',v:'$'+allowed.toFixed(2),c:'yellow'});
+  if(rule.oon)tags.push({t:'OUT-OF-NETWORK',w:true});
+  if(rule.preventive){
+    tags.push({t:'ACA PREVENTIVE',w:false});tags.push({t:'NO DEDUCTIBLE',w:false});
+    rows.push({l:'Member Cost Share',v:'$0.00',c:'green'});
+    rows.push({l:'Plan Pays',v:'$'+allowed.toFixed(2),c:'green'});
+    rows.push({l:'Status',v:'PAID',c:'green'});
+    document.getElementById('f-allowed_amount').value=allowed.toFixed(2);
+    document.getElementById('f-paid_amount').value=allowed.toFixed(2);
+    document.getElementById('f-status').value='paid';
+    document.getElementById('f-notes').value='ACA preventive service. 100% covered, deductible waived.';
+    showPanel(panel,content,tags,rows);return;
+  }
+  if(rule.pa&&pa==='no'){
+    tags.push({t:'PA REQUIRED',w:true});tags.push({t:'PENDED',w:true});
+    rows.push({l:'Prior Auth',v:'Required — not on file',c:'yellow'});
+    rows.push({l:'Paid Amount',v:'$0.00',c:'yellow'});
+    rows.push({l:'Status',v:'IN REVIEW',c:'yellow'});
+    document.getElementById('f-allowed_amount').value=allowed.toFixed(2);
+    document.getElementById('f-paid_amount').value='0.00';
+    document.getElementById('f-status').value='in_review';
+    document.getElementById('f-notes').value='Prior authorization required. Claim pended — no PA on file. Flagged to Medical Management.';
+    showPanel(panel,content,tags,rows);return;
+  }
+  if(rule.pa&&pa==='yes')tags.push({t:'PA VERIFIED',w:false});
+  var memberPays,planPays;
+  if(rule.copay>0&&rule.coins===0){
+    memberPays=Math.min(rule.copay,allowed);planPays=Math.max(0,allowed-memberPays);
+    tags.push({t:'$'+rule.copay+' COPAY',w:false});tags.push({t:'DEDUCTIBLE WAIVED',w:false});
+    rows.push({l:'Member Copay',v:'$'+memberPays.toFixed(2),c:'yellow'});
+    rows.push({l:'Deductible',v:'Waived — copay service',c:'green'});
+  }else if(rule.coins>0){
+    memberPays=parseFloat((allowed*rule.coins).toFixed(2));planPays=parseFloat((allowed*(1-rule.coins)).toFixed(2));
+    tags.push({t:Math.round(rule.coins*100)+'% COINSURANCE',w:false});
+    rows.push({l:'Deductible',v:'Applies before coinsurance',c:'yellow'});
+    rows.push({l:'Member Coinsurance',v:'$'+memberPays.toFixed(2),c:'yellow'});
+  }else{
+    memberPays=0;planPays=allowed;tags.push({t:'NO COST SHARE',w:false});
+  }
+  if(rule.oon)rows.push({l:'OON Reduction',v:Math.round((1-rule.pct)*100)+'% off billed',c:'yellow'});
+  rows.push({l:'Plan Pays',v:'$'+(planPays||0).toFixed(2),c:'green'});
+  rows.push({l:'Status',v:'PAID',c:'green'});
+  document.getElementById('f-allowed_amount').value=allowed.toFixed(2);
+  document.getElementById('f-paid_amount').value=(planPays||0).toFixed(2);
+  document.getElementById('f-status').value='paid';
+  var n=[];
+  if(rule.pa&&pa==='yes')n.push('PA verified.');
+  if(rule.copay>0)n.push('$'+rule.copay+' copay at point of service.');
+  if(rule.coins>0)n.push(Math.round(rule.coins*100)+'% coinsurance after deductible.');
+  if(rule.oon)n.push('OON rate applied. OON deductible applies separately.');
+  document.getElementById('f-notes').value=n.join(' ');
+  showPanel(panel,content,tags,rows);
+}
+
+function showPanel(panel,content,tags,rows){
+  panel.style.display='block';
+  content.innerHTML='<div style="margin-bottom:10px">'+tags.map(function(t){return'<span class="rule-tag'+(t.w?' warn':'')+'">'+t.t+'</span>';}).join('')+'</div>'+rows.map(function(r){return'<div class="adj-row"><span class="adj-label">'+r.l+'</span><span class="adj-value '+r.c+'">'+r.v+'</span></div>';}).join('');
+}
+
+async function load(){
+  try{
+    var res=await Promise.all([apiFetch('/api/claims'),apiFetch('/api/members'),apiFetch('/api/plans')]);
+    records=res[0];members=res[1];plans=res[2];
+    updateSummary();render();
+  }catch(e){
+    document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p><button class="btn btn-sm btn-secondary" style="margin-top:10px" onclick="load()">↻ Retry</button></div></td></tr>';
+  }
+}
+
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-billed').textContent=currency(records.reduce(function(s,r){return s+parseFloat(r.billed_amount||0);},0));
+  document.getElementById('s-paid').textContent=currency(records.reduce(function(s,r){return s+parseFloat(r.paid_amount||0);},0));
+  document.getElementById('s-pending').textContent=records.filter(function(r){return r.status==='pending'||r.status==='in_review';}).length;
+}
+
+function memberName(id){if(!id)return'—';var m=members.find(function(x){return x.id===id;});return m?m.first_name+' '+m.last_name:'—';}
+
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📄</div><p>No claims found</p></div></td></tr>';return;}
+  var sc={paid:'active',pending:'pending',in_review:'pending',denied:'inactive'};
+  tbody.innerHTML=data.map(function(c){
+    return'<tr>'+
+    '<td class="mono" style="font-size:11px">'+c.claim_number+'</td>'+
+    '<td style="font-size:12px"><strong>'+memberName(c.member_id)+'</strong></td>'+
+    '<td style="font-size:11px;color:var(--text2)">'+(c.provider||'—')+'</td>'+
+    '<td class="mono" style="font-size:10px">'+(c.diagnosis_code||'—')+' / '+(c.procedure_code||'—')+'</td>'+
+    '<td class="mono" style="font-size:11px">'+fmtDate(c.service_date)+'</td>'+
+    '<td class="mono">'+currency(c.billed_amount)+'</td>'+
+    '<td class="mono">'+currency(c.allowed_amount)+'</td>'+
+    '<td class="mono">'+currency(c.paid_amount)+'</td>'+
+    '<td>'+badge((c.status||'').replace('_',' '),sc[c.status]||c.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+c.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+c.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function openModal(id){
+  var data=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('adj-panel').style.display='none';
+  document.getElementById('plan-hint').style.display='none';
+  document.getElementById('modal-title').textContent=data?'Edit Claim':'New Claim';
+  document.getElementById('f-id').value=data?data.id:'';
+  document.getElementById('f-claim_number').value=data?data.claim_number:genCode('CLM');
+  document.getElementById('f-provider').value=data?(data.provider||''):'';
+  document.getElementById('f-service_date').value=data&&data.service_date?data.service_date.split('T')[0]:'';
+  document.getElementById('f-claim_date').value=data&&data.claim_date?data.claim_date.split('T')[0]:'';
+  document.getElementById('f-diagnosis_code').value=data?(data.diagnosis_code||''):'';
+  document.getElementById('f-procedure_code').value=data?(data.procedure_code||''):'';
+  document.getElementById('f-billed_amount').value=data?(data.billed_amount||''):'';
+  document.getElementById('f-allowed_amount').value=data?(data.allowed_amount||''):'';
+  document.getElementById('f-paid_amount').value=data?(data.paid_amount||''):'';
+  document.getElementById('f-status').value=data?(data.status||'pending'):'pending';
+  document.getElementById('f-notes').value=data?(data.notes||''):'';
+  document.getElementById('f-pa_on_file').value='na';
+  document.getElementById('f-claim_type').value='medical_pcp';
+  var mSel=document.getElementById('f-member_id');
+  mSel.innerHTML='<option value="">— Select Member —</option>';
+  members.forEach(function(m){var o=document.createElement('option');o.value=m.id;o.textContent=(m.member_id||'')+' — '+m.first_name+' '+m.last_name;if(data&&data.member_id===m.id)o.selected=true;mSel.appendChild(o);});
+  var pSel=document.getElementById('f-plan_id');
+  pSel.innerHTML='<option value="">— Select Plan —</option>';
+  plans.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=(p.plan_code||'')+' — '+p.plan_name;if(data&&data.plan_id===p.id)o.selected=true;pSel.appendChild(o);});
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.getElementById('form-error').style.display='none';document.getElementById('adj-panel').style.display='none';}
+
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var cn=document.getElementById('f-claim_number').value.trim();
+  if(!cn){errEl.textContent='⚠ Claim Number is required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={
+    claim_number:cn,
+    provider:document.getElementById('f-provider').value.trim(),
+    service_date:document.getElementById('f-service_date').value||null,
+    claim_date:document.getElementById('f-claim_date').value||null,
+    member_id:document.getElementById('f-member_id').value||null,
+    plan_id:document.getElementById('f-plan_id').value||null,
+    diagnosis_code:document.getElementById('f-diagnosis_code').value.trim(),
+    procedure_code:document.getElementById('f-procedure_code').value.trim(),
+    billed_amount:parseFloat(document.getElementById('f-billed_amount').value)||0,
+    allowed_amount:parseFloat(document.getElementById('f-allowed_amount').value)||0,
+    paid_amount:parseFloat(document.getElementById('f-paid_amount').value)||0,
+    status:document.getElementById('f-status').value,
+    notes:document.getElementById('f-notes').value.trim()
+  };
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString(),_saving:true});updateSummary();render();}
+  closeModal();toast(id?'Saving...':'Submitting...','info');
+  try{
+    var res=await fetch(id?'/api/claims/'+id:'/api/claims',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok){var msg='HTTP '+res.status;try{var d=await res.json();msg=d.error||msg;}catch{}throw new Error(msg);}
+    toast(id?'Claim updated ✓':'Claim submitted ✓','success');
+    await load();
+  }catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
+}
+
+async function del(id){
+  if(!await confirmDialog('Delete this claim?'))return;
+  var backup=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();
+  try{await fetch('/api/claims/'+id,{method:'DELETE'});toast('Deleted','info');await load();}
+  catch(e){records=backup;updateSummary();render();toast('Delete failed: '+e.message,'error');}
+}
+
+load();
+</script>
+</body>
+</html>
