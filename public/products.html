@@ -4,25 +4,32 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facets — Products</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon">FX</div>
-      <div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div>
-    </div>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item active" href="products.html"><span class="nav-icon">📦</span> Products</a>
       <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
@@ -34,143 +41,101 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Product Catalog</div>
-          <div class="page-subtitle">MEDICAL · DENTAL · VISION · PHARMACY</div>
-        </div>
-        <button class="btn btn-primary" onclick="openModal()">+ New Product</button>
+        <div><div class="page-title">Product Management</div><div class="page-subtitle">MEDICAL · DENTAL · VISION · ANCILLARY</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Product</button>
       </div>
       <div class="card">
         <div class="card-header">
           <span class="card-title">📦 Products <span class="count-label" id="count"></span></span>
-          <div class="search-bar" style="margin:0;width:260px">
-            <span class="search-icon">🔎</span>
-            <input type="text" placeholder="Search products..." id="search-input">
-          </div>
+          <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search products..." id="search-input"></div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr>
-              <th>Code</th><th>Product Name</th><th>Type</th><th>Description</th><th>Status</th><th>Created</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="tbody"></tbody>
+            <thead><tr><th>Product Code</th><th>Product Name</th><th>Type</th><th>Description</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">New Product</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+<div id="overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Product</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body">
-      <form class="form-grid">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <form class="form-grid" onsubmit="return false">
         <input type="hidden" id="f-id">
-        <div class="form-group">
-          <label class="form-label">Product Code</label>
-          <input type="text" class="form-input" id="f-product_code" placeholder="PROD-HMO" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="f-status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="discontinued">Discontinued</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Product Name</label>
-          <input type="text" class="form-input" id="f-product_name" required>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Product Type</label>
+        <div class="form-group"><label class="form-label">Product Code *</label><input type="text" class="form-input" id="f-product_code" placeholder="PROD-MED"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+        <div class="form-group full"><label class="form-label">Product Name *</label><input type="text" class="form-input" id="f-product_name"></div>
+        <div class="form-group full"><label class="form-label">Product Type</label>
           <select class="form-select" id="f-product_type">
-            <option value="medical">Medical</option>
-            <option value="dental">Dental</option>
-            <option value="vision">Vision</option>
-            <option value="pharmacy">Pharmacy</option>
-            <option value="behavioral">Behavioral Health</option>
+            <option value="medical">Medical</option><option value="dental">Dental</option>
+            <option value="vision">Vision</option><option value="pharmacy">Pharmacy</option>
+            <option value="behavioral_health">Behavioral Health</option><option value="ancillary">Ancillary</option>
           </select>
         </div>
-        <div class="form-group full">
-          <label class="form-label">Description</label>
-          <textarea class="form-textarea" id="f-description"></textarea>
-        </div>
+        <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-description" rows="3"></textarea></div>
       </form>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="save()">Save Product</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Product</button></div>
   </div>
 </div>
 <script src="app.js"></script>
 <script>
-let records = [];
-
-async function load() {
-  records = await apiFetch('/api/products');
-  render();
+var records=[];
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+async function load(){try{records=await apiFetch('/api/products');render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=q?records.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);}):([].concat(records));
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📦</div><p>No products found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(p){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+p.product_code+'</td>'+
+    '<td><strong>'+p.product_name+'</strong></td>'+
+    '<td>'+badge(p.product_type,p.product_type)+'</td>'+
+    '<td style="font-size:12px;color:var(--text2)">'+(p.description||'—')+'</td>'+
+    '<td>'+badge(p.status,p.status)+'</td>'+
+    '<td style="font-size:11px;color:var(--text3)">'+(p.created_at?new Date(p.created_at).toLocaleDateString():'—')+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+p.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+p.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
 }
-
-function render() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const data = q ? records.filter(r => JSON.stringify(r).toLowerCase().includes(q)) : records;
-  document.getElementById('count').textContent = `· ${data.length} records`;
-  const tbody = document.getElementById('tbody');
-  if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📦</div><p>No products found</p></div></td></tr>`; return; }
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td class="mono">${r.product_code}</td>
-      <td><strong>${r.product_name}</strong></td>
-      <td>${badge(r.product_type, r.product_type)}</td>
-      <td style="color:var(--text2);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description || '—'}</td>
-      <td>${badge(r.status, r.status)}</td>
-      <td class="mono" style="font-size:11px;color:var(--text3)">${fmtDate(r.created_at)}</td>
-      <td><div class="actions">
-        <button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Del</button>
-      </div></td>
-    </tr>`).join('');
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Product':'New Product';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-product_code').value=d?d.product_code:genCode('PROD');
+  document.getElementById('f-product_name').value=d?(d.product_name||''):'';
+  document.getElementById('f-product_type').value=d?(d.product_type||'medical'):'medical';
+  document.getElementById('f-description').value=d?(d.description||''):'';
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  document.getElementById('overlay').classList.add('open');
 }
-
-function openModal(data = null) {
-  document.getElementById('modal-title').textContent = data ? 'Edit Product' : 'New Product';
-  document.getElementById('f-id').value = data?.id || '';
-  document.getElementById('f-product_code').value = data?.product_code || genCode('PROD');
-  document.getElementById('f-product_name').value = data?.product_name || '';
-  document.getElementById('f-product_type').value = data?.product_type || 'medical';
-  document.getElementById('f-description').value = data?.description || '';
-  document.getElementById('f-status').value = data?.status || 'active';
-  document.getElementById('modal').classList.add('open');
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var pc=document.getElementById('f-product_code').value.trim(),pn=document.getElementById('f-product_name').value.trim();
+  if(!pc||!pn){errEl.textContent='⚠ Product Code and Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={product_code:pc,product_name:pn,product_type:document.getElementById('f-product_type').value,description:document.getElementById('f-description').value.trim(),status:document.getElementById('f-status').value};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});render();}
+  closeModal();toast(id?'Saving...':'Creating...','info');
+  try{var res=await fetch(id?'/api/products/'+id:'/api/products',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Updated ✓':'Created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function edit(id) { openModal(records.find(r => r.id === id)); }
-
-async function save() {
-  const id = document.getElementById('f-id').value;
-  const body = {
-    product_code: document.getElementById('f-product_code').value,
-    product_name: document.getElementById('f-product_name').value,
-    product_type: document.getElementById('f-product_type').value,
-    description: document.getElementById('f-description').value,
-    status: document.getElementById('f-status').value
-  };
-  if (id) { await apiFetch(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify(body) }); toast('Product updated', 'success'); }
-  else { await apiFetch('/api/products', { method: 'POST', body: JSON.stringify(body) }); toast('Product created', 'success'); }
-  closeModal(); load();
-}
-
-async function del(id) {
-  if (!await confirmDialog('Delete this product?')) return;
-  await apiFetch(`/api/products/${id}`, { method: 'DELETE' });
-  toast('Product deleted', 'info'); load();
-}
-
-document.getElementById('search-input').addEventListener('input', render);
+async function del(id){if(!await confirmDialog('Delete this product?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/products/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
 load();
 </script>
 </body>
