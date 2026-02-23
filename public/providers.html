@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Providers</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .prov-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+    .p-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+    .p-card .p-val{font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .p-card .p-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .nw-badge{display:inline-flex;padding:2px 9px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+    .nw-in{background:rgba(0,255,136,0.12);color:var(--green);}
+    .nw-out{background:rgba(255,71,87,0.12);color:var(--red);}
+    .nw-pref{background:rgba(0,212,255,0.12);color:var(--accent);}
+    .sanction-banner{background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--red);display:none;}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item active" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Network → <span>Provider Management</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Provider Management</div><div class="page-subtitle">NPI · CREDENTIALING · FEE SCHEDULE · CAPITATION</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Provider</button>
+      </div>
+      <div class="prov-cards">
+        <div class="p-card"><div class="p-lbl">Total Providers</div><div class="p-val" id="s-total">—</div></div>
+        <div class="p-card"><div class="p-lbl">In-Network</div><div class="p-val" style="color:#4ade80" id="s-innet">—</div></div>
+        <div class="p-card"><div class="p-lbl">PCP Panels Open</div><div class="p-val" style="color:var(--accent)" id="s-pcp">—</div></div>
+        <div class="p-card"><div class="p-lbl">Sanctioned</div><div class="p-val" style="color:var(--red)" id="s-sanct">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🏥 Providers <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search by name, NPI, specialty..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-individual">Individual</button>
+              <button class="filter-tab" id="tab-group">Group</button>
+              <button class="filter-tab" id="tab-facility">Facility</button>
+              <button class="filter-tab" id="tab-sanctioned">Sanctioned</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>NPI</th><th>Provider Name</th><th>Type</th><th>Specialty</th>
+              <th>Network</th><th>Fee Schedule</th><th>Credentialing</th>
+              <th>PCP Panel</th><th>Capitation</th><th>Sanctioned</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="overlay">
+  <div class="modal" style="width:780px;max-height:92vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Provider</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('demo',this)">Demographics</button>
+        <button class="modal-tab" onclick="switchTab('network',this)">Network &amp; Fees</button>
+        <button class="modal-tab" onclick="switchTab('panel',this)">Panel / Capitation</button>
+        <button class="modal-tab" onclick="switchTab('compliance',this)">Compliance</button>
+      </div>
+      <div id="sanction-banner" class="sanction-banner">⚠ This provider is marked SANCTIONED — claims will be automatically suspended.</div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+      <div class="tab-panel active" id="tab-demo">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">NPI * (10 digits)</label><input type="text" class="form-input" id="f-npi" placeholder="1234567890" maxlength="10"></div>
+          <div class="form-group"><label class="form-label">Provider Type</label>
+            <select class="form-select" id="f-provider_type">
+              <option value="individual">Individual / Practitioner</option><option value="group">Group Practice</option>
+              <option value="facility">Facility / Hospital</option><option value="lab">Lab / Ancillary</option>
+              <option value="pharmacy">Pharmacy</option><option value="dme">DME Supplier</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Provider / Organization Name *</label><input type="text" class="form-input" id="f-provider_name" placeholder="City Medical Center or Dr. Jane Smith"></div>
+          <div class="form-group"><label class="form-label">First Name (individual)</label><input type="text" class="form-input" id="f-first_name"></div>
+          <div class="form-group"><label class="form-label">Last Name (individual)</label><input type="text" class="form-input" id="f-last_name"></div>
+          <div class="form-group"><label class="form-label">Specialty</label>
+            <select class="form-select" id="f-specialty">
+              <option value="primary_care">Primary Care / Family Medicine</option><option value="internal_medicine">Internal Medicine</option>
+              <option value="pediatrics">Pediatrics</option><option value="ob_gyn">OB/GYN</option>
+              <option value="cardiology">Cardiology</option><option value="orthopedics">Orthopedics</option>
+              <option value="oncology">Oncology</option><option value="neurology">Neurology</option>
+              <option value="psychiatry">Psychiatry / Behavioral Health</option><option value="radiology">Radiology</option>
+              <option value="emergency">Emergency Medicine</option><option value="surgery">Surgery</option>
+              <option value="hospital">Hospital / Facility</option><option value="pharmacy">Pharmacy</option><option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Taxonomy Code</label><input type="text" class="form-input" id="f-taxonomy_code" placeholder="207Q00000X"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="pending_cred">Pending Credentialing</option></select>
+          </div>
+        </form>
+      </div>
+      <div class="tab-panel" id="tab-network">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Network Affiliation</label>
+            <select class="form-select" id="f-network">
+              <option value="in_network">In-Network</option><option value="preferred">Preferred Network (Tier 1)</option>
+              <option value="out_of_network">Out-of-Network</option><option value="contracted">Contracted (not participating)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Credentialing Status</label>
+            <select class="form-select" id="f-credentialing_status">
+              <option value="credentialed">Credentialed</option><option value="pending">Pending Review</option>
+              <option value="re_credentialing">Re-Credentialing</option><option value="expired">Expired</option><option value="denied">Denied</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Fee Schedule</label>
+            <select class="form-select" id="f-fee_schedule">
+              <option value="rbrvs">RBRVS (Medicare-based)</option><option value="drg">DRG (Diagnosis-Related Group)</option>
+              <option value="per_diem">Per Diem (inpatient daily rate)</option><option value="pct_billed">% of Billed Charges</option>
+              <option value="capitation">Capitation (PMPM)</option><option value="case_rate">Case Rate / Bundled</option>
+              <option value="ndc">NDC Drug Pricing</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Contract Start Date</label><input type="date" class="form-input" id="f-contract_start"></div>
+          <div class="form-group"><label class="form-label">Contract End Date</label><input type="date" class="form-input" id="f-contract_end"></div>
+          <div class="form-group full"><label class="form-label">Contract / Pricing Notes</label><textarea class="form-textarea" id="f-contract_notes" rows="2" placeholder="Fee schedule details, rate exceptions, carve-outs..."></textarea></div>
+        </form>
+      </div>
+      <div class="tab-panel" id="tab-panel">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">PCP Panel Open?</label>
+            <select class="form-select" id="f-pcp_panel_open">
+              <option value="yes">Yes — accepting new patients</option><option value="no">No — panel closed</option><option value="na">N/A — not a PCP</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Panel Capacity</label><input type="number" class="form-input" id="f-panel_capacity" min="0" placeholder="500"></div>
+          <div class="form-group"><label class="form-label">Current Panel Size</label><input type="number" class="form-input" id="f-panel_current" min="0" placeholder="0"></div>
+          <div class="form-group"><label class="form-label">Capitation Eligible?</label>
+            <select class="form-select" id="f-capitation_eligible"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Capitation Rate (PMPM $)</label><input type="number" class="form-input" id="f-capitation_pmpm" step="0.01" min="0" placeholder="22.50"></div>
+        </form>
+      </div>
+      <div class="tab-panel" id="tab-compliance">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Sanctioned?</label>
+            <select class="form-select" id="f-sanctioned" onchange="document.getElementById('sanction-banner').style.display=this.value==='yes'?'block':'none'">
+              <option value="no">No</option><option value="yes">YES — SANCTIONED</option><option value="pending">Pending Review</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">OIG / Exclusion List Check</label>
+            <select class="form-select" id="f-oig_check">
+              <option value="clear">Clear — not excluded</option><option value="excluded">EXCLUDED — OIG list</option><option value="pending">Pending check</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Malpractice Insurance Verified</label>
+            <select class="form-select" id="f-malpractice"><option value="yes">Yes</option><option value="no">No</option><option value="pending">Pending</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">License Expiration</label><input type="date" class="form-input" id="f-license_exp"></div>
+          <div class="form-group full"><label class="form-label">Sanction / Compliance Notes</label><textarea class="form-textarea" id="f-sanction_notes" rows="3" placeholder="Sanction reason, OIG exclusion details, investigation notes..."></textarea></div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Provider</button></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+var records=[],typeFilter='all';
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
+document.getElementById('tab-individual').addEventListener('click',function(){setFilter('individual',this);});
+document.getElementById('tab-group').addEventListener('click',function(){setFilter('group',this);});
+document.getElementById('tab-facility').addEventListener('click',function(){setFilter('facility',this);});
+document.getElementById('tab-sanctioned').addEventListener('click',function(){setFilter('sanctioned',this);});
+function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
+function setFilter(s,btn){typeFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+async function load(){try{records=await apiFetch('/api/providers');updateSummary();render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-innet').textContent=records.filter(function(r){return r.network==='in_network'||r.network==='preferred';}).length;
+  document.getElementById('s-pcp').textContent=records.filter(function(r){return r.pcp_panel_open==='yes';}).length;
+  document.getElementById('s-sanct').textContent=records.filter(function(r){return r.sanctioned==='yes';}).length;
+}
+function nwBadge(n){var m={'in_network':'nw-in','preferred':'nw-pref','out_of_network':'nw-out'};return'<span class="nw-badge '+(m[n]||'nw-out')+'">'+(n||'OON').replace(/_/g,' ').toUpperCase()+'</span>';}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(typeFilter==='sanctioned')data=data.filter(function(r){return r.sanctioned==='yes';});
+  else if(typeFilter!=='all')data=data.filter(function(r){return r.provider_type===typeFilter;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">🏥</div><p>No providers found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(p){
+    var sc=p.sanctioned==='yes'?'var(--red)':p.sanctioned==='pending'?'var(--yellow)':'var(--text3)';
+    var cc=p.credentialing_status==='credentialed'?'var(--green)':p.credentialing_status==='expired'?'var(--red)':'var(--yellow)';
+    return'<tr>'+
+    '<td class="mono" style="font-size:11px;color:var(--accent)">'+p.npi+'</td>'+
+    '<td><strong style="font-size:13px">'+p.provider_name+'</strong></td>'+
+    '<td style="font-size:12px;text-transform:capitalize">'+(p.provider_type||'individual').replace(/_/g,' ')+'</td>'+
+    '<td style="font-size:12px;text-transform:capitalize">'+(p.specialty||'—').replace(/_/g,' ')+'</td>'+
+    '<td>'+nwBadge(p.network)+'</td>'+
+    '<td style="font-size:11px;text-transform:uppercase;color:var(--text2)">'+(p.fee_schedule||'—').replace(/_/g,' ')+'</td>'+
+    '<td><span style="font-size:11px;font-weight:600;color:'+cc+'">'+(p.credentialing_status||'pending').replace(/_/g,' ').toUpperCase()+'</span></td>'+
+    '<td style="font-size:12px">'+(p.pcp_panel_open==='yes'?'<span style="color:var(--green)">OPEN</span>':p.pcp_panel_open==='no'?'<span style="color:var(--red)">CLOSED</span>':'N/A')+'</td>'+
+    '<td style="font-size:12px">'+(p.capitation_eligible==='yes'?'<span style="color:var(--accent)">$'+(p.capitation_pmpm||'—')+'/mo</span>':'No')+'</td>'+
+    '<td><span style="font-size:11px;font-weight:700;color:'+sc+'">'+(p.sanctioned||'no').toUpperCase()+'</span></td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+p.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+p.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
+}
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Provider':'New Provider';
+  document.getElementById('f-id').value=d?d.id:'';
+  var fields={npi:d?(d.npi||''):'',provider_type:d?(d.provider_type||'individual'):'individual',provider_name:d?(d.provider_name||''):'',first_name:d?(d.first_name||''):'',last_name:d?(d.last_name||''):'',specialty:d?(d.specialty||'primary_care'):'primary_care',taxonomy_code:d?(d.taxonomy_code||''):'',status:d?(d.status||'active'):'active',network:d?(d.network||'in_network'):'in_network',credentialing_status:d?(d.credentialing_status||'credentialed'):'credentialed',fee_schedule:d?(d.fee_schedule||'rbrvs'):'rbrvs',contract_notes:d?(d.contract_notes||''):'',pcp_panel_open:d?(d.pcp_panel_open||'na'):'na',panel_capacity:d?(d.panel_capacity||''):'',panel_current:d?(d.panel_current||''):'',capitation_eligible:d?(d.capitation_eligible||'no'):'no',capitation_pmpm:d?(d.capitation_pmpm||''):'',sanctioned:d?(d.sanctioned||'no'):'no',oig_check:d?(d.oig_check||'clear'):'clear',malpractice:d?(d.malpractice||'yes'):'yes',sanction_notes:d?(d.sanction_notes||''):''};
+  Object.keys(fields).forEach(function(k){var el=document.getElementById('f-'+k);if(el)el.value=fields[k];});
+  document.getElementById('f-contract_start').value=d&&d.contract_start?d.contract_start.split('T')[0]:'';
+  document.getElementById('f-contract_end').value=d&&d.contract_end?d.contract_end.split('T')[0]:'';
+  document.getElementById('f-license_exp').value=d&&d.license_exp?d.license_exp.split('T')[0]:'';
+  document.getElementById('sanction-banner').style.display=d&&d.sanctioned==='yes'?'block':'none';
+  switchTab('demo',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var npi=document.getElementById('f-npi').value.trim(),pname=document.getElementById('f-provider_name').value.trim();
+  if(!npi||!pname){errEl.textContent='⚠ NPI and Provider Name are required.';errEl.style.display='block';return;}
+  if(!/^\d{10}$/.test(npi)){errEl.textContent='⚠ NPI must be exactly 10 digits.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={npi,provider_name:pname,provider_type:document.getElementById('f-provider_type').value,first_name:document.getElementById('f-first_name').value.trim(),last_name:document.getElementById('f-last_name').value.trim(),specialty:document.getElementById('f-specialty').value,taxonomy_code:document.getElementById('f-taxonomy_code').value.trim(),status:document.getElementById('f-status').value,network:document.getElementById('f-network').value,credentialing_status:document.getElementById('f-credentialing_status').value,fee_schedule:document.getElementById('f-fee_schedule').value,contract_start:document.getElementById('f-contract_start').value||null,contract_end:document.getElementById('f-contract_end').value||null,contract_notes:document.getElementById('f-contract_notes').value.trim(),pcp_panel_open:document.getElementById('f-pcp_panel_open').value,panel_capacity:parseInt(document.getElementById('f-panel_capacity').value)||null,panel_current:parseInt(document.getElementById('f-panel_current').value)||null,capitation_eligible:document.getElementById('f-capitation_eligible').value,capitation_pmpm:parseFloat(document.getElementById('f-capitation_pmpm').value)||null,sanctioned:document.getElementById('f-sanctioned').value,oig_check:document.getElementById('f-oig_check').value,malpractice:document.getElementById('f-malpractice').value,license_exp:document.getElementById('f-license_exp').value||null,sanction_notes:document.getElementById('f-sanction_notes').value.trim()};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});updateSummary();render();}
+  closeModal();toast(id?'Saving...':'Adding provider...','info');
+  try{var res=await fetch(id?'/api/providers/'+id:'/api/providers',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Provider updated ✓':'Provider added ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
+}
+async function del(id){if(!await confirmDialog('Remove this provider?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/providers/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed: '+e.message,'error');}}
+load();
+</script>
+</body>
+</html>
