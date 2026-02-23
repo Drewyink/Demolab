@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Authorizations</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .auth-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+    .a-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .a-card .a-val{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .a-card .a-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .urgency-badge{display:inline-flex;padding:2px 9px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
+    .urg-routine{background:rgba(255,255,255,0.08);color:var(--text2);}
+    .urg-urgent{background:rgba(255,215,0,0.15);color:var(--yellow);}
+    .urg-emergent{background:rgba(255,71,87,0.15);color:var(--red);}
+    .decision-banner{border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;}
+    .decision-approved{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25);color:var(--green);}
+    .decision-denied{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);}
+    .decision-pending{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);color:var(--yellow);}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item active" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Authorizations / UM</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Authorizations &amp; Utilization Management</div><div class="page-subtitle">PA · REFERRALS · INPATIENT · UM DECISIONS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Authorization</button>
+      </div>
+      <div class="auth-cards">
+        <div class="a-card"><div class="a-lbl">Total Auths</div><div class="a-val" id="s-total">—</div></div>
+        <div class="a-card"><div class="a-lbl">Pending Decision</div><div class="a-val" style="color:#fbbf24" id="s-pending">—</div></div>
+        <div class="a-card"><div class="a-lbl">Approved</div><div class="a-val" style="color:#4ade80" id="s-approved">—</div></div>
+        <div class="a-card"><div class="a-lbl">Denied</div><div class="a-val" style="color:var(--red)" id="s-denied">—</div></div>
+        <div class="a-card"><div class="a-lbl">Expiring Soon</div><div class="a-val" style="color:var(--orange)" id="s-expiring">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔐 Authorizations <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search auth #, member, service..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-pending">Pending</button>
+              <button class="filter-tab" id="tab-approved">Approved</button>
+              <button class="filter-tab" id="tab-denied">Denied</button>
+              <button class="filter-tab" id="tab-urgent">Urgent</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>Auth #</th><th>Auth Type</th><th>Member</th><th>Service Requested</th>
+              <th>Codes</th><th>Units Req/Appr</th><th>Effective</th>
+              <th>Urgency</th><th>UM Decision</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="overlay">
+  <div class="modal" style="width:800px;max-height:92vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Authorization</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body">
+      <div id="decision-banner" style="display:none" class="decision-banner"></div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <form class="form-grid" onsubmit="return false">
+        <input type="hidden" id="f-id">
+        <div class="form-group"><label class="form-label">Auth Number *</label><input type="text" class="form-input" id="f-auth_number" placeholder="AUTH-2026-001"></div>
+        <div class="form-group"><label class="form-label">Auth Type</label>
+          <select class="form-select" id="f-auth_type">
+            <option value="outpatient_surgery">Outpatient Surgery</option><option value="inpatient">Inpatient Admission</option>
+            <option value="specialty_rx">Specialty Pharmacy</option><option value="imaging">Advanced Imaging (MRI/CT)</option>
+            <option value="specialty_referral">Specialty Referral</option><option value="dme">DME / Medical Equipment</option>
+            <option value="home_health">Home Health</option><option value="snf">Skilled Nursing Facility</option>
+            <option value="behavioral_health">Behavioral Health / Substance Use</option><option value="infusion">Infusion Therapy</option>
+            <option value="physical_therapy">Physical / OT / ST Therapy</option><option value="transplant">Transplant</option>
+          </select>
+        </div>
+        <div class="form-group full"><label class="form-label">Member</label>
+          <select class="form-select" id="f-member_id"><option value="">— Select Member —</option></select>
+        </div>
+        <div class="form-group full"><label class="form-label">Service Requested *</label>
+          <textarea class="form-textarea" id="f-service_requested" rows="2" placeholder="e.g., Inpatient hospitalization — laparoscopic cholecystectomy for acute cholecystitis"></textarea>
+        </div>
+        <div class="form-group"><label class="form-label">Diagnosis Code (ICD-10)</label><input type="text" class="form-input" id="f-diagnosis_code" placeholder="K80.00"></div>
+        <div class="form-group"><label class="form-label">Procedure Code (CPT/HCPCS)</label><input type="text" class="form-input" id="f-procedure_code" placeholder="47562"></div>
+        <div class="form-group"><label class="form-label">Units / Days Requested</label><input type="number" class="form-input" id="f-units_requested" min="1" placeholder="1"></div>
+        <div class="form-group"><label class="form-label">Units / Days Approved</label><input type="number" class="form-input" id="f-units_approved" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+        <div class="form-group"><label class="form-label">Expiration Date</label><input type="date" class="form-input" id="f-expiration_date"></div>
+        <div class="form-group"><label class="form-label">Urgency</label>
+          <select class="form-select" id="f-urgency">
+            <option value="routine">Routine (14-day turnaround)</option>
+            <option value="urgent">Urgent (72-hour turnaround)</option>
+            <option value="emergent">Emergent (24-hour / concurrent)</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" id="f-status">
+            <option value="pending">Pending</option><option value="active">Active</option>
+            <option value="closed">Closed</option><option value="voided">Voided</option>
+          </select>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;grid-column:1/-1">
+          <label class="form-label" style="color:var(--accent);letter-spacing:2px;font-size:10px">UM DECISION</label>
+        </div>
+        <div class="form-group"><label class="form-label">UM Decision</label>
+          <select class="form-select" id="f-um_decision" onchange="updateDecisionBanner()">
+            <option value="pending">Pending Review</option><option value="approved">Approved</option>
+            <option value="partial">Partial Approval</option><option value="denied">Denied</option>
+            <option value="deferred">Deferred — Additional Info Needed</option>
+            <option value="redirected">Redirected to Alt. Provider / Setting</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Decision Date</label><input type="date" class="form-input" id="f-decision_date"></div>
+        <div class="form-group full"><label class="form-label">Decision By (UM Reviewer)</label><input type="text" class="form-input" id="f-decision_by" placeholder="Dr. Jane Smith, MD — Medical Director"></div>
+        <div class="form-group full"><label class="form-label">UM Decision Notes / Rationale</label>
+          <textarea class="form-textarea" id="f-notes" rows="3" placeholder="Clinical rationale, denial reason, appeal rights notice, alternative recommendations..."></textarea>
+        </div>
+        <div class="form-group full"><label class="form-label">Denial Reason Code (if denied)</label>
+          <select class="form-select" id="f-denial_reason">
+            <option value="">N/A — Not denied</option>
+            <option value="not_medically_necessary">Not Medically Necessary</option>
+            <option value="experimental">Experimental / Investigational</option>
+            <option value="not_covered">Not a Covered Benefit</option>
+            <option value="requires_step_therapy">Step Therapy Required First</option>
+            <option value="conservative_treatment">Conservative Treatment Required First</option>
+            <option value="oon_no_benefit">Out-of-Network — No OON Benefit</option>
+            <option value="missing_documentation">Missing Clinical Documentation</option>
+            <option value="duplicate">Duplicate Request</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Authorization</button></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+var records=[],members=[],decisionFilter='all';
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
+document.getElementById('tab-pending').addEventListener('click',function(){setFilter('pending',this);});
+document.getElementById('tab-approved').addEventListener('click',function(){setFilter('approved',this);});
+document.getElementById('tab-denied').addEventListener('click',function(){setFilter('denied',this);});
+document.getElementById('tab-urgent').addEventListener('click',function(){setFilter('urgent',this);});
+function setFilter(s,btn){decisionFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+function updateDecisionBanner(){
+  var d=document.getElementById('f-um_decision').value,b=document.getElementById('decision-banner');
+  if(d==='approved'){b.className='decision-banner decision-approved';b.textContent='✓ Authorization APPROVED — member and provider may be notified.';b.style.display='block';}
+  else if(d==='denied'){b.className='decision-banner decision-denied';b.textContent='✕ Authorization DENIED — adverse determination notice (NOA) must be sent. Document denial reason below.';b.style.display='block';}
+  else if(d==='pending'){b.className='decision-banner decision-pending';b.textContent='⏳ Pending UM review — clock starts on date of receipt.';b.style.display='block';}
+  else{b.style.display='none';}
+}
+function memberName(id){if(!id)return'—';var m=members.find(function(x){return x.id===id;});return m?m.first_name+' '+m.last_name:'—';}
+function isExpiringSoon(exp){if(!exp)return false;var d=new Date(exp),now=new Date();return d>now&&(d-now)<30*24*60*60*1000;}
+async function load(){
+  try{var res=await Promise.all([apiFetch('/api/authorizations'),apiFetch('/api/members')]);records=res[0];members=res[1];updateSummary();render();}
+  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+}
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-pending').textContent=records.filter(function(r){return r.um_decision==='pending';}).length;
+  document.getElementById('s-approved').textContent=records.filter(function(r){return r.um_decision==='approved'||r.um_decision==='partial';}).length;
+  document.getElementById('s-denied').textContent=records.filter(function(r){return r.um_decision==='denied';}).length;
+  document.getElementById('s-expiring').textContent=records.filter(function(r){return isExpiringSoon(r.expiration_date);}).length;
+}
+function urgBadge(u){var m={routine:'urg-routine',urgent:'urg-urgent',emergent:'urg-emergent'};return'<span class="urgency-badge '+(m[u]||'urg-routine')+'">'+(u||'routine').toUpperCase()+'</span>';}
+function decisionColor(d){return d==='approved'?'var(--green)':d==='denied'?'var(--red)':d==='partial'?'var(--orange)':'var(--yellow)';}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(decisionFilter==='urgent')data=data.filter(function(r){return r.urgency==='urgent'||r.urgency==='emergent';});
+  else if(decisionFilter!=='all')data=data.filter(function(r){return r.um_decision===decisionFilter;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">🔐</div><p>No authorizations found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(a){
+    var es=isExpiringSoon(a.expiration_date)?'color:var(--orange)':'';
+    var exp=a.expiration_date?a.expiration_date.split('T')[0].substring(0,7):'—';
+    var eff=a.effective_date?a.effective_date.split('T')[0].substring(0,7):'Pending';
+    return'<tr>'+
+    '<td class="mono" style="font-size:11px;color:var(--accent)">'+a.auth_number+'</td>'+
+    '<td style="font-size:11px;text-transform:capitalize">'+(a.auth_type||'').replace(/_/g,' ')+'</td>'+
+    '<td style="font-size:12px"><strong>'+memberName(a.member_id)+'</strong></td>'+
+    '<td style="font-size:11px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(a.service_requested||'—')+'</td>'+
+    '<td class="mono" style="font-size:10px">'+(a.diagnosis_code||'—')+' / '+(a.procedure_code||'—')+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(a.units_requested||'—')+' / <strong>'+(a.units_approved||0)+'</strong></td>'+
+    '<td class="mono" style="font-size:11px;'+es+'">'+eff+' → '+exp+'</td>'+
+    '<td>'+urgBadge(a.urgency)+'</td>'+
+    '<td><span style="font-size:12px;font-weight:700;color:'+decisionColor(a.um_decision)+'">'+(a.um_decision||'pending').replace(/_/g,' ').toUpperCase()+'</span></td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+a.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+a.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
+}
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';document.getElementById('decision-banner').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Authorization':'New Authorization';
+  document.getElementById('f-id').value=d?d.id:'';
+  var fields={auth_number:d?d.auth_number:genCode('AUTH'),auth_type:d?(d.auth_type||'outpatient_surgery'):'outpatient_surgery',service_requested:d?(d.service_requested||''):'',diagnosis_code:d?(d.diagnosis_code||''):'',procedure_code:d?(d.procedure_code||''):'',units_requested:d?(d.units_requested||1):1,units_approved:d?(d.units_approved||0):0,urgency:d?(d.urgency||'routine'):'routine',status:d?(d.status||'pending'):'pending',um_decision:d?(d.um_decision||'pending'):'pending',decision_by:d?(d.decision_by||''):'',notes:d?(d.notes||''):'',denial_reason:d?(d.denial_reason||''):''};
+  Object.keys(fields).forEach(function(k){var el=document.getElementById('f-'+k);if(el)el.value=fields[k];});
+  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
+  document.getElementById('f-expiration_date').value=d&&d.expiration_date?d.expiration_date.split('T')[0]:'';
+  document.getElementById('f-decision_date').value=d&&d.decision_date?d.decision_date.split('T')[0]:'';
+  var mSel=document.getElementById('f-member_id');
+  mSel.innerHTML='<option value="">— Select Member —</option>';
+  members.forEach(function(m){var o=document.createElement('option');o.value=m.id;o.textContent=(m.member_id||'')+' — '+m.first_name+' '+m.last_name;if(d&&d.member_id===m.id)o.selected=true;mSel.appendChild(o);});
+  if(d)updateDecisionBanner();
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var an=document.getElementById('f-auth_number').value.trim(),sr=document.getElementById('f-service_requested').value.trim();
+  if(!an||!sr){errEl.textContent='⚠ Auth Number and Service Requested are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={auth_number:an,auth_type:document.getElementById('f-auth_type').value,member_id:document.getElementById('f-member_id').value||null,service_requested:sr,diagnosis_code:document.getElementById('f-diagnosis_code').value.trim(),procedure_code:document.getElementById('f-procedure_code').value.trim(),units_requested:parseInt(document.getElementById('f-units_requested').value)||1,units_approved:parseInt(document.getElementById('f-units_approved').value)||0,effective_date:document.getElementById('f-effective_date').value||null,expiration_date:document.getElementById('f-expiration_date').value||null,urgency:document.getElementById('f-urgency').value,status:document.getElementById('f-status').value,um_decision:document.getElementById('f-um_decision').value,decision_date:document.getElementById('f-decision_date').value||null,decision_by:document.getElementById('f-decision_by').value.trim(),notes:document.getElementById('f-notes').value.trim(),denial_reason:document.getElementById('f-denial_reason').value||null};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});updateSummary();render();}
+  closeModal();toast(id?'Saving...':'Submitting auth...','info');
+  try{var res=await fetch(id?'/api/authorizations/'+id:'/api/authorizations',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Auth updated ✓':'Auth created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
+}
+async function del(id){if(!await confirmDialog('Delete this authorization?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/authorizations/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed: '+e.message,'error');}}
+load();
+</script>
+</body>
+</html>
