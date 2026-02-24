@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Accumulators</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .acc-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+    .a-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .a-card .a-val{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .a-card .a-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .progress-bar-wrap{background:var(--surface2);border-radius:6px;height:8px;overflow:hidden;margin-top:4px;}
+    .progress-bar{height:8px;border-radius:6px;transition:width .4s;}
+    .acc-bucket{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
+    .bucket-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .bucket-title{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;}
+    .bucket-pct{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Financial</div>
+      <a class="nav-item active" href="accumulators.html"><span class="nav-icon">📊</span> Accumulators</a>
+      <a class="nav-item" href="cob.html"><span class="nav-icon">🔄</span> COB</a>
+      <a class="nav-item" href="cdh.html"><span class="nav-icon">💳</span> CDH / HSA</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Financial → <span>Accumulators</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Accumulator Management</div><div class="page-subtitle">DEDUCTIBLES · OOP MAX · BENEFIT LIMITS · CROSS-ACCUMULATION</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Accumulator</button>
+      </div>
+
+      <div class="acc-cards">
+        <div class="a-card"><div class="a-lbl">Total Accumulators</div><div class="a-val" id="s-total">—</div></div>
+        <div class="a-card"><div class="a-lbl">Medical</div><div class="a-val" style="color:var(--accent)" id="s-medical">—</div></div>
+        <div class="a-card"><div class="a-lbl">Pharmacy</div><div class="a-val" style="color:#4ade80" id="s-pharmacy">—</div></div>
+        <div class="a-card"><div class="a-lbl">Dental</div><div class="a-val" style="color:#fbbf24" id="s-dental">—</div></div>
+        <div class="a-card"><div class="a-lbl">Combined</div><div class="a-val" style="color:#a064ff" id="s-combined">—</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">📊 Member Accumulator Tracker</span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select class="form-select" id="tracker-member" style="width:200px">
+              <option value="">— Select Member —</option>
+              <option value="MBR-001">MBR-001 — James Carter</option>
+              <option value="MBR-002">MBR-002 — Sarah Nguyen</option>
+              <option value="MBR-003">MBR-003 — Robert Kim</option>
+              <option value="MBR-004">MBR-004 — Maria Santos</option>
+            </select>
+            <select class="form-select" id="tracker-year" style="width:120px">
+              <option value="2026">2026</option><option value="2025">2025</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadTracker()">Load</button>
+          </div>
+        </div>
+        <div class="card-body" id="tracker-body">
+          <div class="empty-state"><div class="empty-icon">📊</div><p>Select a member to view accumulator balances</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">⚙ Accumulator Configurations <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search accumulators..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-medical">Medical</button>
+              <button class="filter-tab" id="tab-pharmacy">Pharmacy</button>
+              <button class="filter-tab" id="tab-dental">Dental</button>
+              <button class="filter-tab" id="tab-combined">Combined</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>Accumulator Code</th><th>Name</th><th>Type</th><th>Indiv. Deductible</th>
+              <th>Family Deductible</th><th>Indiv. OOP Max</th><th>Family OOP Max</th>
+              <th>Embedded</th><th>Cross-Accum</th><th>Plan Year</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"><tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="overlay">
+  <div class="modal" style="width:780px;max-height:93vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Accumulator</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('config',this)">Configuration</button>
+        <button class="modal-tab" onclick="switchTab('limits',this)">Limits & Thresholds</button>
+        <button class="modal-tab" onclick="switchTab('cross',this)">Cross-Accumulation</button>
+        <button class="modal-tab" onclick="switchTab('reset',this)">Reset Rules</button>
+      </div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+
+      <div class="tab-panel active" id="tab-config">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Accumulator Code *</label><input type="text" class="form-input" id="f-acc_code" placeholder="ACC-MED-001"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
+          <div class="form-group full"><label class="form-label">Accumulator Name *</label><input type="text" class="form-input" id="f-acc_name" placeholder="Medical Deductible Accumulator"></div>
+          <div class="form-group"><label class="form-label">Accumulator Type</label>
+            <select class="form-select" id="f-acc_type">
+              <option value="medical">Medical</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="dental">Dental</option>
+              <option value="vision">Vision</option>
+              <option value="combined">Combined Medical + Rx</option>
+              <option value="behavioral">Behavioral Health</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Accumulator Level</label>
+            <select class="form-select" id="f-acc_level">
+              <option value="member">Member Level</option>
+              <option value="family">Family Level</option>
+              <option value="both">Both (Embedded)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Plan Year</label>
+            <select class="form-select" id="f-plan_year">
+              <option value="calendar">Calendar Year (Jan 1)</option>
+              <option value="fiscal">Fiscal Year (Jul 1)</option>
+              <option value="anniversary">Anniversary Year</option>
+              <option value="custom">Custom Date</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group"><label class="form-label">Network Scope</label>
+            <select class="form-select" id="f-network_scope">
+              <option value="in_network">In-Network Only</option>
+              <option value="out_of_network">Out-of-Network Only</option>
+              <option value="combined_net">Combined (In + Out)</option>
+              <option value="separate">Separate INN / OON Buckets</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Description / Notes</label>
+            <textarea class="form-textarea" id="f-description" rows="2" placeholder="e.g., Tracks all medical cost-sharing. Resets Jan 1 each calendar year."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-limits">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Individual Deductible ($)</label><input type="number" class="form-input" id="f-indiv_ded" step="0.01" min="0" placeholder="1500.00"></div>
+          <div class="form-group"><label class="form-label">Family Deductible ($)</label><input type="number" class="form-input" id="f-family_ded" step="0.01" min="0" placeholder="3000.00"></div>
+          <div class="form-group"><label class="form-label">Individual OOP Max ($)</label><input type="number" class="form-input" id="f-indiv_oop" step="0.01" min="0" placeholder="6000.00"></div>
+          <div class="form-group"><label class="form-label">Family OOP Max ($)</label><input type="number" class="form-input" id="f-family_oop" step="0.01" min="0" placeholder="12000.00"></div>
+          <div class="form-group"><label class="form-label">OON Individual Deductible ($)</label><input type="number" class="form-input" id="f-oon_indiv_ded" step="0.01" min="0" placeholder="3000.00"></div>
+          <div class="form-group"><label class="form-label">OON Individual OOP Max ($)</label><input type="number" class="form-input" id="f-oon_indiv_oop" step="0.01" min="0" placeholder="10000.00"></div>
+          <div class="form-group"><label class="form-label">Embedded Deductible?</label>
+            <select class="form-select" id="f-embedded">
+              <option value="yes">Yes — per-member cap within family</option>
+              <option value="no">No — aggregate only</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">ACA OOP Max Applies?</label>
+            <select class="form-select" id="f-aca_oop">
+              <option value="yes">Yes — subject to ACA §1302 limit</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Benefit Period Limit ($)</label><input type="number" class="form-input" id="f-benefit_limit" step="0.01" min="0" placeholder="Unlimited"></div>
+          <div class="form-group"><label class="form-label">Visit / Service Limit</label><input type="number" class="form-input" id="f-visit_limit" min="0" placeholder="Unlimited"></div>
+          <div class="form-group"><label class="form-label">Lifetime Max ($)</label><input type="number" class="form-input" id="f-lifetime_max" step="0.01" min="0" placeholder="Unlimited (ACA)"></div>
+          <div class="form-group"><label class="form-label">Mental Health Parity?</label>
+            <select class="form-select" id="f-mh_parity">
+              <option value="yes">Yes — MHPAEA compliant</option>
+              <option value="no">No</option>
+              <option value="na">N/A</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-cross">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Cross-accumulation allows spending in one bucket to count toward another. Common in combined medical+Rx plans and dual-eligible scenarios.</p>
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Cross-Accumulation Enabled?</label>
+            <select class="form-select" id="f-cross_enabled">
+              <option value="no">No — buckets are independent</option>
+              <option value="med_to_rx">Medical → credits Rx deductible</option>
+              <option value="rx_to_med">Rx → credits Medical deductible</option>
+              <option value="bidirectional">Bidirectional (both directions)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Source Accumulator</label>
+            <select class="form-select" id="f-cross_source">
+              <option value="">— None —</option>
+              <option value="medical">Medical</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="dental">Dental</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Target Accumulator</label>
+            <select class="form-select" id="f-cross_target">
+              <option value="">— None —</option>
+              <option value="medical">Medical</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="dental">Dental</option>
+              <option value="combined">Combined</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Transfer Rate (%)</label>
+            <input type="number" class="form-input" id="f-cross_rate" min="0" max="100" placeholder="100">
+          </div>
+          <div class="form-group full"><label class="form-label">Cross-Accum Cap ($)</label>
+            <input type="number" class="form-input" id="f-cross_cap" step="0.01" min="0" placeholder="Unlimited — leave blank for no cap">
+          </div>
+        </form>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Cross-Accumulation Scenarios</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.9">
+            <div>• <strong style="color:var(--text)">Combined Medical+Rx:</strong> All spend (medical + pharmacy) flows into one shared deductible bucket</div>
+            <div>• <strong style="color:var(--text)">Medical-first:</strong> Medical claims draw down shared deductible; Rx only after medical threshold</div>
+            <div>• <strong style="color:var(--text)">Dual OOP:</strong> Each service type has its own OOP but both count toward combined family max</div>
+            <div>• <strong style="color:var(--text)">HDHP HSA:</strong> All HDHP-qualified expenses must meet combined deductible before any cost-sharing</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-reset">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Reset Frequency</label>
+            <select class="form-select" id="f-reset_freq">
+              <option value="annual">Annual (plan year)</option>
+              <option value="calendar">Calendar Year (Jan 1)</option>
+              <option value="rolling_12">Rolling 12 Months</option>
+              <option value="benefit_period">Per Benefit Period</option>
+              <option value="never">Never (lifetime)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Reset Date</label>
+            <input type="text" class="form-input" id="f-reset_date" placeholder="01/01 or MM/DD">
+          </div>
+          <div class="form-group"><label class="form-label">Carryover Allowed?</label>
+            <select class="form-select" id="f-carryover">
+              <option value="no">No — full reset</option>
+              <option value="yes">Yes — carryover applies</option>
+              <option value="partial">Partial carryover (see amount)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Carryover Max ($)</label>
+            <input type="number" class="form-input" id="f-carryover_max" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="form-group"><label class="form-label">Mid-Year Enrollment Pro-Rate?</label>
+            <select class="form-select" id="f-prorate">
+              <option value="no">No — full year deductible applies</option>
+              <option value="yes">Yes — pro-rate by months remaining</option>
+              <option value="partial_credit">Give partial credit for prior coverage</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Rehire / Re-enrollment Rule</label>
+            <select class="form-select" id="f-rehire_rule">
+              <option value="reset">Full reset on rehire</option>
+              <option value="credit">Credit prior-year balance</option>
+              <option value="carryover">Apply carryover policy</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Reset Notes</label>
+            <textarea class="form-textarea" id="f-reset_notes" rows="2" placeholder="e.g., Calendar year reset Jan 1. No carryover. Mid-year enrollees receive full deductible."></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Accumulator</button></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+var records=[], typeFilter='all';
+
+var SEED_ACCS = [
+  {id:'ac1',acc_code:'ACC-MED-INN',acc_name:'Medical In-Network Accumulator',acc_type:'medical',acc_level:'both',plan_year:'calendar',network_scope:'in_network',indiv_ded:1500,family_ded:3000,indiv_oop:6000,family_oop:12000,embedded:'yes',aca_oop:'yes',cross_enabled:'no',reset_freq:'calendar',reset_date:'01/01',carryover:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'ac2',acc_code:'ACC-RX-COMB',acc_name:'Pharmacy / Rx Accumulator',acc_type:'pharmacy',acc_level:'both',plan_year:'calendar',network_scope:'combined_net',indiv_ded:0,family_ded:0,indiv_oop:2000,family_oop:4000,embedded:'yes',aca_oop:'yes',cross_enabled:'med_to_rx',cross_source:'medical',cross_target:'pharmacy',cross_rate:100,reset_freq:'calendar',reset_date:'01/01',carryover:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'ac3',acc_code:'ACC-DENT-ANN',acc_name:'Dental Annual Maximum',acc_type:'dental',acc_level:'member',plan_year:'calendar',network_scope:'in_network',indiv_ded:50,family_ded:150,indiv_oop:1500,family_oop:3000,embedded:'no',aca_oop:'no',cross_enabled:'no',reset_freq:'calendar',reset_date:'01/01',carryover:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'ac4',acc_code:'ACC-HDHP-COMB',acc_name:'HDHP Combined Accumulator',acc_type:'combined',acc_level:'both',plan_year:'calendar',network_scope:'combined_net',indiv_ded:1600,family_ded:3200,indiv_oop:8050,family_oop:16100,embedded:'no',aca_oop:'yes',cross_enabled:'bidirectional',cross_source:'medical',cross_target:'combined',cross_rate:100,reset_freq:'calendar',reset_date:'01/01',carryover:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'ac5',acc_code:'ACC-MED-OON',acc_name:'Medical Out-of-Network Accumulator',acc_type:'medical',acc_level:'both',plan_year:'calendar',network_scope:'out_of_network',indiv_ded:3000,family_ded:6000,indiv_oop:10000,family_oop:20000,embedded:'yes',aca_oop:'no',cross_enabled:'no',reset_freq:'calendar',reset_date:'01/01',carryover:'no',status:'active',created_at:new Date('2026-01-01')}
+];
+
+var MEMBER_BALANCES = {
+  'MBR-001':{ medical_ded_met:620, medical_ded_max:1500, medical_oop_met:875, medical_oop_max:6000, rx_ded_met:0, rx_ded_max:0, rx_oop_met:180, rx_oop_max:2000, dental_met:340, dental_max:1500, year:2026 },
+  'MBR-002':{ medical_ded_met:1500, medical_ded_max:1500, medical_oop_met:3200, medical_oop_max:6000, rx_ded_met:0, rx_ded_max:0, rx_oop_met:420, rx_oop_max:2000, dental_met:0, dental_max:1500, year:2026 },
+  'MBR-003':{ medical_ded_met:0, medical_ded_max:1500, medical_oop_met:0, medical_oop_max:6000, rx_ded_met:0, rx_ded_max:0, rx_oop_met:0, rx_oop_max:2000, dental_met:0, dental_max:1500, year:2026 },
+  'MBR-004':{ medical_ded_met:980, medical_ded_max:1500, medical_oop_met:1240, medical_oop_max:6000, rx_ded_met:0, rx_ded_max:0, rx_oop_met:650, rx_oop_max:2000, dental_met:85, dental_max:1500, year:2026 }
+};
+
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','medical','pharmacy','dental','combined'].forEach(function(f){
+  document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
+});
+
+function switchTab(name,btn){
+  document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+function setFilter(s,btn){typeFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+
+function load(){
+  records=SEED_ACCS.slice();
+  updateSummary();render();
+}
+
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-medical').textContent=records.filter(function(r){return r.acc_type==='medical';}).length;
+  document.getElementById('s-pharmacy').textContent=records.filter(function(r){return r.acc_type==='pharmacy';}).length;
+  document.getElementById('s-dental').textContent=records.filter(function(r){return r.acc_type==='dental';}).length;
+  document.getElementById('s-combined').textContent=records.filter(function(r){return r.acc_type==='combined';}).length;
+}
+
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(typeFilter!=='all')data=data.filter(function(r){return r.acc_type===typeFilter;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">📊</div><p>No accumulators found</p></div></td></tr>';return;}
+  var typeColors={medical:'var(--accent)',pharmacy:'#4ade80',dental:'#fbbf24',combined:'#a064ff',vision:'#ff7f50',behavioral:'#ff4757'};
+  tbody.innerHTML=data.map(function(a){
+    var c=typeColors[a.acc_type]||'var(--text2)';
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+a.acc_code+'</td>'+
+    '<td><strong>'+a.acc_name+'</strong></td>'+
+    '<td><span style="font-size:11px;font-weight:700;color:'+c+';text-transform:uppercase">'+a.acc_type+'</span></td>'+
+    '<td class="mono">$'+(a.indiv_ded||0).toLocaleString()+'</td>'+
+    '<td class="mono">$'+(a.family_ded||0).toLocaleString()+'</td>'+
+    '<td class="mono">$'+(a.indiv_oop||0).toLocaleString()+'</td>'+
+    '<td class="mono">$'+(a.family_oop||0).toLocaleString()+'</td>'+
+    '<td><span style="font-size:11px;color:'+(a.embedded==='yes'?'var(--green)':'var(--text3)')+'">'+a.embedded.toUpperCase()+'</span></td>'+
+    '<td><span style="font-size:11px;color:'+(a.cross_enabled!=='no'?'var(--accent)':'var(--text3)')+'">'+((a.cross_enabled==='no'?'NONE':a.cross_enabled).toUpperCase())+'</span></td>'+
+    '<td style="font-size:12px">'+a.plan_year.charAt(0).toUpperCase()+a.plan_year.slice(1)+'</td>'+
+    '<td>'+badge(a.status,a.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+a.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+a.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function loadTracker(){
+  var mbr=document.getElementById('tracker-member').value;
+  var body=document.getElementById('tracker-body');
+  if(!mbr){body.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><p>Select a member to view accumulator balances</p></div>';return;}
+  var b=MEMBER_BALANCES[mbr];
+  if(!b){body.innerHTML='<div class="empty-state"><div class="empty-icon">⚠</div><p>No accumulator data for this member</p></div>';return;}
+  function bucket(label,met,max,color){
+    var pct=max>0?Math.min(100,(met/max)*100):0;
+    var remaining=Math.max(0,max-met);
+    return'<div class="acc-bucket">'+
+      '<div class="bucket-header"><span class="bucket-title">'+label+'</span><span class="bucket-pct" style="color:'+color+'">$'+met.toLocaleString()+' / $'+max.toLocaleString()+'</span></div>'+
+      '<div class="progress-bar-wrap"><div class="progress-bar" style="width:'+pct+'%;background:'+color+'"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text3)">'+
+      '<span>'+pct.toFixed(1)+'% met</span>'+
+      '<span>'+(remaining>0?'$'+remaining.toLocaleString()+' remaining':'<span style="color:#4ade80;font-weight:700">✓ MET</span>')+'</span>'+
+      '</div></div>';
+  }
+  var html='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:16px 20px">';
+  html+=bucket('Medical Deductible (INN)',b.medical_ded_met,b.medical_ded_max,'var(--accent)');
+  html+=bucket('Medical OOP Max (INN)',b.medical_oop_met,b.medical_oop_max,'#60a5fa');
+  html+=bucket('Pharmacy OOP Max',b.rx_oop_met,b.rx_oop_max,'#4ade80');
+  html+=bucket('Dental Annual Max',b.dental_met,b.dental_max,'#fbbf24');
+  html+='<div class="acc-bucket"><div class="bucket-header"><span class="bucket-title">Plan Year</span></div>'+
+    '<div style="font-size:22px;font-weight:700;color:var(--accent);font-family:\'IBM Plex Mono\',monospace;text-align:center;padding:8px 0">'+b.year+'</div>'+
+    '<div style="font-size:11px;color:var(--text3);text-align:center">Resets Jan 1, 2027</div></div>';
+  var total_oop=b.medical_oop_met+b.rx_oop_met;
+  var total_max=b.medical_oop_max;
+  html+=bucket('Combined OOP Progress',total_oop,total_max,'#a064ff');
+  html+='</div>';
+  body.innerHTML=html;
+}
+
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Accumulator':'New Accumulator';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-acc_code').value=d?d.acc_code:genCode('ACC');
+  document.getElementById('f-acc_name').value=d?(d.acc_name||''):'';
+  document.getElementById('f-acc_type').value=d?(d.acc_type||'medical'):'medical';
+  document.getElementById('f-acc_level').value=d?(d.acc_level||'both'):'both';
+  document.getElementById('f-plan_year').value=d?(d.plan_year||'calendar'):'calendar';
+  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
+  document.getElementById('f-network_scope').value=d?(d.network_scope||'in_network'):'in_network';
+  document.getElementById('f-description').value=d?(d.description||''):'';
+  document.getElementById('f-indiv_ded').value=d?(d.indiv_ded||''):'';
+  document.getElementById('f-family_ded').value=d?(d.family_ded||''):'';
+  document.getElementById('f-indiv_oop').value=d?(d.indiv_oop||''):'';
+  document.getElementById('f-family_oop').value=d?(d.family_oop||''):'';
+  document.getElementById('f-oon_indiv_ded').value=d?(d.oon_indiv_ded||''):'';
+  document.getElementById('f-oon_indiv_oop').value=d?(d.oon_indiv_oop||''):'';
+  document.getElementById('f-embedded').value=d?(d.embedded||'yes'):'yes';
+  document.getElementById('f-aca_oop').value=d?(d.aca_oop||'yes'):'yes';
+  document.getElementById('f-benefit_limit').value=d?(d.benefit_limit||''):'';
+  document.getElementById('f-visit_limit').value=d?(d.visit_limit||''):'';
+  document.getElementById('f-lifetime_max').value=d?(d.lifetime_max||''):'';
+  document.getElementById('f-mh_parity').value=d?(d.mh_parity||'na'):'na';
+  document.getElementById('f-cross_enabled').value=d?(d.cross_enabled||'no'):'no';
+  document.getElementById('f-cross_source').value=d?(d.cross_source||''):'';
+  document.getElementById('f-cross_target').value=d?(d.cross_target||''):'';
+  document.getElementById('f-cross_rate').value=d?(d.cross_rate||100):100;
+  document.getElementById('f-cross_cap').value=d?(d.cross_cap||''):'';
+  document.getElementById('f-reset_freq').value=d?(d.reset_freq||'calendar'):'calendar';
+  document.getElementById('f-reset_date').value=d?(d.reset_date||'01/01'):'01/01';
+  document.getElementById('f-carryover').value=d?(d.carryover||'no'):'no';
+  document.getElementById('f-carryover_max').value=d?(d.carryover_max||''):'';
+  document.getElementById('f-prorate').value=d?(d.prorate||'no'):'no';
+  document.getElementById('f-rehire_rule').value=d?(d.rehire_rule||'reset'):'reset';
+  document.getElementById('f-reset_notes').value=d?(d.reset_notes||''):'';
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  switchTab('config',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+
+function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var code=document.getElementById('f-acc_code').value.trim();
+  var name=document.getElementById('f-acc_name').value.trim();
+  if(!code||!name){errEl.textContent='⚠ Accumulator Code and Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={acc_code:code,acc_name:name,acc_type:document.getElementById('f-acc_type').value,acc_level:document.getElementById('f-acc_level').value,plan_year:document.getElementById('f-plan_year').value,network_scope:document.getElementById('f-network_scope').value,description:document.getElementById('f-description').value,indiv_ded:parseFloat(document.getElementById('f-indiv_ded').value)||0,family_ded:parseFloat(document.getElementById('f-family_ded').value)||0,indiv_oop:parseFloat(document.getElementById('f-indiv_oop').value)||0,family_oop:parseFloat(document.getElementById('f-family_oop').value)||0,oon_indiv_ded:parseFloat(document.getElementById('f-oon_indiv_ded').value)||0,oon_indiv_oop:parseFloat(document.getElementById('f-oon_indiv_oop').value)||0,embedded:document.getElementById('f-embedded').value,aca_oop:document.getElementById('f-aca_oop').value,benefit_limit:parseFloat(document.getElementById('f-benefit_limit').value)||null,visit_limit:parseInt(document.getElementById('f-visit_limit').value)||null,lifetime_max:parseFloat(document.getElementById('f-lifetime_max').value)||null,mh_parity:document.getElementById('f-mh_parity').value,cross_enabled:document.getElementById('f-cross_enabled').value,cross_source:document.getElementById('f-cross_source').value,cross_target:document.getElementById('f-cross_target').value,cross_rate:parseFloat(document.getElementById('f-cross_rate').value)||100,cross_cap:parseFloat(document.getElementById('f-cross_cap').value)||null,reset_freq:document.getElementById('f-reset_freq').value,reset_date:document.getElementById('f-reset_date').value,carryover:document.getElementById('f-carryover').value,carryover_max:parseFloat(document.getElementById('f-carryover_max').value)||0,prorate:document.getElementById('f-prorate').value,rehire_rule:document.getElementById('f-rehire_rule').value,reset_notes:document.getElementById('f-reset_notes').value,status:document.getElementById('f-status').value,created_at:new Date().toISOString()};
+  if(id){var i=records.findIndex(function(r){return r.id===id;});if(i>-1)records[i]=Object.assign({},records[i],body);}
+  else{body.id='acc_'+Date.now();records.unshift(body);}
+  updateSummary();render();closeModal();toast(id?'Accumulator updated ✓':'Accumulator created ✓','success');
+}
+function del(id){records=records.filter(function(r){return r.id!==id;});updateSummary();render();toast('Deleted','info');}
+load();
+</script>
+</body>
+</html>
