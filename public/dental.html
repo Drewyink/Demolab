@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Dental</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .dent-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+    .d-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .d-card .d-val{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .d-card .d-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .ada-badge{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+    .cat-I{background:rgba(0,212,255,0.12);color:var(--accent);}
+    .cat-II{background:rgba(160,100,255,0.12);color:#a064ff;}
+    .cat-III{background:rgba(251,191,36,0.12);color:#fbbf24;}
+    .cat-IV{background:rgba(255,71,87,0.12);color:var(--red);}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Financial</div>
+      <a class="nav-item" href="accumulators.html"><span class="nav-icon">📊</span> Accumulators</a>
+      <a class="nav-item" href="cob.html"><span class="nav-icon">🔄</span> COB</a>
+      <a class="nav-item" href="cdh.html"><span class="nav-icon">💳</span> CDH / HSA</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item active" href="dental.html"><span class="nav-icon">🦷</span> Dental</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Network → <span>Dental Module</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Dental Benefits Module</div><div class="page-subtitle">PREVENTIVE · BASIC · MAJOR · ORTHO · CDT CODES · ANNUAL MAX</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Dental Benefit</button>
+      </div>
+
+      <div class="dent-cards">
+        <div class="d-card"><div class="d-lbl">Total Dental Benefits</div><div class="d-val" id="s-total">—</div></div>
+        <div class="d-card"><div class="d-lbl">Preventive (Cat I)</div><div class="d-val" style="color:var(--accent)" id="s-prev">—</div></div>
+        <div class="d-card"><div class="d-lbl">Basic (Cat II)</div><div class="d-val" style="color:#a064ff" id="s-basic">—</div></div>
+        <div class="d-card"><div class="d-lbl">Major (Cat III)</div><div class="d-val" style="color:#fbbf24" id="s-major">—</div></div>
+        <div class="d-card"><div class="d-lbl">Ortho (Cat IV)</div><div class="d-val" style="color:var(--red)" id="s-ortho">—</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">🦷 Dental Plan Summary</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:4px 0">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Annual Maximum</div>
+              <div style="font-size:20px;font-weight:700;color:#4ade80;font-family:'IBM Plex Mono',monospace">$1,500</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Per member per year</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Deductible</div>
+              <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'IBM Plex Mono',monospace">$50</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Waived for preventive</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Ortho Lifetime Max</div>
+              <div style="font-size:20px;font-weight:700;color:#fbbf24;font-family:'IBM Plex Mono',monospace">$1,500</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Child ortho to age 19</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Missing Tooth Clause</div>
+              <div style="font-size:20px;font-weight:700;color:var(--red);font-family:'IBM Plex Mono',monospace">YES</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Pre-existing exclusion</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px;padding:0 0 4px">
+            <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px">Preventive (Cat I)</div>
+              <div style="font-size:24px;font-weight:700;color:var(--accent)">100%</div>
+              <div style="font-size:11px;color:var(--text3)">No deductible</div>
+            </div>
+            <div style="background:rgba(160,100,255,0.06);border:1px solid rgba(160,100,255,0.2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px">Basic (Cat II)</div>
+              <div style="font-size:24px;font-weight:700;color:#a064ff">80%</div>
+              <div style="font-size:11px;color:var(--text3)">After deductible</div>
+            </div>
+            <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px">Major (Cat III)</div>
+              <div style="font-size:24px;font-weight:700;color:#fbbf24">50%</div>
+              <div style="font-size:11px;color:var(--text3)">After deductible</div>
+            </div>
+            <div style="background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px">Ortho (Cat IV)</div>
+              <div style="font-size:24px;font-weight:700;color:var(--red)">50%</div>
+              <div style="font-size:11px;color:var(--text3)">Children only</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🦷 Dental Benefits <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search by CDT code, benefit..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-I">Cat I</button>
+              <button class="filter-tab" id="tab-II">Cat II</button>
+              <button class="filter-tab" id="tab-III">Cat III</button>
+              <button class="filter-tab" id="tab-IV">Cat IV</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>CDT Code(s)</th><th>Benefit Name</th><th>Category</th><th>Plan Pays</th>
+              <th>Frequency</th><th>Age Limit</th><th>Deductible</th><th>PA Required</th><th>Missing Tooth</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="overlay">
+  <div class="modal" style="width:780px;max-height:93vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Dental Benefit</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('basic',this)">Basic Info</button>
+        <button class="modal-tab" onclick="switchTab('coverage',this)">Coverage & Limits</button>
+        <button class="modal-tab" onclick="switchTab('rules',this)">Rules & Exceptions</button>
+        <button class="modal-tab" onclick="switchTab('cdt',this)">CDT Codes</button>
+      </div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+
+      <div class="tab-panel active" id="tab-basic">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Benefit Code *</label><input type="text" class="form-input" id="f-code" placeholder="DENT-PREV-001"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
+          <div class="form-group full"><label class="form-label">Benefit Name *</label><input type="text" class="form-input" id="f-name" placeholder="Prophylaxis (Cleaning)"></div>
+          <div class="form-group"><label class="form-label">ADA Category</label>
+            <select class="form-select" id="f-category">
+              <option value="I">Category I — Preventive & Diagnostic</option>
+              <option value="II">Category II — Basic Restorative</option>
+              <option value="III">Category III — Major Restorative</option>
+              <option value="IV">Category IV — Orthodontia</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Subcategory</label>
+            <select class="form-select" id="f-subcategory">
+              <option value="diagnostic">Diagnostic</option>
+              <option value="preventive">Preventive</option>
+              <option value="restorative">Restorative</option>
+              <option value="endodontics">Endodontics</option>
+              <option value="periodontics">Periodontics</option>
+              <option value="prosthodontics">Prosthodontics (removable)</option>
+              <option value="oral_surgery">Oral &amp; Maxillofacial Surgery</option>
+              <option value="implants">Implants</option>
+              <option value="orthodontics">Orthodontics</option>
+              <option value="adjunctive">Adjunctive General Services</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Primary CDT Code</label>
+            <input type="text" class="form-input" id="f-cdt_primary" placeholder="D1110">
+          </div>
+          <div class="form-group"><label class="form-label">Network Type</label>
+            <select class="form-select" id="f-network">
+              <option value="dppo">DPPO (Dental PPO)</option>
+              <option value="dhmo">DHMO (Dental HMO)</option>
+              <option value="indemnity">Dental Indemnity</option>
+              <option value="all">All networks</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Description</label>
+            <textarea class="form-textarea" id="f-description" rows="2" placeholder="e.g., Adult prophylaxis (routine cleaning) — 2 visits per benefit year, per CDT D1110."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-coverage">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Plan Pays (INN %)</label><input type="number" class="form-input" id="f-plan_pays_inn" min="0" max="100" placeholder="100"></div>
+          <div class="form-group"><label class="form-label">Plan Pays (OON %)</label><input type="number" class="form-input" id="f-plan_pays_oon" min="0" max="100" placeholder="80"></div>
+          <div class="form-group"><label class="form-label">Deductible Applies?</label>
+            <select class="form-select" id="f-ded_applies">
+              <option value="no">No — waived for this benefit</option>
+              <option value="yes">Yes — annual deductible applies</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Counts Toward Annual Max?</label>
+            <select class="form-select" id="f-counts_annual_max">
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Frequency Limit</label>
+            <select class="form-select" id="f-frequency">
+              <option value="2x_year">2x per benefit year</option>
+              <option value="1x_year">1x per benefit year</option>
+              <option value="1x_2years">Once per 2 years</option>
+              <option value="1x_3years">Once per 3 years</option>
+              <option value="1x_5years">Once per 5 years</option>
+              <option value="unlimited">Unlimited</option>
+              <option value="custom">Custom — see notes</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Waiting Period</label>
+            <select class="form-select" id="f-waiting_period">
+              <option value="none">None</option>
+              <option value="6mo">6 months</option>
+              <option value="12mo">12 months</option>
+              <option value="24mo">24 months</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Age Minimum</label><input type="number" class="form-input" id="f-age_min" min="0" placeholder="0 (no minimum)"></div>
+          <div class="form-group"><label class="form-label">Age Maximum</label><input type="number" class="form-input" id="f-age_max" min="0" placeholder="e.g., 19 for child ortho"></div>
+          <div class="form-group"><label class="form-label">Dollar Limit (Annual)</label><input type="number" class="form-input" id="f-dollar_limit" step="0.01" min="0" placeholder="Unlimited"></div>
+          <div class="form-group"><label class="form-label">Tooth Surface Limit</label>
+            <select class="form-select" id="f-surface_limit">
+              <option value="na">N/A</option>
+              <option value="per_tooth">Per tooth</option>
+              <option value="per_surface">Per surface (amalgam/composite)</option>
+              <option value="per_arch">Per arch (denture/partial)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-rules">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Prior Auth Required</label>
+            <select class="form-select" id="f-pa">
+              <option value="no">No</option>
+              <option value="yes">Yes — PA required</option>
+              <option value="over_amount">Yes — if over $300</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Missing Tooth Clause</label>
+            <select class="form-select" id="f-missing_tooth">
+              <option value="no">No — not subject</option>
+              <option value="yes">Yes — excluded if missing prior to coverage</option>
+              <option value="12mo">Yes — excluded if extracted in last 12 months</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Least Expensive Alternative</label>
+            <select class="form-select" id="f-least_expensive">
+              <option value="no">No — pay for requested treatment</option>
+              <option value="yes">Yes — LEAT applies</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Alternate Benefit Provision</label>
+            <select class="form-select" id="f-alternate_benefit">
+              <option value="no">No</option>
+              <option value="yes">Yes — may substitute lower-cost treatment</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Predetermination Required?</label>
+            <select class="form-select" id="f-predet">
+              <option value="no">No</option>
+              <option value="recommended">Recommended (not required)</option>
+              <option value="required">Required — for services over $300</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Cosmetic Exclusion</label>
+            <select class="form-select" id="f-cosmetic">
+              <option value="yes">Yes — cosmetic procedures excluded</option>
+              <option value="no">No — covered</option>
+              <option value="partial">Partial — functional component only</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Clinical Notes / Criteria</label>
+            <textarea class="form-textarea" id="f-clinical_notes" rows="3" placeholder="e.g., Periodontal maintenance (D4910) covered in lieu of prophylaxis (D1110) for patients with diagnosed periodontal disease. Max 4x per year."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-cdt">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group full"><label class="form-label">Covered CDT Codes (comma-separated)</label>
+            <input type="text" class="form-input" id="f-cdt_codes" placeholder="D1110, D1120, D1206, D1208">
+          </div>
+          <div class="form-group full"><label class="form-label">Excluded CDT Codes</label>
+            <input type="text" class="form-input" id="f-cdt_excluded" placeholder="D1351 (sealants excluded for adults over 14)">
+          </div>
+          <div class="form-group"><label class="form-label">ADA Code Range</label>
+            <select class="form-select" id="f-cdt_range">
+              <option value="D0100-D0999">D0100–D0999 Diagnostic</option>
+              <option value="D1000-D1999">D1000–D1999 Preventive</option>
+              <option value="D2000-D2999">D2000–D2999 Restorative</option>
+              <option value="D3000-D3999">D3000–D3999 Endodontics</option>
+              <option value="D4000-D4999">D4000–D4999 Periodontics</option>
+              <option value="D5000-D5899">D5000–D5899 Prosthodontics (removable)</option>
+              <option value="D5900-D5999">D5900–D5999 Maxillofacial Prosthetics</option>
+              <option value="D6000-D6199">D6000–D6199 Implants</option>
+              <option value="D7000-D7999">D7000–D7999 Oral Surgery</option>
+              <option value="D8000-D8999">D8000–D8999 Orthodontics</option>
+              <option value="D9000-D9999">D9000–D9999 Adjunctive</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Tooth-Specific?</label>
+            <select class="form-select" id="f-tooth_specific">
+              <option value="no">No — general service</option>
+              <option value="yes">Yes — tooth number required on claim</option>
+              <option value="quadrant">Quadrant required</option>
+              <option value="arch">Arch required</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">CDT Code Notes</label>
+            <textarea class="form-textarea" id="f-cdt_notes" rows="3" placeholder="e.g., D2391 covered for members under age 14 only. Adults: amalgam (D2140) used as alternate benefit."></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Dental Benefit</button></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+var records=[], catFilter='all';
+
+var SEED_DENTAL=[
+  {id:'d1',code:'DENT-PREV-01',name:'Oral Examination',category:'I',subcategory:'diagnostic',cdt_primary:'D0120',plan_pays_inn:100,plan_pays_oon:80,ded_applies:'no',frequency:'2x_year',waiting_period:'none',pa:'no',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d2',code:'DENT-PREV-02',name:'Prophylaxis (Adult Cleaning)',category:'I',subcategory:'preventive',cdt_primary:'D1110',plan_pays_inn:100,plan_pays_oon:80,ded_applies:'no',frequency:'2x_year',waiting_period:'none',pa:'no',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d3',code:'DENT-PREV-03',name:'Prophylaxis (Child Cleaning)',category:'I',subcategory:'preventive',cdt_primary:'D1120',plan_pays_inn:100,plan_pays_oon:80,ded_applies:'no',frequency:'2x_year',waiting_period:'none',pa:'no',missing_tooth:'no',age_max:13,counts_annual_max:'yes',status:'active'},
+  {id:'d4',code:'DENT-PREV-04',name:'Bitewing X-Rays',category:'I',subcategory:'diagnostic',cdt_primary:'D0274',plan_pays_inn:100,plan_pays_oon:80,ded_applies:'no',frequency:'1x_year',waiting_period:'none',pa:'no',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d5',code:'DENT-BASIC-01',name:'Amalgam Restoration (1 Surface)',category:'II',subcategory:'restorative',cdt_primary:'D2140',plan_pays_inn:80,plan_pays_oon:60,ded_applies:'yes',frequency:'unlimited',waiting_period:'none',pa:'no',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d6',code:'DENT-BASIC-02',name:'Composite Resin (Anterior)',category:'II',subcategory:'restorative',cdt_primary:'D2330',plan_pays_inn:80,plan_pays_oon:60,ded_applies:'yes',frequency:'unlimited',waiting_period:'none',pa:'no',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d7',code:'DENT-BASIC-03',name:'Root Canal (Anterior)',category:'II',subcategory:'endodontics',cdt_primary:'D3310',plan_pays_inn:80,plan_pays_oon:60,ded_applies:'yes',frequency:'1x_5years',waiting_period:'6mo',pa:'yes',missing_tooth:'no',counts_annual_max:'yes',status:'active'},
+  {id:'d8',code:'DENT-MAJOR-01',name:'Porcelain Crown',category:'III',subcategory:'restorative',cdt_primary:'D2712',plan_pays_inn:50,plan_pays_oon:40,ded_applies:'yes',frequency:'1x_5years',waiting_period:'12mo',pa:'yes',missing_tooth:'yes',counts_annual_max:'yes',status:'active'},
+  {id:'d9',code:'DENT-MAJOR-02',name:'Complete Denture (Upper)',category:'III',subcategory:'prosthodontics',cdt_primary:'D5110',plan_pays_inn:50,plan_pays_oon:40,ded_applies:'yes',frequency:'1x_5years',waiting_period:'12mo',pa:'yes',missing_tooth:'yes',counts_annual_max:'yes',status:'active'},
+  {id:'d10',code:'DENT-ORTHO-01',name:'Comprehensive Orthodontic Treatment (Child)',category:'IV',subcategory:'orthodontics',cdt_primary:'D8080',plan_pays_inn:50,plan_pays_oon:50,ded_applies:'no',frequency:'1x_lifetime',waiting_period:'12mo',pa:'yes',missing_tooth:'no',age_max:19,counts_annual_max:'no',status:'active'}
+];
+
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','I','II','III','IV'].forEach(function(f){
+  document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
+});
+
+function switchTab(name,btn){
+  document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+function setFilter(s,btn){catFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+
+function load(){records=SEED_DENTAL.slice();updateSummary();render();}
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-prev').textContent=records.filter(function(r){return r.category==='I';}).length;
+  document.getElementById('s-basic').textContent=records.filter(function(r){return r.category==='II';}).length;
+  document.getElementById('s-major').textContent=records.filter(function(r){return r.category==='III';}).length;
+  document.getElementById('s-ortho').textContent=records.filter(function(r){return r.category==='IV';}).length;
+}
+
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(catFilter!=='all')data=data.filter(function(r){return r.category===catFilter;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">🦷</div><p>No dental benefits found</p></div></td></tr>';return;}
+  var catNames={'I':'Preventive','II':'Basic','III':'Major','IV':'Ortho'};
+  var catColors={'I':'var(--accent)','II':'#a064ff','III':'#fbbf24','IV':'var(--red)'};
+  tbody.innerHTML=data.map(function(d){
+    var c=catColors[d.category];
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+d.cdt_primary+'</td>'+
+    '<td><strong>'+d.name+'</strong></td>'+
+    '<td><span class="ada-badge cat-'+d.category+'">Cat '+d.category+' — '+catNames[d.category]+'</span></td>'+
+    '<td><span style="font-weight:700;color:'+c+'">'+d.plan_pays_inn+'%</span><span style="font-size:11px;color:var(--text3)"> / '+d.plan_pays_oon+'% OON</span></td>'+
+    '<td style="font-size:11px;color:var(--text2)">'+d.frequency.replace(/_/g,' ')+'</td>'+
+    '<td style="font-size:11px;color:var(--text3)">'+(d.age_max?'≤ age '+d.age_max:'—')+'</td>'+
+    '<td><span style="font-size:11px;color:'+(d.ded_applies==='yes'?'var(--yellow)':'var(--text3)')+'">'+d.ded_applies.toUpperCase()+'</span></td>'+
+    '<td><span style="font-size:11px;color:'+(d.pa==='yes'?'var(--yellow)':'var(--text3)')+'">'+d.pa.toUpperCase()+'</span></td>'+
+    '<td><span style="font-size:11px;color:'+(d.missing_tooth==='yes'?'var(--red)':'var(--text3)')+'">'+d.missing_tooth.toUpperCase()+'</span></td>'+
+    '<td>'+badge(d.status,d.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+d.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+d.id+'\')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Dental Benefit':'New Dental Benefit';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-code').value=d?d.code:genCode('DENT');
+  document.getElementById('f-name').value=d?(d.name||''):'';
+  document.getElementById('f-category').value=d?(d.category||'I'):'I';
+  document.getElementById('f-subcategory').value=d?(d.subcategory||'diagnostic'):'diagnostic';
+  document.getElementById('f-cdt_primary').value=d?(d.cdt_primary||''):'';
+  document.getElementById('f-network').value=d?(d.network||'dppo'):'dppo';
+  document.getElementById('f-description').value=d?(d.description||''):'';
+  document.getElementById('f-plan_pays_inn').value=d?(d.plan_pays_inn||100):100;
+  document.getElementById('f-plan_pays_oon').value=d?(d.plan_pays_oon||80):80;
+  document.getElementById('f-ded_applies').value=d?(d.ded_applies||'no'):'no';
+  document.getElementById('f-counts_annual_max').value=d?(d.counts_annual_max||'yes'):'yes';
+  document.getElementById('f-frequency').value=d?(d.frequency||'2x_year'):'2x_year';
+  document.getElementById('f-waiting_period').value=d?(d.waiting_period||'none'):'none';
+  document.getElementById('f-age_min').value=d?(d.age_min||''):'';
+  document.getElementById('f-age_max').value=d?(d.age_max||''):'';
+  document.getElementById('f-dollar_limit').value=d?(d.dollar_limit||''):'';
+  document.getElementById('f-surface_limit').value=d?(d.surface_limit||'na'):'na';
+  document.getElementById('f-pa').value=d?(d.pa||'no'):'no';
+  document.getElementById('f-missing_tooth').value=d?(d.missing_tooth||'no'):'no';
+  document.getElementById('f-least_expensive').value=d?(d.least_expensive||'no'):'no';
+  document.getElementById('f-alternate_benefit').value=d?(d.alternate_benefit||'no'):'no';
+  document.getElementById('f-predet').value=d?(d.predet||'no'):'no';
+  document.getElementById('f-cosmetic').value=d?(d.cosmetic||'yes'):'yes';
+  document.getElementById('f-clinical_notes').value=d?(d.clinical_notes||''):'';
+  document.getElementById('f-cdt_codes').value=d?(d.cdt_codes||''):'';
+  document.getElementById('f-cdt_excluded').value=d?(d.cdt_excluded||''):'';
+  document.getElementById('f-cdt_range').value=d?(d.cdt_range||'D1000-D1999'):'D1000-D1999';
+  document.getElementById('f-tooth_specific').value=d?(d.tooth_specific||'no'):'no';
+  document.getElementById('f-cdt_notes').value=d?(d.cdt_notes||''):'';
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  switchTab('basic',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var code=document.getElementById('f-code').value.trim();
+  var name=document.getElementById('f-name').value.trim();
+  if(!code||!name){errEl.textContent='⚠ Code and Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={code:code,name:name,category:document.getElementById('f-category').value,subcategory:document.getElementById('f-subcategory').value,cdt_primary:document.getElementById('f-cdt_primary').value,network:document.getElementById('f-network').value,description:document.getElementById('f-description').value,plan_pays_inn:parseInt(document.getElementById('f-plan_pays_inn').value)||100,plan_pays_oon:parseInt(document.getElementById('f-plan_pays_oon').value)||80,ded_applies:document.getElementById('f-ded_applies').value,counts_annual_max:document.getElementById('f-counts_annual_max').value,frequency:document.getElementById('f-frequency').value,waiting_period:document.getElementById('f-waiting_period').value,age_min:parseInt(document.getElementById('f-age_min').value)||null,age_max:parseInt(document.getElementById('f-age_max').value)||null,dollar_limit:parseFloat(document.getElementById('f-dollar_limit').value)||null,surface_limit:document.getElementById('f-surface_limit').value,pa:document.getElementById('f-pa').value,missing_tooth:document.getElementById('f-missing_tooth').value,least_expensive:document.getElementById('f-least_expensive').value,alternate_benefit:document.getElementById('f-alternate_benefit').value,predet:document.getElementById('f-predet').value,cosmetic:document.getElementById('f-cosmetic').value,clinical_notes:document.getElementById('f-clinical_notes').value,cdt_codes:document.getElementById('f-cdt_codes').value,cdt_excluded:document.getElementById('f-cdt_excluded').value,cdt_range:document.getElementById('f-cdt_range').value,tooth_specific:document.getElementById('f-tooth_specific').value,cdt_notes:document.getElementById('f-cdt_notes').value,status:document.getElementById('f-status').value};
+  if(id){var i=records.findIndex(function(r){return r.id===id;});if(i>-1)records[i]=Object.assign({},records[i],body);}
+  else{body.id='dent_'+Date.now();records.unshift(body);}
+  updateSummary();render();closeModal();toast(id?'Dental benefit updated ✓':'Dental benefit created ✓','success');
+}
+function del(id){records=records.filter(function(r){return r.id!==id;});updateSummary();render();toast('Deleted','info');}
+load();
+</script>
+</body>
+</html>
