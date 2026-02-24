@@ -184,7 +184,6 @@ crudRoutes(app, 'plans', 'plans',
 );
 
 // ─── BENEFITS ─────────────────────────────────────────────────────────────────
-// Full expanded CRUD — stores all fields in memory, basic fields in Postgres
 app.get('/api/benefits', async (req, res) => {
   try {
     if (usePostgres) { const r = await pgQuery('SELECT * FROM benefits ORDER BY created_at DESC'); return res.json(r.rows); }
