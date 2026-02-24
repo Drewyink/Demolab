@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — COB</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .cob-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px;margin:16px 0;}
+    .cob-node{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;}
+    .cob-node .node-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px;}
+    .cob-node .node-val{font-size:14px;font-weight:700;color:var(--accent);}
+    .cob-arrow{font-size:20px;color:var(--text3);text-align:center;}
+    .calc-panel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:14px;}
+    .calc-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(30,45,69,0.5);font-size:12px;}
+    .calc-row:last-child{border-bottom:none;}
+    .cob-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+    .cob-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .cob-card .c-val{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .cob-card .c-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <div class="nav-section-label">Financial</div>
+      <a class="nav-item" href="accumulators.html"><span class="nav-icon">📊</span> Accumulators</a>
+      <a class="nav-item active" href="cob.html"><span class="nav-icon">🔄</span> COB</a>
+      <a class="nav-item" href="cdh.html"><span class="nav-icon">💳</span> CDH / HSA</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Financial → <span>Coordination of Benefits</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Coordination of Benefits</div><div class="page-subtitle">PRIMARY / SECONDARY · BIRTHDAY RULE · MSP · NON-DUPLICATION · MOB</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New COB Rule</button>
+      </div>
+
+      <div class="cob-cards">
+        <div class="cob-card"><div class="c-lbl">COB Rules</div><div class="c-val" id="s-total">—</div></div>
+        <div class="cob-card"><div class="c-lbl">Primary Payer</div><div class="c-val" style="color:var(--accent)" id="s-primary">—</div></div>
+        <div class="cob-card"><div class="c-lbl">Secondary</div><div class="c-val" style="color:#fbbf24" id="s-secondary">—</div></div>
+        <div class="cob-card"><div class="c-lbl">MSP / Medicare</div><div class="c-val" style="color:#a064ff" id="s-msp">—</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">🧮 COB Adjudication Calculator</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
+            <div class="form-group"><label class="form-label">Billed Amount ($)</label><input type="number" class="form-input" id="calc-billed" value="1000" step="0.01" oninput="runCalc()"></div>
+            <div class="form-group"><label class="form-label">Primary Allowed ($)</label><input type="number" class="form-input" id="calc-pri-allowed" value="750" step="0.01" oninput="runCalc()"></div>
+            <div class="form-group"><label class="form-label">Primary Paid ($)</label><input type="number" class="form-input" id="calc-pri-paid" value="600" step="0.01" oninput="runCalc()"></div>
+            <div class="form-group"><label class="form-label">COB Method</label>
+              <select class="form-select" id="calc-method" onchange="runCalc()">
+                <option value="coordination">Standard Coordination</option>
+                <option value="non_duplication">Non-Duplication</option>
+                <option value="mob">Maintenance of Benefits (MOB)</option>
+                <option value="msp">Medicare Secondary Payer</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="calc-panel">
+              <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Adjudication Result</div>
+              <div id="calc-result"></div>
+            </div>
+            <div class="calc-panel">
+              <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Method Explanation</div>
+              <div id="calc-explain" style="font-size:12px;color:var(--text2);line-height:1.7"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔄 COB Rules <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search COB rules..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-primary">Primary</button>
+              <button class="filter-tab" id="tab-secondary">Secondary</button>
+              <button class="filter-tab" id="tab-msp">MSP</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>Rule Code</th><th>Rule Name</th><th>Payer Order</th><th>COB Method</th>
+              <th>Medicare</th><th>Medicaid</th><th>Birthday Rule</th><th>Plan Type</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="overlay">
+  <div class="modal" style="width:800px;max-height:93vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New COB Rule</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('payer',this)">Payer Order</button>
+        <button class="modal-tab" onclick="switchTab('method',this)">COB Method</button>
+        <button class="modal-tab" onclick="switchTab('medicare',this)">Medicare / MSP</button>
+        <button class="modal-tab" onclick="switchTab('special',this)">Special Rules</button>
+      </div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+
+      <div class="tab-panel active" id="tab-payer">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Rule Code *</label><input type="text" class="form-input" id="f-rule_code" placeholder="COB-001"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
+          <div class="form-group full"><label class="form-label">Rule Name *</label><input type="text" class="form-input" id="f-rule_name" placeholder="Employee + Spouse Dual Coverage"></div>
+          <div class="form-group"><label class="form-label">This Plan's Payer Order</label>
+            <select class="form-select" id="f-payer_order">
+              <option value="primary">Primary Payer</option>
+              <option value="secondary">Secondary Payer</option>
+              <option value="tertiary">Tertiary Payer</option>
+              <option value="unknown">Unknown — determine by rule</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Applies to Plan Type</label>
+            <select class="form-select" id="f-plan_type">
+              <option value="all">All Plans</option>
+              <option value="hmo">HMO</option><option value="ppo">PPO</option>
+              <option value="hdhp">HDHP</option><option value="epo">EPO</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Member Relationship</label>
+            <select class="form-select" id="f-member_rel">
+              <option value="all">All Members</option>
+              <option value="employee">Employee (subscriber)</option>
+              <option value="spouse">Spouse / Domestic Partner</option>
+              <option value="dependent_child">Dependent Child</option>
+              <option value="disabled_adult">Disabled Adult Dependent</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Other Payer Type</label>
+            <select class="form-select" id="f-other_payer">
+              <option value="commercial">Commercial Insurance</option>
+              <option value="medicare_a">Medicare Part A</option>
+              <option value="medicare_b">Medicare Part B</option>
+              <option value="medicare_d">Medicare Part D</option>
+              <option value="medicaid">Medicaid</option>
+              <option value="tricare">TRICARE / VA</option>
+              <option value="auto">Auto Insurance</option>
+              <option value="workers_comp">Workers' Compensation</option>
+              <option value="liability">Liability / No-Fault</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Order Determination Rule</label>
+            <select class="form-select" id="f-order_rule">
+              <option value="birthday">Birthday Rule (dependent children)</option>
+              <option value="gender">Gender Rule (old — use birthday)</option>
+              <option value="naic">NAIC COB Model Regulation</option>
+              <option value="employment">Active Employment Rule</option>
+              <option value="msp">Medicare Secondary Payer (MSP)</option>
+              <option value="cobra">COBRA is always secondary</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Priority Notes</label>
+            <textarea class="form-textarea" id="f-priority_notes" rows="2" placeholder="e.g., When member has both this plan and Medicare, apply MSP rules — employer plan primary if employer has 20+ employees."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-method">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group full"><label class="form-label">COB Calculation Method</label>
+            <select class="form-select" id="f-cob_method">
+              <option value="standard_coordination">Standard Coordination — secondary pays difference up to allowed</option>
+              <option value="non_duplication">Non-Duplication — secondary only pays if more than primary paid</option>
+              <option value="mob">Maintenance of Benefits (MOB) — secondary applies own cost-sharing to original</option>
+              <option value="carve_out">Carve-Out — secondary subtracts primary payment from benefit</option>
+              <option value="passthrough">Pass-Through — secondary pays 100% of patient responsibility</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Payment Limit</label>
+            <select class="form-select" id="f-payment_limit">
+              <option value="allowed">Secondary allowed amount</option>
+              <option value="billed">Billed amount</option>
+              <option value="patient_resp">Patient responsibility only</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Never Exceed (combined payers)</label>
+            <select class="form-select" id="f-never_exceed">
+              <option value="billed">Billed amount</option>
+              <option value="primary_allowed">Primary allowed amount</option>
+              <option value="secondary_allowed">Secondary allowed amount</option>
+              <option value="higher_allowed">Higher of the two allowed amounts</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Cost-Sharing When Secondary</label>
+            <select class="form-select" id="f-cost_share_secondary">
+              <option value="waive_all">Waive all cost-sharing (member pays $0)</option>
+              <option value="apply_own">Apply own plan's cost-sharing to remainder</option>
+              <option value="apply_to_allowed">Apply to secondary allowed amount</option>
+              <option value="patient_balance">Pay only member's balance from primary</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">COB Method Notes</label>
+            <textarea class="form-textarea" id="f-method_notes" rows="3" placeholder="e.g., Under Standard Coordination: Secondary allowed = $300. Primary paid $240. Secondary liability = $300 - $240 = $60. Member pays $0."></textarea>
+          </div>
+        </form>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Method Reference</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            <div>• <strong style="color:var(--text)">Standard:</strong> Secondary pays up to its own allowed minus what primary paid. Most common.</div>
+            <div>• <strong style="color:var(--text)">Non-Dup:</strong> Secondary only pays if its benefit > primary payment. Reduces secondary payer savings.</div>
+            <div>• <strong style="color:var(--text)">MOB:</strong> Secondary applies its normal benefit to the claim, reduces by primary payment.</div>
+            <div>• <strong style="color:var(--text)">Carve-Out:</strong> Secondary benefit is reduced dollar-for-dollar by what primary paid.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-medicare">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">MSP Scenario</label>
+            <select class="form-select" id="f-msp_scenario">
+              <option value="none">Not applicable</option>
+              <option value="working_aged">Working Aged (65+, employer 20+ employees)</option>
+              <option value="disability">Disability (employer 100+ employees)</option>
+              <option value="esrd">ESRD (End-Stage Renal Disease)</option>
+              <option value="cobra">COBRA + Medicare</option>
+              <option value="retiree">Retiree Coverage</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">When Employer Plan is Primary</label>
+            <select class="form-select" id="f-emp_primary">
+              <option value="yes">Yes — employer plan is primary</option>
+              <option value="no">No — Medicare is primary</option>
+              <option value="conditional">Conditional — based on enrollment</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicare Part A Coordination</label>
+            <select class="form-select" id="f-mcare_a">
+              <option value="standard">Standard COB</option>
+              <option value="supplement">Supplement — cover Part A gaps</option>
+              <option value="crossover">Crossover claim processing</option>
+              <option value="na">N/A</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicare Part B Coordination</label>
+            <select class="form-select" id="f-mcare_b">
+              <option value="standard">Standard COB</option>
+              <option value="supplement">Cover Part B 20% coinsurance</option>
+              <option value="excess">Cover Part B excess charges</option>
+              <option value="na">N/A</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicare Part D Interaction</label>
+            <select class="form-select" id="f-mcare_d">
+              <option value="creditable">Creditable coverage — satisfies Part D</option>
+              <option value="non_creditable">Non-creditable — member should enroll in D</option>
+              <option value="wrap">Wrap-around — supplement Part D gaps</option>
+              <option value="na">N/A</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicaid Interaction</label>
+            <select class="form-select" id="f-medicaid">
+              <option value="none">None</option>
+              <option value="primary">This plan primary over Medicaid always</option>
+              <option value="dual_eligible">Dual Eligible — Medicare + Medicaid + this plan</option>
+              <option value="qmb">QMB — Medicaid pays Medicare premiums</option>
+              <option value="wraparound">Wraparound / supplemental to Medicaid</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Medicare COB Notes</label>
+            <textarea class="form-textarea" id="f-msp_notes" rows="3" placeholder="e.g., Working Aged rule: employer plan with 20+ employees is always primary to Medicare."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-special">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Birthday Rule (Dependents)</label>
+            <select class="form-select" id="f-birthday_rule">
+              <option value="yes">Yes — earlier birthday parent is primary</option>
+              <option value="no">No</option>
+              <option value="gender_override">Gender rule override (legacy)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">COBRA COB Treatment</label>
+            <select class="form-select" id="f-cobra_cob">
+              <option value="secondary">COBRA always secondary to active coverage</option>
+              <option value="primary">COBRA can be primary</option>
+              <option value="na">N/A — no COBRA members on this plan</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Subrogation Rights</label>
+            <select class="form-select" id="f-subrogation">
+              <option value="yes">Yes — plan may seek reimbursement from liable parties</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Right of Reimbursement</label>
+            <select class="form-select" id="f-reimbursement">
+              <option value="yes">Yes — plan has right to recover from settlement</option>
+              <option value="make_whole">Make Whole Doctrine applies first</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Auto / Liability COB</label>
+            <select class="form-select" id="f-auto_liability">
+              <option value="primary_over_auto">Plan is primary over auto/liability</option>
+              <option value="secondary_to_auto">Plan is secondary if auto/liability applies</option>
+              <option value="na">N/A</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Workers' Comp Interaction</label>
+            <select class="form-select" id="f-workers_comp">
+              <option value="excluded">Excluded — work-related injuries not covered</option>
+              <option value="primary">Plan primary, seek recovery from WC</option>
+              <option value="conditional">Conditional — if WC denied</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Special Rule Notes</label>
+            <textarea class="form-textarea" id="f-special_notes" rows="3" placeholder="e.g., Birthday Rule: If both parents share same birthday, plan covering parent longer is primary."></textarea>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save COB Rule</button></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+var records=[], payerFilter='all';
+
+var SEED_COB=[
+  {id:'cob1',rule_code:'COB-EMP-01',rule_name:'Employee Active Coverage - Primary',payer_order:'primary',plan_type:'all',member_rel:'employee',other_payer:'commercial',order_rule:'naic',cob_method:'standard_coordination',msp_scenario:'none',birthday_rule:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'cob2',rule_code:'COB-DEP-BDAY',rule_name:'Dependent Child - Birthday Rule',payer_order:'unknown',plan_type:'all',member_rel:'dependent_child',other_payer:'commercial',order_rule:'birthday',cob_method:'standard_coordination',msp_scenario:'none',birthday_rule:'yes',status:'active',created_at:new Date('2026-01-01')},
+  {id:'cob3',rule_code:'COB-MSP-WRK',rule_name:'Working Aged - MSP Primary',payer_order:'primary',plan_type:'all',member_rel:'employee',other_payer:'medicare_b',order_rule:'msp',cob_method:'standard_coordination',msp_scenario:'working_aged',birthday_rule:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'cob4',rule_code:'COB-COBRA-SEC',rule_name:'COBRA Secondary to Active Coverage',payer_order:'secondary',plan_type:'all',member_rel:'all',other_payer:'commercial',order_rule:'cobra',cob_method:'non_duplication',msp_scenario:'none',birthday_rule:'no',status:'active',created_at:new Date('2026-01-01')},
+  {id:'cob5',rule_code:'COB-DUAL-ELG',rule_name:'Dual Eligible - Medicare + Medicaid',payer_order:'secondary',plan_type:'all',member_rel:'all',other_payer:'medicaid',order_rule:'msp',cob_method:'passthrough',msp_scenario:'esrd',birthday_rule:'no',status:'active',created_at:new Date('2026-01-01')}
+];
+
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','primary','secondary','msp'].forEach(function(f){
+  document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
+});
+
+function switchTab(name,btn){
+  document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+function setFilter(s,btn){payerFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+
+function load(){records=SEED_COB.slice();updateSummary();render();runCalc();}
+
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-primary').textContent=records.filter(function(r){return r.payer_order==='primary';}).length;
+  document.getElementById('s-secondary').textContent=records.filter(function(r){return r.payer_order==='secondary';}).length;
+  document.getElementById('s-msp').textContent=records.filter(function(r){return r.msp_scenario&&r.msp_scenario!=='none';}).length;
+}
+
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(payerFilter==='primary')data=data.filter(function(r){return r.payer_order==='primary';});
+  else if(payerFilter==='secondary')data=data.filter(function(r){return r.payer_order==='secondary';});
+  else if(payerFilter==='msp')data=data.filter(function(r){return r.msp_scenario&&r.msp_scenario!=='none';});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">🔄</div><p>No COB rules found</p></div></td></tr>';return;}
+  var pc={primary:'var(--green)',secondary:'var(--yellow)',tertiary:'var(--orange)',unknown:'var(--text2)'};
+  tbody.innerHTML=data.map(function(c){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+c.rule_code+'</td>'+
+    '<td><strong>'+c.rule_name+'</strong></td>'+
+    '<td><spa
