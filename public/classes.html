@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Classes</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item active" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Employer → <span>Classes</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Class Configuration</div><div class="page-subtitle">SUBSCRIBER CLASSES · ELIGIBILITY TIERS · CONTRIBUTION OVERRIDES</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Class</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🏷️ Classes <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px"><div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search classes..." id="search-input"></div></div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Class Code</th><th>Class Name</th><th>Group</th><th>Eligible Plans</th><th>Wait Period</th><th>Contribution %</th><th>COBRA</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="overlay">
+  <div class="modal" style="width:680px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Class</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Class Code *</label><input type="text" class="form-input" id="f-class_code" placeholder="CLS-EXEC"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+        <div class="form-group full"><label class="form-label">Class Name *</label><input type="text" class="form-input" id="f-class_name"></div>
+        <div class="form-group full"><label class="form-label">Description</label><input type="text" class="form-input" id="f-description"></div>
+        <div class="form-group full"><label class="form-label">Eligible Plans (comma-separated)</label><input type="text" class="form-input" id="f-eligible_plans" placeholder="Silver PPO, Gold PPO Elite"></div>
+        <div class="form-group"><label class="form-label">Waiting Period (days)</label><input type="number" class="form-input" id="f-waiting_period_days" value="30" min="0"></div>
+        <div class="form-group"><label class="form-label">Contribution Override %</label><input type="number" class="form-input" id="f-contribution_override_pct" value="75" min="0" max="100"></div>
+        <div class="form-group"><label class="form-label">COBRA Eligible</label><select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
+        <button class="btn btn-primary" id="btn-save">Save Class</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+const API = '/api/classes';
+let all = [], editId = null;
+const overlay = document.getElementById('overlay');
+const tbody = document.getElementById('tbody');
+const searchInput = document.getElementById('search-input');
+document.getElementById('new-btn').onclick = () => openModal();
+document.getElementById('btn-x').onclick = document.getElementById('btn-cancel').onclick = () => overlay.classList.remove('open');
+document.getElementById('btn-save').onclick = save;
+searchInput.oninput = () => render(all.filter(r => JSON.stringify(r).toLowerCase().includes(searchInput.value.toLowerCase())));
+
+async function load() {
+  all = await apiFetch(API);
+  document.getElementById('count').textContent = `(${all.length})`;
+  render(all);
+}
+function render(rows) {
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🏷️</div><p>No classes found.</p></div></td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td><span class="badge badge-blue">${r.class_code}</span></td>
+    <td><strong>${r.class_name}</strong></td>
+    <td><span style="font-size:11px;color:var(--text2)">${r.group_id||'—'}</span></td>
+    <td style="font-size:11px;max-width:200px;white-space:normal">${r.eligible_plans||'—'}</td>
+    <td>${r.waiting_period_days||0} days</td>
+    <td>${r.contribution_override_pct||'—'}%</td>
+    <td><span class="badge ${r.cobra_eligible==='yes'?'badge-green':'badge-gray'}">${r.cobra_eligible||'—'}</span></td>
+    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+    <td><button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Delete</button></td>
+  </tr>`).join('');
+}
+function openModal(r = null) {
+  editId = r ? r.id : null;
+  document.getElementById('modal-title').textContent = r ? 'Edit Class' : 'New Class';
+  document.getElementById('form-error').style.display = 'none';
+  ['id','class_code','class_name','description','eligible_plans','waiting_period_days','contribution_override_pct'].forEach(f => { const el = document.getElementById('f-'+f); if(el) el.value = r ? (r[f]||'') : (f==='waiting_period_days'?30:f==='contribution_override_pct'?75:''); });
+  if(r) { document.getElementById('f-status').value = r.status||'active'; document.getElementById('f-cobra_eligible').value = r.cobra_eligible||'yes'; }
+  overlay.classList.add('open');
+}
+function edit(id) { openModal(all.find(r=>r.id===id)); }
+async function del(id) { if(confirm('Delete this class?')) { await apiFetch(`${API}/${id}`,{method:'DELETE'}); load(); } }
+async function save() {
+  const body = { class_code:v('class_code'), class_name:v('class_name'), description:v('description'), eligible_plans:v('eligible_plans'), waiting_period_days:parseInt(v('waiting_period_days'))||0, contribution_override_pct:parseInt(v('contribution_override_pct'))||0, cobra_eligible:v('cobra_eligible'), status:v('status') };
+  if(!body.class_code||!body.class_name) { showErr('Class Code and Class Name are required.'); return; }
+  if(editId) await apiFetch(`${API}/${editId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  else await apiFetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  overlay.classList.remove('open'); load();
+}
+function v(f) { const el = document.getElementById('f-'+f); return el ? el.value.trim() : ''; }
+function showErr(msg) { const el = document.getElementById('form-error'); el.textContent = msg; el.style.display = 'block'; }
+load();
+</script>
+</body>
+</html>
