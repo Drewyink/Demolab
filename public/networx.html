@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — NetworX Pricing</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item" href="networx.html" class="nav-item active"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Network → NetworX Pricing</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">NetworX Pricing</div><div class="page-subtitle">RBRVS · DRG GROUPER · QUALIFIERS · MODIFIER ADJUSTMENTS · GEOGRAPHIC FACTORS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New NetworX</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" id="card-title">NetworX Pricing <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px"><div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search..." id="search-input"></div></div>
+        </div>
+        <div class="table-wrapper">
+          <table><thead><tr><th>Code</th><th>Name</th><th>Tier</th><th>Method</th><th>RBRVS %</th><th>Fee Table</th><th>Qualifier</th><th>Geo Adj.</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="overlay">
+  <div class="modal" style="width:700px;max-height:90vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Record</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+      <div class="form-grid">
+        
+        <div class="form-group"><label class="form-label">Config Code *</label><input type="text" class="form-input" id="f-config_code" placeholder="NWX-005"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+        <div class="form-group full"><label class="form-label">Config Name *</label><input type="text" class="form-input" id="f-config_name"></div>
+        <div class="form-group"><label class="form-label">Network Tier</label><select class="form-select" id="f-network_tier"><option value="in_network">In-Network</option><option value="preferred">Preferred</option><option value="out_of_network">Out-of-Network</option></select></div>
+        <div class="form-group"><label class="form-label">Pricing Method</label><select class="form-select" id="f-pricing_method"><option value="rbrvs_pct">RBRVS %</option><option value="drg_grouper">DRG Grouper</option><option value="medicare_limiting">Medicare Limiting Charge</option><option value="fee_schedule">Fee Schedule</option><option value="billed_pct">% of Billed</option></select></div>
+        <div class="form-group"><label class="form-label">RBRVS % of Medicare</label><input type="number" class="form-input" id="f-rbrvs_pct" placeholder="110" min="50" max="200"></div>
+        <div class="form-group"><label class="form-label">Fee Table Code</label><input type="text" class="form-input" id="f-fee_table_code" placeholder="FT-NWRX-PPO"></div>
+        <div class="form-group"><label class="form-label">Qualifier Type</label><select class="form-select" id="f-qualifier_type"><option value="all">All</option><option value="taxonomy">Taxonomy</option><option value="specialty">Specialty</option><option value="provider_type">Provider Type</option><option value="npi">NPI</option></select></div>
+        <div class="form-group"><label class="form-label">Qualifier Value</label><input type="text" class="form-input" id="f-qualifier_value" placeholder="207Q00000X or cardiology"></div>
+        <div class="form-group full"><label class="form-label">Modifier Adjustments</label><input type="text" class="form-input" id="f-modifier_adjustments" placeholder="51:-10%, 52:-25%, 22:+15%"></div>
+        <div class="form-group"><label class="form-label">POS Override</label><input type="text" class="form-input" id="f-place_of_service_override" placeholder="22:+15% or none"></div>
+        <div class="form-group"><label class="form-label">Geographic Adjustment</label><select class="form-select" id="f-geographic_adjustment"><option value="gaf_applied">GAF Applied</option><option value="none">None</option></select></div>
+        <div class="form-group"><label class="form-label">Outlier Threshold ($)</label><input type="number" class="form-input" id="f-outlier_threshold" placeholder="40000"></div>
+        <div class="form-group"><label class="form-label">Outlier Pay %</label><input type="number" class="form-input" id="f-outlier_pct" placeholder="80" min="50" max="100"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
+        <button class="btn btn-primary" id="btn-save">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+const API = '/api/networx-configs';
+let all = [], editId = null;
+const overlay = document.getElementById('overlay');
+const tbody = document.getElementById('tbody');
+document.getElementById('new-btn').onclick = () => openModal();
+document.getElementById('btn-x').onclick = document.getElementById('btn-cancel').onclick = () => overlay.classList.remove('open');
+document.getElementById('btn-save').onclick = save;
+document.getElementById('search-input').oninput = function(){ render(all.filter(r => JSON.stringify(r).toLowerCase().includes(this.value.toLowerCase()))); };
+
+async function load() {
+  all = await apiFetch(API);
+  document.getElementById('count').textContent = '(' + all.length + ')';
+  render(all);
+}
+function render(rows) {
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📂</div><p>No records found.</p></div></td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td><span class="badge badge-blue">${r.config_code}</span></td>
+    <td><strong>${r.config_name}</strong></td>
+    <td><span class="badge ${r.network_tier==='in_network'?'badge-green':r.network_tier==='preferred'?'badge-blue':'badge-gray'}">${r.network_tier}</span></td>
+    <td><span class="badge badge-gray">${r.pricing_method||'—'}</span></td>
+    <td style="font-family:monospace">${r.rbrvs_pct?r.rbrvs_pct+'%':'—'}</td>
+    <td style="font-size:11px">${r.fee_table_code||'—'}</td>
+    <td style="font-size:11px">${r.qualifier_type||'—'}: ${r.qualifier_value||'all'}</td>
+    <td style="font-size:11px">${r.geographic_adjustment||'—'}</td>
+    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+    <td><button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Delete</button></td>
+  </tr>`).join('');
+}
+function openModal(r) {
+  editId = r ? r.id : null;
+  document.getElementById('modal-title').textContent = r ? 'Edit Record' : 'New Record';
+  document.getElementById('form-error').style.display = 'none';
+  document.querySelectorAll('[id^="f-"]').forEach(el => {
+    if(el.id === 'f-id') { el.value = r ? (r.id||'') : ''; return; }
+    const field = el.id.replace('f-','');
+    if(r && r[field] !== undefined) el.value = r[field]||'';
+    else if(!r) el.value = el.tagName==='SELECT' ? el.options[0].value : '';
+  });
+  overlay.classList.add('open');
+}
+function edit(id) { openModal(all.find(r=>r.id===id)); }
+async function del(id) { if(confirm('Delete this record?')) { await apiFetch(API+'/'+id,{method:'DELETE'}); load(); } }
+async function save() {
+  const body = {};
+  document.querySelectorAll('[id^="f-"]').forEach(el => {
+    if(el.id !== 'f-id') body[el.id.replace('f-','')] = el.value;
+  });
+  const method = editId ? 'PUT' : 'POST';
+  const url = editId ? API+'/'+editId : API;
+  await apiFetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  overlay.classList.remove('open'); load();
+}
+load();
+</script>
+</body>
+</html>
