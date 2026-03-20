@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facets — Claim Pends</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay.open{display:flex!important;}
+    .sev-high{color:#ff4757;font-weight:700;}
+    .sev-medium{color:#ffa502;font-weight:700;}
+    .sev-low{color:#2ed573;font-weight:600;}
+    .pend-status-open{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(255,71,87,0.18);color:#ff4757;border:1px solid rgba(255,71,87,0.4);}
+    .pend-status-resolved{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(46,213,115,0.14);color:#2ed573;border:1px solid rgba(46,213,115,0.3);}
+    .pend-status-in_review{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(255,165,2,0.14);color:#ffa502;border:1px solid rgba(255,165,2,0.3);}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:18px;}
+    .ftab{padding:7px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+    .ftab.active{background:rgba(99,102,241,0.22);border-color:var(--accent);color:var(--accent);}
+    .pend-row-high td:first-child{border-left:3px solid #ff4757;}
+    .pend-row-medium td:first-child{border-left:3px solid #ffa502;}
+    .pend-row-low td:first-child{border-left:3px solid #2ed573;}
+    .due-overdue{color:#ff4757;font-weight:600;}
+    .resolve-btn{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(99,102,241,0.18);border:1px solid rgba(99,102,241,0.4);color:#818cf8;cursor:pointer;}
+    .resolve-btn:hover{background:rgba(99,102,241,0.32);}
+    .resolve-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+    .sstrip{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
+    .sstrip .sv{font-size:22px;font-weight:800;margin-bottom:2px;}
+    .sstrip .sl{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;}
+    .sstrip.red .sv{color:#ff4757;}
+    .sstrip.amber .sv{color:#ffa502;}
+    .sstrip.green .sv{color:#2ed573;}
+    .sstrip.blue .sv{color:#60a5fa;}
+    .category-badge{display:inline-block;padding:1px 8px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.07);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Employer</div>
+      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <div class="nav-section-label">Configuration</div>
+      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Network</div>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <div class="nav-section-label">Operations</div>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item active" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+    </nav>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Claim Pends</span></span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+    </div>
+    <div class="page-content">
+      <div class="page-header">
+        <div><div class="page-title">Claim Pend Queue</div><div class="page-subtitle">PEND RESOLUTION · WORKFLOW MANAGEMENT · ADJUDICATION HOLDS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Pend</button>
+      </div>
+
+      <div class="summary-strip" id="summary-strip">
+        <div class="sstrip red"><div class="sv" id="s-open">–</div><div class="sl">Open Pends</div></div>
+        <div class="sstrip amber"><div class="sv" id="s-review">–</div><div class="sl">In Review</div></div>
+        <div class="sstrip red"><div class="sv" id="s-overdue">–</div><div class="sl">Overdue</div></div>
+        <div class="sstrip green"><div class="sv" id="s-resolved">–</div><div class="sl">Resolved (30d)</div></div>
+      </div>
+
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="ftab active" data-filter="all">All</button>
+        <button class="ftab" data-filter="open">Open</button>
+        <button class="ftab" data-filter="in_review">In Review</button>
+        <button class="ftab" data-filter="resolved">Resolved</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">⏸️ Claim Pends <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px">
+            <select class="form-select" id="sev-filter" style="width:140px;font-size:12px;padding:6px 10px">
+              <option value="">All Severities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search pends..." id="search-input"></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Pend #</th><th>Claim #</th><th>Reason Code</th><th>Category</th><th>Severity</th><th>Assigned To</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Resolve / New Pend Modal -->
+<div id="overlay">
+  <div class="modal" style="width:700px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">Resolve Pend</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body">
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <input type="hidden" id="f-id">
+      <input type="hidden" id="f-mode"> <!-- 'resolve' or 'new' -->
+
+      <!-- Pend Info (resolve mode) -->
+      <div id="pend-info-block" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px">
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Pend #</div><div style="font-weight:700" id="info-pend-id"></div></div>
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Claim #</div><div style="font-weight:700" id="info-claim-id"></div></div>
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Reason</div><div style="font-weight:700" id="info-reason"></div></div>
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Category</div><div id="info-category"></div></div>
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Severity</div><div id="info-severity"></div></div>
+          <div><div style="color:var(--text-secondary);margin-bottom:2px">Due Date</div><div id="info-due"></div></div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px">
+          <div style="color:var(--text-secondary);margin-bottom:4px">Pend Description</div>
+          <div id="info-desc" style="color:var(--text-primary);line-height:1.5"></div>
+        </div>
+      </div>
+
+      <!-- New Pend Fields -->
+      <div id="new-pend-fields">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Claim # *</label><input type="text" class="form-input" id="f-claim_id" placeholder="CLM-2026-0999"></div>
+          <div class="form-group"><label class="form-label">Severity</label>
+            <select class="form-select" id="f-severity"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+          <div class="form-group"><label class="form-label">Reason Code *</label><input type="text" class="form-input" id="f-reason_code" placeholder="PEND_AUTH_MISSING"></div>
+          <div class="form-group"><label class="form-label">Category</label>
+            <select class="form-select" id="f-category">
+              <option value="authorization">Authorization</option>
+              <option value="medical_necessity">Medical Necessity</option>
+              <option value="network">Network / OON</option>
+              <option value="duplicate">Duplicate</option>
+              <option value="coding">Coding / Edit</option>
+              <option value="eligibility">Eligibility</option>
+              <option value="other">Other</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Assigned To</label><input type="text" class="form-input" id="f-assigned_to" placeholder="Analyst Name"></div>
+          <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-input" id="f-due_date"></div>
+          <div class="form-group full"><label class="form-label">Description *</label><textarea class="form-input" id="f-description" rows="3" style="resize:vertical" placeholder="Describe the pend reason in detail..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- Resolution Fields -->
+      <div id="resolve-fields">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Resolution Action *</label>
+            <select class="form-select" id="f-resolution_action">
+              <option value="">— Select Action —</option>
+              <option value="approved">Approve — Pay Claim</option>
+              <option value="denied">Deny — No Payment</option>
+              <option value="partial_pay">Partial Pay — Adjusted Amount</option>
+              <option value="returned_to_provider">Return to Provider for Correction</option>
+              <option value="auth_obtained">Authorization Obtained — Release</option>
+              <option value="recoded">Recode — Corrected Codes Applied</option>
+              <option value="duplicate_confirmed">Duplicate Confirmed — Void</option>
+              <option value="oon_exception">OON Exception Granted</option>
+              <option value="escalated">Escalate to Medical Director</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resolved By</label>
+            <input type="text" class="form-input" id="f-resolved_by" placeholder="Analyst Name">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Resolution Notes *</label>
+            <textarea class="form-input" id="f-resolution_notes" rows="4" style="resize:vertical" placeholder="Document the resolution rationale, referenced auth numbers, denial reason codes, or any supporting clinical details..."></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
+      <button class="btn btn-primary" id="btn-save">Save Pend</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let allPends = [];
+let activeFilter = 'all';
+let activeSev = '';
+
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);return isNaN(dt)?d:dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function isOverdue(d,status){if(status==='resolved')return false;if(!d)return false;return new Date(d)<new Date();}
+function severityBadge(s){
+  if(s==='high')return`<span class="sev-high">▲ HIGH</span>`;
+  if(s==='medium')return`<span class="sev-medium">◆ MEDIUM</span>`;
+  return`<span class="sev-low">▼ LOW</span>`;
+}
+function statusBadge(s){
+  const cls=s==='open'?'pend-status-open':s==='in_review'?'pend-status-in_review':'pend-status-resolved';
+  const lbl=s==='open'?'Open':s==='in_review'?'In Review':'Resolved';
+  return`<span class="${cls}">${lbl}</span>`;
+}
+
+async function loadPends(){
+  try{
+    const r=await fetch(`${API}/api/claim-pends`);
+    const data=await r.json();
+    allPends=Array.isArray(data)?data:(data.items||data.data||[]);
+    renderSummary();renderTable();
+  }catch(e){document.getElementById('tbody').innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⚠️</div><p>Failed to load pends</p></div></td></tr>`;}
+}
+
+function renderSummary(){
+  const open=allPends.filter(p=>p.status==='open').length;
+  const review=allPends.filter(p=>p.status==='in_review').length;
+  const overdue=allPends.filter(p=>isOverdue(p.due_date,p.status)).length;
+  const resolved=allPends.filter(p=>p.status==='resolved').length;
+  document.getElementById('s-open').textContent=open;
+  document.getElementById('s-review').textContent=review;
+  document.getElementById('s-overdue').textContent=overdue;
+  document.getElementById('s-resolved').textContent=resolved;
+}
+
+function renderTable(){
+  const q=(document.getElementById('search-input').value||'').toLowerCase();
+  let rows=allPends;
+  if(activeFilter!=='all')rows=rows.filter(p=>p.status===activeFilter);
+  if(activeSev)rows=rows.filter(p=>p.severity===activeSev);
+  if(q)rows=rows.filter(p=>JSON.stringify(p).toLowerCase().includes(q));
+  document.getElementById('count').textContent=`(${rows.length})`;
+  if(!rows.length){document.getElementById('tbody').innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏸️</div><p>No pends match current filters</p></div></td></tr>`;return;}
+  document.getElementById('tbody').innerHTML=rows.map(p=>{
+    const overdue=isOverdue(p.due_date,p.status);
+    const dueCls=overdue?'due-overdue':'';
+    const rowCls=`pend-row-${p.severity||'medium'}`;
+    const canResolve=p.status!=='resolved';
+    return`<tr class="${rowCls}">
+      <td><span style="font-family:monospace;font-size:11px;color:var(--accent)">${p.id}</span></td>
+      <td><span style="font-family:monospace;font-size:11px">${p.claim_id||'—'}</span></td>
+      <td><code style="font-size:11px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">${p.reason_code||'—'}</code></td>
+      <td><span class="category-badge">${(p.category||'').replace(/_/g,' ').toUpperCase()}</span></td>
+      <td>${severityBadge(p.severity)}</td>
+      <td style="font-size:12px">${p.assigned_to||'Unassigned'}</td>
+      <td class="${dueCls}" style="font-size:12px">${fmtDate(p.due_date)}${overdue?' ⚠️':''}</td>
+      <td>${statusBadge(p.status)}</td>
+      <td>
+        <button class="resolve-btn" onclick="openResolve('${p.id}')" ${canResolve?'':'disabled'}>${canResolve?'Resolve':'✓ Done'}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openResolve(id){
+  const p=allPends.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('f-mode').value='resolve';
+  document.getElementById('f-id').value=id;
+  document.getElementById('modal-title').textContent='Resolve Pend — '+id;
+  document.getElementById('pend-info-block').style.display='block';
+  document.getElementById('new-pend-fields').style.display='none';
+  document.getElementById('resolve-fields').style.display='block';
+  document.getElementById('btn-save').textContent='Submit Resolution';
+  // populate info block
+  document.getElementById('info-pend-id').textContent=p.id;
+  document.getElementById('info-claim-id').textContent=p.claim_id||'—';
+  document.getElementById('info-reason').textContent=p.reason_code||'—';
+  document.getElementById('info-category').textContent=(p.category||'').replace(/_/g,' ');
+  document.getElementById('info-severity').innerHTML=severityBadge(p.severity);
+  document.getElementById('info-due').textContent=fmtDate(p.due_date);
+  document.getElementById('info-desc').textContent=p.description||'No description provided.';
+  // clear resolution fields
+  document.getElementById('f-resolution_action').value='';
+  document.getElementById('f-resolved_by').value='';
+  document.getElementById('f-resolution_notes').value='';
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function openNew(){
+  document.getElementById('f-mode').value='new';
+  document.getElementById('f-id').value='';
+  document.getElementById('modal-title').textContent='New Claim Pend';
+  document.getElementById('pend-info-block').style.display='none';
+  document.getElementById('new-pend-fields').style.display='block';
+  document.getElementById('resolve-fields').style.display='none';
+  document.getElementById('btn-save').textContent='Create Pend';
+  ['claim_id','reason_code','assigned_to','description'].forEach(k=>document.getElementById('f-'+k).value='');
+  document.getElementById('f-severity').value='high';
+  document.getElementById('f-category').value='authorization';
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+
+async function handleSave(){
+  const mode=document.getElementById('f-mode').value;
+  const err=document.getElementById('form-error');
+  err.style.display='none';
+  if(mode==='resolve'){
+    const id=document.getElementById('f-id').value;
+    const action=document.getElementById('f-resolution_action').value;
+    const notes=document.getElementById('f-resolution_notes').value.trim();
+    const by=document.getElementById('f-resolved_by').value.trim();
+    if(!action){err.textContent='Please select a resolution action.';err.style.display='block';return;}
+    if(!notes){err.textContent='Resolution notes are required.';err.style.display='block';return;}
+    try{
+      const r=await fetch(`${API}/api/claim-pends/${id}/resolve`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resolution_action:action,resolution_notes:notes,resolved_by:by})});
+      if(!r.ok)throw new Error(await r.text());
+      closeModal();loadPends();
+    }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+  } else {
+    const claim_id=document.getElementById('f-claim_id').value.trim();
+    const reason_code=document.getElementById('f-reason_code').value.trim();
+    const description=document.getElementById('f-description').value.trim();
+    if(!claim_id||!reason_code||!description){err.textContent='Claim #, Reason Code, and Description are required.';err.style.display='block';return;}
+    const body={
+      claim_id,reason_code,description,
+      severity:document.getElementById('f-severity').value,
+      category:document.getElementById('f-category').value,
+      assigned_to:document.getElementById('f-assigned_to').value.trim(),
+      due_date:document.getElementById('f-due_date').value,
+      status:'open'
+    };
+    try{
+      const r=await fetch(`${API}/api/claim-pends`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(!r.ok)throw new Error(await r.text());
+      closeModal();loadPends();
+    }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+  }
+}
+
+document.getElementById('new-btn').addEventListener('click',openNew);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',handleSave);
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+
+document.querySelectorAll('.ftab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter=btn.dataset.filter;
+    renderTable();
+  });
+});
+document.getElementById('sev-filter').addEventListener('change',e=>{activeSev=e.target.value;renderTable();});
+document.getElementById('search-input').addEventListener('input',renderTable);
+
+// clock
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+loadPends();
+</script>
+</body>
+</html>
