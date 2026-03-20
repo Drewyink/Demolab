@@ -2,43 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Claim Pends</title>
+  <title>Facets — CDH / HSA</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
-    .sev-high{color:#ff4757;font-weight:700;}
-    .sev-medium{color:#ffa502;font-weight:700;}
-    .sev-low{color:#2ed573;font-weight:600;}
-    .pend-status-open{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(255,71,87,0.18);color:#ff4757;border:1px solid rgba(255,71,87,0.4);}
-    .pend-status-resolved{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(46,213,115,0.14);color:#2ed573;border:1px solid rgba(46,213,115,0.3);}
-    .pend-status-in_review{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(255,165,2,0.14);color:#ffa502;border:1px solid rgba(255,165,2,0.3);}
-    .filter-tabs{display:flex;gap:8px;margin-bottom:18px;}
-    .ftab{padding:7px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
-    .ftab.active{background:rgba(99,102,241,0.22);border-color:var(--accent);color:var(--accent);}
-    .pend-row-high td:first-child{border-left:3px solid #ff4757;}
-    .pend-row-medium td:first-child{border-left:3px solid #ffa502;}
-    .pend-row-low td:first-child{border-left:3px solid #2ed573;}
-    .due-overdue{color:#ff4757;font-weight:600;}
-    .resolve-btn{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(99,102,241,0.18);border:1px solid rgba(99,102,241,0.4);color:#818cf8;cursor:pointer;}
-    .resolve-btn:hover{background:rgba(99,102,241,0.32);}
-    .resolve-btn:disabled{opacity:0.4;cursor:not-allowed;}
-    .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-    .sstrip{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
-    .sstrip .sv{font-size:22px;font-weight:800;margin-bottom:2px;}
-    .sstrip .sl{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;}
-    .sstrip.red .sv{color:#ff4757;}
-    .sstrip.amber .sv{color:#ffa502;}
-    .sstrip.green .sv{color:#2ed573;}
-    .sstrip.blue .sv{color:#60a5fa;}
-    .category-badge{display:inline-block;padding:1px 8px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.07);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1);}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:0 -24px 20px;padding:0 24px;}
+    .modal-tab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .cdh-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+    .cdh-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+    .cdh-card .cv{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .cdh-card .cl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .acct-badge{display:inline-flex;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+    .acct-hsa{background:rgba(0,212,255,0.12);color:var(--accent);}
+    .acct-hra{background:rgba(160,100,255,0.12);color:#a064ff;}
+    .acct-fsa{background:rgba(0,255,136,0.12);color:var(--green);}
+    .acct-lpfsa{background:rgba(255,215,0,0.12);color:#ffd700;}
+    .acct-dcfsa{background:rgba(255,127,80,0.12);color:var(--orange);}
+    .balance-bar{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
+    .bal-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .progress-wrap{background:var(--bg);border-radius:4px;height:6px;overflow:hidden;}
+    .progress-fill{height:6px;border-radius:4px;}
+    .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .toggle{position:relative;width:40px;height:22px;}
+    .toggle input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:var(--surface);border:1px solid var(--border2);border-radius:11px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{position:absolute;content:'';height:16px;width:16px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:.2s;}
+    .toggle input:checked+.toggle-slider{background:rgba(0,212,255,0.25);border-color:var(--accent);}
+    .toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:var(--accent);}
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
-    <nav class="sidebar-nav">
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
+        <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
       <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
@@ -59,55 +60,99 @@
       <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item active" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
       <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
       <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
   </aside>
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Operations → <span>Claim Pends</span></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb">Financial → <span>CDH / HSA / HRA / FSA</span></span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Claim Pend Queue</div><div class="page-subtitle">PEND RESOLUTION · WORKFLOW MANAGEMENT · ADJUDICATION HOLDS</div></div>
-        <button class="btn btn-primary" id="new-btn">+ New Pend</button>
+        <div><div class="page-title">Consumer Directed Health</div><div class="page-subtitle">HSA · HRA · FSA · LPFSA · DCFSA · IRS LIMITS · CARRYOVER</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New CDH Account</button>
       </div>
 
-      <div class="summary-strip" id="summary-strip">
-        <div class="sstrip red"><div class="sv" id="s-open">–</div><div class="sl">Open Pends</div></div>
-        <div class="sstrip amber"><div class="sv" id="s-review">–</div><div class="sl">In Review</div></div>
-        <div class="sstrip red"><div class="sv" id="s-overdue">–</div><div class="sl">Overdue</div></div>
-        <div class="sstrip green"><div class="sv" id="s-resolved">–</div><div class="sl">Resolved (30d)</div></div>
+      <div class="cdh-cards">
+        <div class="cdh-card"><div class="cl">Total Accounts</div><div class="cv" id="s-total">—</div></div>
+        <div class="cdh-card"><div class="cl">HSA</div><div class="cv" style="color:var(--accent)" id="s-hsa">—</div></div>
+        <div class="cdh-card"><div class="cl">HRA</div><div class="cv" style="color:#a064ff" id="s-hra">—</div></div>
+        <div class="cdh-card"><div class="cl">FSA</div><div class="cv" style="color:var(--green)" id="s-fsa">—</div></div>
       </div>
 
-      <div class="filter-tabs" id="filter-tabs">
-        <button class="ftab active" data-filter="all">All</button>
-        <button class="ftab" data-filter="open">Open</button>
-        <button class="ftab" data-filter="in_review">In Review</button>
-        <button class="ftab" data-filter="resolved">Resolved</button>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">📋 2026 IRS Contribution Limits</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:4px 0">
+            <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">HSA Self</div>
+              <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'IBM Plex Mono',monospace">$4,300</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">+$1,000 catch-up (55+)</div>
+            </div>
+            <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">HSA Family</div>
+              <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'IBM Plex Mono',monospace">$8,550</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">+$1,000 catch-up (55+)</div>
+            </div>
+            <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Health FSA</div>
+              <div style="font-size:20px;font-weight:700;color:var(--green);font-family:'IBM Plex Mono',monospace">$3,300</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">$660 carryover max</div>
+            </div>
+            <div style="background:rgba(255,127,80,0.06);border:1px solid rgba(255,127,80,0.2);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">DCFSA (Single)</div>
+              <div style="font-size:20px;font-weight:700;color:var(--orange);font-family:'IBM Plex Mono',monospace">$2,500</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Per taxpayer</div>
+            </div>
+            <div style="background:rgba(255,127,80,0.06);border:1px solid rgba(255,127,80,0.2);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">DCFSA (Joint)</div>
+              <div style="font-size:20px;font-weight:700;color:var(--orange);font-family:'IBM Plex Mono',monospace">$5,000</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Married filing jointly</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">💳 Member Account Balances</span>
+          <select class="form-select" id="bal-member" style="width:220px" onchange="loadBalances()">
+            <option value="">— Select Member —</option>
+            <option value="MBR-001">MBR-001 — James Carter</option>
+            <option value="MBR-002">MBR-002 — Sarah Nguyen</option>
+            <option value="MBR-004">MBR-004 — Maria Santos</option>
+          </select>
+        </div>
+        <div class="card-body" id="balance-body">
+          <div class="empty-state"><div class="empty-icon">💳</div><p>Select a member to view CDH account balances</p></div>
+        </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <span class="card-title">⏸️ Claim Pends <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px">
-            <select class="form-select" id="sev-filter" style="width:140px;font-size:12px;padding:6px 10px">
-              <option value="">All Severities</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search pends..." id="search-input"></div>
+          <span class="card-title">⚙ CDH Account Configurations <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search CDH accounts..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-hsa">HSA</button>
+              <button class="filter-tab" id="tab-hra">HRA</button>
+              <button class="filter-tab" id="tab-fsa">FSA</button>
+            </div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Pend #</th><th>Claim #</th><th>Reason Code</th><th>Category</th><th>Severity</th><th>Assigned To</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr>
+              <th>Account Code</th><th>Name</th><th>Type</th><th>Employer Contrib</th>
+              <th>Employee Max</th><th>Annual Limit</th><th>Carryover</th><th>Rollover</th><th>Grace Period</th><th>HDHP Required</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
           </table>
         </div>
       </div>
@@ -115,260 +160,371 @@
   </main>
 </div>
 
-<!-- Resolve / New Pend Modal -->
 <div id="overlay">
-  <div class="modal" style="width:700px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">Resolve Pend</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
+  <div class="modal" style="width:800px;max-height:93vh;overflow-y:auto">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New CDH Account</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('setup',this)">Account Setup</button>
+        <button class="modal-tab" onclick="switchTab('contrib',this)">Contributions</button>
+        <button class="modal-tab" onclick="switchTab('eligibility',this)">Eligibility & HDHP</button>
+        <button class="modal-tab" onclick="switchTab('rollover',this)">Carryover & Rollover</button>
+      </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
-      <input type="hidden" id="f-mode"> <!-- 'resolve' or 'new' -->
 
-      <!-- Pend Info (resolve mode) -->
-      <div id="pend-info-block" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px">
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Pend #</div><div style="font-weight:700" id="info-pend-id"></div></div>
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Claim #</div><div style="font-weight:700" id="info-claim-id"></div></div>
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Reason</div><div style="font-weight:700" id="info-reason"></div></div>
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Category</div><div id="info-category"></div></div>
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Severity</div><div id="info-severity"></div></div>
-          <div><div style="color:var(--text-secondary);margin-bottom:2px">Due Date</div><div id="info-due"></div></div>
-        </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px">
-          <div style="color:var(--text-secondary);margin-bottom:4px">Pend Description</div>
-          <div id="info-desc" style="color:var(--text-primary);line-height:1.5"></div>
-        </div>
-      </div>
-
-      <!-- New Pend Fields -->
-      <div id="new-pend-fields">
-        <div class="form-grid">
-          <div class="form-group"><label class="form-label">Claim # *</label><input type="text" class="form-input" id="f-claim_id" placeholder="CLM-2026-0999"></div>
-          <div class="form-group"><label class="form-label">Severity</label>
-            <select class="form-select" id="f-severity"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
-          <div class="form-group"><label class="form-label">Reason Code *</label><input type="text" class="form-input" id="f-reason_code" placeholder="PEND_AUTH_MISSING"></div>
-          <div class="form-group"><label class="form-label">Category</label>
-            <select class="form-select" id="f-category">
-              <option value="authorization">Authorization</option>
-              <option value="medical_necessity">Medical Necessity</option>
-              <option value="network">Network / OON</option>
-              <option value="duplicate">Duplicate</option>
-              <option value="coding">Coding / Edit</option>
-              <option value="eligibility">Eligibility</option>
-              <option value="other">Other</option>
-            </select></div>
-          <div class="form-group"><label class="form-label">Assigned To</label><input type="text" class="form-input" id="f-assigned_to" placeholder="Analyst Name"></div>
-          <div class="form-group"><label class="form-label">Due Date</label><input type="date" class="form-input" id="f-due_date"></div>
-          <div class="form-group full"><label class="form-label">Description *</label><textarea class="form-input" id="f-description" rows="3" style="resize:vertical" placeholder="Describe the pend reason in detail..."></textarea></div>
-        </div>
-      </div>
-
-      <!-- Resolution Fields -->
-      <div id="resolve-fields">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Resolution Action *</label>
-            <select class="form-select" id="f-resolution_action">
-              <option value="">— Select Action —</option>
-              <option value="approved">Approve — Pay Claim</option>
-              <option value="denied">Deny — No Payment</option>
-              <option value="partial_pay">Partial Pay — Adjusted Amount</option>
-              <option value="returned_to_provider">Return to Provider for Correction</option>
-              <option value="auth_obtained">Authorization Obtained — Release</option>
-              <option value="recoded">Recode — Corrected Codes Applied</option>
-              <option value="duplicate_confirmed">Duplicate Confirmed — Void</option>
-              <option value="oon_exception">OON Exception Granted</option>
-              <option value="escalated">Escalate to Medical Director</option>
+      <div class="tab-panel active" id="tab-setup">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Account Code *</label><input type="text" class="form-input" id="f-code" placeholder="CDH-HSA-001"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
+          <div class="form-group full"><label class="form-label">Account Name *</label><input type="text" class="form-input" id="f-name" placeholder="HSA — HDHP Silver Plan"></div>
+          <div class="form-group"><label class="form-label">Account Type</label>
+            <select class="form-select" id="f-type">
+              <option value="hsa">HSA — Health Savings Account</option>
+              <option value="hra">HRA — Health Reimbursement Arrangement</option>
+              <option value="fsa">FSA — Health Flexible Spending Account</option>
+              <option value="lpfsa">LPFSA — Limited Purpose FSA (dental/vision only)</option>
+              <option value="dcfsa">DCFSA — Dependent Care FSA</option>
+              <option value="ichra">ICHRA — Individual Coverage HRA</option>
+              <option value="ebhra">EBHRA — Excepted Benefit HRA</option>
             </select>
           </div>
-          <div class="form-group">
-            <label class="form-label">Resolved By</label>
-            <input type="text" class="form-input" id="f-resolved_by" placeholder="Analyst Name">
+          <div class="form-group"><label class="form-label">Administration Model</label>
+            <select class="form-select" id="f-admin_model">
+              <option value="self_administered">Self-Administered</option>
+              <option value="tpa">Third-Party Administrator (TPA)</option>
+              <option value="bank_custodian">Bank / Custodian (HSA)</option>
+              <option value="integrated">Integrated with Claims System</option>
+            </select>
           </div>
-          <div class="form-group full">
-            <label class="form-label">Resolution Notes *</label>
-            <textarea class="form-input" id="f-resolution_notes" rows="4" style="resize:vertical" placeholder="Document the resolution rationale, referenced auth numbers, denial reason codes, or any supporting clinical details..."></textarea>
+          <div class="form-group"><label class="form-label">Plan Year Start</label>
+            <select class="form-select" id="f-plan_year_start">
+              <option value="01/01">January 1</option>
+              <option value="04/01">April 1</option>
+              <option value="07/01">July 1</option>
+              <option value="10/01">October 1</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group full"><label class="form-label">Description</label>
+            <textarea class="form-textarea" id="f-description" rows="2" placeholder="e.g., HSA paired with HDHP Silver Plan. Employer seeds $500/year. IRS-qualified."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-contrib">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Employer Contribution (Annual $)</label><input type="number" class="form-input" id="f-employer_contrib" step="0.01" min="0" placeholder="500.00"></div>
+          <div class="form-group"><label class="form-label">Employer Contrib Timing</label>
+            <select class="form-select" id="f-employer_timing">
+              <option value="lump_sum_jan">Lump sum Jan 1</option>
+              <option value="lump_sum_enrollment">Lump sum at enrollment</option>
+              <option value="monthly">Monthly (1/12 per month)</option>
+              <option value="per_paycheck">Per paycheck</option>
+              <option value="none">No employer contribution</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Employee Max (Annual $)</label><input type="number" class="form-input" id="f-employee_max" step="0.01" min="0" placeholder="4300.00"></div>
+          <div class="form-group"><label class="form-label">IRS Annual Limit ($)</label><input type="number" class="form-input" id="f-irs_limit" step="0.01" min="0" placeholder="4300.00"></div>
+          <div class="form-group"><label class="form-label">Catch-Up Eligible?</label>
+            <select class="form-select" id="f-catchup">
+              <option value="yes">Yes — +$1,000 for age 55+ (HSA)</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Catch-Up Amount ($)</label><input type="number" class="form-input" id="f-catchup_amount" step="0.01" min="0" placeholder="1000.00"></div>
+          <div class="form-group"><label class="form-label">Proration on Mid-Year Enrollment</label>
+            <select class="form-select" id="f-proration">
+              <option value="full_year">Full year limit applies</option>
+              <option value="monthly">Pro-rate by months remaining</option>
+              <option value="last_month_rule">Last-Month Rule — full limit if enrolled Dec 31</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Pre-Tax Treatment</label>
+            <select class="form-select" id="f-pretax">
+              <option value="federal">Federal tax-exempt (Section 223)</option>
+              <option value="federal_state">Federal + state tax-exempt</option>
+              <option value="federal_only">Federal only (some states tax HSA)</option>
+              <option value="fica_exempt">FICA-exempt (employer contributions)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tab-eligibility">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">HDHP Required?</label>
+            <select class="form-select" id="f-hdhp_required">
+              <option value="yes">Yes — must be enrolled in qualifying HDHP</option>
+              <option value="no">No — any plan eligible</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">HDHP Minimum Deductible</label>
+            <select class="form-select" id="f-hdhp_min_ded">
+              <option value="irs_self">IRS 2026 Self: $1,650</option>
+              <option value="irs_family">IRS 2026 Family: $3,300</option>
+              <option value="custom">Custom amount</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Disqualifying Coverage</label>
+            <select class="form-select" id="f-disqualifying">
+              <option value="standard">Standard HSA disqualifiers (Medicare, FSA, etc.)</option>
+              <option value="none">None — HRA/FSA eligible regardless</option>
+              <option value="lpfsa_ok">LPFSA OK — dental/vision FSA allowed</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Medicare Enrollment Rule</label>
+            <select class="form-select" id="f-medicare_rule">
+              <option value="stop_contrib">Stop contributions upon Medicare enrollment</option>
+              <option value="no_restriction">No restriction (HRA/FSA)</option>
+              <option value="6mo_lookback">6-month lookback — retroactive enrollment risk</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Spouse Coverage Check</label>
+            <select class="form-select" id="f-spouse_check">
+              <option value="yes">Yes — flag if spouse has disqualifying coverage</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Eligible Expense Standard</label>
+            <select class="form-select" id="f-expense_standard">
+              <option value="section_213d">IRS Section 213(d) qualified medical expenses</option>
+              <option value="aca_preventive">ACA preventive care (pre-deductible)</option>
+              <option value="dental_vision_only">Dental / Vision only (LPFSA)</option>
+              <option value="dependent_care">Dependent care expenses (DCFSA)</option>
+              <option value="employer_defined">Employer-defined list (HRA)</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Eligibility Notes</label>
+            <textarea class="form-textarea" id="f-eligibility_notes" rows="2" placeholder="e.g., Member must be enrolled in HSA-qualified HDHP. Not enrolled in Medicare. No general-purpose FSA."></textarea>
+          </div>
+        </form>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Account Type Comparison</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            <div>• <strong style="color:var(--accent)">HSA:</strong> Member-owned, portable, triple tax advantage, investable, HDHP required, no use-or-lose</div>
+            <div>• <strong style="color:#a064ff">HRA:</strong> Employer-owned, employer funds only, not portable, employer defines eligible expenses</div>
+            <div>• <strong style="color:var(--green)">Health FSA:</strong> Use-or-lose (w/ carryover up to $660), pre-funded, full election available Jan 1</div>
+            <div>• <strong style="color:#ffd700">LPFSA:</strong> Limited to dental/vision, compatible with HSA</div>
+            <div>• <strong style="color:var(--orange)">DCFSA:</strong> Dependent care, $5K/HH limit, not for medical expenses</div>
           </div>
         </div>
       </div>
 
+      <div class="tab-panel" id="tab-rollover">
+        <form class="form-grid" onsubmit="return false">
+          <div class="form-group"><label class="form-label">Carryover / Rollover Type</label>
+            <select class="form-select" id="f-carryover_type">
+              <option value="unlimited">Unlimited rollover (HSA — no use-or-lose)</option>
+              <option value="irs_max">IRS maximum carryover (FSA — $660 in 2026)</option>
+              <option value="custom_max">Custom carryover maximum</option>
+              <option value="none">No carryover — forfeit unused balance</option>
+              <option value="grace_period">Grace period only (2.5 months)</option>
+              <option value="employer_defined">Employer-defined rollover (HRA)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Carryover Maximum ($)</label><input type="number" class="form-input" id="f-carryover_max" step="0.01" min="0" placeholder="660.00 (FSA IRS max 2026)"></div>
+          <div class="form-group"><label class="form-label">Grace Period?</label>
+            <select class="form-select" id="f-grace_period">
+              <option value="no">No grace period</option>
+              <option value="2_5mo">Yes — 2.5 months (standard FSA)</option>
+              <option value="custom">Custom — see notes</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Grace Period End Date</label><input type="text" class="form-input" id="f-grace_end" placeholder="03/15 (standard 2.5 months)"></div>
+          <div class="form-group"><label class="form-label">Forfeiture Handling</label>
+            <select class="form-select" id="f-forfeiture">
+              <option value="plan_assets">Forfeited funds go to plan assets</option>
+              <option value="offset_admin">Offset future plan admin costs</option>
+              <option value="redistribute">Redistribute to all participants</option>
+              <option value="charity">Donate to charity</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">COBRA Continuation</label>
+            <select class="form-select" id="f-cobra_cont">
+              <option value="yes">Yes — COBRA applies (FSA/DCFSA)</option>
+              <option value="no">No — not subject to COBRA (HSA)</option>
+              <option value="hra_limited">HRA only if employer elects</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Carryover / Rollover Notes</label>
+            <textarea class="form-textarea" id="f-rollover_notes" rows="3" placeholder="e.g., FSA carryover: unused balances up to $660 carry to next plan year. Amounts over $660 are forfeited March 31."></textarea>
+          </div>
+        </form>
+        <div style="margin-top:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Account Features</div>
+          <div class="toggle-row"><div><div style="font-size:13px;color:var(--text)">Investment Sweeping (HSA)</div><div style="font-size:11px;color:var(--text3)">Auto-sweep balances above threshold into investment funds</div></div><label class="toggle"><input type="checkbox" id="f-investment_sweep"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div style="font-size:13px;color:var(--text)">Debit Card Issued</div><div style="font-size:11px;color:var(--text3)">Participant receives debit card for eligible expenses</div></div><label class="toggle"><input type="checkbox" id="f-debit_card" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div style="font-size:13px;color:var(--text)">Substantiation Required (FSA)</div><div style="font-size:11px;color:var(--text3)">Receipts required to substantiate card transactions</div></div><label class="toggle"><input type="checkbox" id="f-substantiation" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div style="font-size:13px;color:var(--text)">Integrated Claims Crossover</div><div style="font-size:11px;color:var(--text3)">Auto-pay member responsibility from CDH account after claim adjudication</div></div><label class="toggle"><input type="checkbox" id="f-claims_crossover"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
-      <button class="btn btn-primary" id="btn-save">Save Pend</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save CDH Account</button></div>
   </div>
 </div>
 
+<script src="app.js"></script>
 <script>
-const API = '';
-let allPends = [];
-let activeFilter = 'all';
-let activeSev = '';
+var records=[], typeFilter='all';
 
-function fmtDate(d){if(!d)return'—';const dt=new Date(d);return isNaN(dt)?d:dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-function isOverdue(d,status){if(status==='resolved')return false;if(!d)return false;return new Date(d)<new Date();}
-function severityBadge(s){
-  if(s==='high')return`<span class="sev-high">▲ HIGH</span>`;
-  if(s==='medium')return`<span class="sev-medium">◆ MEDIUM</span>`;
-  return`<span class="sev-low">▼ LOW</span>`;
+var SEED_CDH=[
+  {id:'cdh1',code:'CDH-HSA-HDHP',name:'HSA — Platinum HDHP',type:'hsa',admin_model:'bank_custodian',employer_contrib:750,employer_timing:'lump_sum_jan',employee_max:4300,irs_limit:4300,catchup:'yes',catchup_amount:1000,proration:'last_month_rule',hdhp_required:'yes',carryover_type:'unlimited',grace_period:'no',debit_card:true,substantiation:false,claims_crossover:true,status:'active',created_at:new Date('2026-01-01')},
+  {id:'cdh2',code:'CDH-HRA-PPO',name:'HRA — Silver PPO',type:'hra',admin_model:'tpa',employer_contrib:500,employer_timing:'lump_sum_jan',employee_max:0,irs_limit:0,catchup:'no',hdhp_required:'no',carryover_type:'employer_defined',carryover_max:250,grace_period:'no',debit_card:true,substantiation:true,claims_crossover:true,status:'active',created_at:new Date('2026-01-01')},
+  {id:'cdh3',code:'CDH-FSA-HLTH',name:'Health FSA — All Plans',type:'fsa',admin_model:'tpa',employer_contrib:0,employer_timing:'none',employee_max:3300,irs_limit:3300,catchup:'no',hdhp_required:'no',carryover_type:'irs_max',carryover_max:660,grace_period:'no',debit_card:true,substantiation:true,claims_crossover:false,status:'active',created_at:new Date('2026-01-01')},
+  {id:'cdh4',code:'CDH-LPFSA-HSA',name:'Limited Purpose FSA (Dental/Vision)',type:'lpfsa',admin_model:'tpa',employer_contrib:0,employer_timing:'none',employee_max:3300,irs_limit:3300,catchup:'no',hdhp_required:'no',carryover_type:'irs_max',carryover_max:660,grace_period:'no',debit_card:true,substantiation:true,claims_crossover:false,status:'active',created_at:new Date('2026-01-01')},
+  {id:'cdh5',code:'CDH-DCFSA-DEP',name:'Dependent Care FSA',type:'dcfsa',admin_model:'tpa',employer_contrib:0,employer_timing:'none',employee_max:5000,irs_limit:5000,catchup:'no',hdhp_required:'no',carryover_type:'none',grace_period:'2_5mo',debit_card:false,substantiation:true,claims_crossover:false,status:'active',created_at:new Date('2026-01-01')}
+];
+
+var MEMBER_CDH={
+  'MBR-001':[
+    {type:'hsa',label:'HSA Balance',balance:1847.50,contrib_ytd:1150,limit:4300,color:'var(--accent)'},
+    {type:'lpfsa',label:'LP-FSA Balance',balance:320,contrib_ytd:320,limit:1500,color:'#ffd700'}
+  ],
+  'MBR-002':[
+    {type:'hsa',label:'HSA Balance',balance:3200,contrib_ytd:2450,limit:4300,color:'var(--accent)'}
+  ],
+  'MBR-004':[
+    {type:'hra',label:'HRA Balance',balance:375,contrib_ytd:500,limit:500,color:'#a064ff'},
+    {type:'fsa',label:'Health FSA Balance',balance:820,contrib_ytd:1500,limit:3300,color:'var(--green)'},
+    {type:'dcfsa',label:'Dependent Care FSA',balance:1200,contrib_ytd:2000,limit:5000,color:'var(--orange)'}
+  ]
+};
+
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','hsa','hra','fsa'].forEach(function(f){
+  document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
+});
+
+function switchTab(name,btn){
+  document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
-function statusBadge(s){
-  const cls=s==='open'?'pend-status-open':s==='in_review'?'pend-status-in_review':'pend-status-resolved';
-  const lbl=s==='open'?'Open':s==='in_review'?'In Review':'Resolved';
-  return`<span class="${cls}">${lbl}</span>`;
+function setFilter(s,btn){typeFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+
+function load(){records=SEED_CDH.slice();updateSummary();render();}
+function updateSummary(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-hsa').textContent=records.filter(function(r){return r.type==='hsa';}).length;
+  document.getElementById('s-hra').textContent=records.filter(function(r){return r.type==='hra';}).length;
+  document.getElementById('s-fsa').textContent=records.filter(function(r){return r.type==='fsa'||r.type==='lpfsa'||r.type==='dcfsa';}).length;
 }
 
-async function loadPends(){
-  try{
-    const r=await fetch(`${API}/api/claim-pends`);
-    const data=await r.json();
-    allPends=Array.isArray(data)?data:(data.items||data.data||[]);
-    renderSummary();renderTable();
-  }catch(e){document.getElementById('tbody').innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⚠️</div><p>Failed to load pends</p></div></td></tr>`;}
-}
-
-function renderSummary(){
-  const open=allPends.filter(p=>p.status==='open').length;
-  const review=allPends.filter(p=>p.status==='in_review').length;
-  const overdue=allPends.filter(p=>isOverdue(p.due_date,p.status)).length;
-  const resolved=allPends.filter(p=>p.status==='resolved').length;
-  document.getElementById('s-open').textContent=open;
-  document.getElementById('s-review').textContent=review;
-  document.getElementById('s-overdue').textContent=overdue;
-  document.getElementById('s-resolved').textContent=resolved;
-}
-
-function renderTable(){
-  const q=(document.getElementById('search-input').value||'').toLowerCase();
-  let rows=allPends;
-  if(activeFilter!=='all')rows=rows.filter(p=>p.status===activeFilter);
-  if(activeSev)rows=rows.filter(p=>p.severity===activeSev);
-  if(q)rows=rows.filter(p=>JSON.stringify(p).toLowerCase().includes(q));
-  document.getElementById('count').textContent=`(${rows.length})`;
-  if(!rows.length){document.getElementById('tbody').innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏸️</div><p>No pends match current filters</p></div></td></tr>`;return;}
-  document.getElementById('tbody').innerHTML=rows.map(p=>{
-    const overdue=isOverdue(p.due_date,p.status);
-    const dueCls=overdue?'due-overdue':'';
-    const rowCls=`pend-row-${p.severity||'medium'}`;
-    const canResolve=p.status!=='resolved';
-    return`<tr class="${rowCls}">
-      <td><span style="font-family:monospace;font-size:11px;color:var(--accent)">${p.id}</span></td>
-      <td><span style="font-family:monospace;font-size:11px">${p.claim_id||'—'}</span></td>
-      <td><code style="font-size:11px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">${p.reason_code||'—'}</code></td>
-      <td><span class="category-badge">${(p.category||'').replace(/_/g,' ').toUpperCase()}</span></td>
-      <td>${severityBadge(p.severity)}</td>
-      <td style="font-size:12px">${p.assigned_to||'Unassigned'}</td>
-      <td class="${dueCls}" style="font-size:12px">${fmtDate(p.due_date)}${overdue?' ⚠️':''}</td>
-      <td>${statusBadge(p.status)}</td>
-      <td>
-        <button class="resolve-btn" onclick="openResolve('${p.id}')" ${canResolve?'':'disabled'}>${canResolve?'Resolve':'✓ Done'}</button>
-      </td>
-    </tr>`;
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(typeFilter!=='all')data=data.filter(function(r){return r.type===typeFilter||r.type.indexOf(typeFilter)>-1;});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='· '+data.length+' records';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">💳</div><p>No CDH accounts found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(a){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+a.code+'</td>'+
+    '<td><strong>'+a.name+'</strong></td>'+
+    '<td><span class="acct-badge acct-'+a.type+'">'+a.type.toUpperCase()+'</span></td>'+
+    '<td class="mono" style="color:#4ade80">$'+(a.employer_contrib||0).toLocaleString()+'</td>'+
+    '<td class="mono">$'+(a.employee_max||0).toLocaleString()+'</td>'+
+    '<td class="mono">$'+(a.irs_limit||0).toLocaleString()+'</td>'+
+    '<td style="font-size:11px;color:var(--text2)">'+(a.carryover_type||'none').replace(/_/g,' ')+'</td>'+
+    '<td><span style="font-size:11px;color:'+(a.carryover_type==='unlimited'?'var(--green)':a.carryover_type==='none'?'var(--red)':'var(--yellow)')+'">'+((a.carryover_max?'$'+a.carryover_max:a.carryover_type==='unlimited'?'∞':'NONE'))+'</span></td>'+
+    '<td style="font-size:11px;color:var(--text3)">'+(a.grace_period==='no'?'—':a.grace_period)+'</td>'+
+    '<td><span style="font-size:11px;color:'+(a.hdhp_required==='yes'?'var(--accent)':'var(--text3)')+'">'+a.hdhp_required.toUpperCase()+'</span></td>'+
+    '<td>'+badge(a.status,a.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+a.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+a.id+'\')">Del</button></div></td>'+
+    '</tr>';
   }).join('');
 }
 
-function openResolve(id){
-  const p=allPends.find(x=>x.id===id);
-  if(!p)return;
-  document.getElementById('f-mode').value='resolve';
-  document.getElementById('f-id').value=id;
-  document.getElementById('modal-title').textContent='Resolve Pend — '+id;
-  document.getElementById('pend-info-block').style.display='block';
-  document.getElementById('new-pend-fields').style.display='none';
-  document.getElementById('resolve-fields').style.display='block';
-  document.getElementById('btn-save').textContent='Submit Resolution';
-  // populate info block
-  document.getElementById('info-pend-id').textContent=p.id;
-  document.getElementById('info-claim-id').textContent=p.claim_id||'—';
-  document.getElementById('info-reason').textContent=p.reason_code||'—';
-  document.getElementById('info-category').textContent=(p.category||'').replace(/_/g,' ');
-  document.getElementById('info-severity').innerHTML=severityBadge(p.severity);
-  document.getElementById('info-due').textContent=fmtDate(p.due_date);
-  document.getElementById('info-desc').textContent=p.description||'No description provided.';
-  // clear resolution fields
-  document.getElementById('f-resolution_action').value='';
-  document.getElementById('f-resolved_by').value='';
-  document.getElementById('f-resolution_notes').value='';
-  document.getElementById('form-error').style.display='none';
-  document.getElementById('overlay').classList.add('open');
-}
-
-function openNew(){
-  document.getElementById('f-mode').value='new';
-  document.getElementById('f-id').value='';
-  document.getElementById('modal-title').textContent='New Claim Pend';
-  document.getElementById('pend-info-block').style.display='none';
-  document.getElementById('new-pend-fields').style.display='block';
-  document.getElementById('resolve-fields').style.display='none';
-  document.getElementById('btn-save').textContent='Create Pend';
-  ['claim_id','reason_code','assigned_to','description'].forEach(k=>document.getElementById('f-'+k).value='');
-  document.getElementById('f-severity').value='high';
-  document.getElementById('f-category').value='authorization';
-  document.getElementById('form-error').style.display='none';
-  document.getElementById('overlay').classList.add('open');
-}
-
-function closeModal(){document.getElementById('overlay').classList.remove('open');}
-
-async function handleSave(){
-  const mode=document.getElementById('f-mode').value;
-  const err=document.getElementById('form-error');
-  err.style.display='none';
-  if(mode==='resolve'){
-    const id=document.getElementById('f-id').value;
-    const action=document.getElementById('f-resolution_action').value;
-    const notes=document.getElementById('f-resolution_notes').value.trim();
-    const by=document.getElementById('f-resolved_by').value.trim();
-    if(!action){err.textContent='Please select a resolution action.';err.style.display='block';return;}
-    if(!notes){err.textContent='Resolution notes are required.';err.style.display='block';return;}
-    try{
-      const r=await fetch(`${API}/api/claim-pends/${id}/resolve`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resolution_action:action,resolution_notes:notes,resolved_by:by})});
-      if(!r.ok)throw new Error(await r.text());
-      closeModal();loadPends();
-    }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
-  } else {
-    const claim_id=document.getElementById('f-claim_id').value.trim();
-    const reason_code=document.getElementById('f-reason_code').value.trim();
-    const description=document.getElementById('f-description').value.trim();
-    if(!claim_id||!reason_code||!description){err.textContent='Claim #, Reason Code, and Description are required.';err.style.display='block';return;}
-    const body={
-      claim_id,reason_code,description,
-      severity:document.getElementById('f-severity').value,
-      category:document.getElementById('f-category').value,
-      assigned_to:document.getElementById('f-assigned_to').value.trim(),
-      due_date:document.getElementById('f-due_date').value,
-      status:'open'
-    };
-    try{
-      const r=await fetch(`${API}/api/claim-pends`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-      if(!r.ok)throw new Error(await r.text());
-      closeModal();loadPends();
-    }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
-  }
-}
-
-document.getElementById('new-btn').addEventListener('click',openNew);
-document.getElementById('btn-x').addEventListener('click',closeModal);
-document.getElementById('btn-cancel').addEventListener('click',closeModal);
-document.getElementById('btn-save').addEventListener('click',handleSave);
-document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
-
-document.querySelectorAll('.ftab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter=btn.dataset.filter;
-    renderTable();
+function loadBalances(){
+  var mbr=document.getElementById('bal-member').value;
+  var body=document.getElementById('balance-body');
+  if(!mbr){body.innerHTML='<div class="empty-state"><div class="empty-icon">💳</div><p>Select a member to view CDH account balances</p></div>';return;}
+  var accounts=MEMBER_CDH[mbr];
+  if(!accounts||!accounts.length){body.innerHTML='<div class="empty-state"><div class="empty-icon">⚠</div><p>No CDH accounts for this member</p></div>';return;}
+  var html='<div style="display:grid;grid-template-columns:repeat('+Math.min(accounts.length,3)+',1fr);gap:14px;padding:16px 20px">';
+  accounts.forEach(function(a){
+    var pct=a.limit>0?Math.min(100,(a.balance/a.limit)*100):0;
+    html+='<div class="balance-bar">'+
+      '<div class="bal-row"><span style="font-size:11px;font-weight:700;color:'+a.color+';text-transform:uppercase">'+a.label+'</span><span class="acct-badge acct-'+a.type+'">'+a.type.toUpperCase()+'</span></div>'+
+      '<div style="font-size:26px;font-weight:700;color:'+a.color+';font-family:\'IBM Plex Mono\',monospace;margin:6px 0">$'+a.balance.toLocaleString('en-US',{minimumFractionDigits:2})+'</div>'+
+      '<div class="progress-wrap"><div class="progress-fill" style="width:'+pct+'%;background:'+a.color+'"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text3)">'+
+      '<span>$'+a.contrib_ytd.toLocaleString()+' contributed YTD</span>'+
+      '<span>$'+(a.limit-a.contrib_ytd).toLocaleString()+' remaining limit</span>'+
+      '</div></div>';
   });
-});
-document.getElementById('sev-filter').addEventListener('change',e=>{activeSev=e.target.value;renderTable();});
-document.getElementById('search-input').addEventListener('input',renderTable);
+  html+='</div>';
+  body.innerHTML=html;
+}
 
-// clock
-setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
-loadPends();
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit CDH Account':'New CDH Account';
+  document.getElementById('f-id').value=d?d.id:'';
+  document.getElementById('f-code').value=d?d.code:genCode('CDH');
+  document.getElementById('f-name').value=d?(d.name||''):'';
+  document.getElementById('f-type').value=d?(d.type||'hsa'):'hsa';
+  document.getElementById('f-admin_model').value=d?(d.admin_model||'tpa'):'tpa';
+  document.getElementById('f-plan_year_start').value=d?(d.plan_year_start||'01/01'):'01/01';
+  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
+  document.getElementById('f-description').value=d?(d.description||''):'';
+  document.getElementById('f-employer_contrib').value=d?(d.employer_contrib||''):'';
+  document.getElementById('f-employer_timing').value=d?(d.employer_timing||'none'):'none';
+  document.getElementById('f-employee_max').value=d?(d.employee_max||''):'';
+  document.getElementById('f-irs_limit').value=d?(d.irs_limit||''):'';
+  document.getElementById('f-catchup').value=d?(d.catchup||'no'):'no';
+  document.getElementById('f-catchup_amount').value=d?(d.catchup_amount||1000):1000;
+  document.getElementById('f-proration').value=d?(d.proration||'full_year'):'full_year';
+  document.getElementById('f-pretax').value=d?(d.pretax||'federal_state'):'federal_state';
+  document.getElementById('f-hdhp_required').value=d?(d.hdhp_required||'no'):'no';
+  document.getElementById('f-hdhp_min_ded').value=d?(d.hdhp_min_ded||'irs_self'):'irs_self';
+  document.getElementById('f-disqualifying').value=d?(d.disqualifying||'standard'):'standard';
+  document.getElementById('f-medicare_rule').value=d?(d.medicare_rule||'stop_contrib'):'stop_contrib';
+  document.getElementById('f-spouse_check').value=d?(d.spouse_check||'yes'):'yes';
+  document.getElementById('f-expense_standard').value=d?(d.expense_standard||'section_213d'):'section_213d';
+  document.getElementById('f-eligibility_notes').value=d?(d.eligibility_notes||''):'';
+  document.getElementById('f-carryover_type').value=d?(d.carryover_type||'none'):'none';
+  document.getElementById('f-carryover_max').value=d?(d.carryover_max||''):'';
+  document.getElementById('f-grace_period').value=d?(d.grace_period||'no'):'no';
+  document.getElementById('f-grace_end').value=d?(d.grace_end||''):'';
+  document.getElementById('f-forfeiture').value=d?(d.forfeiture||'plan_assets'):'plan_assets';
+  document.getElementById('f-cobra_cont').value=d?(d.cobra_cont||'no'):'no';
+  document.getElementById('f-rollover_notes').value=d?(d.rollover_notes||''):'';
+  document.getElementById('f-investment_sweep').checked=d?!!d.investment_sweep:false;
+  document.getElementById('f-debit_card').checked=d?d.debit_card!==false:true;
+  document.getElementById('f-substantiation').checked=d?d.substantiation!==false:true;
+  document.getElementById('f-claims_crossover').checked=d?!!d.claims_crossover:false;
+  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  switchTab('setup',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var code=document.getElementById('f-code').value.trim();
+  var name=document.getElementById('f-name').value.trim();
+  if(!code||!name){errEl.textContent='⚠ Account Code and Name are required.';errEl.style.display='block';return;}
+  var id=document.getElementById('f-id').value;
+  var body={code:code,name:name,type:document.getElementById('f-type').value,admin_model:document.getElementById('f-admin_model').value,plan_year_start:document.getElementById('f-plan_year_start').value,description:document.getElementById('f-description').value,employer_contrib:parseFloat(document.getElementById('f-employer_contrib').value)||0,employer_timing:document.getElementById('f-employer_timing').value,employee_max:parseFloat(document.getElementById('f-employee_max').value)||0,irs_limit:parseFloat(document.getElementById('f-irs_limit').value)||0,catchup:document.getElementById('f-catchup').value,catchup_amount:parseFloat(document.getElementById('f-catchup_amount').value)||0,proration:document.getElementById('f-proration').value,pretax:document.getElementById('f-pretax').value,hdhp_required:document.getElementById('f-hdhp_required').value,hdhp_min_ded:document.getElementById('f-hdhp_min_ded').value,disqualifying:document.getElementById('f-disqualifying').value,medicare_rule:document.getElementById('f-medicare_rule').value,spouse_check:document.getElementById('f-spouse_check').value,expense_standard:document.getElementById('f-expense_standard').value,eligibility_notes:document.getElementById('f-eligibility_notes').value,carryover_type:document.getElementById('f-carryover_type').value,carryover_max:parseFloat(document.getElementById('f-carryover_max').value)||0,grace_period:document.getElementById('f-grace_period').value,grace_end:document.getElementById('f-grace_end').value,forfeiture:document.getElementById('f-forfeiture').value,cobra_cont:document.getElementById('f-cobra_cont').value,rollover_notes:document.getElementById('f-rollover_notes').value,investment_sweep:document.getElementById('f-investment_sweep').checked,debit_card:document.getElementById('f-debit_card').checked,substantiation:document.getElementById('f-substantiation').checked,claims_crossover:document.getElementById('f-claims_crossover').checked,status:document.getElementById('f-status').value,created_at:new Date().toISOString()};
+  if(id){var i=records.findIndex(function(r){return r.id===id;});if(i>-1)records[i]=Object.assign({},records[i],body);}
+  else{body.id='cdh_'+Date.now();records.unshift(body);}
+  updateSummary();render();closeModal();toast(id?'CDH account updated ✓':'CDH account created ✓','success');
+}
+function del(id){records=records.filter(function(r){return r.id!==id;});updateSummary();render();toast('Deleted','info');}
+load();
 </script>
 </body>
 </html>
