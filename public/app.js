@@ -84,4 +84,3 @@ function setActiveNav() {
 }
 
 document.addEventListener('DOMContentLoaded', () => { startClock(); setActiveNav(); });
-
