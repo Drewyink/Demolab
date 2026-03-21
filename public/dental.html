@@ -370,7 +370,7 @@ document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+// Modal stays open until Save or Cancel is clicked
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 ['all','I','II','III','IV'].forEach(function(f){
   document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
@@ -476,6 +476,7 @@ load();
 </script>
 </body>
 </html>
+
 
 
 
