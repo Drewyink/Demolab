@@ -8,70 +8,93 @@
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal{max-height:92vh;overflow-y:auto;}
     .group-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .g-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
-    .g-card .g-val{font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .g-card .g-val{font-size:24px;font-weight:700;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
     .g-card .g-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
     .plan-pill{display:inline-block;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--accent);margin:2px;}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;}
-    .modal-tab{padding:10px 18px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:9px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
+    .security-role{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .security-role-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+    .security-role-desc{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+    .perm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;}
+    .perm-badge{font-size:10px;padding:3px 8px;border-radius:4px;text-align:center;font-weight:600;}
+    .perm-on{background:rgba(46,213,115,0.15);color:#2ed573;border:1px solid rgba(46,213,115,0.3);}
+    .perm-off{background:rgba(255,255,255,0.05);color:var(--text-secondary);border:1px solid var(--border);}
+    .access-user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+    .user-info{flex:1;}
+    .user-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+    .user-role{font-size:11px;color:var(--text-secondary);}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
+    .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
+    .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+    .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:22px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
-        <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">&#9672;</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
-      <a class="nav-item active" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
-      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <a class="nav-item active" href="groups.html"><span class="nav-icon">&#127970;</span> Groups / Employers</a>
+      <a class="nav-item" href="classes.html"><span class="nav-icon">&#127991;</span> Classes</a>
       <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
-      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
-      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <a class="nav-item" href="members.html"><span class="nav-icon">&#128100;</span> Members</a>
+      <a class="nav-item" href="products.html"><span class="nav-icon">&#128230;</span> Products</a>
+      <a class="nav-item" href="plans.html"><span class="nav-icon">&#128203;</span> Plans</a>
+      <a class="nav-item" href="benefits.html"><span class="nav-icon">&#10010;</span> Benefits</a>
+      <a class="nav-item" href="pricing.html"><span class="nav-icon">&#128178;</span> Pricing</a>
+      <a class="nav-item" href="service-groups.html"><span class="nav-icon">&#128193;</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">&#129463;</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
-      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
-      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item" href="providers.html"><span class="nav-icon">&#127973;</span> Providers</a>
+      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">&#128220;</span> Provider Contracts</a>
+      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">&#128202;</span> Fee Tables</a>
+      <a class="nav-item" href="networx.html"><span class="nav-icon">&#9881;</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">&#127963;</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
-      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
-      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item" href="claims.html"><span class="nav-icon">&#128196;</span> Claims</a>
+      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">&#9208;</span> Claim Pends</a>
+      <a class="nav-item" href="authorizations.html"><span class="nav-icon">&#128272;</span> Authorizations</a>
+      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">&#128302;</span> SQL Validator</a>
+      <a class="nav-item" href="audit.html"><span class="nav-icon">&#128269;</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Employer → <span>Groups / Employers</span></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb">Employer &rarr; <span>Groups / Employers</span></span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Group / Employer Management</div><div class="page-subtitle">CONTRACTS · CONTRIBUTIONS · PLAN OFFERINGS</div></div>
+        <div><div class="page-title">Group / Employer Management</div><div class="page-subtitle">IDENTIFICATION &middot; ADDRESS &middot; BILLING &middot; PLANS &middot; SECURITY</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Group</button>
       </div>
       <div class="group-cards">
-        <div class="g-card"><div class="g-lbl">Total Groups</div><div class="g-val" id="s-total">—</div></div>
-        <div class="g-card"><div class="g-lbl">Total Members</div><div class="g-val" id="s-members">—</div></div>
-        <div class="g-card"><div class="g-lbl">Active Groups</div><div class="g-val" style="color:#4ade80" id="s-active">—</div></div>
-        <div class="g-card"><div class="g-lbl">Pending / Renewal</div><div class="g-val" style="color:#fbbf24" id="s-pending">—</div></div>
+        <div class="g-card"><div class="g-lbl">Total Groups</div><div class="g-val" id="s-total">&mdash;</div></div>
+        <div class="g-card"><div class="g-lbl">Total Members</div><div class="g-val" id="s-members">&mdash;</div></div>
+        <div class="g-card"><div class="g-lbl">Active Groups</div><div class="g-val" style="color:#4ade80" id="s-active">&mdash;</div></div>
+        <div class="g-card"><div class="g-lbl">Pending / Renewal</div><div class="g-val" style="color:#fbbf24" id="s-pending">&mdash;</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">🏢 Groups <span class="count-label" id="count"></span></span>
+          <span class="card-title">&#127970; Groups <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search groups..." id="search-input"></div>
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">&#128270;</span><input type="text" placeholder="Search groups..." id="search-input"></div>
             <div class="filter-tabs">
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-active">Active</button>
@@ -87,67 +110,139 @@
               <th>Group Size</th><th>Contribution</th><th>Contract Period</th>
               <th>Plan Offerings</th><th>Status</th><th>Actions</th>
             </tr></thead>
-            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
+
+<!-- Modal — does NOT close on outside click -->
 <div id="overlay">
-  <div class="modal" style="width:780px;max-height:92vh;overflow-y:auto">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Group</span><button class="modal-close" id="btn-x">✕</button></div>
+  <div class="modal" style="width:820px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Group</span><button class="modal-close" id="btn-x">&#10005;</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('general',this)">General</button>
-        <button class="modal-tab" onclick="switchTab('contract',this)">Contract &amp; Contributions</button>
+        <button class="modal-tab" onclick="switchTab('address',this)">Address &amp; Contact</button>
+        <button class="modal-tab" onclick="switchTab('billing',this)">Billing</button>
+        <button class="modal-tab" onclick="switchTab('contract',this)">Contract</button>
         <button class="modal-tab" onclick="switchTab('plans',this)">Plan Offerings</button>
-        <button class="modal-tab" onclick="switchTab('contact',this)">Contact &amp; Billing</button>
+        <button class="modal-tab" onclick="switchTab('security',this)">&#128274; Security &amp; Access</button>
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
+
+      <!-- TAB: GENERAL -->
       <div class="tab-panel active" id="tab-general">
-        <form class="form-grid" onsubmit="return false">
-          <div class="form-group"><label class="form-label">Group ID *</label><input type="text" class="form-input" id="f-group_id" placeholder="GRP-001"></div>
+        <div class="form-grid">
+          <div class="form-section-label">Group Identification</div>
+          <div class="form-group"><label class="form-label">Group ID *</label><input type="text" class="form-input" id="f-group_id" placeholder="GRP-ECL-2026-001"></div>
           <div class="form-group"><label class="form-label">Status</label>
             <select class="form-select" id="f-status">
               <option value="active">Active</option><option value="pending">Pending</option>
               <option value="renewal">Up for Renewal</option><option value="terminated">Terminated</option>
             </select>
           </div>
-          <div class="form-group full"><label class="form-label">Employer Name *</label><input type="text" class="form-input" id="f-employer_name" placeholder="Acme Corporation"></div>
-          <div class="form-group"><label class="form-label">Tax ID (EIN)</label><input type="text" class="form-input" id="f-tax_id" placeholder="12-3456789"></div>
-          <div class="form-group"><label class="form-label">SIC Code</label><input type="text" class="form-input" id="f-sic_code" placeholder="7372"></div>
+          <div class="form-group full"><label class="form-label">Group Name *</label><input type="text" class="form-input" id="f-employer_name" placeholder="EchoLink Clinics &amp; Urgent Care Network"></div>
+          <div class="form-group"><label class="form-label">Group Short Name</label><input type="text" class="form-input" id="f-short_name" placeholder="EchoLink Solutions"></div>
+          <div class="form-group"><label class="form-label">Tax ID (FEIN)</label><input type="text" class="form-input" id="f-tax_id" placeholder="56-7890123"></div>
+          <div class="form-group"><label class="form-label">SIC Code</label><input type="text" class="form-input" id="f-sic_code" placeholder="8011"></div>
           <div class="form-group"><label class="form-label">Industry</label>
             <select class="form-select" id="f-industry">
-              <option value="technology">Technology</option><option value="healthcare">Healthcare</option>
+              <option value="healthcare">Healthcare</option><option value="technology">Technology</option>
               <option value="finance">Finance / Banking</option><option value="education">Education</option>
               <option value="manufacturing">Manufacturing</option><option value="retail">Retail</option>
               <option value="hospitality">Hospitality / Food Service</option><option value="construction">Construction</option>
               <option value="government">Government / Public Sector</option><option value="nonprofit">Non-Profit</option><option value="other">Other</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Group Size (employees)</label><input type="number" class="form-input" id="f-group_size" min="1" placeholder="50"></div>
+          <div class="form-group"><label class="form-label">Group Size (employees)</label><input type="number" class="form-input" id="f-group_size" min="1" placeholder="250"></div>
+          <div class="form-section-label">Plan Year</div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
+          <div class="form-group"><label class="form-label">Plan Year Start</label>
+            <select class="form-select" id="f-plan_year_start">
+              <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+              <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+              <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+              <option value="October">October</option><option value="November">November</option><option value="December">December</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Plan Year End</label>
+            <select class="form-select" id="f-plan_year_end">
+              <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+              <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+              <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+              <option value="October">October</option><option value="November">November</option>
+              <option value="December" selected>December</option>
+            </select>
+          </div>
+          <div class="form-section-label">Compliance</div>
           <div class="form-group"><label class="form-label">COBRA Eligible</label>
             <select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select>
           </div>
           <div class="form-group"><label class="form-label">ERISA Plan</label>
             <select class="form-select" id="f-erisa_plan"><option value="yes">Yes</option><option value="no">No</option></select>
           </div>
+          <div class="form-group"><label class="form-label">ACA Applicable</label>
+            <select class="form-select" id="f-aca_applicable"><option value="yes">Yes &mdash; ALE (50+ FTEs)</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">ERISA Plan Year</label><input type="text" class="form-input" id="f-erisa_year" placeholder="2026"></div>
           <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Key account notes, renewal flags, special handling..."></textarea></div>
-        </form>
+        </div>
       </div>
-      <div class="tab-panel" id="tab-contract">
-        <form class="form-grid" onsubmit="return false">
-          <div class="form-group"><label class="form-label">Contract Start Date</label><input type="date" class="form-input" id="f-contract_start"></div>
-          <div class="form-group"><label class="form-label">Renewal Date</label><input type="date" class="form-input" id="f-renewal_date"></div>
-          <div class="form-group"><label class="form-label">Contribution Model</label>
+
+      <!-- TAB: ADDRESS & CONTACT -->
+      <div class="tab-panel" id="tab-address">
+        <div class="form-grid">
+          <div class="form-section-label">Employer Address</div>
+          <div class="form-group full"><label class="form-label">Street Address</label><input type="text" class="form-input" id="f-street_address" placeholder="4200 EchoLink Medical Parkway"></div>
+          <div class="form-group"><label class="form-label">Suite / Unit</label><input type="text" class="form-input" id="f-suite" placeholder="Suite 100"></div>
+          <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="f-city" placeholder="Charlotte"></div>
+          <div class="form-group"><label class="form-label">State</label><input type="text" class="form-input" id="f-state" placeholder="NC" maxlength="2"></div>
+          <div class="form-group"><label class="form-label">Zip Code</label><input type="text" class="form-input" id="f-zip" placeholder="28202"></div>
+          <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="f-phone" placeholder="(704) 555-0190"></div>
+          <div class="form-group"><label class="form-label">Fax</label><input type="text" class="form-input" id="f-fax" placeholder="(704) 555-0191"></div>
+          <div class="form-section-label">Primary Contact</div>
+          <div class="form-group"><label class="form-label">Primary Contact Name</label><input type="text" class="form-input" id="f-contact_name" placeholder="Sandra Mitchell"></div>
+          <div class="form-group"><label class="form-label">Primary Contact Title</label><input type="text" class="form-input" id="f-contact_title" placeholder="HR Benefits Manager"></div>
+          <div class="form-group"><label class="form-label">Primary Contact Email</label><input type="text" class="form-input" id="f-contact_email" placeholder="s.mitchell@company.com"></div>
+          <div class="form-group"><label class="form-label">Primary Contact Phone</label><input type="text" class="form-input" id="f-contact_phone" placeholder="(704) 555-0192"></div>
+          <div class="form-group"><label class="form-label">Secondary Contact Name</label><input type="text" class="form-input" id="f-contact2_name" placeholder="James Okafor"></div>
+          <div class="form-group"><label class="form-label">Secondary Contact Email</label><input type="text" class="form-input" id="f-contact2_email" placeholder="j.okafor@company.com"></div>
+        </div>
+      </div>
+
+      <!-- TAB: BILLING -->
+      <div class="tab-panel" id="tab-billing">
+        <div class="form-grid">
+          <div class="form-section-label">Billing Configuration</div>
+          <div class="form-group"><label class="form-label">Billing Frequency</label>
+            <select class="form-select" id="f-billing_frequency">
+              <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+              <option value="semi_annual">Semi-Annual</option><option value="annual">Annual</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Billing Method</label>
+            <select class="form-select" id="f-billing_method">
+              <option value="list_bill">List Bill &mdash; itemized per member</option>
+              <option value="summary_bill">Summary Bill &mdash; total invoice</option>
+              <option value="self_admin">Self-Administered</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Billing Contact</label><input type="text" class="form-input" id="f-billing_contact" placeholder="Sandra Mitchell"></div>
+          <div class="form-group"><label class="form-label">Grace Period (days)</label><input type="number" class="form-input" id="f-grace_period" placeholder="30" min="0"></div>
+          <div class="form-group full"><label class="form-label">Billing Address</label><textarea class="form-textarea" id="f-billing_address" rows="2" placeholder="Same as employer address or enter separate billing address"></textarea></div>
+          <div class="form-section-label">Employer Contribution</div>
+          <div class="form-group"><label class="form-label">Employer Contribution Method</label>
             <select class="form-select" id="f-contribution_model">
-              <option value="defined_contribution">Defined Contribution (fixed $ amount)</option>
-              <option value="defined_benefit">Defined Benefit (% of premium)</option>
-              <option value="split">Split (employer + employee share)</option>
+              <option value="defined_contribution">Defined Contribution &mdash; Fixed $ per tier</option>
+              <option value="defined_benefit">Defined Benefit &mdash; % of premium</option>
+              <option value="split">Split &mdash; employer + employee share</option>
               <option value="full_employer">Full Employer Paid</option>
-              <option value="voluntary">Voluntary (100% employee)</option>
+              <option value="voluntary">Voluntary &mdash; 100% employee</option>
             </select>
           </div>
           <div class="form-group"><label class="form-label">Employer Contribution %</label><input type="number" class="form-input" id="f-employer_contribution_pct" min="0" max="100" placeholder="75"></div>
@@ -160,8 +255,29 @@
               <option value="10">October</option><option value="11">November</option><option value="12">December</option>
             </select>
           </div>
-        </form>
+        </div>
       </div>
+
+      <!-- TAB: CONTRACT -->
+      <div class="tab-panel" id="tab-contract">
+        <div class="form-grid">
+          <div class="form-section-label">Contract Details</div>
+          <div class="form-group"><label class="form-label">Contract Start Date</label><input type="date" class="form-input" id="f-contract_start"></div>
+          <div class="form-group"><label class="form-label">Renewal Date</label><input type="date" class="form-input" id="f-renewal_date"></div>
+          <div class="form-group"><label class="form-label">Group Type</label>
+            <select class="form-select" id="f-group_type">
+              <option value="fully_insured">Fully Insured</option>
+              <option value="self_funded">Self-Funded / Self-Insured</option>
+              <option value="level_funded">Level-Funded</option>
+              <option value="mec">Minimum Essential Coverage (MEC)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">State of Issue</label><input type="text" class="form-input" id="f-state_of_issue" placeholder="NC" maxlength="2"></div>
+          <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-contract_notes" rows="3" placeholder="Contract terms, renewal flags, special handling instructions..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- TAB: PLAN OFFERINGS -->
       <div class="tab-panel" id="tab-plans">
         <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Select plan offerings available to this employer group.</p>
         <div id="plan-checkboxes" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"></div>
@@ -170,19 +286,142 @@
           <input type="text" class="form-input" id="f-plan_offerings" placeholder="Or type plan names manually, comma-separated">
         </div>
       </div>
-      <div class="tab-panel" id="tab-contact">
-        <form class="form-grid" onsubmit="return false">
-          <div class="form-group"><label class="form-label">HR Contact Name</label><input type="text" class="form-input" id="f-contact_name" placeholder="Jane Smith"></div>
-          <div class="form-group"><label class="form-label">Contact Email</label><input type="text" class="form-input" id="f-contact_email" placeholder="hr@company.com"></div>
-          <div class="form-group"><label class="form-label">Contact Phone</label><input type="text" class="form-input" id="f-contact_phone" placeholder="555-1234"></div>
-          <div class="form-group"></div>
-          <div class="form-group full"><label class="form-label">Billing Address</label><textarea class="form-textarea" id="f-billing_address" rows="2" placeholder="123 Main St, City, State 12345"></textarea></div>
-        </form>
+
+      <!-- TAB: SECURITY & ACCESS -->
+      <div class="tab-panel" id="tab-security">
+        <div style="margin-bottom:20px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Access Control &mdash; User Roles</div>
+          <div class="access-user-row">
+            <div class="user-avatar">SM</div>
+            <div class="user-info"><div class="user-name">Sandra Mitchell</div><div class="user-role">HR Benefits Manager &mdash; Primary Admin</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Full Access</option><option>Read Only</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#6366f1">JO</div>
+            <div class="user-info"><div class="user-name">James Okafor</div><div class="user-role">HR Generalist &mdash; Secondary</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Read Only</option><option>Full Access</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#f59e0b">CA</div>
+            <div class="user-info"><div class="user-name">Config Analyst</div><div class="user-role">Benefits Configuration Team</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Full Access</option><option>Read Only</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#10b981">QA</div>
+            <div class="user-info"><div class="user-name">QA Reviewer</div><div class="user-role">Audit &amp; Quality Assurance</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Read Only</option><option>Full Access</option><option>No Access</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Permission Matrix &mdash; By Function</div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128272; Group Record Management</div>
+              <div class="security-role-desc">Create, edit, and terminate group records</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-on">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128203; Plan Assignment</div>
+              <div class="security-role-desc">Link and unlink plans from this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128178; Billing &amp; Rates</div>
+              <div class="security-role-desc">View and modify billing configuration and premium rates</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128100; Member Enrollment</div>
+              <div class="security-role-desc">Enroll, change, and terminate member records under this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-on">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128196; Claims &amp; EOBs</div>
+              <div class="security-role-desc">View and reprocess claims submitted under this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128269; Audit Log</div>
+              <div class="security-role-desc">View all configuration changes made to this group record</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Security Settings</div>
+          <div class="form-grid">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Require MFA for Group Access</div><div class="toggle-sub">All users accessing this group record must have multi-factor authentication enabled</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-mfa_required" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Audit All Access Events</div><div class="toggle-sub">Log every view, edit, and export event for this group to the Audit Log</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-audit_access" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Restrict Export of Member Data</div><div class="toggle-sub">Prevent bulk export of member PII from this group without supervisor approval</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-restrict_export" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">HIPAA Covered Entity</div><div class="toggle-sub">Employer is a HIPAA covered entity &mdash; apply enhanced PHI access controls</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-hipaa_covered" checked><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Group</button></div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Group</button></div>
   </div>
 </div>
+
 <script src="app.js"></script>
 <script>
 var records=[],plans=[],statusFilter='all';
@@ -191,17 +430,15 @@ document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
+// NO outside click close
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
-document.getElementById('tab-active').addEventListener('click',function(){setFilter('active',this);});
-document.getElementById('tab-pending').addEventListener('click',function(){setFilter('pending',this);});
-document.getElementById('tab-renewal').addEventListener('click',function(){setFilter('renewal',this);});
+['all','active','pending','renewal'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
 async function load(){
   try{var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);records=res[0];plans=res[1];updateSummary();render();}
-  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p><button class="btn btn-sm btn-secondary" onclick="load()">↻ Retry</button></div></td></tr>';}
+  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
@@ -213,9 +450,9 @@ function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
-  document.getElementById('count').textContent='· '+data.length+' records';
+  document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🏢</div><p>No groups found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">&#127970;</div><p>No groups found</p></div></td></tr>';return;}
   var sc={active:'active',pending:'pending',renewal:'pending',terminated:'inactive'};
   tbody.innerHTML=data.map(function(g){
     var planPills=(g.plan_offerings||'').split(',').filter(Boolean).slice(0,3).map(function(p){return'<span class="plan-pill">'+p.trim()+'</span>';}).join('');
@@ -223,13 +460,13 @@ function render(){
     return'<tr>'+
     '<td class="mono" style="color:var(--accent);font-size:11px">'+g.group_id+'</td>'+
     '<td><strong style="font-size:13px">'+g.employer_name+'</strong></td>'+
-    '<td style="font-size:12px;text-transform:capitalize">'+(g.industry||'—')+'</td>'+
-    '<td class="mono">'+(g.group_size?g.group_size.toLocaleString():'—')+'</td>'+
-    '<td style="font-size:12px">'+(g.employer_contribution_pct?g.employer_contribution_pct+'% employer':'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(g.contract_start?g.contract_start.split('T')[0].substring(0,7):'—')+' → '+(g.renewal_date?g.renewal_date.split('T')[0].substring(0,7):'—')+'</td>'+
+    '<td style="font-size:12px;text-transform:capitalize">'+(g.industry||'&mdash;')+'</td>'+
+    '<td class="mono">'+(g.group_size?g.group_size.toLocaleString():'&mdash;')+'</td>'+
+    '<td style="font-size:12px">'+(g.employer_contribution_pct?g.employer_contribution_pct+'% employer':'&mdash;')+'</td>'+
+    '<td class="mono" style="font-size:11px">'+(g.contract_start?g.contract_start.split('T')[0].substring(0,7):'&mdash;')+' &rarr; '+(g.renewal_date?g.renewal_date.split('T')[0].substring(0,7):'&mdash;')+'</td>'+
     '<td style="max-width:200px">'+planPills+'</td>'+
     '<td>'+badge(g.status||'pending',sc[g.status]||'pending')+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+g.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+g.id+'\')">Del</button></div></td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+g.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+g.id+'')">Del</button></div></td>'+
     '</tr>';
   }).join('');
 }
@@ -239,37 +476,63 @@ function buildPlanCheckboxes(sel){
     var chk=sel&&sel.indexOf(p.plan_name)>-1;
     var box=document.createElement('label');
     box.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;';
-    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+p.plan_code+' — '+p.plan_name+'<br><span style="font-size:10px;color:var(--text3)">'+p.plan_type+' · $'+parseFloat(p.premium||0).toFixed(2)+'/mo</span></span>';
+    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+p.plan_code+' &mdash; '+p.plan_name+'<br><span style="font-size:10px;color:var(--text3)">'+p.plan_type+' &middot; $'+parseFloat(p.premium||0).toFixed(2)+'/mo</span></span>';
     box.querySelector('input').addEventListener('change',function(){var c=[];document.querySelectorAll('#plan-checkboxes input:checked').forEach(function(x){c.push(x.value);});document.getElementById('f-plan_offerings').value=c.join(', ');});
     div.appendChild(box);
   });
 }
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Group':'New Group';
-  document.getElementById('f-id').value=d?d.id:'';
-  document.getElementById('f-group_id').value=d?d.group_id:genCode('GRP');
-  document.getElementById('f-status').value=d?(d.status||'active'):'active';
-  document.getElementById('f-employer_name').value=d?(d.employer_name||''):'';
-  document.getElementById('f-tax_id').value=d?(d.tax_id||''):'';
-  document.getElementById('f-sic_code').value=d?(d.sic_code||''):'';
-  document.getElementById('f-industry').value=d?(d.industry||'technology'):'technology';
-  document.getElementById('f-group_size').value=d?(d.group_size||''):'';
-  document.getElementById('f-cobra_eligible').value=d?(d.cobra_eligible||'yes'):'yes';
-  document.getElementById('f-erisa_plan').value=d?(d.erisa_plan||'yes'):'yes';
-  document.getElementById('f-notes').value=d?(d.notes||''):'';
-  document.getElementById('f-contract_start').value=d&&d.contract_start?d.contract_start.split('T')[0]:'';
-  document.getElementById('f-renewal_date').value=d&&d.renewal_date?d.renewal_date.split('T')[0]:'';
-  document.getElementById('f-contribution_model').value=d?(d.contribution_model||'defined_contribution'):'defined_contribution';
-  document.getElementById('f-employer_contribution_pct').value=d?(d.employer_contribution_pct||''):'';
-  document.getElementById('f-waiting_period_days').value=d?(d.waiting_period_days||'30'):'30';
-  document.getElementById('f-oe_month').value=d?(d.oe_month||'10'):'10';
-  document.getElementById('f-plan_offerings').value=d?(d.plan_offerings||''):'';
-  document.getElementById('f-contact_name').value=d?(d.contact_name||''):'';
-  document.getElementById('f-contact_email').value=d?(d.contact_email||''):'';
-  document.getElementById('f-contact_phone').value=d?(d.contact_phone||''):'';
-  document.getElementById('f-billing_address').value=d?(d.billing_address||''):'';
+  sv('f-id',d?d.id:'');
+  sv('f-group_id',d?d.group_id:genCode('GRP'));
+  sv('f-status',d?d.status:'active');
+  sv('f-employer_name',d?d.employer_name:'');
+  sv('f-short_name',d?d.short_name:'');
+  sv('f-tax_id',d?d.tax_id:'');
+  sv('f-sic_code',d?d.sic_code:'');
+  sv('f-industry',d?d.industry:'healthcare');
+  sv('f-group_size',d?d.group_size:'');
+  sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
+  sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
+  sv('f-plan_year_start',d?d.plan_year_start:'January');
+  sv('f-plan_year_end',d?d.plan_year_end:'December');
+  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');
+  sv('f-erisa_plan',d?d.erisa_plan:'yes');
+  sv('f-aca_applicable',d?d.aca_applicable:'yes');
+  sv('f-erisa_year',d?d.erisa_year:'2026');
+  sv('f-notes',d?d.notes:'');
+  sv('f-street_address',d?d.street_address:'');
+  sv('f-suite',d?d.suite:'');
+  sv('f-city',d?d.city:'');
+  sv('f-state',d?d.state:'');
+  sv('f-zip',d?d.zip:'');
+  sv('f-phone',d?d.phone:'');
+  sv('f-fax',d?d.fax:'');
+  sv('f-contact_name',d?d.contact_name:'');
+  sv('f-contact_title',d?d.contact_title:'');
+  sv('f-contact_email',d?d.contact_email:'');
+  sv('f-contact_phone',d?d.contact_phone:'');
+  sv('f-contact2_name',d?d.contact2_name:'');
+  sv('f-contact2_email',d?d.contact2_email:'');
+  sv('f-billing_frequency',d?d.billing_frequency:'monthly');
+  sv('f-billing_method',d?d.billing_method:'list_bill');
+  sv('f-billing_contact',d?d.billing_contact:'');
+  sv('f-grace_period',d?d.grace_period:'30');
+  sv('f-billing_address',d?d.billing_address:'');
+  sv('f-contribution_model',d?d.contribution_model:'defined_contribution');
+  sv('f-employer_contribution_pct',d?d.employer_contribution_pct:'');
+  sv('f-waiting_period_days',d?d.waiting_period_days:'30');
+  sv('f-oe_month',d?d.oe_month:'10');
+  sv('f-contract_start',d&&d.contract_start?d.contract_start.split('T')[0]:'');
+  sv('f-renewal_date',d&&d.renewal_date?d.renewal_date.split('T')[0]:'');
+  sv('f-group_type',d?d.group_type:'fully_insured');
+  sv('f-state_of_issue',d?d.state_of_issue:'NC');
+  sv('f-contract_notes',d?d.contract_notes:'');
+  sv('f-plan_offerings',d?d.plan_offerings:'');
   buildPlanCheckboxes(d&&d.plan_offerings?d.plan_offerings.split(',').map(function(s){return s.trim();}):[]);
   switchTab('general',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
@@ -277,19 +540,20 @@ function openModal(id){
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
-  var gid=document.getElementById('f-group_id').value.trim(),ename=document.getElementById('f-employer_name').value.trim();
-  if(!gid||!ename){errEl.textContent='⚠ Group ID and Employer Name are required.';errEl.style.display='block';return;}
-  var id=document.getElementById('f-id').value;
-  var body={group_id:gid,employer_name:ename,tax_id:document.getElementById('f-tax_id').value.trim(),sic_code:document.getElementById('f-sic_code').value.trim(),industry:document.getElementById('f-industry').value,group_size:parseInt(document.getElementById('f-group_size').value)||0,cobra_eligible:document.getElementById('f-cobra_eligible').value,erisa_plan:document.getElementById('f-erisa_plan').value,notes:document.getElementById('f-notes').value.trim(),contract_start:document.getElementById('f-contract_start').value||null,renewal_date:document.getElementById('f-renewal_date').value||null,contribution_model:document.getElementById('f-contribution_model').value,employer_contribution_pct:parseInt(document.getElementById('f-employer_contribution_pct').value)||0,waiting_period_days:parseInt(document.getElementById('f-waiting_period_days').value)||0,oe_month:parseInt(document.getElementById('f-oe_month').value)||10,plan_offerings:document.getElementById('f-plan_offerings').value.trim(),contact_name:document.getElementById('f-contact_name').value.trim(),contact_email:document.getElementById('f-contact_email').value.trim(),contact_phone:document.getElementById('f-contact_phone').value.trim(),billing_address:document.getElementById('f-billing_address').value.trim(),status:document.getElementById('f-status').value};
-  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});updateSummary();render();}
+  var gid=gv('f-group_id').trim(),ename=gv('f-employer_name').trim();
+  if(!gid||!ename){errEl.textContent='Group ID and Group Name are required.';errEl.style.display='block';return;}
+  var id=gv('f-id');
+  var body={group_id:gid,employer_name:ename,short_name:gv('f-short_name'),tax_id:gv('f-tax_id'),sic_code:gv('f-sic_code'),industry:gv('f-industry'),group_size:parseInt(gv('f-group_size'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,plan_year_start:gv('f-plan_year_start'),plan_year_end:gv('f-plan_year_end'),cobra_eligible:gv('f-cobra_eligible'),erisa_plan:gv('f-erisa_plan'),aca_applicable:gv('f-aca_applicable'),erisa_year:gv('f-erisa_year'),notes:gv('f-notes'),street_address:gv('f-street_address'),suite:gv('f-suite'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),phone:gv('f-phone'),fax:gv('f-fax'),contact_name:gv('f-contact_name'),contact_title:gv('f-contact_title'),contact_email:gv('f-contact_email'),contact_phone:gv('f-contact_phone'),contact2_name:gv('f-contact2_name'),contact2_email:gv('f-contact2_email'),billing_frequency:gv('f-billing_frequency'),billing_method:gv('f-billing_method'),billing_contact:gv('f-billing_contact'),grace_period:parseInt(gv('f-grace_period'))||30,billing_address:gv('f-billing_address'),contribution_model:gv('f-contribution_model'),employer_contribution_pct:parseInt(gv('f-employer_contribution_pct'))||0,waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,oe_month:parseInt(gv('f-oe_month'))||10,contract_start:gv('f-contract_start')||null,renewal_date:gv('f-renewal_date')||null,group_type:gv('f-group_type'),state_of_issue:gv('f-state_of_issue'),contract_notes:gv('f-contract_notes'),plan_offerings:gv('f-plan_offerings'),status:gv('f-status')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateSummary();render();}
   closeModal();toast(id?'Saving...':'Creating group...','info');
-  try{var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Group updated ✓':'Group created ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!r._saving;});updateSummary();render();toast('Save failed: '+e.message,'error');}
+  try{var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Group updated \u2713':'Group created \u2713','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateSummary();render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this group?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/groups/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed: '+e.message,'error');}}
+async function del(id){if(!await confirmDialog('Delete this group?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/groups/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed','error');}}
 load();
 </script>
 </body>
 </html>
+
 
 
