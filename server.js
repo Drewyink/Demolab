@@ -310,3 +310,4 @@ app.get('/api/stats',(req,res)=>{
 app.get('/api/health',(req,res)=>res.json({status:'ok',mode:usePostgres?'postgres':'memory',uptime:process.uptime(),version:'2.0.0'}));
 app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
 app.listen(PORT,()=>console.log(`🚀 Facets v2 running on port ${PORT}`));
+
