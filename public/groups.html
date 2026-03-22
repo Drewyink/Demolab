@@ -430,30 +430,25 @@ document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
-// NO outside click close
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 ['all','active','pending','renewal'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
 setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-const FALLBACK_GROUPS=[
-  {id:'grp-ecl-001',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',short_name:'EchoLink Solutions',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink CDH HDHP + HSA, EchoLink Dental Essentials',status:'active',contact_name:'Sandra Mitchell',contact_title:'HR Benefits Manager',contact_email:'s.mitchell@echolinkclinics.com',contact_phone:'(704) 555-0192',street_address:'4200 EchoLink Medical Parkway',suite:'Suite 100',city:'Charlotte',state:'NC',zip:'28202',phone:'(704) 555-0190',billing_frequency:'monthly',billing_method:'list_bill',cobra_eligible:'yes',erisa_plan:'yes',aca_applicable:'yes'},
-  {id:'grp-002',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',short_name:'BRCH',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active',contact_name:'Marcus Webb',contact_email:'benefits@brchosp.org'},
-  {id:'grp-003',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com'}
+var FALLBACK=[
+  {id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',short_name:'EchoLink Solutions',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink CDH HDHP + HSA, EchoLink Dental Essentials',status:'active',contact_name:'Sandra Mitchell',contact_title:'HR Benefits Manager',contact_email:'s.mitchell@echolinkclinics.com',contact_phone:'(704) 555-0192',street_address:'4200 EchoLink Medical Parkway',suite:'Suite 100',city:'Charlotte',state:'NC',zip:'28202',phone:'(704) 555-0190',tax_id:'56-7890123',sic_code:'8011',cobra_eligible:'yes',erisa_plan:'yes',aca_applicable:'yes',erisa_year:'2026',billing_frequency:'monthly',billing_method:'list_bill',billing_contact:'Sandra Mitchell',grace_period:30,contribution_model:'defined_contribution',waiting_period_days:30,oe_month:11,effective_date:'2026-01-01',termination_date:'2026-12-31',plan_year_start:'January',plan_year_end:'December',group_type:'fully_insured',state_of_issue:'NC'},
+  {id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',short_name:'BRCH',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active',contact_name:'Marcus Webb',contact_email:'benefits@brchosp.org',contact_phone:'555-2000',city:'Asheville',state:'NC',cobra_eligible:'yes',erisa_plan:'yes',contribution_model:'defined_benefit',waiting_period_days:0},
+  {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com',city:'Greenville',state:'SC',cobra_eligible:'no',erisa_plan:'yes',contribution_model:'split',waiting_period_days:60}
 ];
 async function load(){
- var fallback=[
-    {id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink Dental Essentials',status:'active'},
-    {id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active'},
-    {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending'}
-  ];
   try{
     var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);
-    records=res[0].length?res[0]:fallback;
-    plans=res[1];
-  }catch(e){records=fallback;plans=[];}
+    records=res[0]&&res[0].length?res[0]:FALLBACK;
+    plans=res[1]||[];
+  }catch(e){
+    records=FALLBACK;plans=[];
+  }
   updateSummary();render();
-}
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
@@ -491,7 +486,7 @@ function buildPlanCheckboxes(sel){
     var chk=sel&&sel.indexOf(p.plan_name)>-1;
     var box=document.createElement('label');
     box.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;';
-    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+p.plan_code+' &mdash; '+p.plan_name+'<br><span style="font-size:10px;color:var(--text3)">'+p.plan_type+' &middot; $'+parseFloat(p.premium||0).toFixed(2)+'/mo</span></span>';
+    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+(p.plan_code||p.plan_name)+'<br><span style="font-size:10px;color:var(--text3)">'+(p.plan_type||'')+(p.premium?' &middot; $'+parseFloat(p.premium).toFixed(2)+'/mo':'')+'</span></span>';
     box.querySelector('input').addEventListener('change',function(){var c=[];document.querySelectorAll('#plan-checkboxes input:checked').forEach(function(x){c.push(x.value);});document.getElementById('f-plan_offerings').value=c.join(', ');});
     div.appendChild(box);
   });
@@ -502,52 +497,29 @@ function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Group':'New Group';
-  sv('f-id',d?d.id:'');
-  sv('f-group_id',d?d.group_id:genCode('GRP'));
-  sv('f-status',d?d.status:'active');
-  sv('f-employer_name',d?d.employer_name:'');
-  sv('f-short_name',d?d.short_name:'');
-  sv('f-tax_id',d?d.tax_id:'');
-  sv('f-sic_code',d?d.sic_code:'');
-  sv('f-industry',d?d.industry:'healthcare');
-  sv('f-group_size',d?d.group_size:'');
-  sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
+  sv('f-id',d?d.id:'');sv('f-group_id',d?d.group_id:genCode('GRP'));sv('f-status',d?d.status:'active');
+  sv('f-employer_name',d?d.employer_name:'');sv('f-short_name',d?d.short_name:'');
+  sv('f-tax_id',d?d.tax_id:'');sv('f-sic_code',d?d.sic_code:'');sv('f-industry',d?d.industry:'healthcare');
+  sv('f-group_size',d?d.group_size:'');sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-plan_year_start',d?d.plan_year_start:'January');
-  sv('f-plan_year_end',d?d.plan_year_end:'December');
-  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');
-  sv('f-erisa_plan',d?d.erisa_plan:'yes');
-  sv('f-aca_applicable',d?d.aca_applicable:'yes');
-  sv('f-erisa_year',d?d.erisa_year:'2026');
-  sv('f-notes',d?d.notes:'');
-  sv('f-street_address',d?d.street_address:'');
-  sv('f-suite',d?d.suite:'');
-  sv('f-city',d?d.city:'');
-  sv('f-state',d?d.state:'');
-  sv('f-zip',d?d.zip:'');
-  sv('f-phone',d?d.phone:'');
-  sv('f-fax',d?d.fax:'');
-  sv('f-contact_name',d?d.contact_name:'');
-  sv('f-contact_title',d?d.contact_title:'');
-  sv('f-contact_email',d?d.contact_email:'');
-  sv('f-contact_phone',d?d.contact_phone:'');
-  sv('f-contact2_name',d?d.contact2_name:'');
-  sv('f-contact2_email',d?d.contact2_email:'');
-  sv('f-billing_frequency',d?d.billing_frequency:'monthly');
-  sv('f-billing_method',d?d.billing_method:'list_bill');
-  sv('f-billing_contact',d?d.billing_contact:'');
-  sv('f-grace_period',d?d.grace_period:'30');
-  sv('f-billing_address',d?d.billing_address:'');
+  sv('f-plan_year_start',d?d.plan_year_start:'January');sv('f-plan_year_end',d?d.plan_year_end:'December');
+  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');sv('f-erisa_plan',d?d.erisa_plan:'yes');
+  sv('f-aca_applicable',d?d.aca_applicable:'yes');sv('f-erisa_year',d?d.erisa_year:'2026');
+  sv('f-notes',d?d.notes:'');sv('f-street_address',d?d.street_address:'');sv('f-suite',d?d.suite:'');
+  sv('f-city',d?d.city:'');sv('f-state',d?d.state:'');sv('f-zip',d?d.zip:'');
+  sv('f-phone',d?d.phone:'');sv('f-fax',d?d.fax:'');sv('f-contact_name',d?d.contact_name:'');
+  sv('f-contact_title',d?d.contact_title:'');sv('f-contact_email',d?d.contact_email:'');
+  sv('f-contact_phone',d?d.contact_phone:'');sv('f-contact2_name',d?d.contact2_name:'');
+  sv('f-contact2_email',d?d.contact2_email:'');sv('f-billing_frequency',d?d.billing_frequency:'monthly');
+  sv('f-billing_method',d?d.billing_method:'list_bill');sv('f-billing_contact',d?d.billing_contact:'');
+  sv('f-grace_period',d?d.grace_period:'30');sv('f-billing_address',d?d.billing_address:'');
   sv('f-contribution_model',d?d.contribution_model:'defined_contribution');
   sv('f-employer_contribution_pct',d?d.employer_contribution_pct:'');
-  sv('f-waiting_period_days',d?d.waiting_period_days:'30');
-  sv('f-oe_month',d?d.oe_month:'10');
+  sv('f-waiting_period_days',d?d.waiting_period_days:'30');sv('f-oe_month',d?d.oe_month:'10');
   sv('f-contract_start',d&&d.contract_start?d.contract_start.split('T')[0]:'');
   sv('f-renewal_date',d&&d.renewal_date?d.renewal_date.split('T')[0]:'');
-  sv('f-group_type',d?d.group_type:'fully_insured');
-  sv('f-state_of_issue',d?d.state_of_issue:'NC');
-  sv('f-contract_notes',d?d.contract_notes:'');
-  sv('f-plan_offerings',d?d.plan_offerings:'');
+  sv('f-group_type',d?d.group_type:'fully_insured');sv('f-state_of_issue',d?d.state_of_issue:'NC');
+  sv('f-contract_notes',d?d.contract_notes:'');sv('f-plan_offerings',d?d.plan_offerings:'');
   buildPlanCheckboxes(d&&d.plan_offerings?d.plan_offerings.split(',').map(function(s){return s.trim();}):[]);
   switchTab('general',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
@@ -561,13 +533,22 @@ async function save(){
   var body={group_id:gid,employer_name:ename,short_name:gv('f-short_name'),tax_id:gv('f-tax_id'),sic_code:gv('f-sic_code'),industry:gv('f-industry'),group_size:parseInt(gv('f-group_size'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,plan_year_start:gv('f-plan_year_start'),plan_year_end:gv('f-plan_year_end'),cobra_eligible:gv('f-cobra_eligible'),erisa_plan:gv('f-erisa_plan'),aca_applicable:gv('f-aca_applicable'),erisa_year:gv('f-erisa_year'),notes:gv('f-notes'),street_address:gv('f-street_address'),suite:gv('f-suite'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),phone:gv('f-phone'),fax:gv('f-fax'),contact_name:gv('f-contact_name'),contact_title:gv('f-contact_title'),contact_email:gv('f-contact_email'),contact_phone:gv('f-contact_phone'),contact2_name:gv('f-contact2_name'),contact2_email:gv('f-contact2_email'),billing_frequency:gv('f-billing_frequency'),billing_method:gv('f-billing_method'),billing_contact:gv('f-billing_contact'),grace_period:parseInt(gv('f-grace_period'))||30,billing_address:gv('f-billing_address'),contribution_model:gv('f-contribution_model'),employer_contribution_pct:parseInt(gv('f-employer_contribution_pct'))||0,waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,oe_month:parseInt(gv('f-oe_month'))||10,contract_start:gv('f-contract_start')||null,renewal_date:gv('f-renewal_date')||null,group_type:gv('f-group_type'),state_of_issue:gv('f-state_of_issue'),contract_notes:gv('f-contract_notes'),plan_offerings:gv('f-plan_offerings'),status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateSummary();render();}
   closeModal();toast(id?'Saving...':'Creating group...','info');
-  try{var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Group updated \u2713':'Group created \u2713','success');await load();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateSummary();render();toast('Save failed: '+e.message,'error');}
+  try{
+    var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}
+    toast(id?'Group updated ✓':'Group created ✓','success');await load();
+  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateSummary();render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this group?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/groups/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed','error');}}
+async function del(id){
+  if(!await confirmDialog('Delete this group?'))return;
+  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();
+  try{await fetch('/api/groups/'+id,{method:'DELETE'});toast('Deleted','info');await load();}
+  catch(e){records=bk;updateSummary();render();toast('Delete failed','error');}
+}
 load();
 </script>
 </body>
 </html>
+
 
 
