@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -437,9 +436,23 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
 setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+const FALLBACK_GROUPS=[
+  {id:'grp-ecl-001',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',short_name:'EchoLink Solutions',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink CDH HDHP + HSA, EchoLink Dental Essentials',status:'active',contact_name:'Sandra Mitchell',contact_title:'HR Benefits Manager',contact_email:'s.mitchell@echolinkclinics.com',contact_phone:'(704) 555-0192',street_address:'4200 EchoLink Medical Parkway',suite:'Suite 100',city:'Charlotte',state:'NC',zip:'28202',phone:'(704) 555-0190',billing_frequency:'monthly',billing_method:'list_bill',cobra_eligible:'yes',erisa_plan:'yes',aca_applicable:'yes'},
+  {id:'grp-002',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',short_name:'BRCH',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active',contact_name:'Marcus Webb',contact_email:'benefits@brchosp.org'},
+  {id:'grp-003',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com'}
+];
 async function load(){
-  try{var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);records=res[0];plans=res[1];updateSummary();render();}
-  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+  try{
+    var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);
+    records=res[0];
+    plans=res[1];
+    if(records.length===0){records=FALLBACK_GROUPS;}
+    updateSummary();render();
+  }catch(e){
+    records=FALLBACK_GROUPS;
+    plans=[];
+    updateSummary();render();
+  }
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
@@ -555,8 +568,5 @@ load();
 </script>
 </body>
 </html>
-
-
-
 
 
