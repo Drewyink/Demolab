@@ -442,17 +442,18 @@ const FALLBACK_GROUPS=[
   {id:'grp-003',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com'}
 ];
 async function load(){
+ var fallback=[
+    {id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink Dental Essentials',status:'active'},
+    {id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active'},
+    {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending'}
+  ];
   try{
     var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);
-    records=res[0];
+    records=res[0].length?res[0]:fallback;
     plans=res[1];
-    if(records.length===0){records=FALLBACK_GROUPS;}
-    updateSummary();render();
-  }catch(e){
-    records=FALLBACK_GROUPS;
-    plans=[];
-    updateSummary();render();
-  }
+  }catch(e){records=fallback;plans=[];}
+  updateSummary();render();
+}
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
