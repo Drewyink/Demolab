@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
 
 // ─── IN-MEMORY STORE ──────────────────────────────────────────────────────────
 const db = {
@@ -348,6 +348,120 @@ app.get('/api/stats', async (req, res) => {
 
 app.get('/api/health', (req,res) => res.json({ status:'ok', mode: usePostgres?'postgres':'memory', uptime:process.uptime() }));
 
-app.get('*', (req,res) => res.sendFile(path.join(__dirname,'public','index.html')));
+app.get('*', (req,res) => res.sendFile(path.join(__dirname,'index.html')));
 
 app.listen(PORT, () => console.log(`🚀 Facets running on port ${PORT}`));
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ─── MISSING API ROUTES — added to fix pages that were returning 404 ──────
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── SERVICE GROUPS ───────────────────────────────────────────────────────────
+db['service-groups'] = [
+  { id: uuidv4(), service_group_code: 'SG-MED', service_group_name: 'Medical Services', category: 'medical', accumulator_bucket: 'medical', procedure_ranges: '99201-99499', revenue_codes: '', place_of_service: '11,21,22', benefit_cross_reference: 'BEN-PCP,BEN-SPC', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), service_group_code: 'SG-RX', service_group_name: 'Pharmacy Services', category: 'pharmacy', accumulator_bucket: 'pharmacy', procedure_ranges: '', revenue_codes: '0250-0259', place_of_service: '01', benefit_cross_reference: 'BEN-RX-GEN,BEN-RX-BRAND', applies_to_deductible: 'no', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), service_group_code: 'SG-SURG', service_group_name: 'Surgical Services', category: 'surgical', accumulator_bucket: 'medical', procedure_ranges: '10004-69990', revenue_codes: '0360-0369', place_of_service: '21,24', benefit_cross_reference: 'BEN-SURG', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), service_group_code: 'SG-DENT', service_group_name: 'Dental Services', category: 'dental', accumulator_bucket: 'dental', procedure_ranges: 'D0100-D9999', revenue_codes: '0320', place_of_service: '11', benefit_cross_reference: 'BEN-DENT-PREV', applies_to_deductible: 'no', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), service_group_code: 'SG-IMG', service_group_name: 'Imaging & Radiology', category: 'imaging', accumulator_bucket: 'medical', procedure_ranges: '70010-79999', revenue_codes: '0320,0324', place_of_service: '11,19,22', benefit_cross_reference: 'BEN-MRI', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() }
+];
+app.get('/api/service-groups', (req,res) => res.json([...db['service-groups']]));
+app.get('/api/service-groups/:id', (req,res) => { const r=db['service-groups'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/service-groups', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['service-groups'].push(r); res.status(201).json(r); });
+app.put('/api/service-groups/:id', (req,res) => { const i=db['service-groups'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['service-groups'][i]={...db['service-groups'][i],...req.body,updated_at:new Date()}; res.json(db['service-groups'][i]); });
+app.delete('/api/service-groups/:id', (req,res) => { const i=db['service-groups'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['service-groups'].splice(i,1); res.json({success:true}); });
+
+// ─── PROVIDER CONTRACTS ───────────────────────────────────────────────────────
+db['provider-contracts'] = [
+  { id: uuidv4(), contract_number: 'CTR-2026-001', provider_name: 'City Medical Center', contract_type: 'facility', network_tier: 'in_network', reimbursement_method: 'drg', reimbursement_rate: 92.00, capitation_pmpm: 0, risk_arrangement: 'none', quality_incentive: 'yes', quality_withhold_pct: 2, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: 'transplants,CAR-T', notes: 'Tier 1 facility — auto-adjudicate all DRG claims', status: 'active', created_at: new Date() },
+  { id: uuidv4(), contract_number: 'CTR-2026-002', provider_name: 'Dr. Sarah Patel', contract_type: 'individual', network_tier: 'in_network', reimbursement_method: 'rbrvs', reimbursement_rate: 110.00, capitation_pmpm: 22.50, risk_arrangement: 'partial_capitation', quality_incentive: 'yes', quality_withhold_pct: 5, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '', notes: 'PCP capitation model — panel capped at 500', status: 'active', created_at: new Date() },
+  { id: uuidv4(), contract_number: 'CTR-2026-003', provider_name: 'Westside Specialist Group', contract_type: 'group', network_tier: 'preferred', reimbursement_method: 'rbrvs', reimbursement_rate: 105.00, capitation_pmpm: 0, risk_arrangement: 'none', quality_incentive: 'no', quality_withhold_pct: 0, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '', notes: '', status: 'active', created_at: new Date() }
+];
+app.get('/api/provider-contracts', (req,res) => res.json([...db['provider-contracts']]));
+app.get('/api/provider-contracts/:id', (req,res) => { const r=db['provider-contracts'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/provider-contracts', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['provider-contracts'].push(r); res.status(201).json(r); });
+app.put('/api/provider-contracts/:id', (req,res) => { const i=db['provider-contracts'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['provider-contracts'][i]={...db['provider-contracts'][i],...req.body,updated_at:new Date()}; res.json(db['provider-contracts'][i]); });
+app.delete('/api/provider-contracts/:id', (req,res) => { const i=db['provider-contracts'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['provider-contracts'].splice(i,1); res.json({success:true}); });
+
+// ─── FEE TABLES ───────────────────────────────────────────────────────────────
+db['fee-tables'] = [
+  { id: uuidv4(), fee_table_code: 'FT-RBRVS-NAT', fee_table_name: 'RBRVS National Standard', fee_table_type: 'rbrvs', locality: 'National', conversion_factor: 38.87, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214,99215', status: 'active', created_at: new Date() },
+  { id: uuidv4(), fee_table_code: 'FT-DRG-2026', fee_table_name: 'DRG Grouper 2026', fee_table_type: 'drg', locality: 'National', conversion_factor: 1.00, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no', sample_codes: 'DRG-470,DRG-291,DRG-392', status: 'active', created_at: new Date() },
+  { id: uuidv4(), fee_table_code: 'FT-DENT-ADA', fee_table_name: 'ADA Dental Fee Schedule', fee_table_type: 'dental', locality: 'National', conversion_factor: 1.00, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no', sample_codes: 'D0120,D0210,D1110', status: 'active', created_at: new Date() },
+  { id: uuidv4(), fee_table_code: 'FT-RBRVS-CAL', fee_table_name: 'RBRVS California Locality', fee_table_type: 'rbrvs', locality: 'California', conversion_factor: 41.20, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214', status: 'active', created_at: new Date() }
+];
+app.get('/api/fee-tables', (req,res) => res.json([...db['fee-tables']]));
+app.get('/api/fee-tables/:id', (req,res) => { const r=db['fee-tables'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/fee-tables', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['fee-tables'].push(r); res.status(201).json(r); });
+app.put('/api/fee-tables/:id', (req,res) => { const i=db['fee-tables'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['fee-tables'][i]={...db['fee-tables'][i],...req.body,updated_at:new Date()}; res.json(db['fee-tables'][i]); });
+app.delete('/api/fee-tables/:id', (req,res) => { const i=db['fee-tables'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['fee-tables'].splice(i,1); res.json({success:true}); });
+
+// ─── NETWORX PRICING CONFIGS ─────────────────────────────────────────────────
+db['networx-configs'] = [
+  { id: uuidv4(), config_code: 'NX-INN-RBRVS', config_name: 'In-Network RBRVS Pricing', network_tier: 'in_network', pricing_method: 'rbrvs', rbrvs_pct: 110.00, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'none', qualifier_value: '', modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 50000, outlier_pct: 80, status: 'active', created_at: new Date() },
+  { id: uuidv4(), config_code: 'NX-PREF-RBRVS', config_name: 'Preferred Network RBRVS', network_tier: 'preferred', pricing_method: 'rbrvs', rbrvs_pct: 105.00, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'specialty', qualifier_value: 'internal_medicine,cardiology', modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 75000, outlier_pct: 75, status: 'active', created_at: new Date() },
+  { id: uuidv4(), config_code: 'NX-OON-UCR', config_name: 'Out-of-Network UCR', network_tier: 'out_of_network', pricing_method: 'ucr', rbrvs_pct: 80.00, fee_table_code: '', qualifier_type: 'none', qualifier_value: '', modifier_adjustments: 'no', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 100000, outlier_pct: 60, status: 'active', created_at: new Date() },
+  { id: uuidv4(), config_code: 'NX-CAP-PCP', config_name: 'PCP Capitation Model', network_tier: 'in_network', pricing_method: 'capitation', rbrvs_pct: 0, fee_table_code: '', qualifier_type: 'specialty', qualifier_value: 'primary_care,family_medicine', modifier_adjustments: 'no', place_of_service_override: 'no', geographic_adjustment: 'no', outlier_threshold: 0, outlier_pct: 0, status: 'active', created_at: new Date() }
+];
+app.get('/api/networx-configs', (req,res) => res.json([...db['networx-configs']]));
+app.get('/api/networx-configs/:id', (req,res) => { const r=db['networx-configs'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/networx-configs', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['networx-configs'].push(r); res.status(201).json(r); });
+app.put('/api/networx-configs/:id', (req,res) => { const i=db['networx-configs'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['networx-configs'][i]={...db['networx-configs'][i],...req.body,updated_at:new Date()}; res.json(db['networx-configs'][i]); });
+app.delete('/api/networx-configs/:id', (req,res) => { const i=db['networx-configs'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['networx-configs'].splice(i,1); res.json({success:true}); });
+
+// ─── GOVERNMENT PROGRAMS (Medicaid / Medicare) ────────────────────────────────
+db['program-configs'] = [
+  { id: uuidv4(), program_code: 'PGM-MCR-ADV', program_name: 'Medicare Advantage Plan', program_type: 'medicare', sub_type: 'mapd', state: 'National', cms_contract_id: 'H1234', effective_date: '2026-01-01', formulary_type: 'standard', snp_type: 'none', msp_primary: 'medicare', msp_secondary: 'commercial', crossover_claims: 'yes', spend_down_applies: 'no', prior_auth_override: 'cms_exempt', waiver_type: 'none', risk_score_model: 'v28', encounter_data_required: 'yes', cost_sharing_rules: 'cms_standard', status: 'active', created_at: new Date() },
+  { id: uuidv4(), program_code: 'PGM-MCD-FFS', program_name: 'Medicaid Fee-for-Service', program_type: 'medicaid', sub_type: 'ffs', state: 'TX', cms_contract_id: 'TX-MCD-001', effective_date: '2026-01-01', formulary_type: 'state_pdl', snp_type: 'none', msp_primary: 'medicaid', msp_secondary: 'none', crossover_claims: 'yes', spend_down_applies: 'yes', prior_auth_override: 'state_exempt', waiver_type: '1115_waiver', risk_score_model: 'none', encounter_data_required: 'no', cost_sharing_rules: 'state_standard', status: 'active', created_at: new Date() },
+  { id: uuidv4(), program_code: 'PGM-DSNP-001', program_name: 'D-SNP Dual Eligible Plan', program_type: 'medicare', sub_type: 'dsnp', state: 'TX', cms_contract_id: 'H5678', effective_date: '2026-01-01', formulary_type: 'enhanced', snp_type: 'dual_eligible', msp_primary: 'medicare', msp_secondary: 'medicaid', crossover_claims: 'yes', spend_down_applies: 'no', prior_auth_override: 'cms_exempt', waiver_type: 'mou', risk_score_model: 'v28', encounter_data_required: 'yes', cost_sharing_rules: 'zero_cost_share', status: 'active', created_at: new Date() }
+];
+app.get('/api/program-configs', (req,res) => res.json([...db['program-configs']]));
+app.get('/api/program-configs/:id', (req,res) => { const r=db['program-configs'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/program-configs', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['program-configs'].push(r); res.status(201).json(r); });
+app.put('/api/program-configs/:id', (req,res) => { const i=db['program-configs'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['program-configs'][i]={...db['program-configs'][i],...req.body,updated_at:new Date()}; res.json(db['program-configs'][i]); });
+app.delete('/api/program-configs/:id', (req,res) => { const i=db['program-configs'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['program-configs'].splice(i,1); res.json({success:true}); });
+
+// ─── CLAIM PENDS ──────────────────────────────────────────────────────────────
+db['claim-pends'] = [
+  { id: uuidv4(), pend_number: 'PND-2026-001', claim_id: 'CLM-2026-002', reason_code: 'AUTH-001', category: 'authorization', severity: 'high', assigned_to: 'UM Team', due_date: '2026-04-20', description: 'Prior auth not on file for specialty service', resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open', created_at: new Date() },
+  { id: uuidv4(), pend_number: 'PND-2026-002', claim_id: 'CLM-2026-004', reason_code: 'COB-002', category: 'coordination_of_benefits', severity: 'medium', assigned_to: 'COB Team', due_date: '2026-06-30', description: 'COB information missing — member may have other coverage', resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open', created_at: new Date() },
+  { id: uuidv4(), pend_number: 'PND-2026-003', claim_id: 'CLM-2026-001', reason_code: 'DUP-001', category: 'duplicate', severity: 'low', assigned_to: 'Claims Team', due_date: '2026-03-25', description: 'Possible duplicate claim — same DOS and procedure', resolution_action: 'denied_duplicate', resolved_by: 'J. Smith', resolution_notes: 'Confirmed duplicate — original CLM-2026-001 already paid', status: 'resolved', created_at: new Date() }
+];
+app.get('/api/claim-pends', (req,res) => res.json([...db['claim-pends']]));
+app.get('/api/claim-pends/:id', (req,res) => { const r=db['claim-pends'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/claim-pends', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['claim-pends'].push(r); res.status(201).json(r); });
+app.put('/api/claim-pends/:id', (req,res) => { const i=db['claim-pends'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['claim-pends'][i]={...db['claim-pends'][i],...req.body,updated_at:new Date()}; res.json(db['claim-pends'][i]); });
+app.post('/api/claim-pends/:id/resolve', (req,res) => { const i=db['claim-pends'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['claim-pends'][i]={...db['claim-pends'][i],...req.body,status:'resolved',updated_at:new Date()}; res.json(db['claim-pends'][i]); });
+app.delete('/api/claim-pends/:id', (req,res) => { const i=db['claim-pends'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['claim-pends'].splice(i,1); res.json({success:true}); });
+
+// ─── CLASSES ──────────────────────────────────────────────────────────────────
+db['classes'] = [
+  { id: uuidv4(), class_code: 'CLS-FT', class_name: 'Full-Time Employees', description: 'Standard full-time employees working 30+ hours/week', eligible_plans: 'Bronze HMO, Silver PPO, Gold PPO Elite, Platinum HDHP', waiting_period_days: 30, contribution_override_pct: 75, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), class_code: 'CLS-PT', class_name: 'Part-Time Employees', description: 'Part-time employees working 20-29 hours/week', eligible_plans: 'Bronze HMO, Silver PPO', waiting_period_days: 60, contribution_override_pct: 50, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), class_code: 'CLS-EXEC', class_name: 'Executive / Management', description: 'Director level and above — enhanced benefits', eligible_plans: 'Gold PPO Elite, Platinum HDHP', waiting_period_days: 0, contribution_override_pct: 90, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+  { id: uuidv4(), class_code: 'CLS-CONTR', class_name: 'Contract / Temporary', description: 'Contract workers — limited benefit eligibility', eligible_plans: 'Bronze HMO', waiting_period_days: 90, contribution_override_pct: 25, cobra_eligible: 'no', status: 'active', created_at: new Date() }
+];
+app.get('/api/classes', (req,res) => res.json([...db['classes']]));
+app.get('/api/classes/:id', (req,res) => { const r=db['classes'].find(x=>x.id===req.params.id); r?res.json(r):res.status(404).json({error:'Not found'}); });
+app.post('/api/classes', (req,res) => { const r={id:uuidv4(),...req.body,created_at:new Date()}; db['classes'].push(r); res.status(201).json(r); });
+app.put('/api/classes/:id', (req,res) => { const i=db['classes'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['classes'][i]={...db['classes'][i],...req.body,updated_at:new Date()}; res.json(db['classes'][i]); });
+app.delete('/api/classes/:id', (req,res) => { const i=db['classes'].findIndex(x=>x.id===req.params.id); if(i===-1)return res.status(404).json({error:'Not found'}); db['classes'].splice(i,1); res.json({success:true}); });
+
+// ─── SQL VALIDATOR ────────────────────────────────────────────────────────────
+app.post('/api/sql-validate', (req,res) => {
+  const { sql } = req.body;
+  if (!sql || !sql.trim()) return res.status(400).json({ error: 'No SQL provided' });
+  const upper = sql.toUpperCase().trim();
+  const forbidden = ['DROP ', 'TRUNCATE ', 'DELETE ', 'UPDATE ', 'INSERT ', 'ALTER ', 'CREATE ', 'GRANT ', 'REVOKE '];
+  const blocked = forbidden.find(k => upper.includes(k));
+  if (blocked) return res.json({ valid: false, error: `⛔ ${blocked.trim()} statements are not permitted in the validator` });
+  if (!upper.startsWith('SELECT')) return res.json({ valid: false, error: '⚠ Only SELECT statements are supported' });
+  // Simulate result for demo
+  const tables = { MEMBERS: db.members, PLANS: db.plans, GROUPS: db['groups'] || db.groups, CLAIMS: db.claims, BENEFITS: db.benefits, PROVIDERS: db.providers };
+  const matchedTable = Object.keys(tables).find(t => upper.includes(`FROM ${t}`));
+  if (matchedTable) {
+    const rows = tables[matchedTable].slice(0, 10);
+    return res.json({ valid: true, rows, rowCount: rows.length, message: `✅ Query OK — ${rows.length} rows returned (demo mode)` });
+  }
+  res.json({ valid: true, rows: [], rowCount: 0, message: '✅ Query parsed OK — no matching demo table found' });
+});
+
