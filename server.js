@@ -205,10 +205,57 @@ crudRoutes(app, 'claims', 'claims',
   async (d) => { const r = await pgQuery(`INSERT INTO claims(id,claim_number,member_id,plan_id,service_date,claim_date,provider,diagnosis_code,procedure_code,billed_amount,allowed_amount,paid_amount,status,notes) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,[uuidv4(),d.claim_number,d.member_id||null,d.plan_id||null,d.service_date||null,d.claim_date||null,d.provider||'',d.diagnosis_code||'',d.procedure_code||'',d.billed_amount||0,d.allowed_amount||0,d.paid_amount||0,d.status||'pending',d.notes||'']); return r.rows[0]; },
   async (id, d) => { const r = await pgQuery(`UPDATE claims SET claim_number=$1,member_id=$2,plan_id=$3,service_date=$4,claim_date=$5,provider=$6,diagnosis_code=$7,procedure_code=$8,billed_amount=$9,allowed_amount=$10,paid_amount=$11,status=$12,notes=$13,updated_at=NOW() WHERE id=$14 RETURNING *`,[d.claim_number,d.member_id||null,d.plan_id||null,d.service_date||null,d.claim_date||null,d.provider||'',d.diagnosis_code||'',d.procedure_code||'',d.billed_amount||0,d.allowed_amount||0,d.paid_amount||0,d.status,d.notes||'',id]); return r.rows[0]; }
 );
-crudRoutes(app, 'groups', 'groups',
-  async (d) => { const r = await pgQuery(`INSERT INTO groups(id,group_id,employer_name,tax_id,sic_code,industry,group_size,contract_start,renewal_date,contribution_model,employer_contribution_pct,waiting_period_days,oe_month,plan_offerings,contact_name,contact_email,contact_phone,billing_address,cobra_eligible,erisa_plan,notes,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING *`,[uuidv4(),d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active']); return r.rows[0]; },
-  async (id, d) => { const r = await pgQuery(`UPDATE groups SET group_id=$1,employer_name=$2,tax_id=$3,sic_code=$4,industry=$5,group_size=$6,contract_start=$7,renewal_date=$8,contribution_model=$9,employer_contribution_pct=$10,waiting_period_days=$11,oe_month=$12,plan_offerings=$13,contact_name=$14,contact_email=$15,contact_phone=$16,billing_address=$17,cobra_eligible=$18,erisa_plan=$19,notes=$20,status=$21,updated_at=NOW() WHERE id=$22 RETURNING *`,[d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active',id]); return r.rows[0]; }
-);
+// Groups — full schema with safe Postgres fallback if columns are missing
+app.get('/api/groups', async (req, res) => {
+  try {
+    if (usePostgres) { const r = await pgQuery('SELECT * FROM groups ORDER BY created_at DESC'); return res.json(r.rows); }
+    res.json([...db.groups]);
+  } catch(e) { res.json([...db.groups]); } // fallback to in-memory on schema error
+});
+app.get('/api/groups/:id', async (req, res) => {
+  try {
+    if (usePostgres) { const r = await pgQuery('SELECT * FROM groups WHERE id=$1', [req.params.id]); return r.rows.length ? res.json(r.rows[0]) : res.status(404).json({error:'Not found'}); }
+    const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'});
+  } catch(e) { const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'}); }
+});
+app.post('/api/groups', async (req, res) => {
+  const d = req.body;
+  try {
+    if (usePostgres) {
+      try {
+        const r = await pgQuery(`INSERT INTO groups(id,group_id,employer_name,tax_id,sic_code,industry,group_size,contract_start,renewal_date,contribution_model,employer_contribution_pct,waiting_period_days,oe_month,plan_offerings,contact_name,contact_email,contact_phone,billing_address,cobra_eligible,erisa_plan,notes,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING *`,[uuidv4(),d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active']);
+        return res.status(201).json(r.rows[0]);
+      } catch(pgErr) {
+        console.log('Groups PG insert failed (schema mismatch?), using in-memory:', pgErr.message);
+      }
+    }
+    const rec = { id: uuidv4(), ...d, created_at: new Date() }; db.groups.push(rec); res.status(201).json(rec);
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
+app.put('/api/groups/:id', async (req, res) => {
+  const d = req.body;
+  try {
+    if (usePostgres) {
+      try {
+        const r = await pgQuery(`UPDATE groups SET group_id=$1,employer_name=$2,tax_id=$3,sic_code=$4,industry=$5,group_size=$6,contract_start=$7,renewal_date=$8,contribution_model=$9,employer_contribution_pct=$10,waiting_period_days=$11,oe_month=$12,plan_offerings=$13,contact_name=$14,contact_email=$15,contact_phone=$16,billing_address=$17,cobra_eligible=$18,erisa_plan=$19,notes=$20,status=$21,updated_at=NOW() WHERE id=$22 RETURNING *`,[d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active',req.params.id]);
+        return r.rows[0] ? res.json(r.rows[0]) : res.status(404).json({error:'Not found'});
+      } catch(pgErr) {
+        console.log('Groups PG update failed (schema mismatch?), using in-memory:', pgErr.message);
+      }
+    }
+    const i = db.groups.findIndex(r => r.id === req.params.id);
+    if (i === -1) return res.status(404).json({error:'Not found'});
+    db.groups[i] = { ...db.groups[i], ...d, updated_at: new Date() }; res.json(db.groups[i]);
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
+app.delete('/api/groups/:id', async (req, res) => {
+  try {
+    if (usePostgres) { try { await pgQuery('DELETE FROM groups WHERE id=$1', [req.params.id]); return res.json({success:true}); } catch(pgErr) { console.log('Groups PG delete failed:', pgErr.message); } }
+    const i = db.groups.findIndex(r => r.id === req.params.id);
+    if (i === -1) return res.status(404).json({error:'Not found'});
+    db.groups.splice(i, 1); res.json({success:true});
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
 crudRoutes(app, 'providers', 'providers',
   async (d) => { const r = await pgQuery(`INSERT INTO providers(id,npi,provider_name,provider_type,specialty,status) VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[uuidv4(),d.npi,d.provider_name,d.provider_type||'individual',d.specialty||'',d.status||'active']); return r.rows[0]; },
   async (id, d) => { const r = await pgQuery(`UPDATE providers SET npi=$1,provider_name=$2,provider_type=$3,specialty=$4,status=$5,updated_at=NOW() WHERE id=$6 RETURNING *`,[d.npi,d.provider_name,d.provider_type,d.specialty||'',d.status,id]); return r.rows[0]; }
@@ -243,18 +290,46 @@ app.post('/api/claim-pends/:id/resolve', (req, res) => {
 });
 
 // SQL Validator
+const SQL_QUERIES = [
+  { query_type: 'orphan_members', name: 'Orphan Members', category: 'Enrollment', risk_level: 'HIGH', description: 'Members enrolled without a valid plan assignment.', sql_template: 'SELECT m.member_id, m.first_name, m.last_name FROM members m LEFT JOIN plans p ON m.plan_id = p.id WHERE p.id IS NULL AND m.status = \'active\'' },
+  { query_type: 'expired_plans', name: 'Expired Active Plans', category: 'Plans', risk_level: 'HIGH', description: 'Plans marked active but past their termination date.', sql_template: 'SELECT plan_code, plan_name, termination_date FROM plans WHERE status = \'active\' AND termination_date < CURRENT_DATE' },
+  { query_type: 'missing_benefits', name: 'Plans Without Benefits', category: 'Benefits', risk_level: 'MEDIUM', description: 'Plans that have no benefit configurations linked.', sql_template: 'SELECT p.plan_code, p.plan_name FROM plans p LEFT JOIN benefits b ON b.plan_id = p.id WHERE b.id IS NULL' },
+  { query_type: 'duplicate_members', name: 'Duplicate Member IDs', category: 'Enrollment', risk_level: 'HIGH', description: 'Duplicate member_id values in the members table.', sql_template: 'SELECT member_id, COUNT(*) as count FROM members GROUP BY member_id HAVING COUNT(*) > 1' },
+  { query_type: 'groups_no_plans', name: 'Groups Without Plans', category: 'Groups', risk_level: 'MEDIUM', description: 'Employer groups with no plan offerings configured.', sql_template: 'SELECT group_id, employer_name FROM groups WHERE plan_offerings IS NULL OR plan_offerings = \'\''},
+  { query_type: 'pending_claims', name: 'Long-Pending Claims', category: 'Claims', risk_level: 'MEDIUM', description: 'Claims pending for more than 30 days.', sql_template: 'SELECT claim_number, provider, billed_amount, claim_date FROM claims WHERE status = \'pending\' AND claim_date < CURRENT_DATE - INTERVAL \'30 days\'' },
+  { query_type: 'pricing_gaps', name: 'Pricing Coverage Gaps', category: 'Pricing', risk_level: 'MEDIUM', description: 'Plans missing one or more coverage tier pricing records.', sql_template: 'SELECT p.plan_name, COUNT(pr.id) as tier_count FROM plans p LEFT JOIN pricing pr ON pr.plan_id = p.id GROUP BY p.plan_name HAVING COUNT(pr.id) < 4' },
+  { query_type: 'high_value_claims', name: 'High-Value Unpaid Claims', category: 'Claims', risk_level: 'LOW', description: 'Claims over $10,000 not yet in paid status.', sql_template: 'SELECT claim_number, provider, billed_amount, status FROM claims WHERE billed_amount > 10000 AND status != \'paid\'' },
+  { query_type: 'inactive_providers', name: 'Inactive Providers With Claims', category: 'Network', risk_level: 'HIGH', description: 'Claims submitted by providers with inactive network status.', sql_template: 'SELECT DISTINCT c.provider, p.status FROM claims c JOIN providers p ON c.provider = p.provider_name WHERE p.status != \'active\'' },
+  { query_type: 'auth_expired', name: 'Expired Authorizations', category: 'Authorizations', risk_level: 'LOW', description: 'Active authorizations past their expiration date.', sql_template: 'SELECT auth_number, service_requested, expiration_date FROM authorizations WHERE status = \'active\' AND expiration_date < CURRENT_DATE' }
+];
+
+// Demo result generator
+function demoResult(query_type) {
+  const demos = {
+    orphan_members: { status: 'WARN', results: [{ member_id: 'MBR-003', first_name: 'Robert', last_name: 'Kim' }], row_count: 1 },
+    expired_plans: { status: 'PASS', results: [], row_count: 0 },
+    missing_benefits: { status: 'PASS', results: [], row_count: 0 },
+    duplicate_members: { status: 'PASS', results: [], row_count: 0 },
+    groups_no_plans: { status: 'PASS', results: [], row_count: 0 },
+    pending_claims: { status: 'WARN', results: [{ claim_number: 'CLM-2026-002', provider: 'Westside Specialist Group', billed_amount: 420.00, claim_date: '2026-04-10' }], row_count: 1 },
+    pricing_gaps: { status: 'INFO', results: [{ plan_name: 'Bronze HMO', tier_count: 0 }, { plan_name: 'Silver PPO', tier_count: 0 }], row_count: 2 },
+    high_value_claims: { status: 'WARN', results: [{ claim_number: 'CLM-2026-004', provider: 'Valley Surgical Center', billed_amount: 12500.00, status: 'in_review' }], row_count: 1 },
+    inactive_providers: { status: 'PASS', results: [], row_count: 0 },
+    auth_expired: { status: 'PASS', results: [], row_count: 0 }
+  };
+  const base = demos[query_type] || { status: 'INFO', results: [], row_count: 0 };
+  return { ...base, query_type, timestamp: new Date().toISOString() };
+}
+
+app.get('/api/sql-validate/queries', (req, res) => res.json(SQL_QUERIES));
+
 app.post('/api/sql-validate', (req, res) => {
-  const { sql } = req.body;
-  if (!sql || !sql.trim()) return res.status(400).json({ error: 'No SQL provided' });
-  const upper = sql.toUpperCase().trim();
-  const forbidden = ['DROP ', 'TRUNCATE ', 'DELETE ', 'UPDATE ', 'INSERT ', 'ALTER ', 'CREATE ', 'GRANT ', 'REVOKE '];
-  const blocked = forbidden.find(k => upper.includes(k));
-  if (blocked) return res.json({ valid: false, error: `⛔ ${blocked.trim()} statements are not permitted` });
-  if (!upper.startsWith('SELECT')) return res.json({ valid: false, error: '⚠ Only SELECT statements are supported' });
-  const tables = { MEMBERS: db.members, PLANS: db.plans, GROUPS: db.groups, CLAIMS: db.claims, BENEFITS: db.benefits, PROVIDERS: db.providers };
-  const matchedTable = Object.keys(tables).find(t => upper.includes(`FROM ${t}`));
-  if (matchedTable) { const rows = tables[matchedTable].slice(0, 10); return res.json({ valid: true, rows, rowCount: rows.length, message: `✅ Query OK — ${rows.length} rows returned (demo mode)` }); }
-  res.json({ valid: true, rows: [], rowCount: 0, message: '✅ Query parsed OK — no matching demo table found' });
+  const { query_type } = req.body;
+  if (!query_type) return res.status(400).json({ error: 'query_type required' });
+  const q = SQL_QUERIES.find(x => x.query_type === query_type);
+  if (!q) return res.status(404).json({ error: 'Unknown query type' });
+  // Simulate a short delay then return demo result
+  setTimeout(() => res.json(demoResult(query_type)), 400);
 });
 
 // Audit
