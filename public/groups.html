@@ -441,14 +441,24 @@ var FALLBACK=[
   {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com',city:'Greenville',state:'SC',cobra_eligible:'no',erisa_plan:'yes',contribution_model:'split',waiting_period_days:60}
 ];
 async function load(){
-  try{
-    var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);
-    records=res[0]&&res[0].length?res[0]:FALLBACK;
-    plans=res[1]||[];
-  }catch(e){
-    records=FALLBACK;plans=[];
-  }
+  // Show fallback data immediately so the page is never blank
+  records=FALLBACK;plans=[];
   updateSummary();render();
+  // Then try to load live data in background
+  try{
+    var controller=new AbortController();
+    var timer=setTimeout(function(){controller.abort();},8000);
+    var [gRes,pRes]=await Promise.all([
+      fetch('/api/groups',{signal:controller.signal}).then(function(r){return r.ok?r.json():[];}).catch(function(){return[];}),
+      fetch('/api/plans',{signal:controller.signal}).then(function(r){return r.ok?r.json():[];}).catch(function(){return[];})
+    ]);
+    clearTimeout(timer);
+    if(gRes&&gRes.length){records=gRes;}
+    if(pRes&&pRes.length){plans=pRes;}
+    updateSummary();render();
+  }catch(e){
+    // Already showing fallback, nothing to do
+  }
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
