@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.resolve(__dirname)));
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 // ─── IN-MEMORY STORE ──────────────────────────────────────────────────────────
 const db = {
@@ -348,7 +348,7 @@ app.get('/api/stats', async (req, res) => {
 
 app.get('/api/health', (req,res) => res.json({ status:'ok', mode: usePostgres?'postgres':'memory', uptime:process.uptime() }));
 
-app.get('*', (req,res) => res.sendFile(path.resolve(__dirname,'index.html')));
+app.get('*', (req,res) => res.sendFile(path.resolve(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`🚀 Facets running on port ${PORT}`));
 
@@ -464,5 +464,3 @@ app.post('/api/sql-validate', (req,res) => {
   }
   res.json({ valid: true, rows: [], rowCount: 0, message: '✅ Query parsed OK — no matching demo table found' });
 });
-
-
