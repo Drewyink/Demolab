@@ -14,7 +14,7 @@
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
     .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
-    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);margin:3px;}
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
     .stat-card .s-val{font-size:24px;font-weight:700;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
@@ -87,7 +87,7 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Member ID</th><th>Name</th><th>Employer</th><th>Plan</th><th>Tier</th><th>Eff. Date</th><th>Employment</th><th>DOB</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Member ID</th><th>Name</th><th>Employer</th><th>Plan</th><th>Tier</th><th>Eff. Date</th><th>Type</th><th>DOB</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
@@ -102,7 +102,7 @@
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('personal',this)">Personal Info</button>
-        <button class="modal-tab" onclick="switchTab('address',this)">Residential Address</button>
+        <button class="modal-tab" onclick="switchTab('address',this)">Address</button>
         <button class="modal-tab" onclick="switchTab('employment',this)">Employment</button>
         <button class="modal-tab" onclick="switchTab('coverage',this)">Coverage</button>
         <button class="modal-tab" onclick="switchTab('dependent',this)">Dependents</button>
@@ -110,7 +110,6 @@
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
 
-      <!-- PERSONAL -->
       <div class="tab-panel active" id="tab-personal">
         <div class="form-grid">
           <div class="form-section-label">Member Identification</div>
@@ -120,26 +119,19 @@
           </div>
           <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="f-first_name" placeholder="John"></div>
           <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="f-last_name" placeholder="Smith"></div>
-          <div class="form-group"><label class="form-label">Middle Name</label><input type="text" class="form-input" id="f-middle_name" placeholder="A."></div>
           <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="f-dob"></div>
           <div class="form-group"><label class="form-label">Gender</label>
-            <select class="form-select" id="f-gender">
-              <option value="">— Select —</option><option value="M">Male</option><option value="F">Female</option><option value="X">Non-Binary / Other</option><option value="U">Prefer Not to Say</option>
-            </select>
+            <select class="form-select" id="f-gender"><option value="">— Select —</option><option value="M">Male</option><option value="F">Female</option><option value="X">Non-Binary</option><option value="U">Prefer Not to Say</option></select>
           </div>
-          <div class="form-group"><label class="form-label">SSN (last 4 — test data only)</label><input type="text" class="form-input" id="f-ssn" placeholder="XXXX" maxlength="4"></div>
           <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="f-phone" placeholder="(555) 555-5555"></div>
           <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-input" id="f-email" placeholder="member@example.com"></div>
-          <div class="form-group"><label class="form-label">Preferred Language</label>
-            <select class="form-select" id="f-language"><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="zh">Chinese</option><option value="other">Other</option></select>
-          </div>
+          <div class="form-group"><label class="form-label">SSN — Last 4 (test only)</label><input type="text" class="form-input" id="f-ssn" placeholder="XXXX" maxlength="4"></div>
           <div class="form-group"><label class="form-label">Medicare Eligible</label>
             <select class="form-select" id="f-medicare_eligible"><option value="no">No</option><option value="yes">Yes</option></select>
           </div>
         </div>
       </div>
 
-      <!-- ADDRESS -->
       <div class="tab-panel" id="tab-address">
         <div class="form-grid">
           <div class="form-section-label">Residential Address</div>
@@ -150,25 +142,20 @@
           <div class="form-group"><label class="form-label">Zip Code</label><input type="text" class="form-input" id="f-zip" placeholder="28202"></div>
           <div class="form-group"><label class="form-label">County</label><input type="text" class="form-input" id="f-county" placeholder="Mecklenburg"></div>
           <div class="form-section-label">Mailing Address (if different)</div>
-          <div class="form-group full"><label class="form-label">Mailing Address</label><input type="text" class="form-input" id="f-mailing_address" placeholder="Same as residential or enter mailing address"></div>
+          <div class="form-group full"><label class="form-label">Mailing Address</label><input type="text" class="form-input" id="f-mailing_address" placeholder="Same as residential or enter separate mailing address"></div>
         </div>
       </div>
 
-      <!-- EMPLOYMENT -->
       <div class="tab-panel" id="tab-employment">
         <div class="form-grid">
           <div class="form-section-label">Employer Linkage</div>
           <div class="form-group full"><label class="form-label">Employer / Group</label>
-            <select class="form-select" id="f-group_id">
-              <option value="">-- Select Employer --</option>
-            </select>
-            <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; View Groups / Employers</a></div>
+            <select class="form-select" id="f-group_id"><option value="">-- Select Employer --</option></select>
+            <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; Groups / Employers</a></div>
           </div>
           <div class="form-group full"><label class="form-label">Employee Class</label>
-            <select class="form-select" id="f-class_id">
-              <option value="">-- Select Class --</option>
-            </select>
-            <div style="margin-top:6px"><a class="badge-link" href="classes.html">&#127991; View Classes</a></div>
+            <select class="form-select" id="f-class_id"><option value="">-- Select Class --</option></select>
+            <div style="margin-top:6px"><a class="badge-link" href="classes.html">&#127991; Classes</a></div>
           </div>
           <div class="form-section-label">Employment Details</div>
           <div class="form-group"><label class="form-label">Employment Type</label>
@@ -181,23 +168,18 @@
               <option value="cobra">COBRA Continuant</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Hours Per Week</label><input type="number" class="form-input" id="f-hours_per_week" placeholder="40" min="0" max="168"></div>
+          <div class="form-group"><label class="form-label">Hours Per Week</label><input type="number" class="form-input" id="f-hours_per_week" placeholder="40" min="0"></div>
           <div class="form-group"><label class="form-label">Hire Date</label><input type="date" class="form-input" id="f-hire_date"></div>
-          <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
           <div class="form-group"><label class="form-label">Job Title</label><input type="text" class="form-input" id="f-job_title" placeholder="HR Benefits Manager"></div>
-          <div class="form-group"><label class="form-label">Department</label><input type="text" class="form-input" id="f-department" placeholder="Human Resources"></div>
         </div>
       </div>
 
-      <!-- COVERAGE -->
       <div class="tab-panel" id="tab-coverage">
         <div class="form-grid">
           <div class="form-section-label">Plan Enrollment</div>
           <div class="form-group full"><label class="form-label">Plan</label>
-            <select class="form-select" id="f-plan_id">
-              <option value="">-- Select Plan --</option>
-            </select>
-            <div style="margin-top:6px"><a class="badge-link" href="plans.html">&#128203; View Plans</a></div>
+            <select class="form-select" id="f-plan_id"><option value="">-- Select Plan --</option></select>
+            <div style="margin-top:6px"><a class="badge-link" href="plans.html">&#128203; Plans</a></div>
           </div>
           <div class="form-group"><label class="form-label">Coverage Tier</label>
             <select class="form-select" id="f-enrollment_tier">
@@ -209,29 +191,20 @@
           </div>
           <div class="form-group"><label class="form-label">Coverage Effective Date</label><input type="date" class="form-input" id="f-enrollment_date"></div>
           <div class="form-group"><label class="form-label">Coverage Term Date</label><input type="date" class="form-input" id="f-coverage_term_date"></div>
-          <div class="form-group"><label class="form-label">Subscriber Relationship</label>
-            <select class="form-select" id="f-subscriber_relationship">
-              <option value="self">Self — Subscriber</option>
-              <option value="spouse">Spouse / Domestic Partner</option>
-              <option value="child">Child / Dependent</option>
-            </select>
-          </div>
           <div class="form-group"><label class="form-label">PCP Name</label><input type="text" class="form-input" id="f-pcp" placeholder="Dr. Sarah Patel"></div>
-          <div class="form-section-label">COB — Coordination of Benefits</div>
           <div class="form-group"><label class="form-label">Other Health Insurance?</label>
             <select class="form-select" id="f-has_ohi"><option value="no">No</option><option value="yes">Yes — OHI on file</option></select>
           </div>
-          <div class="form-group"><label class="form-label">COB Order (if OHI)</label>
+          <div class="form-group"><label class="form-label">COB Order</label>
             <select class="form-select" id="f-cob_order"><option value="primary">Primary — Order 1</option><option value="secondary">Secondary — Order 2</option></select>
           </div>
-          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Enrollment notes, special handling..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Enrollment notes..."></textarea></div>
         </div>
       </div>
 
-      <!-- DEPENDENTS -->
       <div class="tab-panel" id="tab-dependent">
         <div style="padding:10px 0 20px">
-          <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Dependents are linked to this member record. Add each dependent below with their relationship and date of birth.</p>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Add dependents covered under this member's plan. Each dependent must have a name, relationship, and date of birth.</p>
           <div id="dependent-list" style="margin-bottom:16px"></div>
           <button class="btn btn-secondary" type="button" onclick="addDependent()">+ Add Dependent</button>
         </div>
@@ -241,10 +214,69 @@
   </div>
 </div>
 
-<script src="app.js"></script>
 <script>
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+async function apiFetch(url){
+  var res=await fetch(url);
+  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
+  return res.json();
+}
+
+function genCode(prefix){
+  return prefix+'-'+String(Date.now()).slice(-6);
+}
+
+function badge(text,type){
+  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
+    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
+    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
+    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
+    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+}
+
+function toast(msg,type){
+  var existing=document.querySelectorAll('.toast-msg');
+  existing.forEach(function(el){el.remove();});
+  var div=document.createElement('div');
+  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
+  var c=colors[type]||'#60a5fa';
+  div.className='toast-msg';
+  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
+  div.textContent=msg;
+  document.body.appendChild(div);
+  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+}
+
+function confirmDialog(msg){
+  return new Promise(function(resolve){
+    var overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
+    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
+  });
+}
+
 var records=[],groups=[],plans=[],classes=[],statusFilter='all',dependents=[];
-setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+var FALLBACK_GROUPS=[{id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network'},{id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital'},{id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group'}];
+var FALLBACK_PLANS=[{id:'p1',plan_code:'ECL-HMO-BRZ',plan_name:'EchoLink HMO Bronze'},{id:'p2',plan_code:'ECL-PPO-SLV',plan_name:'EchoLink PPO Silver'},{id:'p3',plan_code:'ECL-CDH-1500',plan_name:'EchoLink HDHP + HSA'},{id:'p4',plan_code:'ECL-DEN-01',plan_name:'EchoLink Dental Essentials'}];
+var FALLBACK_CLASSES=[{id:'c1',class_code:'CLS-FULL',class_name:'Full-Time Employee',group_id:'g1'},{id:'c2',class_code:'CLS-PART',class_name:'Part-Time Employee',group_id:'g1'},{id:'c3',class_code:'CLS-EXEC',class_name:'Executive',group_id:'g1'},{id:'c4',class_code:'CLS-UNION',class_name:'Union Member',group_id:'g1'}];
+var FALLBACK_MEMBERS=[
+  {id:'m1',member_id:'ECL-MBR-001',first_name:'Carlos',last_name:'Mendez',group_id:'g1',plan_id:'p1',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1985-03-15',status:'active'},
+  {id:'m2',member_id:'ECL-MBR-002',first_name:'Priya',last_name:'Shah',group_id:'g1',plan_id:'p1',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1990-07-22',status:'active'},
+  {id:'m3',member_id:'ECL-MBR-003',first_name:'James',last_name:"O'Brien",group_id:'g1',plan_id:'p2',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'executive',dob:'1978-11-04',status:'active'},
+  {id:'m4',member_id:'ECL-MBR-004',first_name:'Rachel',last_name:'Kim',group_id:'g1',plan_id:'p2',enrollment_tier:'employee_spouse',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1992-05-18',status:'active'},
+  {id:'m5',member_id:'ECL-MBR-005',first_name:'David',last_name:'Torres',group_id:'g1',plan_id:'p3',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1982-08-20',status:'active'},
+  {id:'m6',member_id:'ECL-MBR-006',first_name:'Sandra',last_name:'Wu',group_id:'g1',plan_id:'p3',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1988-12-11',status:'active'},
+  {id:'m7',member_id:'ECL-MBR-007',first_name:'Michael',last_name:'Grant',group_id:'g1',plan_id:'p4',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1975-04-03',status:'active'},
+  {id:'m8',member_id:'ECL-MBR-008',first_name:'Amy',last_name:'Chen',group_id:'g1',plan_id:'p4',enrollment_tier:'employee_child',enrollment_date:'2026-01-01',employment_type:'part_time',dob:'1998-09-17',status:'active'}
+];
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
@@ -258,10 +290,16 @@ function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab'
 function etLabel(v){return{full_time:'Full-Time',part_time:'Part-Time',executive:'Executive',union:'Union',retiree:'Retiree',cobra:'COBRA'}[v]||v||'—';}
 async function load(){
   try{
-    var res=await Promise.all([apiFetch('/api/members'),apiFetch('/api/groups'),apiFetch('/api/plans'),apiFetch('/api/classes')]);
-    records=res[0];groups=res[1];plans=res[2];classes=res[3];
-    updateStats();render();
-  }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+    groups=(await apiFetch('/api/groups').catch(function(){return [];}));
+    plans=(await apiFetch('/api/plans').catch(function(){return [];}));
+    classes=(await apiFetch('/api/classes').catch(function(){return [];}));
+    records=(await apiFetch('/api/members').catch(function(){return [];}));
+    if(!groups.length)groups=FALLBACK_GROUPS;
+    if(!plans.length)plans=FALLBACK_PLANS;
+    if(!classes.length)classes=FALLBACK_CLASSES;
+    if(!records.length)records=FALLBACK_MEMBERS;
+  }catch(e){groups=FALLBACK_GROUPS;plans=FALLBACK_PLANS;classes=FALLBACK_CLASSES;records=FALLBACK_MEMBERS;}
+  updateStats();render();
 }
 function updateStats(){
   document.getElementById('s-total').textContent=records.length;
@@ -286,7 +324,7 @@ function loadClassesForGroup(gid){
   classes.filter(function(c){return!gid||c.group_id===gid;}).forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.class_code+' — '+c.class_name;sel.appendChild(o);});
 }
 function groupName(id){var g=groups.find(function(x){return x.id===id;});return g?g.employer_name:'—';}
-function planName(id){var p=plans.find(function(x){return x.id===id;});return p?'<span style="font-family:monospace;font-size:11px;color:var(--accent)">'+p.plan_code+'</span>':'<span style="color:var(--text-secondary)">—</span>';}
+function planCode(id){var p=plans.find(function(x){return x.id===id;});return p?'<span style="font-family:monospace;font-size:11px;color:var(--accent)">'+p.plan_code+'</span>':'<span style="color:var(--text-secondary)">—</span>';}
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
@@ -299,31 +337,25 @@ function render(){
     '<td class="mono" style="color:var(--accent);font-size:11px">'+m.member_id+'</td>'+
     '<td><strong>'+m.first_name+' '+m.last_name+'</strong></td>'+
     '<td style="font-size:12px">'+groupName(m.group_id)+'</td>'+
-    '<td>'+planName(m.plan_id)+'</td>'+
+    '<td>'+planCode(m.plan_id)+'</td>'+
     '<td style="font-size:11px">'+(m.enrollment_tier||'—')+'</td>'+
     '<td class="mono" style="font-size:11px">'+(m.enrollment_date?m.enrollment_date.split('T')[0]:'—')+'</td>'+
     '<td style="font-size:12px">'+etLabel(m.employment_type)+'</td>'+
     '<td class="mono" style="font-size:11px">'+(m.dob?m.dob.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(m.status,m.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+m.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+m.id+'')">Del</button></div></td>'+
-    '</tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+m.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+m.id+'')">Del</button></div></td></tr>';
   }).join('');
 }
-function addDependent(){
-  var idx=dependents.length;
-  dependents.push({name:'',relationship:'spouse',dob:''});
-  renderDependents();
-}
+function addDependent(){dependents.push({name:'',relationship:'spouse',dob:''});renderDependents();}
 function renderDependents(){
   var div=document.getElementById('dependent-list');
   if(!dependents.length){div.innerHTML='<p style="font-size:12px;color:var(--text-secondary)">No dependents added yet.</p>';return;}
   div.innerHTML=dependents.map(function(d,i){
     return'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px">'+
     '<div><label class="form-label">Full Name</label><input type="text" class="form-input" value="'+d.name+'" oninput="dependents['+i+'].name=this.value" placeholder="Jane Smith"></div>'+
-    '<div><label class="form-label">Relationship</label><select class="form-select" onchange="dependents['+i+'].relationship=this.value"><option value="spouse"'+(d.relationship==='spouse'?' selected':'')+'>Spouse / Domestic Partner</option><option value="child"'+(d.relationship==='child'?' selected':'')+'>Child</option><option value="other"'+(d.relationship==='other'?' selected':'')+'>Other Dependent</option></select></div>'+
+    '<div><label class="form-label">Relationship</label><select class="form-select" onchange="dependents['+i+'].relationship=this.value"><option value="spouse"'+(d.relationship==='spouse'?' selected':'')+'>Spouse</option><option value="child"'+(d.relationship==='child'?' selected':'')+'>Child</option><option value="other"'+(d.relationship==='other'?' selected':'')+'>Other</option></select></div>'+
     '<div><label class="form-label">Date of Birth</label><input type="date" class="form-input" value="'+(d.dob||'')+'" oninput="dependents['+i+'].dob=this.value"></div>'+
-    '<div><button class="btn btn-sm btn-danger" onclick="dependents.splice('+i+',1);renderDependents()">Remove</button></div>'+
-    '</div>';
+    '<div><button class="btn btn-sm btn-danger" onclick="dependents.splice('+i+',1);renderDependents()">Remove</button></div></div>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -335,21 +367,21 @@ function openModal(id){
   document.getElementById('modal-title').textContent=d?'Edit Member':'New Member';
   populateGroupDropdown();populatePlanDropdown();
   sv('f-id',d?d.id:'');sv('f-member_id',d?d.member_id:genCode('MBR'));sv('f-status',d?d.status:'active');
-  sv('f-first_name',d?d.first_name:'');sv('f-last_name',d?d.last_name:'');sv('f-middle_name',d?d.middle_name:'');
-  sv('f-dob',d&&d.dob?d.dob.split('T')[0]:'');sv('f-gender',d?d.gender:'');sv('f-ssn',d?d.ssn:'');
-  sv('f-phone',d?d.phone:'');sv('f-email',d?d.email:'');sv('f-language',d?d.language:'en');
+  sv('f-first_name',d?d.first_name:'');sv('f-last_name',d?d.last_name:'');
+  sv('f-dob',d&&d.dob?d.dob.split('T')[0]:'');sv('f-gender',d?d.gender:'');
+  sv('f-phone',d?d.phone:'');sv('f-email',d?d.email:'');sv('f-ssn',d?d.ssn:'');
   sv('f-medicare_eligible',d?d.medicare_eligible:'no');
   sv('f-street_address',d?d.street_address:'');sv('f-apt',d?d.apt:'');sv('f-city',d?d.city:'');
-  sv('f-state',d?d.state:'');sv('f-zip',d?d.zip:'');sv('f-county',d?d.county:'');sv('f-mailing_address',d?d.mailing_address:'');
+  sv('f-state',d?d.state:'');sv('f-zip',d?d.zip:'');sv('f-county',d?d.county:'');
+  sv('f-mailing_address',d?d.mailing_address:'');
   sv('f-group_id',d?d.group_id:'');loadClassesForGroup(d?d.group_id:'');sv('f-class_id',d?d.class_id:'');
   sv('f-employment_type',d?d.employment_type:'full_time');sv('f-hours_per_week',d?d.hours_per_week:'40');
-  sv('f-hire_date',d&&d.hire_date?d.hire_date.split('T')[0]:'');sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-job_title',d?d.job_title:'');sv('f-department',d?d.department:'');
+  sv('f-hire_date',d&&d.hire_date?d.hire_date.split('T')[0]:'');sv('f-job_title',d?d.job_title:'');
   sv('f-plan_id',d?d.plan_id:'');sv('f-enrollment_tier',d?d.enrollment_tier:'employee_only');
   sv('f-enrollment_date',d&&d.enrollment_date?d.enrollment_date.split('T')[0]:'');
   sv('f-coverage_term_date',d&&d.coverage_term_date?d.coverage_term_date.split('T')[0]:'');
-  sv('f-subscriber_relationship',d?d.subscriber_relationship:'self');sv('f-pcp',d?d.pcp:'');
-  sv('f-has_ohi',d?d.has_ohi:'no');sv('f-cob_order',d?d.cob_order:'primary');sv('f-notes',d?d.notes:'');
+  sv('f-pcp',d?d.pcp:'');sv('f-has_ohi',d?d.has_ohi:'no');sv('f-cob_order',d?d.cob_order:'primary');
+  sv('f-notes',d?d.notes:'');
   renderDependents();
   switchTab('personal',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
@@ -360,12 +392,23 @@ async function save(){
   var fn=gv('f-first_name').trim(),ln=gv('f-last_name').trim();
   if(!fn||!ln){errEl.textContent='First Name and Last Name are required.';errEl.style.display='block';return;}
   var id=gv('f-id');
-  var body={member_id:gv('f-member_id'),first_name:fn,last_name:ln,middle_name:gv('f-middle_name'),dob:gv('f-dob')||null,gender:gv('f-gender'),ssn:gv('f-ssn'),phone:gv('f-phone'),email:gv('f-email'),language:gv('f-language'),medicare_eligible:gv('f-medicare_eligible'),street_address:gv('f-street_address'),apt:gv('f-apt'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),county:gv('f-county'),mailing_address:gv('f-mailing_address'),group_id:gv('f-group_id'),class_id:gv('f-class_id'),employment_type:gv('f-employment_type'),hours_per_week:parseInt(gv('f-hours_per_week'))||0,hire_date:gv('f-hire_date')||null,termination_date:gv('f-termination_date')||null,job_title:gv('f-job_title'),department:gv('f-department'),plan_id:gv('f-plan_id')||null,enrollment_tier:gv('f-enrollment_tier'),enrollment_date:gv('f-enrollment_date')||null,coverage_term_date:gv('f-coverage_term_date')||null,subscriber_relationship:gv('f-subscriber_relationship'),pcp:gv('f-pcp'),has_ohi:gv('f-has_ohi'),cob_order:gv('f-cob_order'),notes:gv('f-notes'),status:gv('f-status'),dependents:dependents};
+  var body={member_id:gv('f-member_id'),first_name:fn,last_name:ln,dob:gv('f-dob')||null,gender:gv('f-gender'),phone:gv('f-phone'),email:gv('f-email'),ssn:gv('f-ssn'),medicare_eligible:gv('f-medicare_eligible'),street_address:gv('f-street_address'),apt:gv('f-apt'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),county:gv('f-county'),mailing_address:gv('f-mailing_address'),group_id:gv('f-group_id'),class_id:gv('f-class_id'),employment_type:gv('f-employment_type'),hours_per_week:parseInt(gv('f-hours_per_week'))||0,hire_date:gv('f-hire_date')||null,job_title:gv('f-job_title'),plan_id:gv('f-plan_id')||null,enrollment_tier:gv('f-enrollment_tier'),enrollment_date:gv('f-enrollment_date')||null,coverage_term_date:gv('f-coverage_term_date')||null,pcp:gv('f-pcp'),has_ohi:gv('f-has_ohi'),cob_order:gv('f-cob_order'),notes:gv('f-notes'),status:gv('f-status'),dependents:dependents};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
   closeModal();toast(id?'Saving...':'Creating member...','info');
-  try{var res=await fetch(id?'/api/members/'+id:'/api/members',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Enrolled ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
+  try{
+    var res=await fetch(id?'/api/members/'+id:'/api/members',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    toast(id?'Updated ✓':'Enrolled ✓','success');
+    var fresh=await apiFetch('/api/members').catch(function(){return records;});
+    if(fresh.length)records=fresh;updateStats();render();
+  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Remove this member?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/members/'+id,{method:'DELETE'});toast('Removed','info');await load();}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
+async function del(id){
+  if(!await confirmDialog('Remove this member?'))return;
+  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();
+  try{await fetch('/api/members/'+id,{method:'DELETE'});toast('Removed','info');}
+  catch(e){records=bk;updateStats();render();toast('Delete failed','error');}
+}
 load();
 </script></body></html>
+
