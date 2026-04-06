@@ -267,7 +267,7 @@ function render(){
     '<td class="mono">'+(c.contribution_override_pct?c.contribution_override_pct+'%':'—')+'</td>'+
     '<td>'+badge(c.cobra_eligible==='yes'?'Yes':'No',c.cobra_eligible==='yes'?'yes':'no')+'</td>'+
     '<td>'+badge(c.status,c.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+c.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+c.id+'')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + c.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + c.id + '\')" >Del</button></div></td></tr>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -312,5 +312,6 @@ async function del(id){
 }
 load();
 </script></body></html>
+
 
 
