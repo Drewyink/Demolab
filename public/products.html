@@ -1,203 +1,202 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Products</title>
+  <title>EchoLink Solutions — Configuration → Products</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+
+    :root{--overlay-z:99999;}
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.8)!important;z-index:var(--overlay-z)!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;}
-    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
-    .modal-tab{padding:9px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal{max-height:92vh;overflow-y:auto;width:860px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;flex-wrap:wrap;}
+    .modal-tab{padding:11px 16px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;letter-spacing:.02em;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
-    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);margin:3px;}
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
-    .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
-    .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
-    .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
+    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
+    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:3px;}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
     .toggle-switch input{opacity:0;width:0;height:0;}
-    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:22px;cursor:pointer;transition:.2s;}
-    .toggle-slider:before{content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
     .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
-    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
+    .page-title{font-size:26px!important;font-weight:800!important;}
+    .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
+    .card-title{font-size:17px!important;font-weight:800!important;}
+    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table td{font-size:14px!important;}
+    .nav-item{font-size:14px!important;font-weight:600!important;}
+    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .sidebar-logo .logo-sub{font-size:11px!important;font-weight:600!important;}
+    .modal-title{font-size:20px!important;font-weight:800!important;}
+    .btn{font-size:13px!important;font-weight:700!important;}
+    .logo-icon{font-size:14px!important;font-weight:900!important;width:36px!important;height:36px!important;}
+
+
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <div class="sidebar-logo">
+      <div class="logo-icon">EL</div>
+      <div>
+        <div class="logo-text">EchoLink Solutions</div>
+        <div class="logo-sub">Facets Sandbox</div>
+      </div>
+    </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
-      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <a class="nav-item " href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
-      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
-      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <a class="nav-item " href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item " href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
       <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item " href="members.html"><span class="nav-icon">👤</span> Members</a>
       <a class="nav-item active" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
-      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
-      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <a class="nav-item " href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item " href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item " href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item " href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
       <div class="nav-section-label">Dental</div>
-      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <a class="nav-item " href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
-      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
-      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <a class="nav-item " href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item " href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item " href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item " href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
       <div class="nav-section-label">Government Programs</div>
-      <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item " href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
-      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
-      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item " href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item " href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item " href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item " href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item " href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">EchoLink · v2.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration &rarr; <span>Products</span></span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Configuration → Products</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Product Catalog</div><div class="page-subtitle">MEDICAL &middot; DENTAL &middot; VISION &middot; PHARMACY &middot; BEHAVIORAL HEALTH</div></div>
+        <div><div class="page-title">Product Catalog</div><div class="page-subtitle">MEDICAL · DENTAL · VISION · PHARMACY · BEHAVIORAL HEALTH</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Product</button>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">&#128230; Products <span class="count-label" id="count"></span></span>
+          <span class="card-title">📦 Products <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">&#128270;</span><input type="text" placeholder="Search products..." id="search-input"></div>
-            <div class="filter-tabs">
-              <button class="filter-tab active" id="tab-all">All</button>
-              <button class="filter-tab" id="tab-active">Active</button>
-              <button class="filter-tab" id="tab-inactive">Inactive</button>
-            </div>
+            <div class="search-bar" style="margin:0;width:240px"><span class="search-icon">🔎</span><input type="text" placeholder="Search products..." id="search-input" style="font-size:14px"></div>
+            <div class="filter-tabs"><button class="filter-tab active" id="tab-all">All</button><button class="filter-tab" id="tab-active">Active</button><button class="filter-tab" id="tab-inactive">Inactive</button></div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Product Code</th><th>Product Name</th><th>Type</th><th>LOB</th><th>Market</th><th>Funding</th><th>Network ID</th><th>Effective</th><th>Term</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr><th>Product Code</th><th>Product Name</th><th>Type</th><th>LOB</th><th>Market</th><th>Funding</th><th>Network ID</th><th>PCP Req?</th><th>Referral?</th><th>Effective</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-
 <div id="overlay">
-  <div class="modal" style="width:800px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Product</span><button class="modal-close" id="btn-x">&#10005;</button></div>
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Product</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('general',this)">General</button>
-        <button class="modal-tab" onclick="switchTab('details',this)">Product Details</button>
-        <button class="modal-tab" onclick="switchTab('network',this)">Network Setup</button>
-        <button class="modal-tab" onclick="switchTab('compliance',this)">Compliance</button>
+        <button class="modal-tab" onclick="switchTab('details',this)">✅ Product Details</button>
+        <button class="modal-tab" onclick="switchTab('network',this)">🏥 Network Setup</button>
+        <button class="modal-tab" onclick="switchTab('compliance',this)">🔐 Compliance</button>
       </div>
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
-
       <div class="tab-panel active" id="tab-general">
         <div class="form-grid">
-          <div class="form-section-label">Product Identification</div>
+          <div class="fsl">Product Identification</div>
           <div class="form-group"><label class="form-label">Product Code *</label><input type="text" class="form-input" id="f-product_code" placeholder="ECL-HMO"></div>
           <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="discontinued">Discontinued</option></select>
-          </div>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="discontinued">Discontinued</option></select></div>
           <div class="form-group full"><label class="form-label">Product Name *</label><input type="text" class="form-input" id="f-product_name" placeholder="EchoLink HMO Clinic Select"></div>
           <div class="form-group"><label class="form-label">Product Type</label>
             <select class="form-select" id="f-product_type">
-              <option value="medical">Medical</option><option value="dental">Dental</option>
-              <option value="vision">Vision</option><option value="pharmacy">Pharmacy</option>
-              <option value="behavioral_health">Behavioral Health</option><option value="hdhp">HDHP / CDH</option>
-            </select>
-          </div>
+              <option value="medical">Medical</option><option value="dental">Dental</option><option value="vision">Vision</option>
+              <option value="pharmacy">Pharmacy</option><option value="behavioral_health">Behavioral Health</option><option value="hdhp">HDHP / CDH</option>
+            </select></div>
           <div class="form-group"><label class="form-label">Plan Sub-Type</label>
             <select class="form-select" id="f-plan_subtype">
-              <option value="hmo">HMO</option><option value="ppo">PPO</option>
-              <option value="epo">EPO</option><option value="pos">POS</option>
-              <option value="hdhp">HDHP</option><option value="cdh">CDH</option>
+              <option value="hmo">HMO</option><option value="ppo">PPO</option><option value="epo">EPO</option>
+              <option value="pos">POS</option><option value="hdhp">HDHP</option><option value="cdh">CDH</option>
               <option value="dental_ppo">Dental PPO</option><option value="dental_hmo">Dental HMO</option>
-            </select>
-          </div>
+            </select></div>
           <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-description" rows="2" placeholder="Brief product description..."></textarea></div>
+          <div style="grid-column:1/-1;margin-top:8px">
+            <a class="badge-link" href="plans.html">📋 Plans linked to this product</a>
+          </div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-details">
         <div class="form-grid">
-          <div class="form-section-label">&#9989; Product Details (Must Add)</div>
+          <div class="fsl">✅ Product Details — Must Complete</div>
           <div class="form-group"><label class="form-label">Line of Business (LOB)</label>
             <select class="form-select" id="f-lob">
-              <option value="commercial">Commercial</option>
-              <option value="medicare">Medicare</option>
-              <option value="medicaid">Medicaid</option>
-              <option value="marketplace">ACA Marketplace</option>
-              <option value="chip">CHIP</option>
-              <option value="fehb">Federal Employee (FEHB)</option>
-            </select>
-          </div>
+              <option value="commercial">Commercial</option><option value="medicare">Medicare</option>
+              <option value="medicaid">Medicaid</option><option value="marketplace">ACA Marketplace</option>
+              <option value="chip">CHIP</option><option value="fehb">Federal Employee (FEHB)</option>
+            </select></div>
           <div class="form-group"><label class="form-label">Market Segment</label>
             <select class="form-select" id="f-market_segment">
-              <option value="group">Group</option>
-              <option value="individual">Individual</option>
-              <option value="large_group">Large Group (51+)</option>
-              <option value="small_group">Small Group (1-50)</option>
+              <option value="group">Group</option><option value="individual">Individual</option>
+              <option value="large_group">Large Group (51+)</option><option value="small_group">Small Group (1–50)</option>
               <option value="government">Government</option>
-            </select>
-          </div>
+            </select></div>
           <div class="form-group"><label class="form-label">Funding Type</label>
             <select class="form-select" id="f-funding_type">
-              <option value="fully_insured">Fully Insured</option>
-              <option value="self_funded">Self-Funded</option>
-              <option value="level_funded">Level-Funded</option>
-              <option value="mec">Minimum Essential Coverage (MEC)</option>
-              <option value="capitation">Capitation</option>
-            </select>
-          </div>
+              <option value="fully_insured">Fully Insured</option><option value="self_funded">Self-Funded</option>
+              <option value="level_funded">Level-Funded</option><option value="mec">MEC</option><option value="capitation">Capitation</option>
+            </select></div>
           <div class="form-group"><label class="form-label">Carrier Code</label><input type="text" class="form-input" id="f-carrier_code" placeholder="ECL"></div>
           <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
           <div class="form-group"><label class="form-label">Term Date</label><input type="date" class="form-input" id="f-termination_date"></div>
           <div class="form-group"><label class="form-label">State of Issue</label><input type="text" class="form-input" id="f-state_of_issue" placeholder="NC, SC"></div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-network">
         <div class="form-grid">
-          <div class="form-section-label">&#127973; Network Setup</div>
+          <div class="fsl">🏥 Network Setup</div>
           <div class="form-group"><label class="form-label">Network ID</label><input type="text" class="form-input" id="f-network_id" placeholder="NET-HMO-001"></div>
-          <div class="form-group"><label class="form-label">In / Out of Network Rules</label>
+          <div class="form-group"><label class="form-label">In / Out-of-Network Rules</label>
             <select class="form-select" id="f-network">
-              <option value="inn_only">In-Network Only</option>
-              <option value="inn_oon">In-Network + Out-of-Network</option>
-              <option value="dental_ppo">Dental PPO</option>
-              <option value="national">National Network</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Service Area / Region</label><input type="text" class="form-input" id="f-service_area" placeholder="North Carolina, South Carolina"></div>
+              <option value="inn_only">In-Network Only</option><option value="inn_oon">In-Network + Out-of-Network</option>
+              <option value="dental_ppo">Dental PPO</option><option value="national">National Network</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Service Area / Region</label><input type="text" class="form-input" id="f-service_area" placeholder="NC, SC"></div>
           <div class="form-group"><label class="form-label">Network Tier</label>
             <select class="form-select" id="f-network_tier">
               <option value="standard">Standard</option><option value="preferred">Preferred</option>
               <option value="narrow">Narrow / Select</option><option value="broad">Broad</option>
-            </select>
-          </div>
+            </select></div>
           <div class="toggle-row">
             <div><div class="toggle-label">PCP Required (Yes / No)</div><div class="toggle-sub">Members must designate a Primary Care Physician</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-pcp_required"><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">Referral Rules — Referral Required</div><div class="toggle-sub">PCP must refer before specialist visits are covered</div></div>
+            <div><div class="toggle-label">Referral Required for Specialists</div><div class="toggle-sub">PCP referral required before specialist visits are covered</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-referral_required"><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
@@ -208,18 +207,17 @@
             <div><div class="toggle-label">Telehealth Covered</div><div class="toggle-sub">Virtual / telehealth visits covered under this product</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-telehealth" checked><span class="toggle-slider"></span></label>
           </div>
-          <div style="grid-column:1/-1;margin-top:12px">
-            <a class="badge-link" href="providers.html">&#127973; Providers</a>
-            <a class="badge-link" href="provider-contracts.html">&#128220; Provider Contracts</a>
-            <a class="badge-link" href="fee-tables.html">&#128202; Fee Tables</a>
-            <a class="badge-link" href="networx.html">&#9881; NetworX Pricing</a>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="providers.html">🏥 Providers</a>
+            <a class="badge-link" href="provider-contracts.html">📜 Provider Contracts</a>
+            <a class="badge-link" href="fee-tables.html">📊 Fee Tables</a>
+            <a class="badge-link" href="networx.html">⚙️ NetworX Pricing</a>
           </div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-compliance">
         <div class="form-grid">
-          <div class="form-section-label">&#128272; Regulatory / Compliance</div>
+          <div class="fsl">🔐 Regulatory / Compliance</div>
           <div class="toggle-row">
             <div><div class="toggle-label">ACA Non-Grandfathered</div><div class="toggle-sub">Complies with all ACA requirements including preventive at $0</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-aca_compliant" checked><span class="toggle-slider"></span></label>
@@ -233,15 +231,15 @@
             <label class="toggle-switch"><input type="checkbox" id="f-mhpaea" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">HSA / CDH Eligible</div><div class="toggle-sub">IRS-qualified HDHP — members may contribute to an HSA</div></div>
+            <div><div class="toggle-label">HSA / CDH Eligible</div><div class="toggle-sub">IRS-qualified HDHP — members may open a Health Savings Account</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-hsa_eligible"><span class="toggle-slider"></span></label>
           </div>
-          <div style="grid-column:1/-1;margin-top:12px">
-            <a class="badge-link" href="programs.html">&#127963; Medicaid / Medicare</a>
-            <a class="badge-link" href="claims.html">&#128196; Claims</a>
-            <a class="badge-link" href="authorizations.html">&#128272; Authorizations</a>
-            <a class="badge-link" href="sql-validator.html">&#128302; SQL Validator</a>
-            <a class="badge-link" href="audit.html">&#128269; Audit Log</a>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="programs.html">🏛️ Medicaid / Medicare Programs</a>
+            <a class="badge-link" href="claims.html">📄 Claims</a>
+            <a class="badge-link" href="authorizations.html">🔐 Authorizations</a>
+            <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
+            <a class="badge-link" href="audit.html">🔍 Audit Log</a>
           </div>
           <div class="form-group full"><label class="form-label">Compliance Notes</label><textarea class="form-textarea" id="f-compliance_notes" rows="2" placeholder="State mandates, CMS contract ID, special handling..."></textarea></div>
         </div>
@@ -250,62 +248,48 @@
     <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Product</button></div>
   </div>
 </div>
-
 <script>
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
-async function apiFetch(url){
-  var res=await fetch(url);
-  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
-  return res.json();
-}
-
-function genCode(prefix){
-  return prefix+'-'+String(Date.now()).slice(-6);
-}
-
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
 function badge(text,type){
-  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
-    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
-    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
-    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
-    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
-  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
-  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+  var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',terminated:'#ff4757',
+    hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',dental:'#e879f9',
+    epo:'#fb923c',pos:'#f472b6',commercial:'#60a5fa',medicare:'#34d399',medicaid:'#f59e0b',
+    yes:'#2ed573',no:'#ff4757',full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=m[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
 }
-
 function toast(msg,type){
-  var existing=document.querySelectorAll('.toast-msg');
-  existing.forEach(function(el){el.remove();});
-  var div=document.createElement('div');
-  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
-  var c=colors[type]||'#60a5fa';
-  div.className='toast-msg';
-  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
-  div.textContent=msg;
-  document.body.appendChild(div);
-  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+  document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});
+  var d=document.createElement('div');
+  var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';
+  d.className='toast-msg';
+  d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';
+  d.textContent=msg;document.body.appendChild(d);
+  setTimeout(function(){if(d.parentNode)d.remove();},3500);
 }
-
 function confirmDialog(msg){
   return new Promise(function(resolve){
-    var overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
-    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
-    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};
+    ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};
   });
 }
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
 
 var records=[],statusFilter='all';
-var FALLBACK=[
-  {id:'p1',product_code:'ECL-HMO',product_name:'EchoLink HMO Clinic Select',product_type:'medical',plan_subtype:'hmo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-HMO-001',network:'inn_only',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:true,referral_required:true,oon_emergency:true,aca_compliant:true,status:'active'},
-  {id:'p2',product_code:'ECL-PPO',product_name:'EchoLink PPO Open Access',product_type:'medical',plan_subtype:'ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:false,referral_required:false,oon_emergency:true,aca_compliant:true,status:'active'},
-  {id:'p3',product_code:'ECL-CDH',product_name:'EchoLink CDH / HDHP + HSA',product_type:'hdhp',plan_subtype:'cdh',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:false,referral_required:false,hsa_eligible:true,aca_compliant:true,status:'active'},
-  {id:'p4',product_code:'ECL-DEN',product_name:'EchoLink Dental Essentials',product_type:'dental',plan_subtype:'dental_ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-DEN-001',network:'dental_ppo',effective_date:'2026-01-01',termination_date:'2026-12-31',aca_compliant:true,status:'active'}
+var FB_PRODUCTS=[
+  {id:'prod1',product_code:'ECL-HMO',product_name:'EchoLink HMO Clinic Select',product_type:'medical',plan_subtype:'hmo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-HMO-001',network:'inn_only',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:true,referral_required:true,aca_compliant:true,status:'active'},
+  {id:'prod2',product_code:'ECL-PPO',product_name:'EchoLink PPO Open Access',product_type:'medical',plan_subtype:'ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:false,referral_required:false,aca_compliant:true,status:'active'},
+  {id:'prod3',product_code:'ECL-CDH',product_name:'EchoLink CDH / HDHP + HSA',product_type:'hdhp',plan_subtype:'cdh',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',hsa_eligible:true,aca_compliant:true,status:'active'},
+  {id:'prod4',product_code:'ECL-DEN',product_name:'EchoLink Dental Essentials',product_type:'dental',plan_subtype:'dental_ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-DEN-001',network:'dental_ppo',effective_date:'2026-01-01',termination_date:'2026-12-31',aca_compliant:true,status:'active'}
 ];
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
@@ -314,13 +298,13 @@ document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 ['all','active','inactive'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
-function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
-function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
 function lobLabel(v){return{commercial:'Commercial',medicare:'Medicare',medicaid:'Medicaid',marketplace:'Marketplace',chip:'CHIP',fehb:'FEHB'}[v]||v||'—';}
 function fundLabel(v){return{fully_insured:'Fully Insured',self_funded:'Self-Funded',level_funded:'Level-Funded',mec:'MEC',capitation:'Capitation'}[v]||v||'—';}
 async function load(){
-  try{var r=await apiFetch('/api/products').catch(function(){return[];});records=r.length?r:FALLBACK;}
-  catch(e){records=FALLBACK;}
+  try{var r=await apiFetch('/api/products').catch(function(){return[];});records=r.length?r:FB_PRODUCTS;}
+  catch(e){records=FB_PRODUCTS;}
   render();
 }
 function render(){
@@ -329,38 +313,34 @@ function render(){
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">&#128230;</div><p>No products found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">📦</div><p>No products found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(p){
     return'<tr>'+
-    '<td class="mono" style="color:var(--accent);font-size:11px">'+p.product_code+'</td>'+
-    '<td><strong>'+p.product_name+'</strong></td>'+
+    '<td class="mono" style="color:var(--accent);font-size:12px;font-weight:700">'+p.product_code+'</td>'+
+    '<td><strong style="font-size:14px">'+p.product_name+'</strong></td>'+
     '<td>'+badge((p.product_type||'').toUpperCase(),p.product_type)+'</td>'+
-    '<td style="font-size:12px">'+lobLabel(p.lob)+'</td>'+
-    '<td style="font-size:12px">'+(p.market_segment||'—')+'</td>'+
-    '<td style="font-size:12px">'+fundLabel(p.funding_type)+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(p.network_id||'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(p.termination_date?p.termination_date.split('T')[0]:'—')+'</td>'+
+    '<td style="font-size:13px">'+lobLabel(p.lob)+'</td>'+
+    '<td style="font-size:13px">'+(p.market_segment||'—')+'</td>'+
+    '<td style="font-size:13px">'+fundLabel(p.funding_type)+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(p.network_id||'—')+'</td>'+
+    '<td style="font-size:13px">'+(p.pcp_required?'<span style="color:#2ed573;font-weight:700">Yes</span>':'No')+'</td>'+
+    '<td style="font-size:13px">'+(p.referral_required?'<span style="color:#2ed573;font-weight:700">Yes</span>':'No')+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + p.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + p.id + '\')" >Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td></tr>';
   }).join('');
 }
-function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
-function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
-function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Product':'New Product';
   sv('f-id',d?d.id:'');sv('f-product_code',d?d.product_code:genCode('PRD'));sv('f-status',d?d.status:'active');
-  sv('f-product_name',d?d.product_name:'');sv('f-product_type',d?d.product_type:'medical');
-  sv('f-plan_subtype',d?d.plan_subtype:'hmo');sv('f-description',d?d.description:'');
-  sv('f-lob',d?d.lob:'commercial');sv('f-market_segment',d?d.market_segment:'group');
+  sv('f-product_name',d?d.product_name:'');sv('f-product_type',d?d.product_type:'medical');sv('f-plan_subtype',d?d.plan_subtype:'hmo');
+  sv('f-description',d?d.description:'');sv('f-lob',d?d.lob:'commercial');sv('f-market_segment',d?d.market_segment:'group');
   sv('f-funding_type',d?d.funding_type:'fully_insured');sv('f-carrier_code',d?d.carrier_code:'');
   sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-state_of_issue',d?d.state_of_issue:'');
-  sv('f-network_id',d?d.network_id:'');sv('f-network',d?d.network:'inn_only');
+  sv('f-state_of_issue',d?d.state_of_issue:'');sv('f-network_id',d?d.network_id:'');sv('f-network',d?d.network:'inn_only');
   sv('f-service_area',d?d.service_area:'');sv('f-network_tier',d?d.network_tier:'standard');
   ck('f-pcp_required',d?d.pcp_required:false);ck('f-referral_required',d?d.referral_required:false);
   ck('f-oon_emergency',d?d.oon_emergency!==false:true);ck('f-telehealth',d?d.telehealth!==false:true);
@@ -395,6 +375,8 @@ async function del(id){
 }
 load();
 </script></body></html>
+
+
 
 
 
