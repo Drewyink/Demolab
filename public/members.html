@@ -2,162 +2,185 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Members</title>
+  <title>EchoLink Solutions — Configuration → Members</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+
+    :root{--overlay-z:99999;}
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.8)!important;z-index:var(--overlay-z)!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;}
-    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
-    .modal-tab{padding:9px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal{max-height:92vh;overflow-y:auto;width:860px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px;flex-wrap:wrap;}
+    .modal-tab{padding:11px 16px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;letter-spacing:.02em;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
-    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);margin:3px;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
+    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
+    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:3px;}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
+    .page-title{font-size:26px!important;font-weight:800!important;}
+    .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
+    .card-title{font-size:17px!important;font-weight:800!important;}
+    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table td{font-size:14px!important;}
+    .nav-item{font-size:14px!important;font-weight:600!important;}
+    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .sidebar-logo .logo-sub{font-size:11px!important;font-weight:600!important;}
+    .modal-title{font-size:20px!important;font-weight:800!important;}
+    .btn{font-size:13px!important;font-weight:700!important;}
+    .logo-icon{font-size:14px!important;font-weight:900!important;width:36px!important;height:36px!important;}
+
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
-    .stat-card .s-val{font-size:24px;font-weight:700;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
-    .stat-card .s-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .stat-card .sv{font-size:26px;font-weight:800;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
+    .stat-card .sl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <div class="sidebar-logo">
+      <div class="logo-icon">EL</div>
+      <div>
+        <div class="logo-text">EchoLink Solutions</div>
+        <div class="logo-sub">Facets Sandbox</div>
+      </div>
+    </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
-      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <a class="nav-item " href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
-      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
-      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <a class="nav-item " href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item " href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
       <div class="nav-section-label">Configuration</div>
       <a class="nav-item active" href="members.html"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
-      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
-      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <a class="nav-item " href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item " href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item " href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item " href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item " href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
       <div class="nav-section-label">Dental</div>
-      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <a class="nav-item " href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
-      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
-      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <a class="nav-item " href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item " href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item " href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item " href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
       <div class="nav-section-label">Government Programs</div>
-      <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item " href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
-      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
-      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item " href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item " href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item " href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item " href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item " href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">EchoLink · v2.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration &rarr; <span>Members</span></span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Configuration → Members</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Member Management</div><div class="page-subtitle">ENROLL &middot; MANAGE &middot; TERMINATE</div></div>
+        <div><div class="page-title">Member Management</div><div class="page-subtitle">ENROLL · MANAGE · TERMINATE · LINK TO EMPLOYER &amp; PLAN</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Member</button>
       </div>
       <div class="stat-cards">
-        <div class="stat-card"><div class="s-lbl">Total Members</div><div class="s-val" id="s-total">—</div></div>
-        <div class="stat-card"><div class="s-lbl">Active</div><div class="s-val" style="color:#4ade80" id="s-active">—</div></div>
-        <div class="stat-card"><div class="s-lbl">Inactive</div><div class="s-val" style="color:#f87171" id="s-inactive">—</div></div>
-        <div class="stat-card"><div class="s-lbl">No Plan Assigned</div><div class="s-val" style="color:#fbbf24" id="s-noplan">—</div></div>
+        <div class="stat-card"><div class="sl">Total Members</div><div class="sv" id="s-total">—</div></div>
+        <div class="stat-card"><div class="sl">Active</div><div class="sv" style="color:#4ade80" id="s-active">—</div></div>
+        <div class="stat-card"><div class="sl">Inactive</div><div class="sv" style="color:#f87171" id="s-inactive">—</div></div>
+        <div class="stat-card"><div class="sl">No Plan Assigned</div><div class="sv" style="color:#fbbf24" id="s-noplan">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">&#128100; Members <span class="count-label" id="count"></span></span>
+          <span class="card-title">👤 Members <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">&#128270;</span><input type="text" placeholder="Search members..." id="search-input"></div>
-            <div class="filter-tabs">
-              <button class="filter-tab active" id="tab-all">All</button>
-              <button class="filter-tab" id="tab-active">Active</button>
-              <button class="filter-tab" id="tab-inactive">Inactive</button>
-            </div>
+            <div class="search-bar" style="margin:0;width:240px"><span class="search-icon">🔎</span><input type="text" placeholder="Search members..." id="search-input" style="font-size:14px"></div>
+            <div class="filter-tabs"><button class="filter-tab active" id="tab-all">All</button><button class="filter-tab" id="tab-active">Active</button><button class="filter-tab" id="tab-inactive">Inactive</button></div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Member ID</th><th>Name</th><th>Employer</th><th>Plan</th><th>Tier</th><th>Eff. Date</th><th>Type</th><th>DOB</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr><th>Member ID</th><th>Name</th><th>Employer</th><th>Plan</th><th>Tier</th><th>Coverage Eff.</th><th>Type</th><th>DOB</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-
 <div id="overlay">
-  <div class="modal" style="width:820px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Member</span><button class="modal-close" id="btn-x">&#10005;</button></div>
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Member</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('personal',this)">Personal Info</button>
-        <button class="modal-tab" onclick="switchTab('address',this)">Address</button>
+        <button class="modal-tab" onclick="switchTab('address',this)">Residential Address</button>
         <button class="modal-tab" onclick="switchTab('employment',this)">Employment</button>
-        <button class="modal-tab" onclick="switchTab('coverage',this)">Coverage</button>
+        <button class="modal-tab" onclick="switchTab('coverage',this)">Coverage &amp; Plan</button>
         <button class="modal-tab" onclick="switchTab('dependent',this)">Dependents</button>
       </div>
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
 
       <div class="tab-panel active" id="tab-personal">
         <div class="form-grid">
-          <div class="form-section-label">Member Identification</div>
-          <div class="form-group"><label class="form-label">Member ID *</label><input type="text" class="form-input" id="f-member_id" placeholder="MBR-001"></div>
+          <div class="fsl">Member Identification</div>
+          <div class="form-group"><label class="form-label">Member ID *</label><input type="text" class="form-input" id="f-member_id" placeholder="ECL-MBR-001"></div>
           <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="terminated">Terminated</option></select>
-          </div>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="terminated">Terminated</option></select></div>
           <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="f-first_name" placeholder="John"></div>
           <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="f-last_name" placeholder="Smith"></div>
           <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="f-dob"></div>
           <div class="form-group"><label class="form-label">Gender</label>
-            <select class="form-select" id="f-gender"><option value="">— Select —</option><option value="M">Male</option><option value="F">Female</option><option value="X">Non-Binary</option><option value="U">Prefer Not to Say</option></select>
-          </div>
-          <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="f-phone" placeholder="(555) 555-5555"></div>
-          <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-input" id="f-email" placeholder="member@example.com"></div>
+            <select class="form-select" id="f-gender"><option value="">— Select —</option><option value="M">Male</option><option value="F">Female</option><option value="X">Non-Binary</option><option value="U">Prefer Not to Say</option></select></div>
+          <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="f-phone" placeholder="(704) 555-0100"></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-input" id="f-email" placeholder="member@echolink.com"></div>
           <div class="form-group"><label class="form-label">SSN — Last 4 (test only)</label><input type="text" class="form-input" id="f-ssn" placeholder="XXXX" maxlength="4"></div>
           <div class="form-group"><label class="form-label">Medicare Eligible</label>
-            <select class="form-select" id="f-medicare_eligible"><option value="no">No</option><option value="yes">Yes</option></select>
-          </div>
+            <select class="form-select" id="f-medicare_eligible"><option value="no">No</option><option value="yes">Yes</option></select></div>
         </div>
       </div>
 
       <div class="tab-panel" id="tab-address">
         <div class="form-grid">
-          <div class="form-section-label">Residential Address</div>
+          <div class="fsl">Residential Address</div>
           <div class="form-group full"><label class="form-label">Street Address</label><input type="text" class="form-input" id="f-street_address" placeholder="123 Main Street"></div>
           <div class="form-group"><label class="form-label">Apt / Unit</label><input type="text" class="form-input" id="f-apt" placeholder="Apt 4B"></div>
           <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="f-city" placeholder="Charlotte"></div>
           <div class="form-group"><label class="form-label">State</label><input type="text" class="form-input" id="f-state" placeholder="NC" maxlength="2"></div>
           <div class="form-group"><label class="form-label">Zip Code</label><input type="text" class="form-input" id="f-zip" placeholder="28202"></div>
           <div class="form-group"><label class="form-label">County</label><input type="text" class="form-input" id="f-county" placeholder="Mecklenburg"></div>
-          <div class="form-section-label">Mailing Address (if different)</div>
-          <div class="form-group full"><label class="form-label">Mailing Address</label><input type="text" class="form-input" id="f-mailing_address" placeholder="Same as residential or enter separate mailing address"></div>
+          <div class="fsl">Mailing Address (if different from residential)</div>
+          <div class="form-group full"><label class="form-label">Mailing Address</label><input type="text" class="form-input" id="f-mailing_address" placeholder="Leave blank if same as residential"></div>
         </div>
       </div>
 
       <div class="tab-panel" id="tab-employment">
         <div class="form-grid">
-          <div class="form-section-label">Employer Linkage</div>
-          <div class="form-group full"><label class="form-label">Employer / Group</label>
+          <div class="fsl">Employer Linkage — Connects Member to Group</div>
+          <div class="form-group full"><label class="form-label">Employer / Group *</label>
             <select class="form-select" id="f-group_id"><option value="">-- Select Employer --</option></select>
-            <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; Groups / Employers</a></div>
+            <div style="margin-top:8px"><a class="badge-link" href="groups.html">🏢 Groups / Employers</a></div>
           </div>
           <div class="form-group full"><label class="form-label">Employee Class</label>
             <select class="form-select" id="f-class_id"><option value="">-- Select Class --</option></select>
-            <div style="margin-top:6px"><a class="badge-link" href="classes.html">&#127991; Classes</a></div>
+            <div style="margin-top:8px"><a class="badge-link" href="classes.html">🏷️ Classes</a></div>
           </div>
-          <div class="form-section-label">Employment Details</div>
+          <div class="fsl">Employment Details</div>
           <div class="form-group"><label class="form-label">Employment Type</label>
             <select class="form-select" id="f-employment_type">
               <option value="full_time">Full-Time Employee</option>
@@ -166,20 +189,19 @@
               <option value="union">Union Member</option>
               <option value="retiree">Retiree</option>
               <option value="cobra">COBRA Continuant</option>
-            </select>
-          </div>
+            </select></div>
           <div class="form-group"><label class="form-label">Hours Per Week</label><input type="number" class="form-input" id="f-hours_per_week" placeholder="40" min="0"></div>
           <div class="form-group"><label class="form-label">Hire Date</label><input type="date" class="form-input" id="f-hire_date"></div>
-          <div class="form-group"><label class="form-label">Job Title</label><input type="text" class="form-input" id="f-job_title" placeholder="HR Benefits Manager"></div>
+          <div class="form-group"><label class="form-label">Job Title</label><input type="text" class="form-input" id="f-job_title" placeholder="Benefits Analyst"></div>
         </div>
       </div>
 
       <div class="tab-panel" id="tab-coverage">
         <div class="form-grid">
-          <div class="form-section-label">Plan Enrollment</div>
-          <div class="form-group full"><label class="form-label">Plan</label>
+          <div class="fsl">Plan Enrollment — Links Member to Plan</div>
+          <div class="form-group full"><label class="form-label">Plan *</label>
             <select class="form-select" id="f-plan_id"><option value="">-- Select Plan --</option></select>
-            <div style="margin-top:6px"><a class="badge-link" href="plans.html">&#128203; Plans</a></div>
+            <div style="margin-top:8px"><a class="badge-link" href="plans.html">📋 Plans</a><a class="badge-link" href="benefits.html">✚ Benefits</a></div>
           </div>
           <div class="form-group"><label class="form-label">Coverage Tier</label>
             <select class="form-select" id="f-enrollment_tier">
@@ -187,25 +209,27 @@
               <option value="employee_spouse">ES — Employee + Spouse</option>
               <option value="employee_child">EC — Employee + Child(ren)</option>
               <option value="family">FAM — Employee + Family</option>
-            </select>
-          </div>
+            </select></div>
           <div class="form-group"><label class="form-label">Coverage Effective Date</label><input type="date" class="form-input" id="f-enrollment_date"></div>
           <div class="form-group"><label class="form-label">Coverage Term Date</label><input type="date" class="form-input" id="f-coverage_term_date"></div>
           <div class="form-group"><label class="form-label">PCP Name</label><input type="text" class="form-input" id="f-pcp" placeholder="Dr. Sarah Patel"></div>
           <div class="form-group"><label class="form-label">Other Health Insurance?</label>
-            <select class="form-select" id="f-has_ohi"><option value="no">No</option><option value="yes">Yes — OHI on file</option></select>
-          </div>
+            <select class="form-select" id="f-has_ohi"><option value="no">No</option><option value="yes">Yes — OHI on file</option></select></div>
           <div class="form-group"><label class="form-label">COB Order</label>
-            <select class="form-select" id="f-cob_order"><option value="primary">Primary — Order 1</option><option value="secondary">Secondary — Order 2</option></select>
+            <select class="form-select" id="f-cob_order"><option value="primary">Primary — Order 1</option><option value="secondary">Secondary — Order 2</option></select></div>
+          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Enrollment notes, special handling..."></textarea></div>
+          <div style="grid-column:1/-1;margin-top:8px">
+            <a class="badge-link" href="claims.html">📄 Claims</a>
+            <a class="badge-link" href="authorizations.html">🔐 Authorizations</a>
+            <a class="badge-link" href="pricing.html">💲 Pricing</a>
           </div>
-          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Enrollment notes..."></textarea></div>
         </div>
       </div>
 
       <div class="tab-panel" id="tab-dependent">
         <div style="padding:10px 0 20px">
-          <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Add dependents covered under this member's plan. Each dependent must have a name, relationship, and date of birth.</p>
-          <div id="dependent-list" style="margin-bottom:16px"></div>
+          <p style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:18px">Add dependents covered under this member plan. Each dependent requires a name, relationship, and date of birth.</p>
+          <div id="dependent-list" style="margin-bottom:18px"></div>
           <button class="btn btn-secondary" type="button" onclick="addDependent()">+ Add Dependent</button>
         </div>
       </div>
@@ -213,69 +237,69 @@
     <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Member</button></div>
   </div>
 </div>
-
 <script>
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
-async function apiFetch(url){
-  var res=await fetch(url);
-  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
-  return res.json();
-}
-
-function genCode(prefix){
-  return prefix+'-'+String(Date.now()).slice(-6);
-}
-
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
 function badge(text,type){
-  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
-    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
-    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
-    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
-    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
-  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
-  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+  var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',terminated:'#ff4757',
+    hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',dental:'#e879f9',
+    epo:'#fb923c',pos:'#f472b6',commercial:'#60a5fa',medicare:'#34d399',medicaid:'#f59e0b',
+    yes:'#2ed573',no:'#ff4757',full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=m[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
 }
-
 function toast(msg,type){
-  var existing=document.querySelectorAll('.toast-msg');
-  existing.forEach(function(el){el.remove();});
-  var div=document.createElement('div');
-  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
-  var c=colors[type]||'#60a5fa';
-  div.className='toast-msg';
-  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
-  div.textContent=msg;
-  document.body.appendChild(div);
-  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+  document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});
+  var d=document.createElement('div');
+  var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';
+  d.className='toast-msg';
+  d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';
+  d.textContent=msg;document.body.appendChild(d);
+  setTimeout(function(){if(d.parentNode)d.remove();},3500);
 }
-
 function confirmDialog(msg){
   return new Promise(function(resolve){
-    var overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
-    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
-    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};
+    ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};
   });
 }
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
 
 var records=[],groups=[],plans=[],classes=[],statusFilter='all',dependents=[];
-var FALLBACK_GROUPS=[{id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network'},{id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital'},{id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group'}];
-var FALLBACK_PLANS=[{id:'p1',plan_code:'ECL-HMO-BRZ',plan_name:'EchoLink HMO Bronze'},{id:'p2',plan_code:'ECL-PPO-SLV',plan_name:'EchoLink PPO Silver'},{id:'p3',plan_code:'ECL-CDH-1500',plan_name:'EchoLink HDHP + HSA'},{id:'p4',plan_code:'ECL-DEN-01',plan_name:'EchoLink Dental Essentials'}];
-var FALLBACK_CLASSES=[{id:'c1',class_code:'CLS-FULL',class_name:'Full-Time Employee',group_id:'g1'},{id:'c2',class_code:'CLS-PART',class_name:'Part-Time Employee',group_id:'g1'},{id:'c3',class_code:'CLS-EXEC',class_name:'Executive',group_id:'g1'},{id:'c4',class_code:'CLS-UNION',class_name:'Union Member',group_id:'g1'}];
-var FALLBACK_MEMBERS=[
-  {id:'m1',member_id:'ECL-MBR-001',first_name:'Carlos',last_name:'Mendez',group_id:'g1',plan_id:'p1',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1985-03-15',status:'active'},
-  {id:'m2',member_id:'ECL-MBR-002',first_name:'Priya',last_name:'Shah',group_id:'g1',plan_id:'p1',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1990-07-22',status:'active'},
-  {id:'m3',member_id:'ECL-MBR-003',first_name:'James',last_name:"O'Brien",group_id:'g1',plan_id:'p2',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'executive',dob:'1978-11-04',status:'active'},
-  {id:'m4',member_id:'ECL-MBR-004',first_name:'Rachel',last_name:'Kim',group_id:'g1',plan_id:'p2',enrollment_tier:'employee_spouse',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1992-05-18',status:'active'},
-  {id:'m5',member_id:'ECL-MBR-005',first_name:'David',last_name:'Torres',group_id:'g1',plan_id:'p3',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1982-08-20',status:'active'},
-  {id:'m6',member_id:'ECL-MBR-006',first_name:'Sandra',last_name:'Wu',group_id:'g1',plan_id:'p3',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1988-12-11',status:'active'},
-  {id:'m7',member_id:'ECL-MBR-007',first_name:'Michael',last_name:'Grant',group_id:'g1',plan_id:'p4',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1975-04-03',status:'active'},
-  {id:'m8',member_id:'ECL-MBR-008',first_name:'Amy',last_name:'Chen',group_id:'g1',plan_id:'p4',enrollment_tier:'employee_child',enrollment_date:'2026-01-01',employment_type:'part_time',dob:'1998-09-17',status:'active'}
+var FB_GROUPS=[
+  {id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network'},
+  {id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital'},
+  {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group'}
+];
+var FB_PLANS=[
+  {id:'pln1',plan_code:'ECL-HMO-BRZ',plan_name:'EchoLink HMO Bronze',product_code:'ECL-HMO',plan_type:'hmo',lob:'commercial',network:'inn_only',deductible:3000,family_deductible:6000,oop_max:7350,family_oop_max:14700,premium:289,effective_date:'2026-01-01',termination_date:'2026-12-31',embedded_deductible:true,cdh_eligible:false,pcp_required:true,referral_required:'yes',pa_required:true,cob_enabled:true,aca_compliant:true,status:'active'},
+  {id:'pln2',plan_code:'ECL-PPO-SLV',plan_name:'EchoLink PPO Silver',product_code:'ECL-PPO',plan_type:'ppo',lob:'commercial',network:'inn_oon',deductible:1200,family_deductible:2400,oop_max:5500,family_oop_max:11000,premium:495,effective_date:'2026-01-01',termination_date:'2026-12-31',embedded_deductible:true,cdh_eligible:false,pcp_required:false,referral_required:'no',pa_required:true,cob_enabled:true,aca_compliant:true,status:'active'},
+  {id:'pln3',plan_code:'ECL-CDH-1500',plan_name:'EchoLink HDHP + HSA',product_code:'ECL-CDH',plan_type:'cdh',lob:'commercial',network:'inn_oon',deductible:1600,family_deductible:3200,oop_max:8050,family_oop_max:16100,premium:389,effective_date:'2026-01-01',termination_date:'2026-12-31',embedded_deductible:true,cdh_eligible:true,pcp_required:false,referral_required:'no',pa_required:true,cob_enabled:true,aca_compliant:true,status:'active'},
+  {id:'pln4',plan_code:'ECL-DEN-01',plan_name:'EchoLink Dental Essentials',product_code:'ECL-DEN',plan_type:'dental',lob:'commercial',network:'dental_ppo',deductible:75,family_deductible:150,oop_max:1500,family_oop_max:3000,premium:39,effective_date:'2026-01-01',termination_date:'2026-12-31',cdh_eligible:false,cob_enabled:true,aca_compliant:true,status:'active'}
+];
+var FB_CLASSES=[
+  {id:'cls1',class_code:'CLS-FULL',class_name:'Full-Time Employee',group_id:'g1',employment_type:'full_time',min_hours:30,eligible_plans:'ECL-HMO-BRZ, ECL-PPO-SLV, ECL-CDH-1500, ECL-DEN-01',waiting_period_days:30,cobra_eligible:'yes',contribution_override_pct:75,status:'active'},
+  {id:'cls2',class_code:'CLS-PART',class_name:'Part-Time Employee',group_id:'g1',employment_type:'part_time',min_hours:20,eligible_plans:'ECL-DEN-01',waiting_period_days:30,cobra_eligible:'no',contribution_override_pct:50,status:'active'},
+  {id:'cls3',class_code:'CLS-EXEC',class_name:'Executive / Leadership',group_id:'g1',employment_type:'executive',min_hours:40,eligible_plans:'ECL-PPO-SLV, ECL-CDH-1500, ECL-DEN-01',waiting_period_days:0,cobra_eligible:'yes',contribution_override_pct:95,status:'active'},
+  {id:'cls4',class_code:'CLS-UNION',class_name:'Union Member',group_id:'g1',employment_type:'union',min_hours:30,eligible_plans:'ECL-HMO-BRZ, ECL-DEN-01',waiting_period_days:30,cobra_eligible:'yes',contribution_override_pct:85,status:'active'}
+];
+var FB_MEMBERS=[
+  {id:'m1',member_id:'ECL-MBR-001',first_name:'Carlos',last_name:'Mendez',group_id:'g1',plan_id:'pln1',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1985-03-15',status:'active'},
+  {id:'m2',member_id:'ECL-MBR-002',first_name:'Priya',last_name:'Shah',group_id:'g1',plan_id:'pln1',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1990-07-22',status:'active'},
+  {id:'m3',member_id:'ECL-MBR-003',first_name:'James',last_name:"O'Brien",group_id:'g1',plan_id:'pln2',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'executive',dob:'1978-11-04',status:'active'},
+  {id:'m4',member_id:'ECL-MBR-004',first_name:'Rachel',last_name:'Kim',group_id:'g1',plan_id:'pln2',enrollment_tier:'employee_spouse',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1992-05-18',status:'active'},
+  {id:'m5',member_id:'ECL-MBR-005',first_name:'David',last_name:'Torres',group_id:'g1',plan_id:'pln3',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1982-08-20',status:'active'},
+  {id:'m6',member_id:'ECL-MBR-006',first_name:'Sandra',last_name:'Wu',group_id:'g1',plan_id:'pln3',enrollment_tier:'family',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1988-12-11',status:'active'},
+  {id:'m7',member_id:'ECL-MBR-007',first_name:'Michael',last_name:'Grant',group_id:'g1',plan_id:'pln4',enrollment_tier:'employee_only',enrollment_date:'2026-01-01',employment_type:'full_time',dob:'1975-04-03',status:'active'},
+  {id:'m8',member_id:'ECL-MBR-008',first_name:'Amy',last_name:'Chen',group_id:'g1',plan_id:'pln4',enrollment_tier:'employee_child',enrollment_date:'2026-01-01',employment_type:'part_time',dob:'1998-09-17',status:'active'}
 ];
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
@@ -285,20 +309,20 @@ document.getElementById('search-input').addEventListener('input',render);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 ['all','active','inactive'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 document.getElementById('f-group_id').addEventListener('change',function(){loadClassesForGroup(this.value);});
-function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
-function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
 function etLabel(v){return{full_time:'Full-Time',part_time:'Part-Time',executive:'Executive',union:'Union',retiree:'Retiree',cobra:'COBRA'}[v]||v||'—';}
 async function load(){
   try{
-    groups=(await apiFetch('/api/groups').catch(function(){return [];}));
-    plans=(await apiFetch('/api/plans').catch(function(){return [];}));
-    classes=(await apiFetch('/api/classes').catch(function(){return [];}));
-    records=(await apiFetch('/api/members').catch(function(){return [];}));
-    if(!groups.length)groups=FALLBACK_GROUPS;
-    if(!plans.length)plans=FALLBACK_PLANS;
-    if(!classes.length)classes=FALLBACK_CLASSES;
-    if(!records.length)records=FALLBACK_MEMBERS;
-  }catch(e){groups=FALLBACK_GROUPS;plans=FALLBACK_PLANS;classes=FALLBACK_CLASSES;records=FALLBACK_MEMBERS;}
+    groups=(await apiFetch('/api/groups').catch(function(){return[];}))||[];
+    plans=(await apiFetch('/api/plans').catch(function(){return[];}))||[];
+    classes=(await apiFetch('/api/classes').catch(function(){return[];}))||[];
+    records=(await apiFetch('/api/members').catch(function(){return[];}))||[];
+    if(!groups.length)groups=FB_GROUPS;
+    if(!plans.length)plans=FB_PLANS;
+    if(!classes.length)classes=FB_CLASSES;
+    if(!records.length)records=FB_MEMBERS;
+  }catch(e){groups=FB_GROUPS;plans=FB_PLANS;classes=FB_CLASSES;records=FB_MEMBERS;}
   updateStats();render();
 }
 function updateStats(){
@@ -307,13 +331,13 @@ function updateStats(){
   document.getElementById('s-inactive').textContent=records.filter(function(r){return r.status!=='active';}).length;
   document.getElementById('s-noplan').textContent=records.filter(function(r){return r.status==='active'&&!r.plan_id;}).length;
 }
-function populateGroupDropdown(){
+function populateGroupDrop(){
   var sel=document.getElementById('f-group_id');var cur=sel.value;
   sel.innerHTML='<option value="">-- Select Employer --</option>';
   groups.forEach(function(g){var o=document.createElement('option');o.value=g.id;o.textContent=g.group_id+' — '+g.employer_name;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
-function populatePlanDropdown(){
+function populatePlanDrop(){
   var sel=document.getElementById('f-plan_id');var cur=sel.value;
   sel.innerHTML='<option value="">-- Select Plan --</option>';
   plans.forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.plan_code+' — '+p.plan_name;sel.appendChild(o);});
@@ -324,48 +348,46 @@ function loadClassesForGroup(gid){
   classes.filter(function(c){return!gid||c.group_id===gid;}).forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.class_code+' — '+c.class_name;sel.appendChild(o);});
 }
 function groupName(id){var g=groups.find(function(x){return x.id===id;});return g?g.employer_name:'—';}
-function planCode(id){var p=plans.find(function(x){return x.id===id;});return p?'<span style="font-family:monospace;font-size:11px;color:var(--accent)">'+p.plan_code+'</span>':'<span style="color:var(--text-secondary)">—</span>';}
+function planCode(id){var p=plans.find(function(x){return x.id===id;});return p?'<span style="font-family:monospace;font-size:12px;font-weight:700;color:var(--accent)">'+p.plan_code+'</span>':'<span style="color:var(--text-secondary)">—</span>';}
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#128100;</div><p>No members found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">👤</div><p>No members found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(m){
     return'<tr>'+
-    '<td class="mono" style="color:var(--accent);font-size:11px">'+m.member_id+'</td>'+
-    '<td><strong>'+m.first_name+' '+m.last_name+'</strong></td>'+
-    '<td style="font-size:12px">'+groupName(m.group_id)+'</td>'+
+    '<td class="mono" style="color:var(--accent);font-size:12px;font-weight:700">'+m.member_id+'</td>'+
+    '<td><strong style="font-size:14px">'+m.first_name+' '+m.last_name+'</strong></td>'+
+    '<td style="font-size:13px;font-weight:600">'+groupName(m.group_id)+'</td>'+
     '<td>'+planCode(m.plan_id)+'</td>'+
-    '<td style="font-size:11px">'+(m.enrollment_tier||'—')+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(m.enrollment_date?m.enrollment_date.split('T')[0]:'—')+'</td>'+
-    '<td style="font-size:12px">'+etLabel(m.employment_type)+'</td>'+
-    '<td class="mono" style="font-size:11px">'+(m.dob?m.dob.split('T')[0]:'—')+'</td>'+
+    '<td style="font-size:13px;font-weight:600">'+(m.enrollment_tier||'—')+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:700">'+(m.enrollment_date?m.enrollment_date.split('T')[0]:'—')+'</td>'+
+    '<td style="font-size:13px;font-weight:600">'+etLabel(m.employment_type)+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:700">'+(m.dob?m.dob.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(m.status,m.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + m.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + m.id + '\')" >Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+m.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+m.id+'')">Del</button></div></td></tr>';
   }).join('');
 }
 function addDependent(){dependents.push({name:'',relationship:'spouse',dob:''});renderDependents();}
 function renderDependents(){
   var div=document.getElementById('dependent-list');
-  if(!dependents.length){div.innerHTML='<p style="font-size:12px;color:var(--text-secondary)">No dependents added yet.</p>';return;}
+  if(!dependents.length){div.innerHTML='<p style="font-size:14px;font-weight:600;color:var(--text-secondary)">No dependents added yet. Click + Add Dependent below.</p>';return;}
   div.innerHTML=dependents.map(function(d,i){
-    return'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px">'+
+    return'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:12px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">'+
     '<div><label class="form-label">Full Name</label><input type="text" class="form-input" value="'+d.name+'" oninput="dependents['+i+'].name=this.value" placeholder="Jane Smith"></div>'+
-    '<div><label class="form-label">Relationship</label><select class="form-select" onchange="dependents['+i+'].relationship=this.value"><option value="spouse"'+(d.relationship==='spouse'?' selected':'')+'>Spouse</option><option value="child"'+(d.relationship==='child'?' selected':'')+'>Child</option><option value="other"'+(d.relationship==='other'?' selected':'')+'>Other</option></select></div>'+
+    '<div><label class="form-label">Relationship</label><select class="form-select" onchange="dependents['+i+'].relationship=this.value"><option value="spouse"'+(d.relationship==='spouse'?' selected':'')+'>Spouse / Partner</option><option value="child"'+(d.relationship==='child'?' selected':'')+'>Child</option><option value="other"'+(d.relationship==='other'?' selected':'')+'>Other</option></select></div>'+
     '<div><label class="form-label">Date of Birth</label><input type="date" class="form-input" value="'+(d.dob||'')+'" oninput="dependents['+i+'].dob=this.value"></div>'+
     '<div><button class="btn btn-sm btn-danger" onclick="dependents.splice('+i+',1);renderDependents()">Remove</button></div></div>';
   }).join('');
 }
-function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
-function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   dependents=d&&d.dependents?JSON.parse(JSON.stringify(d.dependents)):[];
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Member':'New Member';
-  populateGroupDropdown();populatePlanDropdown();
+  populateGroupDrop();populatePlanDrop();
   sv('f-id',d?d.id:'');sv('f-member_id',d?d.member_id:genCode('MBR'));sv('f-status',d?d.status:'active');
   sv('f-first_name',d?d.first_name:'');sv('f-last_name',d?d.last_name:'');
   sv('f-dob',d&&d.dob?d.dob.split('T')[0]:'');sv('f-gender',d?d.gender:'');
@@ -394,7 +416,7 @@ async function save(){
   var id=gv('f-id');
   var body={member_id:gv('f-member_id'),first_name:fn,last_name:ln,dob:gv('f-dob')||null,gender:gv('f-gender'),phone:gv('f-phone'),email:gv('f-email'),ssn:gv('f-ssn'),medicare_eligible:gv('f-medicare_eligible'),street_address:gv('f-street_address'),apt:gv('f-apt'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),county:gv('f-county'),mailing_address:gv('f-mailing_address'),group_id:gv('f-group_id'),class_id:gv('f-class_id'),employment_type:gv('f-employment_type'),hours_per_week:parseInt(gv('f-hours_per_week'))||0,hire_date:gv('f-hire_date')||null,job_title:gv('f-job_title'),plan_id:gv('f-plan_id')||null,enrollment_tier:gv('f-enrollment_tier'),enrollment_date:gv('f-enrollment_date')||null,coverage_term_date:gv('f-coverage_term_date')||null,pcp:gv('f-pcp'),has_ohi:gv('f-has_ohi'),cob_order:gv('f-cob_order'),notes:gv('f-notes'),status:gv('f-status'),dependents:dependents};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
-  closeModal();toast(id?'Saving...':'Creating member...','info');
+  closeModal();toast(id?'Saving...':'Enrolling member...','info');
   try{
     var res=await fetch(id?'/api/members/'+id:'/api/members',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!res.ok)throw new Error('HTTP '+res.status);
@@ -411,6 +433,8 @@ async function del(id){
 }
 load();
 </script></body></html>
+
+
 
 
 
