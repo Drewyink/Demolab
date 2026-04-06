@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -469,7 +470,7 @@ function render(){
     '<td class="mono" style="font-size:13px;font-weight:700">$'+parseFloat(p.premium||0).toFixed(2)+'/mo</td>'+
     '<td>'+cdh+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+p.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+p.id+'">Del</button></div></td></tr>';
   }).join('');
 }
 function openModal(id){
@@ -537,6 +538,7 @@ async function del(id){
 }
 load();
 </script></body></html>
+
 
 
 
