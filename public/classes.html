@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,25 @@
   <style>
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal{max-height:92vh;overflow-y:auto;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:9px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
+    .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
+    .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+    .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:22px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
+    .group-tag{display:inline-block;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--accent);}
   </style>
 </head>
 <body>
@@ -14,7 +34,8 @@
   <aside class="sidebar">
     <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
       <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <a class="nav-item active" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
@@ -25,13 +46,15 @@
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
       <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Dental</div>
+      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
       <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
       <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
       <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <div class="nav-section-label">Government Programs</div>
+      <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
@@ -41,25 +64,33 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Employer → <span>Classes</span></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb">Employer &rarr; <span>Classes</span></span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Class Configuration</div><div class="page-subtitle">SUBSCRIBER CLASSES · ELIGIBILITY TIERS · CONTRIBUTION OVERRIDES</div></div>
+        <div><div class="page-title">Class Configuration</div><div class="page-subtitle">SUBSCRIBER CLASSES &middot; ELIGIBILITY TIERS &middot; GROUP LINKAGE</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Class</button>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">🏷️ Classes <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px"><div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search classes..." id="search-input"></div></div>
+          <span class="card-title">&#127991; Classes <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">&#128270;</span><input type="text" placeholder="Search classes..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-active">Active</button>
+              <button class="filter-tab" id="tab-inactive">Inactive</button>
+            </div>
+          </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Class Code</th><th>Class Name</th><th>Group</th><th>Eligible Plans</th><th>Wait Period</th><th>Contribution %</th><th>COBRA</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr><th>Class Code</th><th>Class Name</th><th>Group / Employer</th><th>Employment Type</th><th>Eligible Plans</th><th>Wait Period</th><th>Contribution %</th><th>COBRA</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -67,79 +98,175 @@
   </main>
 </div>
 <div id="overlay">
-  <div class="modal" style="width:680px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Class</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
+  <div class="modal" style="width:780px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Class</span><button class="modal-close" id="btn-x">&#10005;</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('general',this)">General</button>
+        <button class="modal-tab" onclick="switchTab('eligibility',this)">Eligibility</button>
+        <button class="modal-tab" onclick="switchTab('contribution',this)">Contribution</button>
+      </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">Class Code *</label><input type="text" class="form-input" id="f-class_code" placeholder="CLS-EXEC"></div>
-        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-        <div class="form-group full"><label class="form-label">Class Name *</label><input type="text" class="form-input" id="f-class_name"></div>
-        <div class="form-group full"><label class="form-label">Description</label><input type="text" class="form-input" id="f-description"></div>
-        <div class="form-group full"><label class="form-label">Eligible Plans (comma-separated)</label><input type="text" class="form-input" id="f-eligible_plans" placeholder="Silver PPO, Gold PPO Elite"></div>
-        <div class="form-group"><label class="form-label">Waiting Period (days)</label><input type="number" class="form-input" id="f-waiting_period_days" value="30" min="0"></div>
-        <div class="form-group"><label class="form-label">Contribution Override %</label><input type="number" class="form-input" id="f-contribution_override_pct" value="75" min="0" max="100"></div>
-        <div class="form-group"><label class="form-label">COBRA Eligible</label><select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select></div>
+
+      <div class="tab-panel active" id="tab-general">
+        <div class="form-grid">
+          <div class="form-section-label">Class Identification</div>
+          <div class="form-group"><label class="form-label">Class Code *</label><input type="text" class="form-input" id="f-class_code" placeholder="CLS-FULL"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
+          <div class="form-group full"><label class="form-label">Class Name *</label><input type="text" class="form-input" id="f-class_name" placeholder="Full-Time Employee"></div>
+          <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-description" rows="2" placeholder="Brief description of this employee class..."></textarea></div>
+
+          <div class="form-section-label">Group / Employer Link</div>
+          <div class="form-group full"><label class="form-label">Linked Group / Employer</label>
+            <select class="form-select" id="f-group_id">
+              <option value="">-- Select Group --</option>
+            </select>
+            <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; View Groups / Employers</a></div>
+          </div>
+
+          <div class="form-section-label">Employment Classification</div>
+          <div class="form-group"><label class="form-label">Employment Type</label>
+            <select class="form-select" id="f-employment_type">
+              <option value="full_time">Full-Time Employee</option>
+              <option value="part_time">Part-Time Employee</option>
+              <option value="executive">Executive / Leadership</option>
+              <option value="union">Union Member</option>
+              <option value="seasonal">Seasonal / Temporary</option>
+              <option value="contractor">Contractor</option>
+              <option value="retiree">Retiree</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Minimum Hours / Week</label><input type="number" class="form-input" id="f-min_hours" placeholder="30" min="0" max="40"></div>
+        </div>
       </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
-        <button class="btn btn-primary" id="btn-save">Save Class</button>
+
+      <div class="tab-panel" id="tab-eligibility">
+        <div class="form-grid">
+          <div class="form-section-label">Plan Eligibility</div>
+          <div class="form-group full"><label class="form-label">Eligible Plans (comma-separated plan codes)</label>
+            <input type="text" class="form-input" id="f-eligible_plans" placeholder="ECL-HMO-BRZ, ECL-PPO-SLV, ECL-DEN-01">
+            <div style="margin-top:6px"><a class="badge-link" href="plans.html">&#128203; View Plans</a></div>
+          </div>
+          <div class="form-group"><label class="form-label">Waiting Period (days)</label><input type="number" class="form-input" id="f-waiting_period_days" placeholder="30" min="0"></div>
+          <div class="form-group"><label class="form-label">COBRA Eligible</label>
+            <select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">HSA Eligible</label>
+            <select class="form-select" id="f-hsa_eligible"><option value="no">No</option><option value="yes">Yes</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Open Enrollment Month</label>
+            <select class="form-select" id="f-oe_month">
+              <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+              <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+              <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-contribution">
+        <div class="form-grid">
+          <div class="form-section-label">Employer Contribution Override</div>
+          <div class="form-group"><label class="form-label">Contribution Override %</label><input type="number" class="form-input" id="f-contribution_override_pct" placeholder="75" min="0" max="100"></div>
+          <div class="form-group"><label class="form-label">Override Type</label>
+            <select class="form-select" id="f-override_type">
+              <option value="percentage">Percentage of Premium</option>
+              <option value="fixed_dollar">Fixed Dollar Amount</option>
+              <option value="no_override">Use Group Default</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="CBA reference, special handling notes..."></textarea></div>
+        </div>
       </div>
     </div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Class</button></div>
   </div>
 </div>
 <script src="app.js"></script>
 <script>
-const API = '/api/classes';
-let all = [], editId = null;
-const overlay = document.getElementById('overlay');
-const tbody = document.getElementById('tbody');
-const searchInput = document.getElementById('search-input');
-document.getElementById('new-btn').onclick = () => openModal();
-document.getElementById('btn-x').onclick = document.getElementById('btn-cancel').onclick = () => overlay.classList.remove('open');
-document.getElementById('btn-save').onclick = save;
-searchInput.oninput = () => render(all.filter(r => JSON.stringify(r).toLowerCase().includes(searchInput.value.toLowerCase())));
-
-async function load() {
-  all = await apiFetch(API);
-  document.getElementById('count').textContent = `(${all.length})`;
-  render(all);
+var records=[],groups=[],statusFilter='all';
+setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','active','inactive'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
+function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
+function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
+function etLabel(v){return{full_time:'Full-Time',part_time:'Part-Time',executive:'Executive',union:'Union',seasonal:'Seasonal',contractor:'Contractor',retiree:'Retiree'}[v]||v||'—';}
+async function load(){
+  try{
+    var res=await Promise.all([apiFetch('/api/classes'),apiFetch('/api/groups')]);
+    records=res[0];groups=res[1];
+    populateGroupDropdown();render();
+  }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
 }
-function render(rows) {
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🏷️</div><p>No classes found.</p></div></td></tr>'; return; }
-  tbody.innerHTML = rows.map(r => `<tr>
-    <td><span class="badge badge-blue">${r.class_code}</span></td>
-    <td><strong>${r.class_name}</strong></td>
-    <td><span style="font-size:11px;color:var(--text2)">${r.group_id||'—'}</span></td>
-    <td style="font-size:11px;max-width:200px;white-space:normal">${r.eligible_plans||'—'}</td>
-    <td>${r.waiting_period_days||0} days</td>
-    <td>${r.contribution_override_pct||'—'}%</td>
-    <td><span class="badge ${r.cobra_eligible==='yes'?'badge-green':'badge-gray'}">${r.cobra_eligible||'—'}</span></td>
-    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
-    <td><button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Delete</button></td>
-  </tr>`).join('');
+function populateGroupDropdown(){
+  var sel=document.getElementById('f-group_id');
+  var cur=sel.value;
+  sel.innerHTML='<option value="">-- Select Group --</option>';
+  groups.forEach(function(g){var o=document.createElement('option');o.value=g.id;o.textContent=g.group_id+' — '+g.employer_name;sel.appendChild(o);});
+  if(cur)sel.value=cur;
 }
-function openModal(r = null) {
-  editId = r ? r.id : null;
-  document.getElementById('modal-title').textContent = r ? 'Edit Class' : 'New Class';
-  document.getElementById('form-error').style.display = 'none';
-  ['id','class_code','class_name','description','eligible_plans','waiting_period_days','contribution_override_pct'].forEach(f => { const el = document.getElementById('f-'+f); if(el) el.value = r ? (r[f]||'') : (f==='waiting_period_days'?30:f==='contribution_override_pct'?75:''); });
-  if(r) { document.getElementById('f-status').value = r.status||'active'; document.getElementById('f-cobra_eligible').value = r.cobra_eligible||'yes'; }
-  overlay.classList.add('open');
+function groupName(id){var g=groups.find(function(x){return x.id===id;});return g?'<span class="group-tag">'+g.group_id+'</span> '+g.employer_name:'<span style="color:var(--text-secondary)">—</span>';}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='('+data.length+')';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#127991;</div><p>No classes found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(c){
+    return'<tr>'+
+    '<td class="mono" style="color:var(--accent);font-size:11px">'+c.class_code+'</td>'+
+    '<td><strong>'+c.class_name+'</strong></td>'+
+    '<td>'+groupName(c.group_id)+'</td>'+
+    '<td style="font-size:12px">'+etLabel(c.employment_type)+'</td>'+
+    '<td style="font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(c.eligible_plans||'—')+'</td>'+
+    '<td class="mono">'+(c.waiting_period_days||0)+' days</td>'+
+    '<td class="mono">'+(c.contribution_override_pct?c.contribution_override_pct+'%':'—')+'</td>'+
+    '<td>'+badge(c.cobra_eligible==='yes'?'Yes':'No',c.cobra_eligible==='yes'?'active':'inactive')+'</td>'+
+    '<td>'+badge(c.status,c.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+c.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+c.id+'')">Del</button></div></td>'+
+    '</tr>';
+  }).join('');
 }
-function edit(id) { openModal(all.find(r=>r.id===id)); }
-async function del(id) { if(confirm('Delete this class?')) { await apiFetch(`${API}/${id}`,{method:'DELETE'}); load(); } }
-async function save() {
-  const body = { class_code:v('class_code'), class_name:v('class_name'), description:v('description'), eligible_plans:v('eligible_plans'), waiting_period_days:parseInt(v('waiting_period_days'))||0, contribution_override_pct:parseInt(v('contribution_override_pct'))||0, cobra_eligible:v('cobra_eligible'), status:v('status') };
-  if(!body.class_code||!body.class_name) { showErr('Class Code and Class Name are required.'); return; }
-  if(editId) await apiFetch(`${API}/${editId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  else await apiFetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  overlay.classList.remove('open'); load();
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Class':'New Class';
+  populateGroupDropdown();
+  sv('f-id',d?d.id:'');sv('f-class_code',d?d.class_code:genCode('CLS'));sv('f-status',d?d.status:'active');
+  sv('f-class_name',d?d.class_name:'');sv('f-description',d?d.description:'');
+  sv('f-group_id',d?d.group_id:'');sv('f-employment_type',d?d.employment_type:'full_time');
+  sv('f-min_hours',d?d.min_hours:'30');sv('f-eligible_plans',d?d.eligible_plans:'');
+  sv('f-waiting_period_days',d?d.waiting_period_days:'30');sv('f-cobra_eligible',d?d.cobra_eligible:'yes');
+  sv('f-hsa_eligible',d?d.hsa_eligible:'no');sv('f-oe_month',d?d.oe_month:'10');
+  sv('f-contribution_override_pct',d?d.contribution_override_pct:'');sv('f-override_type',d?d.override_type:'percentage');
+  sv('f-notes',d?d.notes:'');
+  switchTab('general',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
 }
-function v(f) { const el = document.getElementById('f-'+f); return el ? el.value.trim() : ''; }
-function showErr(msg) { const el = document.getElementById('form-error'); el.textContent = msg; el.style.display = 'block'; }
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var cc=gv('f-class_code').trim(),cn=gv('f-class_name').trim();
+  if(!cc||!cn){errEl.textContent='Class Code and Class Name are required.';errEl.style.display='block';return;}
+  var id=gv('f-id');
+  var body={class_code:cc,class_name:cn,description:gv('f-description'),group_id:gv('f-group_id'),employment_type:gv('f-employment_type'),min_hours:parseInt(gv('f-min_hours'))||0,eligible_plans:gv('f-eligible_plans'),waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,cobra_eligible:gv('f-cobra_eligible'),hsa_eligible:gv('f-hsa_eligible'),oe_month:parseInt(gv('f-oe_month'))||10,contribution_override_pct:parseInt(gv('f-contribution_override_pct'))||0,override_type:gv('f-override_type'),notes:gv('f-notes'),status:gv('f-status')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});render();}
+  closeModal();toast(id?'Saving...':'Creating class...','info');
+  try{var res=await fetch(id?'/api/classes/'+id:'/api/classes',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Created ✓','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
+}
+async function del(id){if(!await confirmDialog('Delete this class?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/classes/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
 load();
-</script>
-</body>
-</html>
+</script></body></html>
