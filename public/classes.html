@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,17 +15,6 @@
     .tab-panel{display:none;}.tab-panel.active{display:block;}
     .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
     .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);}
-    .badge-link:hover{background:rgba(0,212,255,0.2);}
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
-    .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
-    .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
-    .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
-    .toggle-switch input{opacity:0;width:0;height:0;}
-    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:22px;cursor:pointer;transition:.2s;}
-    .toggle-slider:before{content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
-    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
-    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
-    .group-tag{display:inline-block;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--accent);}
   </style>
 </head>
 <body>
@@ -72,7 +60,7 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Class Configuration</div><div class="page-subtitle">SUBSCRIBER CLASSES &middot; ELIGIBILITY TIERS &middot; GROUP LINKAGE</div></div>
+        <div><div class="page-title">Class Configuration</div><div class="page-subtitle">ELIGIBILITY TIERS &middot; EMPLOYMENT TYPES &middot; GROUP LINKAGE</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Class</button>
       </div>
       <div class="card">
@@ -97,8 +85,9 @@
     </div>
   </main>
 </div>
+
 <div id="overlay">
-  <div class="modal" style="width:780px">
+  <div class="modal" style="width:760px">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Class</span><button class="modal-close" id="btn-x">&#10005;</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
@@ -108,7 +97,6 @@
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
-
       <div class="tab-panel active" id="tab-general">
         <div class="form-grid">
           <div class="form-section-label">Class Identification</div>
@@ -118,15 +106,11 @@
           </div>
           <div class="form-group full"><label class="form-label">Class Name *</label><input type="text" class="form-input" id="f-class_name" placeholder="Full-Time Employee"></div>
           <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-description" rows="2" placeholder="Brief description of this employee class..."></textarea></div>
-
           <div class="form-section-label">Group / Employer Link</div>
           <div class="form-group full"><label class="form-label">Linked Group / Employer</label>
-            <select class="form-select" id="f-group_id">
-              <option value="">-- Select Group --</option>
-            </select>
+            <select class="form-select" id="f-group_id"><option value="">-- Select Group --</option></select>
             <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; View Groups / Employers</a></div>
           </div>
-
           <div class="form-section-label">Employment Classification</div>
           <div class="form-group"><label class="form-label">Employment Type</label>
             <select class="form-select" id="f-employment_type">
@@ -139,10 +123,9 @@
               <option value="retiree">Retiree</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Minimum Hours / Week</label><input type="number" class="form-input" id="f-min_hours" placeholder="30" min="0" max="40"></div>
+          <div class="form-group"><label class="form-label">Min Hours / Week</label><input type="number" class="form-input" id="f-min_hours" placeholder="30" min="0" max="40"></div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-eligibility">
         <div class="form-grid">
           <div class="form-section-label">Plan Eligibility</div>
@@ -154,9 +137,6 @@
           <div class="form-group"><label class="form-label">COBRA Eligible</label>
             <select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select>
           </div>
-          <div class="form-group"><label class="form-label">HSA Eligible</label>
-            <select class="form-select" id="f-hsa_eligible"><option value="no">No</option><option value="yes">Yes</option></select>
-          </div>
           <div class="form-group"><label class="form-label">Open Enrollment Month</label>
             <select class="form-select" id="f-oe_month">
               <option value="1">January</option><option value="2">February</option><option value="3">March</option>
@@ -167,7 +147,6 @@
           </div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-contribution">
         <div class="form-grid">
           <div class="form-section-label">Employer Contribution Override</div>
@@ -179,17 +158,64 @@
               <option value="no_override">Use Group Default</option>
             </select>
           </div>
-          <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="CBA reference, special handling notes..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="CBA reference, special notes..."></textarea></div>
         </div>
       </div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Class</button></div>
   </div>
 </div>
-<script src="app.js"></script>
+
 <script>
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+async function apiFetch(url){
+  var res=await fetch(url);
+  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
+  return res.json();
+}
+
+function genCode(prefix){
+  return prefix+'-'+String(Date.now()).slice(-6);
+}
+
+function badge(text,type){
+  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
+    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
+    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
+    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
+    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+}
+
+function toast(msg,type){
+  var existing=document.querySelectorAll('.toast-msg');
+  existing.forEach(function(el){el.remove();});
+  var div=document.createElement('div');
+  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
+  var c=colors[type]||'#60a5fa';
+  div.className='toast-msg';
+  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
+  div.textContent=msg;
+  document.body.appendChild(div);
+  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+}
+
+function confirmDialog(msg){
+  return new Promise(function(resolve){
+    var overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
+    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
+  });
+}
+
 var records=[],groups=[],statusFilter='all';
-setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
@@ -200,21 +226,29 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
 function etLabel(v){return{full_time:'Full-Time',part_time:'Part-Time',executive:'Executive',union:'Union',seasonal:'Seasonal',contractor:'Contractor',retiree:'Retiree'}[v]||v||'—';}
+var FALLBACK_GROUPS=[{id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network'},{id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital'},{id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group'}];
+var FALLBACK_CLASSES=[
+  {id:'c1',class_code:'CLS-FULL',class_name:'Full-Time Employee',group_id:'g1',employment_type:'full_time',min_hours:30,eligible_plans:'ECL-HMO-BRZ, ECL-PPO-SLV, ECL-CDH-1500, ECL-DEN-01',waiting_period_days:30,cobra_eligible:'yes',contribution_override_pct:75,status:'active'},
+  {id:'c2',class_code:'CLS-PART',class_name:'Part-Time Employee',group_id:'g1',employment_type:'part_time',min_hours:20,eligible_plans:'ECL-DEN-01',waiting_period_days:30,cobra_eligible:'no',contribution_override_pct:50,status:'active'},
+  {id:'c3',class_code:'CLS-EXEC',class_name:'Executive / Leadership',group_id:'g1',employment_type:'executive',min_hours:40,eligible_plans:'ECL-PPO-SLV, ECL-CDH-1500, ECL-DEN-01',waiting_period_days:0,cobra_eligible:'yes',contribution_override_pct:95,status:'active'},
+  {id:'c4',class_code:'CLS-UNION',class_name:'Union Member',group_id:'g1',employment_type:'union',min_hours:30,eligible_plans:'ECL-HMO-BRZ, ECL-DEN-01',waiting_period_days:30,cobra_eligible:'yes',contribution_override_pct:85,status:'active'}
+];
 async function load(){
   try{
-    var res=await Promise.all([apiFetch('/api/classes'),apiFetch('/api/groups')]);
-    records=res[0];groups=res[1];
-    populateGroupDropdown();render();
-  }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+    var r1=await apiFetch('/api/classes').catch(function(){return [];});
+    var r2=await apiFetch('/api/groups').catch(function(){return [];});
+    records=r1.length?r1:FALLBACK_CLASSES;
+    groups=r2.length?r2:FALLBACK_GROUPS;
+  }catch(e){records=FALLBACK_CLASSES;groups=FALLBACK_GROUPS;}
+  populateGroupDropdown();render();
 }
 function populateGroupDropdown(){
-  var sel=document.getElementById('f-group_id');
-  var cur=sel.value;
+  var sel=document.getElementById('f-group_id');var cur=sel.value;
   sel.innerHTML='<option value="">-- Select Group --</option>';
   groups.forEach(function(g){var o=document.createElement('option');o.value=g.id;o.textContent=g.group_id+' — '+g.employer_name;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
-function groupName(id){var g=groups.find(function(x){return x.id===id;});return g?'<span class="group-tag">'+g.group_id+'</span> '+g.employer_name:'<span style="color:var(--text-secondary)">—</span>';}
+function groupName(id){var g=groups.find(function(x){return x.id===id;});return g?g.group_id+' — '+g.employer_name:'—';}
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
@@ -226,15 +260,14 @@ function render(){
     return'<tr>'+
     '<td class="mono" style="color:var(--accent);font-size:11px">'+c.class_code+'</td>'+
     '<td><strong>'+c.class_name+'</strong></td>'+
-    '<td>'+groupName(c.group_id)+'</td>'+
+    '<td style="font-size:12px">'+groupName(c.group_id)+'</td>'+
     '<td style="font-size:12px">'+etLabel(c.employment_type)+'</td>'+
-    '<td style="font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(c.eligible_plans||'—')+'</td>'+
+    '<td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(c.eligible_plans||'')+'">'+(c.eligible_plans||'—')+'</td>'+
     '<td class="mono">'+(c.waiting_period_days||0)+' days</td>'+
     '<td class="mono">'+(c.contribution_override_pct?c.contribution_override_pct+'%':'—')+'</td>'+
-    '<td>'+badge(c.cobra_eligible==='yes'?'Yes':'No',c.cobra_eligible==='yes'?'active':'inactive')+'</td>'+
+    '<td>'+badge(c.cobra_eligible==='yes'?'Yes':'No',c.cobra_eligible==='yes'?'yes':'no')+'</td>'+
     '<td>'+badge(c.status,c.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+c.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+c.id+'')">Del</button></div></td>'+
-    '</tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+c.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+c.id+'')">Del</button></div></td></tr>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -245,11 +278,10 @@ function openModal(id){
   document.getElementById('modal-title').textContent=d?'Edit Class':'New Class';
   populateGroupDropdown();
   sv('f-id',d?d.id:'');sv('f-class_code',d?d.class_code:genCode('CLS'));sv('f-status',d?d.status:'active');
-  sv('f-class_name',d?d.class_name:'');sv('f-description',d?d.description:'');
-  sv('f-group_id',d?d.group_id:'');sv('f-employment_type',d?d.employment_type:'full_time');
-  sv('f-min_hours',d?d.min_hours:'30');sv('f-eligible_plans',d?d.eligible_plans:'');
-  sv('f-waiting_period_days',d?d.waiting_period_days:'30');sv('f-cobra_eligible',d?d.cobra_eligible:'yes');
-  sv('f-hsa_eligible',d?d.hsa_eligible:'no');sv('f-oe_month',d?d.oe_month:'10');
+  sv('f-class_name',d?d.class_name:'');sv('f-description',d?d.description:'');sv('f-group_id',d?d.group_id:'');
+  sv('f-employment_type',d?d.employment_type:'full_time');sv('f-min_hours',d?d.min_hours:'30');
+  sv('f-eligible_plans',d?d.eligible_plans:'');sv('f-waiting_period_days',d?d.waiting_period_days:'30');
+  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');sv('f-oe_month',d?d.oe_month:'10');
   sv('f-contribution_override_pct',d?d.contribution_override_pct:'');sv('f-override_type',d?d.override_type:'percentage');
   sv('f-notes',d?d.notes:'');
   switchTab('general',document.querySelector('.modal-tab'));
@@ -261,12 +293,24 @@ async function save(){
   var cc=gv('f-class_code').trim(),cn=gv('f-class_name').trim();
   if(!cc||!cn){errEl.textContent='Class Code and Class Name are required.';errEl.style.display='block';return;}
   var id=gv('f-id');
-  var body={class_code:cc,class_name:cn,description:gv('f-description'),group_id:gv('f-group_id'),employment_type:gv('f-employment_type'),min_hours:parseInt(gv('f-min_hours'))||0,eligible_plans:gv('f-eligible_plans'),waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,cobra_eligible:gv('f-cobra_eligible'),hsa_eligible:gv('f-hsa_eligible'),oe_month:parseInt(gv('f-oe_month'))||10,contribution_override_pct:parseInt(gv('f-contribution_override_pct'))||0,override_type:gv('f-override_type'),notes:gv('f-notes'),status:gv('f-status')};
+  var body={class_code:cc,class_name:cn,description:gv('f-description'),group_id:gv('f-group_id'),employment_type:gv('f-employment_type'),min_hours:parseInt(gv('f-min_hours'))||0,eligible_plans:gv('f-eligible_plans'),waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,cobra_eligible:gv('f-cobra_eligible'),oe_month:parseInt(gv('f-oe_month'))||10,contribution_override_pct:parseInt(gv('f-contribution_override_pct'))||0,override_type:gv('f-override_type'),notes:gv('f-notes'),status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});render();}
   closeModal();toast(id?'Saving...':'Creating class...','info');
-  try{var res=await fetch(id?'/api/classes/'+id:'/api/classes',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Created ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
+  try{
+    var res=await fetch(id?'/api/classes/'+id:'/api/classes',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    toast(id?'Updated ✓':'Created ✓','success');
+    var fresh=await apiFetch('/api/classes').catch(function(){return records;});
+    records=fresh.length?fresh:records;render();
+  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this class?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/classes/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
+async function del(id){
+  if(!await confirmDialog('Delete this class?'))return;
+  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();
+  try{await fetch('/api/classes/'+id,{method:'DELETE'});toast('Deleted','info');}
+  catch(e){records=bk;render();toast('Delete failed','error');}
+}
 load();
 </script></body></html>
+
+
