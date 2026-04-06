@@ -477,7 +477,7 @@ function render(){
     '<td class="mono">$'+parseFloat(p.premium||0).toFixed(2)+'/mo</td>'+
     '<td>'+cdh+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + p.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + p.id + '\')" >Del</button></div></td></tr>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
