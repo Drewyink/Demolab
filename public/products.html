@@ -342,7 +342,7 @@ function render(){
     '<td class="mono" style="font-size:11px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
     '<td class="mono" style="font-size:11px">'+(p.termination_date?p.termination_date.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + p.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + p.id + '\')" >Del</button></div></td></tr>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -395,6 +395,7 @@ async function del(id){
 }
 load();
 </script></body></html>
+
 
 
 
