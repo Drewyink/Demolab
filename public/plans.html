@@ -8,15 +8,20 @@
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:90vh;overflow-y:auto;}
+    .modal{max-height:92vh;overflow-y:auto;}
+    .modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:9px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
     .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);margin:3px;}
     .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
     .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
     .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
     .toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
     .toggle-switch input{opacity:0;width:0;height:0;}
     .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:22px;cursor:pointer;transition:.2s;}
-    .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
     .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
     .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);}
   </style>
@@ -26,7 +31,8 @@
   <aside class="sidebar">
     <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
       <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
@@ -37,13 +43,15 @@
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
       <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Dental</div>
+      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
       <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
       <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
       <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <div class="nav-section-label">Government Programs</div>
+      <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
@@ -53,21 +61,22 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration → <span>Plans</span></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration &rarr; <span>Plans</span></span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Plan Configuration</div><div class="page-subtitle">HMO · PPO · HDHP · CDH · EPO · POS</div></div>
+        <div><div class="page-title">Plan Configuration</div><div class="page-subtitle">HMO &middot; PPO &middot; HDHP &middot; CDH &middot; EPO &middot; POS &middot; DENTAL</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Plan</button>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">📋 Plans <span class="count-label" id="count"></span></span>
+          <span class="card-title">&#128203; Plans <span class="count-label" id="count"></span></span>
           <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search plans..." id="search-input"></div>
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">&#128270;</span><input type="text" placeholder="Search plans..." id="search-input"></div>
             <div class="filter-tabs">
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-active">Active</button>
@@ -77,8 +86,8 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Plan Code</th><th>Plan Name</th><th>Product</th><th>Type</th><th>Network</th><th>Ind. Deductible</th><th>Ind. OOP Max</th><th>Base Premium (EE)</th><th>CDH/HSA</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr><th>Plan Code</th><th>Plan Name</th><th>Product</th><th>Type</th><th>LOB</th><th>Network</th><th>Ind. Ded.</th><th>Ind. OOP Max</th><th>Premium (EE)</th><th>CDH/HSA</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="12"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -86,84 +95,300 @@
   </main>
 </div>
 
-<!-- Modal — only closes via Cancel or Save, NOT by clicking outside -->
 <div id="overlay">
-  <div class="modal" style="width:760px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Plan</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
+  <div class="modal" style="width:840px">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Plan</span><button class="modal-close" id="btn-x">&#10005;</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('header',this)">1. Plan Header</button>
+        <button class="modal-tab" onclick="switchTab('network',this)">2. Network</button>
+        <button class="modal-tab" onclick="switchTab('benefits',this)">3. Benefits</button>
+        <button class="modal-tab" onclick="switchTab('accumulators',this)">4. Accumulators</button>
+        <button class="modal-tab" onclick="switchTab('pricing',this)">5. Pricing</button>
+        <button class="modal-tab" onclick="switchTab('claims',this)">6. Claims Rules</button>
+        <button class="modal-tab" onclick="switchTab('eligibility',this)">7. Eligibility</button>
+        <button class="modal-tab" onclick="switchTab('group',this)">8. Group</button>
+        <button class="modal-tab" onclick="switchTab('compliance',this)">9. Compliance</button>
+      </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
-      <div class="form-grid">
-        <div class="form-section-label">Plan Identification</div>
-        <div class="form-group"><label class="form-label">Product Code *</label>
-          <select class="form-select" id="f-product_code">
-            <option value="">— Select Product —</option>
-            <option value="ECL-HMO">ECL-HMO — EchoLink HMO Clinic Select</option>
-            <option value="ECL-PPO">ECL-PPO — EchoLink PPO Open Access</option>
-            <option value="ECL-CDH">ECL-CDH — EchoLink CDH / HDHP + HSA</option>
-            <option value="ECL-DEN">ECL-DEN — EchoLink Dental Essentials</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Plan Code *</label><input type="text" class="form-input" id="f-plan_code" placeholder="ECL-HMO-BRZ"></div>
-        <div class="form-group"><label class="form-label">Plan Name *</label><input type="text" class="form-input" id="f-plan_name" placeholder="EchoLink HMO Bronze"></div>
-        <div class="form-group"><label class="form-label">Status</label>
-          <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
-        </div>
-        <div class="form-group"><label class="form-label">Plan Type</label>
-          <select class="form-select" id="f-plan_type">
-            <option value="hmo">HMO — Health Maintenance Organization</option>
-            <option value="ppo">PPO — Preferred Provider Organization</option>
-            <option value="hdhp">HDHP — High-Deductible Health Plan</option>
-            <option value="cdh">CDH — Consumer-Directed Health Plan</option>
-            <option value="epo">EPO — Exclusive Provider Organization</option>
-            <option value="pos">POS — Point of Service</option>
-            <option value="dental">Dental PPO</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Network</label>
-          <select class="form-select" id="f-network">
-            <option value="inn_only">In-Network Only</option>
-            <option value="inn_oon">In-Network + Out-of-Network</option>
-            <option value="dental_ppo">Dental PPO</option>
-            <option value="dental_hmo">Dental HMO</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Referral Required</label>
-          <select class="form-select" id="f-referral_required">
-            <option value="no">No — Direct Access</option>
-            <option value="yes">Yes — PCP Referral Required</option>
-          </select>
-        </div>
 
-        <div class="form-section-label">Deductibles</div>
-        <div class="form-group"><label class="form-label">Individual Deductible ($)</label><input type="number" class="form-input" id="f-deductible" step="0.01" min="0" placeholder="3000"></div>
-        <div class="form-group"><label class="form-label">Family Deductible ($)</label><input type="number" class="form-input" id="f-family_deductible" step="0.01" min="0" placeholder="6000"></div>
-
-        <div class="form-section-label">Out-of-Pocket Maximum</div>
-        <div class="form-group"><label class="form-label">Individual OOP Max ($)</label><input type="number" class="form-input" id="f-oop_max" step="0.01" min="0" placeholder="7350"></div>
-        <div class="form-group"><label class="form-label">Family OOP Max ($)</label><input type="number" class="form-input" id="f-family_oop_max" step="0.01" min="0" placeholder="14700"></div>
-
-        <div class="form-section-label">Pricing</div>
-        <div class="form-group"><label class="form-label">Base Premium — EE ($/mo)</label><input type="number" class="form-input" id="f-premium" step="0.01" min="0" placeholder="289.00"></div>
-        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
-        <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
-
-        <div class="form-section-label">Plan Design Flags</div>
-        <div class="toggle-row">
-          <div><div class="toggle-label">Embedded Deductible</div><div class="toggle-sub">Each family member satisfies their own individual deductible within the family total</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="f-embedded_deductible"><span class="toggle-slider"></span></label>
+      <!-- TAB 1: PLAN HEADER -->
+      <div class="tab-panel active" id="tab-header">
+        <div class="form-grid">
+          <div class="form-section-label">&#9989; Plan Header — Basic Info</div>
+          <div class="form-group"><label class="form-label">Product Code *</label>
+            <select class="form-select" id="f-product_code">
+              <option value="">— Loading Products —</option>
+            </select>
+            <div style="margin-top:6px"><a class="badge-link" href="products.html">&#128230; Manage Products</a></div>
+          </div>
+          <div class="form-group"><label class="form-label">Plan Code *</label><input type="text" class="form-input" id="f-plan_code" placeholder="ECL-HMO-BRZ"></div>
+          <div class="form-group full"><label class="form-label">Plan Name *</label><input type="text" class="form-input" id="f-plan_name" placeholder="EchoLink HMO Bronze"></div>
+          <div class="form-group"><label class="form-label">Plan Type</label>
+            <select class="form-select" id="f-plan_type">
+              <option value="hmo">HMO — Health Maintenance Organization</option>
+              <option value="ppo">PPO — Preferred Provider Organization</option>
+              <option value="hdhp">HDHP — High-Deductible Health Plan</option>
+              <option value="cdh">CDH — Consumer-Directed Health Plan</option>
+              <option value="epo">EPO — Exclusive Provider Organization</option>
+              <option value="pos">POS — Point of Service</option>
+              <option value="dental">Dental PPO</option>
+              <option value="vision">Vision</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Line of Business (LOB)</label>
+            <select class="form-select" id="f-lob">
+              <option value="commercial">Commercial</option>
+              <option value="medicare">Medicare</option>
+              <option value="medicaid">Medicaid</option>
+              <option value="marketplace">ACA Marketplace</option>
+              <option value="chip">CHIP</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          </div>
         </div>
-        <div class="toggle-row">
-          <div><div class="toggle-label">CDH / HSA Eligible</div><div class="toggle-sub">IRS-qualified HDHP — enables HSA contributions and activates deductible-first rule at plan level</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="f-cdh_eligible"><span class="toggle-slider"></span></label>
+      </div>
+
+      <!-- TAB 2: NETWORK -->
+      <div class="tab-panel" id="tab-network">
+        <div class="form-grid">
+          <div class="form-section-label">&#127973; Network Configuration</div>
+          <div class="form-group"><label class="form-label">Network ID Assignment</label><input type="text" class="form-input" id="f-network_id" placeholder="NET-HMO-001"></div>
+          <div class="form-group"><label class="form-label">Network Type</label>
+            <select class="form-select" id="f-network">
+              <option value="inn_only">In-Network Only</option>
+              <option value="inn_oon">In-Network + Out-of-Network</option>
+              <option value="dental_ppo">Dental PPO</option>
+              <option value="dental_hmo">Dental HMO</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Referral Required</label>
+            <select class="form-select" id="f-referral_required">
+              <option value="no">No — Direct Access</option>
+              <option value="yes">Yes — PCP Referral Required</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Service Area / Region</label><input type="text" class="form-input" id="f-service_area" placeholder="NC, SC"></div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">PCP Required</div><div class="toggle-sub">Members must designate and use a Primary Care Physician</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-pcp_required"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Out-of-Network Emergency</div><div class="toggle-sub">ER services covered at INN rates regardless of network</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-oon_emergency" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="providers.html">&#127973; Providers</a>
+            <a class="badge-link" href="provider-contracts.html">&#128220; Provider Contracts</a>
+            <a class="badge-link" href="fee-tables.html">&#128202; Fee Tables</a>
+            <a class="badge-link" href="networx.html">&#9881; NetworX Pricing</a>
+          </div>
         </div>
-        <div class="toggle-row">
-          <div><div class="toggle-label">COB — Non-Duplication Method</div><div class="toggle-sub">Secondary plan pays gap only if primary paid less than secondary would have as primary</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="f-cob_enabled"><span class="toggle-slider"></span></label>
+      </div>
+
+      <!-- TAB 3: BENEFITS -->
+      <div class="tab-panel" id="tab-benefits">
+        <div class="form-grid">
+          <div class="form-section-label">&#128176; Benefit Plan Setup — Core of Plan</div>
+          <div class="form-group"><label class="form-label">Benefit Package ID</label><input type="text" class="form-input" id="f-benefit_package_id" placeholder="BPK-HMO-001"></div>
+          <div class="form-group"><label class="form-label">Individual Deductible ($)</label><input type="number" class="form-input" id="f-deductible" step="0.01" min="0" placeholder="3000"></div>
+          <div class="form-group"><label class="form-label">Family Deductible ($)</label><input type="number" class="form-input" id="f-family_deductible" step="0.01" min="0" placeholder="6000"></div>
+          <div class="form-group"><label class="form-label">Individual OOP Max ($)</label><input type="number" class="form-input" id="f-oop_max" step="0.01" min="0" placeholder="7350"></div>
+          <div class="form-group"><label class="form-label">Family OOP Max ($)</label><input type="number" class="form-input" id="f-family_oop_max" step="0.01" min="0" placeholder="14700"></div>
+          <div class="form-group"><label class="form-label">PCP Copay ($)</label><input type="number" class="form-input" id="f-pcp_copay" step="0.01" min="0" placeholder="25.00"></div>
+          <div class="form-group"><label class="form-label">Specialist Copay ($)</label><input type="number" class="form-input" id="f-spec_copay" step="0.01" min="0" placeholder="60.00"></div>
+          <div class="form-group"><label class="form-label">ER Copay ($)</label><input type="number" class="form-input" id="f-er_copay" step="0.01" min="0" placeholder="300.00"></div>
+          <div class="form-group"><label class="form-label">Urgent Care Copay ($)</label><input type="number" class="form-input" id="f-uc_copay" step="0.01" min="0" placeholder="75.00"></div>
+          <div class="form-group"><label class="form-label">Coinsurance % (after ded.)</label><input type="number" class="form-input" id="f-coinsurance" step="1" min="0" max="100" placeholder="20"></div>
+          <div class="form-group"><label class="form-label">Generic Rx Copay ($)</label><input type="number" class="form-input" id="f-rx_generic_copay" step="0.01" min="0" placeholder="12.00"></div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="benefits.html">&#10010; Benefits</a>
+            <a class="badge-link" href="service-groups.html">&#128193; Service Groups</a>
+            <a class="badge-link" href="dental.html">&#129463; Dental Config</a>
+          </div>
         </div>
-        <div class="toggle-row">
-          <div><div class="toggle-label">ACA Non-Grandfathered</div><div class="toggle-sub">Plan complies with all ACA requirements including preventive at $0 cost share</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="f-aca_compliant"><span class="toggle-slider"></span></label>
+      </div>
+
+      <!-- TAB 4: ACCUMULATORS -->
+      <div class="tab-panel" id="tab-accumulators">
+        <div class="form-grid">
+          <div class="form-section-label">&#128179; Accumulators — Member Financial Tracking</div>
+          <div class="form-group"><label class="form-label">Accumulator Reset Rule</label>
+            <select class="form-select" id="f-accumulator_reset">
+              <option value="calendar_year">Calendar Year (Jan 1)</option>
+              <option value="plan_year">Plan Year (per effective date)</option>
+              <option value="benefit_year">Benefit Year</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">OON Deductible ($)</label><input type="number" class="form-input" id="f-oon_deductible" step="0.01" min="0" placeholder="3600"></div>
+          <div class="form-group"><label class="form-label">OON OOP Max ($)</label><input type="number" class="form-input" id="f-oon_oop_max" step="0.01" min="0" placeholder="11000"></div>
+          <div class="form-group"><label class="form-label">Dental Annual Max ($)</label><input type="number" class="form-input" id="f-dental_annual_max" step="0.01" min="0" placeholder="1500"></div>
+          <div class="form-group"><label class="form-label">Ortho Lifetime Max ($)</label><input type="number" class="form-input" id="f-ortho_lifetime_max" step="0.01" min="0" placeholder="2000"></div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Embedded Deductible</div><div class="toggle-sub">Each family member satisfies their own individual deductible within the family total</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-embedded_deductible"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">INN Accumulations Count Toward OON</div><div class="toggle-sub">In-network deductible payments also count toward out-of-network deductible</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-cross_accumulator"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: PRICING -->
+      <div class="tab-panel" id="tab-pricing">
+        <div class="form-grid">
+          <div class="form-section-label">&#128181; Pricing / Fee Schedule</div>
+          <div class="form-group"><label class="form-label">Base Premium — EE ($/mo)</label><input type="number" class="form-input" id="f-premium" step="0.01" min="0" placeholder="289.00"></div>
+          <div class="form-group"><label class="form-label">Fee Schedule ID</label><input type="text" class="form-input" id="f-fee_schedule_id" placeholder="FT-RBRVS-2026"></div>
+          <div class="form-group"><label class="form-label">Reimbursement Method</label>
+            <select class="form-select" id="f-reimbursement_method">
+              <option value="rbrvs">RBRVS — Relative Value Scale</option>
+              <option value="drg">DRG — Diagnosis Related Group</option>
+              <option value="capitation">Capitation — PMPM</option>
+              <option value="fee_schedule">Custom Fee Schedule</option>
+              <option value="billed_charges">Billed Charges (percentage)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">PMPM Amount ($) — if capitation</label><input type="number" class="form-input" id="f-pmpm" step="0.01" min="0" placeholder="0.00"></div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="pricing.html">&#128178; Pricing Module</a>
+            <a class="badge-link" href="fee-tables.html">&#128202; Fee Tables</a>
+            <a class="badge-link" href="networx.html">&#9881; NetworX Pricing</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: CLAIMS RULES -->
+      <div class="tab-panel" id="tab-claims">
+        <div class="form-grid">
+          <div class="form-section-label">&#128260; Claims Processing Rules</div>
+          <div class="form-group"><label class="form-label">COB Method</label>
+            <select class="form-select" id="f-cob_method">
+              <option value="non_duplication">Non-Duplication</option>
+              <option value="coordination">Standard COB</option>
+              <option value="birthday_rule">Birthday Rule (dental)</option>
+              <option value="maintenance_of_benefits">Maintenance of Benefits</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Claim Types Accepted</label>
+            <select class="form-select" id="f-claim_types">
+              <option value="both">Professional + Institutional</option>
+              <option value="professional">Professional Only (837P)</option>
+              <option value="institutional">Institutional Only (837I)</option>
+              <option value="dental">Dental (837D)</option>
+            </select>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Prior Authorization Required</div><div class="toggle-sub">PA required for imaging, surgery, specialty Rx, and inpatient services</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-pa_required" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">CDH / HSA Eligible</div><div class="toggle-sub">IRS-qualified HDHP — enables HSA contributions and deductible-first rule at plan level</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-cdh_eligible"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">COB Enabled</div><div class="toggle-sub">Coordination of Benefits active on this plan</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-cob_enabled" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Duplicate Claim Detection</div><div class="toggle-sub">Auto-flag claims matching same member, DOS, provider, and procedure code</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-dup_detection" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="claims.html">&#128196; Claims</a>
+            <a class="badge-link" href="claim-pends.html">&#9208; Claim Pends</a>
+            <a class="badge-link" href="authorizations.html">&#128272; Authorizations</a>
+            <a class="badge-link" href="sql-validator.html">&#128302; SQL Validator</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: ELIGIBILITY -->
+      <div class="tab-panel" id="tab-eligibility">
+        <div class="form-grid">
+          <div class="form-section-label">&#129522; Eligibility Rules</div>
+          <div class="form-group"><label class="form-label">Coverage Tiers Offered</label>
+            <select class="form-select" id="f-tiers_offered">
+              <option value="all_four">EE, ES, EC, FAM — All Four Tiers</option>
+              <option value="ee_fam">EE and FAM Only</option>
+              <option value="ee_only">Employee Only</option>
+              <option value="custom">Custom — see notes</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Max Dependent Age</label><input type="number" class="form-input" id="f-max_dependent_age" placeholder="26" min="0"></div>
+          <div class="form-group"><label class="form-label">Enrollment Wait Period (days)</label><input type="number" class="form-input" id="f-enrollment_wait" placeholder="30" min="0"></div>
+          <div class="form-group"><label class="form-label">Retroactive Enrollment (days)</label><input type="number" class="form-input" id="f-retro_days" placeholder="60" min="0"></div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Domestic Partner Eligible</div><div class="toggle-sub">Domestic partners may enroll as dependents under this plan</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-domestic_partner" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Disabled Dependent Extension</div><div class="toggle-sub">Disabled dependents may remain on plan beyond age 26</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-disabled_dependent" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="members.html">&#128100; Members</a>
+            <a class="badge-link" href="classes.html">&#127991; Classes</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 8: GROUP ASSOCIATION -->
+      <div class="tab-panel" id="tab-group">
+        <div class="form-grid">
+          <div class="form-section-label">&#127962; Group / Employer Association</div>
+          <div class="form-group full"><label class="form-label">Primary Group / Employer</label>
+            <select class="form-select" id="f-group_id">
+              <option value="">-- Select Group --</option>
+            </select>
+            <div style="margin-top:6px"><a class="badge-link" href="groups.html">&#127970; Manage Groups / Employers</a></div>
+          </div>
+          <div class="form-group full"><label class="form-label">Plan Offering Description (for member materials)</label>
+            <textarea class="form-textarea" id="f-plan_offering_desc" rows="2" placeholder="Brief plan description for enrollment guides and member communications..."></textarea>
+          </div>
+          <div class="form-group"><label class="form-label">Open Enrollment Priority</label>
+            <select class="form-select" id="f-oe_priority">
+              <option value="1">1 — Default / Featured</option>
+              <option value="2">2 — Standard</option>
+              <option value="3">3 — Secondary</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Employer Contribution — EE ($)</label><input type="number" class="form-input" id="f-employer_contrib_ee" step="0.01" min="0" placeholder="200.00"></div>
+        </div>
+      </div>
+
+      <!-- TAB 9: COMPLIANCE -->
+      <div class="tab-panel" id="tab-compliance">
+        <div class="form-grid">
+          <div class="form-section-label">&#128272; Regulatory / Compliance</div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">ACA Non-Grandfathered</div><div class="toggle-sub">Plan complies with all ACA requirements including preventive at $0 cost share</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-aca_compliant" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Mental Health Parity (MHPAEA)</div><div class="toggle-sub">MH/SUD benefits at parity with medical and surgical</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-mhpaea" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Medicare Secondary Payer (MSP)</div><div class="toggle-sub">Plan is secondary to Medicare when applicable</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-msp"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">State Mandates Apply</div><div class="toggle-sub">State-specific coverage mandates are in effect for this plan</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="f-state_mandates" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-group"><label class="form-label">CMS Contract ID (if applicable)</label><input type="text" class="form-input" id="f-cms_contract_id" placeholder="H1234 or leave blank"></div>
+          <div class="form-group"><label class="form-label">HIOS Plan ID (marketplace)</label><input type="text" class="form-input" id="f-hios_id" placeholder="Leave blank if not applicable"></div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="programs.html">&#127963; Medicaid / Medicare Programs</a>
+            <a class="badge-link" href="audit.html">&#128269; Audit Log</a>
+          </div>
         </div>
       </div>
     </div>
@@ -173,83 +398,116 @@
 
 <script src="app.js"></script>
 <script>
-var records=[],statusFilter='all';
+var records=[],products=[],groups=[],statusFilter='all';
 setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
-// NO overlay click-to-close — modal only closes via Cancel or X button
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-document.getElementById('tab-all').addEventListener('click',function(){setFilter('all',this);});
-document.getElementById('tab-active').addEventListener('click',function(){setFilter('active',this);});
-document.getElementById('tab-inactive').addEventListener('click',function(){setFilter('inactive',this);});
+['all','active','inactive'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
+function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
-async function load(){try{records=await apiFetch('/api/plans');render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
-function nlabel(n){return{inn_only:'INN Only',inn_oon:'INN + OON',dental_ppo:'Dental PPO',dental_hmo:'Dental HMO'}[n]||n||'—';}
+function nlabel(n){return{inn_only:'INN Only',inn_oon:'INN + OON',dental_ppo:'Dental PPO',dental_hmo:'Dental HMO',national:'National'}[n]||n||'—';}
+function lobLabel(v){return{commercial:'Commercial',medicare:'Medicare',medicaid:'Medicaid',marketplace:'Marketplace',chip:'CHIP'}[v]||v||'—';}
+function populateProductDropdown(){
+  var sel=document.getElementById('f-product_code');var cur=sel.value;
+  sel.innerHTML='<option value="">— Select Product —</option>';
+  products.forEach(function(p){var o=document.createElement('option');o.value=p.product_code;o.textContent=p.product_code+' — '+p.product_name;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+function populateGroupDropdown(){
+  var sel=document.getElementById('f-group_id');var cur=sel.value;
+  sel.innerHTML='<option value="">-- Select Group --</option>';
+  groups.forEach(function(g){var o=document.createElement('option');o.value=g.id;o.textContent=g.group_id+' — '+g.employer_name;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+async function load(){
+  try{
+    var res=await Promise.all([apiFetch('/api/plans'),apiFetch('/api/products'),apiFetch('/api/groups')]);
+    records=res[0];products=res[1];groups=res[2];
+    populateProductDropdown();populateGroupDropdown();render();
+  }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+}
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">📋</div><p>No plans found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">&#128203;</div><p>No plans found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(p){
-    var cdh=p.cdh_eligible?'<span style="color:#2ed573;font-size:11px;font-weight:700">✓ HSA</span>':'<span style="color:var(--text-secondary);font-size:11px">—</span>';
-    return'<tr><td><span style="font-family:monospace;font-size:11px;color:var(--accent)">'+p.plan_code+'</span></td>'+
+    var cdh=p.cdh_eligible?'<span style="color:#2ed573;font-size:11px;font-weight:700">&#10003; HSA</span>':'<span style="color:var(--text-secondary);font-size:11px">—</span>';
+    return'<tr>'+
+    '<td><span style="font-family:monospace;font-size:11px;color:var(--accent)">'+p.plan_code+'</span></td>'+
     '<td><strong>'+p.plan_name+'</strong></td>'+
     '<td style="font-size:11px;color:var(--text-secondary)">'+(p.product_code||'—')+'</td>'+
     '<td>'+badge((p.plan_type||'').toUpperCase(),p.plan_type)+'</td>'+
+    '<td style="font-size:11px">'+lobLabel(p.lob)+'</td>'+
     '<td style="font-size:12px">'+nlabel(p.network)+'</td>'+
     '<td class="mono">$'+parseFloat(p.deductible||0).toLocaleString()+'</td>'+
     '<td class="mono">$'+parseFloat(p.oop_max||0).toLocaleString()+'</td>'+
     '<td class="mono">$'+parseFloat(p.premium||0).toFixed(2)+'/mo</td>'+
     '<td>'+cdh+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+p.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+p.id+'\')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td>'+
+    '</tr>';
   }).join('');
 }
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Plan':'New Plan';
-  document.getElementById('f-id').value=d?d.id:'';
-  document.getElementById('f-product_code').value=d?(d.product_code||''):'';
-  document.getElementById('f-plan_code').value=d?d.plan_code:genCode('PLN');
-  document.getElementById('f-plan_name').value=d?(d.plan_name||''):'';
-  document.getElementById('f-plan_type').value=d?(d.plan_type||'hmo'):'hmo';
-  document.getElementById('f-network').value=d?(d.network||'inn_only'):'inn_only';
-  document.getElementById('f-referral_required').value=d?(d.referral_required||'no'):'no';
-  document.getElementById('f-deductible').value=d?(d.deductible||''):'';
-  document.getElementById('f-family_deductible').value=d?(d.family_deductible||''):'';
-  document.getElementById('f-oop_max').value=d?(d.oop_max||''):'';
-  document.getElementById('f-family_oop_max').value=d?(d.family_oop_max||''):'';
-  document.getElementById('f-premium').value=d?(d.premium||''):'';
-  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
-  document.getElementById('f-termination_date').value=d&&d.termination_date?d.termination_date.split('T')[0]:'';
-  document.getElementById('f-status').value=d?(d.status||'active'):'active';
-  document.getElementById('f-embedded_deductible').checked=d?!!d.embedded_deductible:false;
-  document.getElementById('f-cdh_eligible').checked=d?!!d.cdh_eligible:false;
-  document.getElementById('f-cob_enabled').checked=d?!!d.cob_enabled:false;
-  document.getElementById('f-aca_compliant').checked=d?(d.aca_compliant!==false):true;
+  populateProductDropdown();populateGroupDropdown();
+  sv('f-id',d?d.id:'');sv('f-product_code',d?d.product_code:'');sv('f-plan_code',d?d.plan_code:genCode('PLN'));
+  sv('f-plan_name',d?d.plan_name:'');sv('f-plan_type',d?d.plan_type:'hmo');sv('f-lob',d?d.lob:'commercial');
+  sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
+  sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');sv('f-status',d?d.status:'active');
+  sv('f-network_id',d?d.network_id:'');sv('f-network',d?d.network:'inn_only');
+  sv('f-referral_required',d?d.referral_required:'no');sv('f-service_area',d?d.service_area:'');
+  ck('f-pcp_required',d?d.pcp_required:false);ck('f-oon_emergency',d?d.oon_emergency!==false:true);
+  sv('f-benefit_package_id',d?d.benefit_package_id:'');sv('f-deductible',d?d.deductible:'');
+  sv('f-family_deductible',d?d.family_deductible:'');sv('f-oop_max',d?d.oop_max:'');
+  sv('f-family_oop_max',d?d.family_oop_max:'');sv('f-pcp_copay',d?d.pcp_copay:'');
+  sv('f-spec_copay',d?d.spec_copay:'');sv('f-er_copay',d?d.er_copay:'');sv('f-uc_copay',d?d.uc_copay:'');
+  sv('f-coinsurance',d?d.coinsurance:'');sv('f-rx_generic_copay',d?d.rx_generic_copay:'');
+  sv('f-accumulator_reset',d?d.accumulator_reset:'calendar_year');sv('f-oon_deductible',d?d.oon_deductible:'');
+  sv('f-oon_oop_max',d?d.oon_oop_max:'');sv('f-dental_annual_max',d?d.dental_annual_max:'');
+  sv('f-ortho_lifetime_max',d?d.ortho_lifetime_max:'');
+  ck('f-embedded_deductible',d?d.embedded_deductible:false);ck('f-cross_accumulator',d?d.cross_accumulator:false);
+  sv('f-premium',d?d.premium:'');sv('f-fee_schedule_id',d?d.fee_schedule_id:'');
+  sv('f-reimbursement_method',d?d.reimbursement_method:'rbrvs');sv('f-pmpm',d?d.pmpm:'');
+  sv('f-cob_method',d?d.cob_method:'non_duplication');sv('f-claim_types',d?d.claim_types:'both');
+  ck('f-pa_required',d?d.pa_required!==false:true);ck('f-cdh_eligible',d?!!d.cdh_eligible:false);
+  ck('f-cob_enabled',d?d.cob_enabled!==false:true);ck('f-dup_detection',d?d.dup_detection!==false:true);
+  sv('f-tiers_offered',d?d.tiers_offered:'all_four');sv('f-max_dependent_age',d?d.max_dependent_age:'26');
+  sv('f-enrollment_wait',d?d.enrollment_wait:'30');sv('f-retro_days',d?d.retro_days:'60');
+  ck('f-domestic_partner',d?d.domestic_partner!==false:true);ck('f-disabled_dependent',d?d.disabled_dependent!==false:true);
+  sv('f-group_id',d?d.group_id:'');sv('f-plan_offering_desc',d?d.plan_offering_desc:'');
+  sv('f-oe_priority',d?d.oe_priority:'1');sv('f-employer_contrib_ee',d?d.employer_contrib_ee:'');
+  ck('f-aca_compliant',d?d.aca_compliant!==false:true);ck('f-mhpaea',d?d.mhpaea!==false:true);
+  ck('f-msp',d?!!d.msp:false);ck('f-state_mandates',d?d.state_mandates!==false:true);
+  sv('f-cms_contract_id',d?d.cms_contract_id:'');sv('f-hios_id',d?d.hios_id:'');
+  switchTab('header',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
-  var pc=document.getElementById('f-plan_code').value.trim(),pn=document.getElementById('f-plan_name').value.trim();
+  var pc=gv('f-plan_code').trim(),pn=gv('f-plan_name').trim();
   if(!pc||!pn){errEl.textContent='Plan Code and Plan Name are required.';errEl.style.display='block';return;}
-  var id=document.getElementById('f-id').value;
-  var body={plan_code:pc,plan_name:pn,product_code:document.getElementById('f-product_code').value,plan_type:document.getElementById('f-plan_type').value,network:document.getElementById('f-network').value,referral_required:document.getElementById('f-referral_required').value,deductible:parseFloat(document.getElementById('f-deductible').value)||0,family_deductible:parseFloat(document.getElementById('f-family_deductible').value)||0,oop_max:parseFloat(document.getElementById('f-oop_max').value)||0,family_oop_max:parseFloat(document.getElementById('f-family_oop_max').value)||0,premium:parseFloat(document.getElementById('f-premium').value)||0,effective_date:document.getElementById('f-effective_date').value||null,termination_date:document.getElementById('f-termination_date').value||null,status:document.getElementById('f-status').value,embedded_deductible:document.getElementById('f-embedded_deductible').checked,cdh_eligible:document.getElementById('f-cdh_eligible').checked,cob_enabled:document.getElementById('f-cob_enabled').checked,aca_compliant:document.getElementById('f-aca_compliant').checked};
-  closeModal();
-  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});render();}
-  toast(id?'Saving...':'Creating...','info');
-  try{var res=await fetch(id?'/api/plans/'+id:'/api/plans',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Updated ✓':'Created ✓','success');await load();}
+  var id=gv('f-id');
+  var body={plan_code:pc,plan_name:pn,product_code:gv('f-product_code'),plan_type:gv('f-plan_type'),lob:gv('f-lob'),effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,status:gv('f-status'),network_id:gv('f-network_id'),network:gv('f-network'),referral_required:gv('f-referral_required'),service_area:gv('f-service_area'),pcp_required:document.getElementById('f-pcp_required').checked,oon_emergency:document.getElementById('f-oon_emergency').checked,benefit_package_id:gv('f-benefit_package_id'),deductible:parseFloat(gv('f-deductible'))||0,family_deductible:parseFloat(gv('f-family_deductible'))||0,oop_max:parseFloat(gv('f-oop_max'))||0,family_oop_max:parseFloat(gv('f-family_oop_max'))||0,pcp_copay:parseFloat(gv('f-pcp_copay'))||0,spec_copay:parseFloat(gv('f-spec_copay'))||0,er_copay:parseFloat(gv('f-er_copay'))||0,uc_copay:parseFloat(gv('f-uc_copay'))||0,coinsurance:parseFloat(gv('f-coinsurance'))||0,rx_generic_copay:parseFloat(gv('f-rx_generic_copay'))||0,accumulator_reset:gv('f-accumulator_reset'),oon_deductible:parseFloat(gv('f-oon_deductible'))||0,oon_oop_max:parseFloat(gv('f-oon_oop_max'))||0,dental_annual_max:parseFloat(gv('f-dental_annual_max'))||0,ortho_lifetime_max:parseFloat(gv('f-ortho_lifetime_max'))||0,embedded_deductible:document.getElementById('f-embedded_deductible').checked,cross_accumulator:document.getElementById('f-cross_accumulator').checked,premium:parseFloat(gv('f-premium'))||0,fee_schedule_id:gv('f-fee_schedule_id'),reimbursement_method:gv('f-reimbursement_method'),pmpm:parseFloat(gv('f-pmpm'))||0,cob_method:gv('f-cob_method'),claim_types:gv('f-claim_types'),pa_required:document.getElementById('f-pa_required').checked,cdh_eligible:document.getElementById('f-cdh_eligible').checked,cob_enabled:document.getElementById('f-cob_enabled').checked,dup_detection:document.getElementById('f-dup_detection').checked,tiers_offered:gv('f-tiers_offered'),max_dependent_age:parseInt(gv('f-max_dependent_age'))||26,enrollment_wait:parseInt(gv('f-enrollment_wait'))||0,retro_days:parseInt(gv('f-retro_days'))||60,domestic_partner:document.getElementById('f-domestic_partner').checked,disabled_dependent:document.getElementById('f-disabled_dependent').checked,group_id:gv('f-group_id'),plan_offering_desc:gv('f-plan_offering_desc'),oe_priority:parseInt(gv('f-oe_priority'))||1,employer_contrib_ee:parseFloat(gv('f-employer_contrib_ee'))||0,aca_compliant:document.getElementById('f-aca_compliant').checked,mhpaea:document.getElementById('f-mhpaea').checked,msp:document.getElementById('f-msp').checked,state_mandates:document.getElementById('f-state_mandates').checked,cms_contract_id:gv('f-cms_contract_id'),hios_id:gv('f-hios_id')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});render();}
+  closeModal();toast(id?'Saving...':'Creating plan...','info');
+  try{var res=await fetch(id?'/api/plans/'+id:'/api/plans',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Created ✓','success');await load();}
   catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
 async function del(id){if(!await confirmDialog('Delete this plan?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/plans/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
 load();
-</script>
-</body>
-</html>
+</script></body></html>
+
