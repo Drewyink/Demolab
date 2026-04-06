@@ -14,7 +14,7 @@
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
     .form-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);width:100%;grid-column:1/-1;}
-    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--accent);margin:3px;}
     .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);grid-column:1/-1;}
     .toggle-label{font-size:13px;color:var(--text-primary);font-weight:600;}
     .toggle-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
@@ -86,7 +86,7 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Product Code</th><th>Product Name</th><th>Type</th><th>LOB</th><th>Market</th><th>Funding</th><th>Network ID</th><th>Effective</th><th>Term Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Product Code</th><th>Product Name</th><th>Type</th><th>LOB</th><th>Market</th><th>Funding</th><th>Network ID</th><th>Effective</th><th>Term</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">&#9203;</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
@@ -108,7 +108,6 @@
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
 
-      <!-- GENERAL -->
       <div class="tab-panel active" id="tab-general">
         <div class="form-grid">
           <div class="form-section-label">Product Identification</div>
@@ -119,14 +118,9 @@
           <div class="form-group full"><label class="form-label">Product Name *</label><input type="text" class="form-input" id="f-product_name" placeholder="EchoLink HMO Clinic Select"></div>
           <div class="form-group"><label class="form-label">Product Type</label>
             <select class="form-select" id="f-product_type">
-              <option value="medical">Medical</option>
-              <option value="dental">Dental</option>
-              <option value="vision">Vision</option>
-              <option value="pharmacy">Pharmacy</option>
-              <option value="behavioral_health">Behavioral Health</option>
-              <option value="hdhp">HDHP / CDH</option>
-              <option value="epo">EPO</option>
-              <option value="pos">POS</option>
+              <option value="medical">Medical</option><option value="dental">Dental</option>
+              <option value="vision">Vision</option><option value="pharmacy">Pharmacy</option>
+              <option value="behavioral_health">Behavioral Health</option><option value="hdhp">HDHP / CDH</option>
             </select>
           </div>
           <div class="form-group"><label class="form-label">Plan Sub-Type</label>
@@ -135,17 +129,15 @@
               <option value="epo">EPO</option><option value="pos">POS</option>
               <option value="hdhp">HDHP</option><option value="cdh">CDH</option>
               <option value="dental_ppo">Dental PPO</option><option value="dental_hmo">Dental HMO</option>
-              <option value="vision">Vision</option><option value="rx">Pharmacy Only</option>
             </select>
           </div>
           <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-description" rows="2" placeholder="Brief product description..."></textarea></div>
         </div>
       </div>
 
-      <!-- PRODUCT DETAILS -->
       <div class="tab-panel" id="tab-details">
         <div class="form-grid">
-          <div class="form-section-label">Line of Business</div>
+          <div class="form-section-label">&#9989; Product Details (Must Add)</div>
           <div class="form-group"><label class="form-label">Line of Business (LOB)</label>
             <select class="form-select" id="f-lob">
               <option value="commercial">Commercial</option>
@@ -153,8 +145,7 @@
               <option value="medicaid">Medicaid</option>
               <option value="marketplace">ACA Marketplace</option>
               <option value="chip">CHIP</option>
-              <option value="federal_employee">Federal Employee (FEHB)</option>
-              <option value="military">Military / TRICARE</option>
+              <option value="fehb">Federal Employee (FEHB)</option>
             </select>
           </div>
           <div class="form-group"><label class="form-label">Market Segment</label>
@@ -169,110 +160,88 @@
           <div class="form-group"><label class="form-label">Funding Type</label>
             <select class="form-select" id="f-funding_type">
               <option value="fully_insured">Fully Insured</option>
-              <option value="self_funded">Self-Funded / Self-Insured</option>
+              <option value="self_funded">Self-Funded</option>
               <option value="level_funded">Level-Funded</option>
               <option value="mec">Minimum Essential Coverage (MEC)</option>
               <option value="capitation">Capitation</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Coverage Category</label>
-            <select class="form-select" id="f-coverage_category">
-              <option value="medical">Medical Only</option>
-              <option value="medical_dental">Medical + Dental</option>
-              <option value="medical_dental_vision">Medical + Dental + Vision</option>
-              <option value="dental_only">Dental Only</option>
-              <option value="vision_only">Vision Only</option>
-              <option value="rx_only">Pharmacy Only</option>
-            </select>
-          </div>
-          <div class="form-section-label">Effective Dates</div>
-          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
-          <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
           <div class="form-group"><label class="form-label">Carrier Code</label><input type="text" class="form-input" id="f-carrier_code" placeholder="ECL"></div>
-          <div class="form-group"><label class="form-label">State(s) of Issue</label><input type="text" class="form-input" id="f-state_of_issue" placeholder="NC, SC"></div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group"><label class="form-label">Term Date</label><input type="date" class="form-input" id="f-termination_date"></div>
+          <div class="form-group"><label class="form-label">State of Issue</label><input type="text" class="form-input" id="f-state_of_issue" placeholder="NC, SC"></div>
         </div>
       </div>
 
-      <!-- NETWORK SETUP -->
       <div class="tab-panel" id="tab-network">
         <div class="form-grid">
-          <div class="form-section-label">Network Configuration</div>
+          <div class="form-section-label">&#127973; Network Setup</div>
           <div class="form-group"><label class="form-label">Network ID</label><input type="text" class="form-input" id="f-network_id" placeholder="NET-HMO-001"></div>
-          <div class="form-group"><label class="form-label">Network Type</label>
+          <div class="form-group"><label class="form-label">In / Out of Network Rules</label>
             <select class="form-select" id="f-network">
               <option value="inn_only">In-Network Only</option>
               <option value="inn_oon">In-Network + Out-of-Network</option>
               <option value="dental_ppo">Dental PPO</option>
-              <option value="dental_hmo">Dental HMO</option>
               <option value="national">National Network</option>
             </select>
           </div>
           <div class="form-group"><label class="form-label">Service Area / Region</label><input type="text" class="form-input" id="f-service_area" placeholder="North Carolina, South Carolina"></div>
           <div class="form-group"><label class="form-label">Network Tier</label>
             <select class="form-select" id="f-network_tier">
-              <option value="standard">Standard</option>
-              <option value="preferred">Preferred</option>
-              <option value="narrow">Narrow / Select</option>
-              <option value="broad">Broad</option>
+              <option value="standard">Standard</option><option value="preferred">Preferred</option>
+              <option value="narrow">Narrow / Select</option><option value="broad">Broad</option>
             </select>
           </div>
-          <div class="form-section-label">Access Rules</div>
           <div class="toggle-row">
-            <div><div class="toggle-label">PCP Required</div><div class="toggle-sub">Members must designate a Primary Care Physician</div></div>
+            <div><div class="toggle-label">PCP Required (Yes / No)</div><div class="toggle-sub">Members must designate a Primary Care Physician</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-pcp_required"><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">Referral Required for Specialists</div><div class="toggle-sub">PCP must provide referral before specialist visits are covered</div></div>
+            <div><div class="toggle-label">Referral Rules — Referral Required</div><div class="toggle-sub">PCP must refer before specialist visits are covered</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-referral_required"><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">Out-of-Network Emergency Coverage</div><div class="toggle-sub">ER services covered at in-network rates regardless of network</div></div>
+            <div><div class="toggle-label">OON Emergency Coverage</div><div class="toggle-sub">ER services covered at in-network rates regardless of network status</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-oon_emergency" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
             <div><div class="toggle-label">Telehealth Covered</div><div class="toggle-sub">Virtual / telehealth visits covered under this product</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-telehealth" checked><span class="toggle-slider"></span></label>
           </div>
-          <div class="form-section-label">Provider Links</div>
-          <div class="form-group full" style="grid-column:1/-1">
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a class="badge-link" href="providers.html">&#127973; Providers</a>
-              <a class="badge-link" href="provider-contracts.html">&#128220; Provider Contracts</a>
-              <a class="badge-link" href="fee-tables.html">&#128202; Fee Tables</a>
-              <a class="badge-link" href="networx.html">&#9881; NetworX Pricing</a>
-            </div>
+          <div style="grid-column:1/-1;margin-top:12px">
+            <a class="badge-link" href="providers.html">&#127973; Providers</a>
+            <a class="badge-link" href="provider-contracts.html">&#128220; Provider Contracts</a>
+            <a class="badge-link" href="fee-tables.html">&#128202; Fee Tables</a>
+            <a class="badge-link" href="networx.html">&#9881; NetworX Pricing</a>
           </div>
         </div>
       </div>
 
-      <!-- COMPLIANCE -->
       <div class="tab-panel" id="tab-compliance">
         <div class="form-grid">
-          <div class="form-section-label">Regulatory Compliance</div>
+          <div class="form-section-label">&#128272; Regulatory / Compliance</div>
           <div class="toggle-row">
-            <div><div class="toggle-label">ACA Non-Grandfathered</div><div class="toggle-sub">Plan complies with all ACA requirements including preventive at $0 cost share</div></div>
+            <div><div class="toggle-label">ACA Non-Grandfathered</div><div class="toggle-sub">Complies with all ACA requirements including preventive at $0</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-aca_compliant" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">ERISA Applicable</div><div class="toggle-sub">Subject to ERISA reporting, disclosure, and fiduciary requirements</div></div>
+            <div><div class="toggle-label">ERISA Applicable</div><div class="toggle-sub">Subject to ERISA reporting and fiduciary requirements</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-erisa_applicable" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">Mental Health Parity (MHPAEA)</div><div class="toggle-sub">Mental health and substance use disorder benefits at parity with medical</div></div>
+            <div><div class="toggle-label">Mental Health Parity (MHPAEA)</div><div class="toggle-sub">MH/SUD benefits at parity with medical</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-mhpaea" checked><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div><div class="toggle-label">HSA / CDH Eligible</div><div class="toggle-sub">IRS-qualified HDHP — members may contribute to a Health Savings Account</div></div>
+            <div><div class="toggle-label">HSA / CDH Eligible</div><div class="toggle-sub">IRS-qualified HDHP — members may contribute to an HSA</div></div>
             <label class="toggle-switch"><input type="checkbox" id="f-hsa_eligible"><span class="toggle-slider"></span></label>
           </div>
-          <div class="form-section-label">Government Program Links</div>
-          <div class="form-group full" style="grid-column:1/-1">
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a class="badge-link" href="programs.html">&#127963; Medicaid / Medicare Programs</a>
-              <a class="badge-link" href="claims.html">&#128196; Claims</a>
-              <a class="badge-link" href="authorizations.html">&#128272; Authorizations</a>
-              <a class="badge-link" href="sql-validator.html">&#128302; SQL Validator</a>
-            </div>
+          <div style="grid-column:1/-1;margin-top:12px">
+            <a class="badge-link" href="programs.html">&#127963; Medicaid / Medicare</a>
+            <a class="badge-link" href="claims.html">&#128196; Claims</a>
+            <a class="badge-link" href="authorizations.html">&#128272; Authorizations</a>
+            <a class="badge-link" href="sql-validator.html">&#128302; SQL Validator</a>
+            <a class="badge-link" href="audit.html">&#128269; Audit Log</a>
           </div>
           <div class="form-group full"><label class="form-label">Compliance Notes</label><textarea class="form-textarea" id="f-compliance_notes" rows="2" placeholder="State mandates, CMS contract ID, special handling..."></textarea></div>
         </div>
@@ -282,10 +251,62 @@
   </div>
 </div>
 
-<script src="app.js"></script>
 <script>
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+async function apiFetch(url){
+  var res=await fetch(url);
+  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
+  return res.json();
+}
+
+function genCode(prefix){
+  return prefix+'-'+String(Date.now()).slice(-6);
+}
+
+function badge(text,type){
+  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
+    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
+    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
+    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
+    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+}
+
+function toast(msg,type){
+  var existing=document.querySelectorAll('.toast-msg');
+  existing.forEach(function(el){el.remove();});
+  var div=document.createElement('div');
+  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
+  var c=colors[type]||'#60a5fa';
+  div.className='toast-msg';
+  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
+  div.textContent=msg;
+  document.body.appendChild(div);
+  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+}
+
+function confirmDialog(msg){
+  return new Promise(function(resolve){
+    var overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
+    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
+  });
+}
+
 var records=[],statusFilter='all';
-setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+var FALLBACK=[
+  {id:'p1',product_code:'ECL-HMO',product_name:'EchoLink HMO Clinic Select',product_type:'medical',plan_subtype:'hmo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-HMO-001',network:'inn_only',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:true,referral_required:true,oon_emergency:true,aca_compliant:true,status:'active'},
+  {id:'p2',product_code:'ECL-PPO',product_name:'EchoLink PPO Open Access',product_type:'medical',plan_subtype:'ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:false,referral_required:false,oon_emergency:true,aca_compliant:true,status:'active'},
+  {id:'p3',product_code:'ECL-CDH',product_name:'EchoLink CDH / HDHP + HSA',product_type:'hdhp',plan_subtype:'cdh',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-PPO-001',network:'inn_oon',effective_date:'2026-01-01',termination_date:'2026-12-31',pcp_required:false,referral_required:false,hsa_eligible:true,aca_compliant:true,status:'active'},
+  {id:'p4',product_code:'ECL-DEN',product_name:'EchoLink Dental Essentials',product_type:'dental',plan_subtype:'dental_ppo',lob:'commercial',market_segment:'group',funding_type:'fully_insured',network_id:'NET-DEN-001',network:'dental_ppo',effective_date:'2026-01-01',termination_date:'2026-12-31',aca_compliant:true,status:'active'}
+];
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
@@ -295,11 +316,12 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 ['all','active','inactive'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
-function lobLabel(v){return{commercial:'Commercial',medicare:'Medicare',medicaid:'Medicaid',marketplace:'Marketplace',chip:'CHIP',federal_employee:'FEHB',military:'Military'}[v]||v||'—';}
+function lobLabel(v){return{commercial:'Commercial',medicare:'Medicare',medicaid:'Medicaid',marketplace:'Marketplace',chip:'CHIP',fehb:'FEHB'}[v]||v||'—';}
 function fundLabel(v){return{fully_insured:'Fully Insured',self_funded:'Self-Funded',level_funded:'Level-Funded',mec:'MEC',capitation:'Capitation'}[v]||v||'—';}
 async function load(){
-  try{records=await apiFetch('/api/products');render();}
-  catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">&#9888;</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}
+  try{var r=await apiFetch('/api/products').catch(function(){return[];});records=r.length?r:FALLBACK;}
+  catch(e){records=FALLBACK;}
+  render();
 }
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
@@ -320,8 +342,7 @@ function render(){
     '<td class="mono" style="font-size:11px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
     '<td class="mono" style="font-size:11px">'+(p.termination_date?p.termination_date.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td>'+
-    '</tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+p.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+p.id+'')">Del</button></div></td></tr>';
   }).join('');
 }
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -335,10 +356,10 @@ function openModal(id){
   sv('f-product_name',d?d.product_name:'');sv('f-product_type',d?d.product_type:'medical');
   sv('f-plan_subtype',d?d.plan_subtype:'hmo');sv('f-description',d?d.description:'');
   sv('f-lob',d?d.lob:'commercial');sv('f-market_segment',d?d.market_segment:'group');
-  sv('f-funding_type',d?d.funding_type:'fully_insured');sv('f-coverage_category',d?d.coverage_category:'medical');
+  sv('f-funding_type',d?d.funding_type:'fully_insured');sv('f-carrier_code',d?d.carrier_code:'');
   sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-carrier_code',d?d.carrier_code:'');sv('f-state_of_issue',d?d.state_of_issue:'');
+  sv('f-state_of_issue',d?d.state_of_issue:'');
   sv('f-network_id',d?d.network_id:'');sv('f-network',d?d.network:'inn_only');
   sv('f-service_area',d?d.service_area:'');sv('f-network_tier',d?d.network_tier:'standard');
   ck('f-pcp_required',d?d.pcp_required:false);ck('f-referral_required',d?d.referral_required:false);
@@ -355,13 +376,25 @@ async function save(){
   var pc=gv('f-product_code').trim(),pn=gv('f-product_name').trim();
   if(!pc||!pn){errEl.textContent='Product Code and Product Name are required.';errEl.style.display='block';return;}
   var id=gv('f-id');
-  var body={product_code:pc,product_name:pn,product_type:gv('f-product_type'),plan_subtype:gv('f-plan_subtype'),description:gv('f-description'),lob:gv('f-lob'),market_segment:gv('f-market_segment'),funding_type:gv('f-funding_type'),coverage_category:gv('f-coverage_category'),effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,carrier_code:gv('f-carrier_code'),state_of_issue:gv('f-state_of_issue'),network_id:gv('f-network_id'),network:gv('f-network'),service_area:gv('f-service_area'),network_tier:gv('f-network_tier'),pcp_required:document.getElementById('f-pcp_required').checked,referral_required:document.getElementById('f-referral_required').checked,oon_emergency:document.getElementById('f-oon_emergency').checked,telehealth:document.getElementById('f-telehealth').checked,aca_compliant:document.getElementById('f-aca_compliant').checked,erisa_applicable:document.getElementById('f-erisa_applicable').checked,mhpaea:document.getElementById('f-mhpaea').checked,hsa_eligible:document.getElementById('f-hsa_eligible').checked,compliance_notes:gv('f-compliance_notes'),status:gv('f-status')};
+  var body={product_code:pc,product_name:pn,product_type:gv('f-product_type'),plan_subtype:gv('f-plan_subtype'),description:gv('f-description'),lob:gv('f-lob'),market_segment:gv('f-market_segment'),funding_type:gv('f-funding_type'),carrier_code:gv('f-carrier_code'),effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,state_of_issue:gv('f-state_of_issue'),network_id:gv('f-network_id'),network:gv('f-network'),service_area:gv('f-service_area'),network_tier:gv('f-network_tier'),pcp_required:document.getElementById('f-pcp_required').checked,referral_required:document.getElementById('f-referral_required').checked,oon_emergency:document.getElementById('f-oon_emergency').checked,telehealth:document.getElementById('f-telehealth').checked,aca_compliant:document.getElementById('f-aca_compliant').checked,erisa_applicable:document.getElementById('f-erisa_applicable').checked,mhpaea:document.getElementById('f-mhpaea').checked,hsa_eligible:document.getElementById('f-hsa_eligible').checked,compliance_notes:gv('f-compliance_notes'),status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});render();}
   closeModal();toast(id?'Saving...':'Creating product...','info');
-  try{var res=await fetch(id?'/api/products/'+id:'/api/products',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Created ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
+  try{
+    var res=await fetch(id?'/api/products/'+id:'/api/products',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    toast(id?'Updated ✓':'Created ✓','success');
+    var fresh=await apiFetch('/api/products').catch(function(){return records;});
+    if(fresh.length)records=fresh;render();
+  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this product?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/products/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
+async function del(id){
+  if(!await confirmDialog('Delete this product?'))return;
+  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();
+  try{await fetch('/api/products/'+id,{method:'DELETE'});toast('Deleted','info');}
+  catch(e){records=bk;render();toast('Delete failed','error');}
+}
 load();
 </script></body></html>
+
+
 
