@@ -343,7 +343,7 @@ function render(){
     '<td style="font-size:12px">'+etLabel(m.employment_type)+'</td>'+
     '<td class="mono" style="font-size:11px">'+(m.dob?m.dob.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(m.status,m.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(''+m.id+'')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(''+m.id+'')">Del</button></div></td></tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\'' + m.id + '\')" >Edit</button><button class="btn btn-sm btn-danger" onclick="del(\'' + m.id + '\')" >Del</button></div></td></tr>';
   }).join('');
 }
 function addDependent(){dependents.push({name:'',relationship:'spouse',dob:''});renderDependents();}
@@ -411,4 +411,6 @@ async function del(id){
 }
 load();
 </script></body></html>
+
+
 
