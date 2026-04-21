@@ -228,52 +228,15 @@
   </div>
 </div>
  
-<script>
-setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+<script>setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v!=null?v:'';}
+function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',in_review:'#60a5fa',resolved:'#2ed573',open:'#ff4757',high:'#ff4757',medium:'#fbbf24',low:'#4ade80',hmo:'#60a5fa',ppo:'#a78bfa',cdh:'#34d399',dental:'#e879f9',individual:'#60a5fa',facility:'#a78bfa',group:'#34d399',rbrvs:'#60a5fa',drg:'#a78bfa',capitation:'#34d399',preferred:'#a78bfa',inn:'#2ed573',oon:'#f87171',approved:'#2ed573',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
+function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
+function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
  
-async function apiFetch(url){
-  var res=await fetch(url);
-  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
-  return res.json();
-}
- 
-function genCode(prefix){
-  return prefix+'-'+String(Date.now()).slice(-6);
-}
- 
-function badge(text,type){
-  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
-    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
-    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
-    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
-    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
-  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
-  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
-}
- 
-function toast(msg,type){
-  var existing=document.querySelectorAll('.toast-msg');
-  existing.forEach(function(el){el.remove();});
-  var div=document.createElement('div');
-  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
-  var c=colors[type]||'#60a5fa';
-  div.className='toast-msg';
-  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
-  div.textContent=msg;
-  document.body.appendChild(div);
-  setTimeout(function(){if(div.parentNode)div.remove();},3000);
-}
- 
-function confirmDialog(msg){
-  return new Promise(function(resolve){
-    var overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
-    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
-    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
-  });
-}
 var records=[],statusFilter='all';
 var FB=[
   {id:'a1',auth_number:'PA-2026-001',member:'ECL-MBR-001 — Carlos Mendez',provider:'Capital Imaging and Radiology',cpt:'70553',icd10:'G43.909',service_type:'imaging',auth_type:'prior',start_date:'2026-02-01',end_date:'2026-02-28',units:1,decision:'approved',decision_date:'2026-01-30',notes:'MRI Brain approved. PA on file for claim submission.',status:'active'},
