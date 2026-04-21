@@ -2,154 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Service Groups</title>
+  <title>EchoLink Solutions — Configuration → Service Groups</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
-    
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal{max-height:92vh;overflow-y:auto;width:860px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .test-bar{display:flex;flex-wrap:wrap;gap:6px;padding:14px;background:rgba(46,213,115,0.06);border:1px solid rgba(46,213,115,0.22);border-radius:8px;margin-top:14px;grid-column:1/-1;}
+    .test-bar-label{font-size:12px;font-weight:800;color:#2ed573;width:100%;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;}
+    .tlink{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;margin:2px;}
+    .tlink-green{background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.3);color:#2ed573;}
+    .tlink-orange{background:rgba(255,165,2,0.1);border:1px solid rgba(255,165,2,0.3);color:#ffa502;}
+    .tlink-blue{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);}
+    .tlink-slate{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.3);color:#94a3b8;}
+    .tlink-purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+    .stat-card .sv{font-size:26px;font-weight:800;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .page-title{font-size:26px!important;font-weight:800!important;}
+    .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
+    .card-title{font-size:17px!important;font-weight:800!important;}
+    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table td{font-size:14px!important;}
+    .nav-item{font-size:14px!important;font-weight:600!important;}
+    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .modal-title{font-size:20px!important;font-weight:800!important;}
+    .btn{font-size:13px!important;font-weight:700!important;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
+    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
+    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
+
+
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
+    <div class="sidebar-logo">
+      <div class="logo-icon">EL</div>
+      <div>
+        <div class="logo-text">EchoLink Solutions</div>
+        <div class="logo-sub">Facets Sandbox</div>
+      </div>
+    </div>
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item " href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
-      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
-      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <a class="nav-item " href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item " href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
       <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
-      <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
-      <a class="nav-item" href="service-groups.html" class="nav-item active"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <a class="nav-item " href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item " href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item " href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item " href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item " href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
+      <a class="nav-item active" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div>
+      <a class="nav-item " href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
-      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
-      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item " href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item " href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item " href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item " href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div>
+      <a class="nav-item " href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
-      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
-      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item " href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item " href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item " href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item " href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item " href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">EchoLink · v2.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration → Service Groups</span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Configuration → Service Groups</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Service Groups</div><div class="page-subtitle">PROCEDURE RANGES · REVENUE CODES · ACCUMULATOR BUCKETS · ADJUDICATION</div></div>
-        <button class="btn btn-primary" id="new-btn">+ New Service</button>
+        <div><div class="page-title">Service Groups</div>
+        <div class="page-subtitle">SERVICE CATEGORY GROUPINGS · CPT RANGES · BENEFIT MAPPING · CLAIM ROUTING</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Service Group</button>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sl">Total Groups</div><div class="sv" id="s-total">—</div></div>
+        <div class="stat-card"><div class="sl">Medical</div><div class="sv" style="color:#60a5fa" id="s-med">—</div></div>
+        <div class="stat-card"><div class="sl">Dental</div><div class="sv" style="color:#e879f9" id="s-den">—</div></div>
+        <div class="stat-card"><div class="sl">Active</div><div class="sv" style="color:#4ade80" id="s-act">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title" id="card-title">Service Groups <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px"><div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search..." id="search-input"></div></div>
+          <span class="card-title">🗂️ Service Groups <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search groups..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-medical">Medical</button>
+              <button class="filter-tab" id="tab-dental">Dental</button>
+              <button class="filter-tab" id="tab-pharmacy">Pharmacy</button>
+            </div>
+          </div>
         </div>
-        <div class="table-wrapper">
-          <table><thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Proc Ranges</th><th>Accumulator</th><th>Ded.</th><th>OOP</th><th>Status</th><th>Actions</th></tr></thead>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>Group Code</th><th>Group Name</th><th>Category</th><th>CPT / Revenue Range</th><th>Benefit Maps To</th><th>PA Required</th><th>ACA</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
-          </table>
-        </div>
+        </table></div>
       </div>
     </div>
   </main>
 </div>
 <div id="overlay">
-  <div class="modal" style="width:700px;max-height:90vh;overflow-y:auto">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Record</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
-      <input type="hidden" id="f-id">
-      <div class="form-grid">
-        
-        <div class="form-group"><label class="form-label">Group Code *</label><input type="text" class="form-input" id="f-service_group_code" placeholder="SG-MED"></div>
-        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-        <div class="form-group full"><label class="form-label">Group Name *</label><input type="text" class="form-input" id="f-service_group_name"></div>
-        <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="f-category"><option value="medical">Medical</option><option value="preventive">Preventive</option><option value="pharmacy">Pharmacy</option><option value="behavioral_health">Behavioral Health</option><option value="imaging">Imaging</option><option value="dental">Dental</option><option value="vision">Vision</option></select></div>
-        <div class="form-group"><label class="form-label">Accumulator Bucket</label><input type="text" class="form-input" id="f-accumulator_bucket" placeholder="medical"></div>
-        <div class="form-group full"><label class="form-label">Procedure Ranges</label><input type="text" class="form-input" id="f-procedure_ranges" placeholder="99201-99499, 10000-69999"></div>
-        <div class="form-group full"><label class="form-label">Revenue Codes</label><input type="text" class="form-input" id="f-revenue_codes" placeholder="0100-0999"></div>
-        <div class="form-group full"><label class="form-label">Place of Service Codes</label><input type="text" class="form-input" id="f-place_of_service" placeholder="11,22,24 or all"></div>
-        <div class="form-group full"><label class="form-label">Benefit Cross-Reference</label><input type="text" class="form-input" id="f-benefit_cross_reference" placeholder="BEN-PCP, BEN-SPC"></div>
-        <div class="form-group"><label class="form-label">Applies to Deductible</label><select class="form-select" id="f-applies_to_deductible"><option value="yes">Yes</option><option value="no">No</option></select></div>
-        <div class="form-group"><label class="form-label">Applies to OOP Max</label><select class="form-select" id="f-applies_to_oop"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Service Group</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('setup',this)">Group Setup</button>
+        <button class="modal-tab" onclick="switchTab('codes',this)">Code Ranges</button>
+        <button class="modal-tab" onclick="switchTab('routing',this)">Routing &amp; Validation</button>
       </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
-        <button class="btn btn-primary" id="btn-save">Save</button>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px;margin-bottom:14px;color:#ff4757;font-size:14px;font-weight:600"></div>
+      <input type="hidden" id="f-id">
+      <div class="tab-panel active" id="tab-setup">
+        <div class="form-grid">
+          <div class="fsl">Service Group Identification</div>
+          <div class="form-group"><label class="form-label">Group Code *</label><input type="text" class="form-input" id="f-group_code" placeholder="SG-EM-OFFICE"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="form-group full"><label class="form-label">Group Name *</label><input type="text" class="form-input" id="f-group_name" placeholder="E&M Office Visits"></div>
+          <div class="form-group"><label class="form-label">Service Category</label>
+            <select class="form-select" id="f-category">
+              <option value="medical">Medical</option><option value="em_office">E&M Office Visits</option>
+              <option value="em_er">E&M Emergency</option><option value="em_inpatient">E&M Inpatient</option>
+              <option value="surgical">Surgical Procedures</option><option value="imaging">Imaging / Radiology</option>
+              <option value="lab">Lab / Pathology</option><option value="preventive">Preventive Care (ACA)</option>
+              <option value="mental_health">Mental Health / BH</option><option value="pharmacy">Pharmacy</option>
+              <option value="dental_prev">Dental — Preventive</option><option value="dental_basic">Dental — Basic</option>
+              <option value="dental_major">Dental — Major</option><option value="dental_ortho">Dental — Orthodontia</option>
+              <option value="dme">Durable Medical Equipment</option><option value="therapy">Physical / OT Therapy</option>
+              <option value="telehealth">Telehealth</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">PA Required for Group?</label>
+            <select class="form-select" id="f-pa_required">
+              <option value="no">No</option><option value="yes">Yes — all codes in group</option>
+              <option value="conditional">Conditional (specific codes)</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">ACA Preventive Group?</label>
+            <select class="form-select" id="f-aca_group"><option value="no">No</option><option value="yes">Yes — $0 member cost required</option></select></div>
+          <div class="form-group full"><label class="form-label">Mapped Benefit Code</label>
+            <input type="text" class="form-input" id="f-benefit_map" placeholder="BEN-PCP-HMO">
+            <div style="margin-top:8px">
+              <a class="badge-link" href="benefits.html">✚ Benefits</a>
+              <a class="badge-link" href="plans.html">📋 Plans</a>
+            </div>
+          </div>
+          <div class="form-group full"><label class="form-label">Description / Notes</label>
+            <textarea class="form-textarea" id="f-notes" rows="2" placeholder="What services this group covers..."></textarea></div>
+          <div class="test-bar" style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <span style="font-size:13px;font-weight:800;color:var(--accent);flex-shrink:0">🧪 Test Claims &amp; Validation</span>
+    <span style="font-size:12px;font-weight:600;color:var(--text-secondary);flex:1;min-width:180px">Verify your configuration adjudicates correctly</span>
+    <a href="claims.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573">📄 Submit Test Claim</a>
+    <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
+    <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
+    <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
+    <a href="audit.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
+  </div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-codes">
+        <div class="form-grid">
+          <div class="fsl">CPT / Revenue Code Ranges</div>
+          <div class="form-group"><label class="form-label">CPT Range Start</label><input type="text" class="form-input" id="f-cpt_start" placeholder="99202"></div>
+          <div class="form-group"><label class="form-label">CPT Range End</label><input type="text" class="form-input" id="f-cpt_end" placeholder="99215"></div>
+          <div class="form-group"><label class="form-label">Revenue Code Range</label><input type="text" class="form-input" id="f-rev_range" placeholder="0510-0519"></div>
+          <div class="form-group"><label class="form-label">HCPCS Codes (if applicable)</label><input type="text" class="form-input" id="f-hcpcs" placeholder="E0100-E9999, J-codes"></div>
+          <div class="form-group full"><label class="form-label">Specific Code Inclusions (comma separated)</label>
+            <textarea class="form-textarea" id="f-inclusions" rows="2" placeholder="99213, 99214, 99215..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Code Exclusions from Group</label>
+            <textarea class="form-textarea" id="f-exclusions" rows="2" placeholder="Any codes within the range that should NOT map to this group..."></textarea></div>
+          <div class="test-bar">
+  <div class="test-bar-label">🧪 Test Claims &amp; Validation — Verify Your Configuration Is Working</div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-routing">
+        <div class="form-grid">
+          <div class="fsl">Claim Routing &amp; Validation</div>
+          <div class="form-group"><label class="form-label">Claim Type Route</label>
+            <select class="form-select" id="f-claim_route">
+              <option value="medical">Medical Claims Queue</option>
+              <option value="dental">Dental Claims Queue</option>
+              <option value="pharmacy">Pharmacy Claims Queue</option>
+              <option value="auto">Auto-Route by CPT</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Adjudication Priority</label>
+            <select class="form-select" id="f-priority">
+              <option value="normal">Normal</option>
+              <option value="high">High — urgent review</option>
+              <option value="low">Low — batch processing</option>
+            </select></div>
+          <div class="test-bar">
+  <div class="test-bar-label">🧪 Test Claims &amp; Validation — Verify Your Configuration Is Working</div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
+        </div>
       </div>
     </div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Group</button></div>
   </div>
 </div>
-<script src="app.js"></script>
 <script>
-const API = '/api/service-groups';
-let all = [], editId = null;
-const overlay = document.getElementById('overlay');
-const tbody = document.getElementById('tbody');
-document.getElementById('new-btn').onclick = () => openModal();
-document.getElementById('btn-x').onclick = document.getElementById('btn-cancel').onclick = () => overlay.classList.remove('open');
-document.getElementById('btn-save').onclick = save;
-document.getElementById('search-input').oninput = function(){ render(all.filter(r => JSON.stringify(r).toLowerCase().includes(this.value.toLowerCase()))); };
 
-async function load() {
-  all = await apiFetch(API);
-  document.getElementById('count').textContent = '(' + all.length + ')';
-  render(all);
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
+function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',dental:'#e879f9',commercial:'#60a5fa',medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
+function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
+function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
+function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+
+var records=[],statusFilter='all';
+var FB=[
+  {id:'sg1',group_code:'SG-EM-OFFICE',group_name:'E&M Office Visits',category:'em_office',cpt_start:'99202',cpt_end:'99215',pa_required:'no',aca_group:'no',benefit_map:'BEN-PCP-HMO',status:'active'},
+  {id:'sg2',group_code:'SG-EM-SPEC',group_name:'Specialist Consults',category:'em_office',cpt_start:'99241',cpt_end:'99245',pa_required:'no',aca_group:'no',benefit_map:'BEN-SPEC-PPO',status:'active'},
+  {id:'sg3',group_code:'SG-EM-ER',group_name:'Emergency Room Visits',category:'em_er',cpt_start:'99281',cpt_end:'99285',pa_required:'no',aca_group:'no',benefit_map:'BEN-ER-MED',status:'active'},
+  {id:'sg4',group_code:'SG-PREV-ACA',group_name:'ACA Preventive Services',category:'preventive',cpt_start:'99381',cpt_end:'99396',pa_required:'no',aca_group:'yes',benefit_map:'BEN-PREV-ACA',status:'active'},
+  {id:'sg5',group_code:'SG-IMAGING',group_name:'Advanced Imaging MRI CT',category:'imaging',cpt_start:'70000',cpt_end:'79999',pa_required:'yes',aca_group:'no',benefit_map:'BEN-MRI-IMG',status:'active'},
+  {id:'sg6',group_code:'SG-SURGERY',group_name:'Surgical Procedures',category:'surgical',cpt_start:'10000',cpt_end:'69999',pa_required:'yes',aca_group:'no',benefit_map:'BEN-SURG',status:'active'},
+  {id:'sg7',group_code:'SG-MH-BH',group_name:'Mental Health Behavioral Health',category:'mental_health',cpt_start:'90791',cpt_end:'96116',pa_required:'conditional',aca_group:'no',benefit_map:'BEN-MH-OUT',status:'active'},
+  {id:'sg8',group_code:'SG-DEN-PREV',group_name:'Dental Preventive Cat I',category:'dental_prev',cpt_start:'D0100',cpt_end:'D0999',pa_required:'no',aca_group:'no',benefit_map:'BEN-DEN-PREV',status:'active'},
+  {id:'sg9',group_code:'SG-DEN-ORTHO',group_name:'Orthodontia Cat IV',category:'dental_ortho',cpt_start:'D8000',cpt_end:'D8999',pa_required:'yes',aca_group:'no',benefit_map:'BEN-DEN-ORTHO',status:'active'},
+  {id:'sg10',group_code:'SG-RX-SPEC',group_name:'Specialty Pharmacy Tier 4',category:'pharmacy',cpt_start:'J0000',cpt_end:'J9999',pa_required:'yes',aca_group:'no',benefit_map:'BEN-RX-SPEC',status:'active'},
+];
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','medical','dental','pharmacy'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
+function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
+function catLabel(v){return{medical:'Medical',em_office:'E&M Office',em_er:'ER',em_inpatient:'Inpatient',surgical:'Surgical',imaging:'Imaging',lab:'Lab',preventive:'Preventive',mental_health:'Mental Health',pharmacy:'Pharmacy',dental_prev:'Dental Prev',dental_basic:'Dental Basic',dental_major:'Dental Major',dental_ortho:'Orthodontia',dme:'DME',therapy:'Therapy',telehealth:'Telehealth'}[v]||v||'—';}
+async function load(){try{var r=await apiFetch('/api/service-groups').catch(function(){return[];});records=r.length?r:FB;}catch(e){records=FB;}updateStats();render();}
+function updateStats(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-med').textContent=records.filter(function(r){return!r.category||r.category.includes('medical')||r.category.includes('em_')||r.category.includes('surgical')||r.category.includes('imaging')||r.category.includes('lab')||r.category.includes('preventive')||r.category.includes('mental');}).length;
+  document.getElementById('s-den').textContent=records.filter(function(r){return r.category&&r.category.includes('dental');}).length;
+  document.getElementById('s-act').textContent=records.filter(function(r){return r.status==='active';}).length;
 }
-function render(rows) {
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📂</div><p>No records found.</p></div></td></tr>'; return; }
-  tbody.innerHTML = rows.map(r => `<tr>
-    <td><span class="badge badge-blue">${r.service_group_code}</span></td>
-    <td><strong>${r.service_group_name}</strong></td>
-    <td><span class="badge badge-gray">${r.category||'—'}</span></td>
-    <td style="font-size:11px;max-width:150px">${r.procedure_ranges||'—'}</td>
-    <td>${r.accumulator_bucket||'—'}</td>
-    <td>${r.applies_to_deductible==='yes'?'<span style="color:#4ade80">✓</span>':'<span style="color:#ff4757">✗</span>'}</td>
-    <td>${r.applies_to_oop==='yes'?'<span style="color:#4ade80">✓</span>':'<span style="color:#ff4757">✗</span>'}</td>
-    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
-    <td><button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Delete</button></td>
-  </tr>`).join('');
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(statusFilter==='medical')data=data.filter(function(r){return r.category&&!r.category.includes('dental')&&!r.category.includes('pharmacy');});
+  else if(statusFilter==='dental')data=data.filter(function(r){return r.category&&r.category.includes('dental');});
+  else if(statusFilter==='pharmacy')data=data.filter(function(r){return r.category==='pharmacy';});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='('+data.length+')';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🗂️</div><p>No service groups</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(g){
+    var paC=g.pa_required==='yes'?'#fbbf24':g.pa_required==='conditional'?'#ffa502':'#2ed573';
+    var acaC=g.aca_group==='yes'?'#34d399':'#94a3b8';
+    return'<tr>'+
+    '<td class="mono" style="font-size:12px;font-weight:800;color:var(--accent)">'+g.group_code+'</td>'+
+    '<td><strong style="font-size:13px">'+g.group_name+'</strong></td>'+
+    '<td>'+badge(catLabel(g.category),'active')+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(g.cpt_start&&g.cpt_end?g.cpt_start+' — '+g.cpt_end:'—')+'</td>'+
+    '<td class="mono" style="font-size:12px;color:#a78bfa">'+(g.benefit_map||'—')+'</td>'+
+    '<td><span style="font-size:12px;font-weight:800;color:'+paC+'">'+(g.pa_required==='yes'?'Yes':g.pa_required==='conditional'?'Cond.':'No')+'</span></td>'+
+    '<td><span style="font-size:12px;font-weight:800;color:'+acaC+'">'+(g.aca_group==='yes'?'Yes':'No')+'</span></td>'+
+    '<td>'+badge(g.status,g.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+g.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+g.id+'">Del</button></div></td></tr>';
+  }).join('');
 }
-function openModal(r) {
-  editId = r ? r.id : null;
-  document.getElementById('modal-title').textContent = r ? 'Edit Record' : 'New Record';
-  document.getElementById('form-error').style.display = 'none';
-  document.querySelectorAll('[id^="f-"]').forEach(el => {
-    if(el.id === 'f-id') { el.value = r ? (r.id||'') : ''; return; }
-    const field = el.id.replace('f-','');
-    if(r && r[field] !== undefined) el.value = r[field]||'';
-    else if(!r) el.value = el.tagName==='SELECT' ? el.options[0].value : '';
-  });
-  overlay.classList.add('open');
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit Service Group':'New Service Group';
+  sv('f-id',d?d.id:'');sv('f-group_code',d?d.group_code:genCode('SG'));sv('f-status',d?d.status:'active');
+  sv('f-group_name',d?d.group_name:'');sv('f-category',d?d.category:'medical');
+  sv('f-pa_required',d?d.pa_required:'no');sv('f-aca_group',d?d.aca_group:'no');
+  sv('f-benefit_map',d?d.benefit_map:'');sv('f-notes',d?d.notes:'');
+  sv('f-cpt_start',d?d.cpt_start:'');sv('f-cpt_end',d?d.cpt_end:'');
+  sv('f-rev_range',d?d.rev_range:'');sv('f-hcpcs',d?d.hcpcs:'');
+  sv('f-inclusions',d?d.inclusions:'');sv('f-exclusions',d?d.exclusions:'');
+  sv('f-claim_route',d?d.claim_route:'medical');sv('f-priority',d?d.priority:'normal');
+  switchTab('setup',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
 }
-function edit(id) { openModal(all.find(r=>r.id===id)); }
-async function del(id) { if(confirm('Delete this record?')) { await apiFetch(API+'/'+id,{method:'DELETE'}); load(); } }
-async function save() {
-  const body = {};
-  document.querySelectorAll('[id^="f-"]').forEach(el => {
-    if(el.id !== 'f-id') body[el.id.replace('f-','')] = el.value;
-  });
-  const method = editId ? 'PUT' : 'POST';
-  const url = editId ? API+'/'+editId : API;
-  await apiFetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  overlay.classList.remove('open'); load();
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var gc=gv('f-group_code').trim(),gn=gv('f-group_name').trim();
+  if(!gc||!gn){errEl.textContent='Group Code and Name required.';errEl.style.display='block';return;}
+  var id=gv('f-id');
+  var body={group_code:gc,group_name:gn,category:gv('f-category'),pa_required:gv('f-pa_required'),aca_group:gv('f-aca_group'),benefit_map:gv('f-benefit_map'),notes:gv('f-notes'),cpt_start:gv('f-cpt_start'),cpt_end:gv('f-cpt_end'),rev_range:gv('f-rev_range'),hcpcs:gv('f-hcpcs'),inclusions:gv('f-inclusions'),exclusions:gv('f-exclusions'),claim_route:gv('f-claim_route'),priority:gv('f-priority'),status:gv('f-status')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
+  closeModal();toast(id?'Saving...':'Creating...','info');
+  try{var res=await fetch(id?'/api/service-groups/'+id:'/api/service-groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast('Saved ✓','success');var fr=await apiFetch('/api/service-groups').catch(function(){return records;});if(fr.length)records=fr;updateStats();render();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed','error');}
 }
+async function del(id){if(!await confirmDialog('Delete this service group?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/service-groups/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
 load();
-</script>
-</body>
-</html>
+</script></body></html>
 
 
