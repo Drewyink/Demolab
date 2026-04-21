@@ -5,7 +5,7 @@
   <title>EchoLink Solutions — Fee Tables</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-
+ 
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
@@ -42,7 +42,7 @@
     .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
     .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
     .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
-
+ 
     .cpt-section{margin-top:20px;}
     .cpt-row{display:grid;grid-template-columns:1fr 2.5fr 1fr 1.5fr auto;gap:10px;align-items:end;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:8px;}
     .cpt-row:hover{background:rgba(0,212,255,0.04);border-color:rgba(0,212,255,0.2);}
@@ -91,7 +91,7 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
-
+ 
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Network → Fee Tables</span></div>
@@ -105,14 +105,14 @@
         </div>
         <button class="btn btn-primary" id="new-btn">+ New Fee Table</button>
       </div>
-
+ 
       <div class="stat-cards">
         <div class="stat-card"><div class="sl">Total Fee Tables</div><div class="sv" id="s-total">—</div></div>
         <div class="stat-card"><div class="sl">RBRVS Tables</div><div class="sv" style="color:#60a5fa" id="s-rbrvs">—</div></div>
         <div class="stat-card"><div class="sl">DRG Tables</div><div class="sv" style="color:#a78bfa" id="s-drg">—</div></div>
         <div class="stat-card"><div class="sl">Total CPT Codes</div><div class="sv" style="color:#4ade80" id="s-codes">—</div></div>
       </div>
-
+ 
       <div class="card">
         <div class="card-header">
           <span class="card-title">📊 Fee Tables <span class="count-label" id="count"></span></span>
@@ -133,7 +133,7 @@
           </table>
         </div>
       </div>
-
+ 
       <!-- INLINE CPT VIEWER -->
       <div id="cpt-panel" style="display:none;margin-top:16px">
         <div class="card">
@@ -149,11 +149,11 @@
           </div>
         </div>
       </div>
-
+ 
     </div>
   </main>
 </div>
-
+ 
 <!-- FEE TABLE MODAL -->
 <div id="overlay">
   <div class="modal" style="width:920px">
@@ -167,7 +167,7 @@
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
-
+ 
       <!-- TAB 1: HEADER -->
       <div class="tab-panel active" id="tab-header">
         <div class="form-grid">
@@ -202,14 +202,14 @@
             <select class="form-select" id="f-geo_adj"><option value="national">National (GPCI = 1.0)</option><option value="local">Local GPCI applied</option></select></div>
         </div>
       </div>
-
+ 
       <!-- TAB 2: CPT CODE ENTRIES -->
       <div class="tab-panel" id="tab-codes">
         <div style="margin-bottom:16px">
           <div style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:6px">CPT Code Entries <span class="cpt-count" id="cpt-count">0 codes</span></div>
           <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Select a CPT code from the dropdown. Description and default allowed amount fill in automatically. Adjust the allowed amount and add notes before clicking Add Code.</div>
         </div>
-
+ 
         <!-- ADD NEW CODE ROW -->
         <div class="cpt-add-row">
           <div>
@@ -236,13 +236,13 @@
             <button class="btn btn-primary" onclick="addCPTCode()" style="width:100%">+ Add Code</button>
           </div>
         </div>
-
+ 
         <!-- ENTERED CODES LIST -->
         <div class="cpt-section" id="cpt-list">
           <div style="font-size:13px;font-weight:700;color:var(--text-secondary);text-align:center;padding:20px">No codes added yet. Use the form above to add CPT codes.</div>
         </div>
       </div>
-
+ 
       <!-- TAB 3: TEST CLAIMS & VALIDATION -->
       <div class="tab-panel" id="tab-testclaims">
         <div class="form-grid">
@@ -250,14 +250,14 @@
           <div style="grid-column:1/-1;font-size:14px;font-weight:600;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">
             After saving this fee table, submit test claims for each CPT code entered above. The claim adjudication result should show the Allowed Amount matching exactly what you entered in this fee table. If the numbers do not match, there is a configuration error.
           </div>
-
+ 
           <div style="grid-column:1/-1">
             <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">
               <div style="font-size:14px;font-weight:800;color:var(--accent);margin-bottom:12px">📋 Required Test Claim Checklist</div>
               <div id="test-checklist" style="font-size:13px;font-weight:600;color:var(--text-secondary)">Save the fee table and add CPT codes first. The checklist will appear here.</div>
             </div>
           </div>
-
+ 
           <div class="fsl">What to Validate on Each Test Claim</div>
           <div style="grid-column:1/-1">
             <table style="width:100%">
@@ -272,7 +272,7 @@
               </tbody>
             </table>
           </div>
-
+ 
           <div class="fsl">Quick Links — Run Test Claims</div>
           <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px">
             <a class="test-claim-link" href="claims.html">📄 Submit New Claim</a>
@@ -285,7 +285,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- TAB 4: MODULE LINKS -->
       <div class="tab-panel" id="tab-links">
         <div class="form-grid">
@@ -305,7 +305,7 @@
               </tbody>
             </table>
           </div>
-
+ 
           <div class="fsl">RBRVS Formula</div>
           <div style="grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:7px;padding:16px;font-size:13px;font-weight:700;color:var(--accent);font-family:monospace;line-height:1.8">
             Allowed Amount = (Work RVU + Practice Expense RVU + Malpractice RVU) × GPCI × Conversion Factor<br>
@@ -314,7 +314,7 @@
           </div>
         </div>
       </div>
-
+ 
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
@@ -323,178 +323,16 @@
     </div>
   </div>
 </div>
-
-<script>
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
-async function apiFetch(url){
-  var res=await fetch(url);
-  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
-  return res.json();
-}
-
-function genCode(prefix){
-  return prefix+'-'+String(Date.now()).slice(-6);
-}
-
-function badge(text,type){
-  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
-    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
-    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
-    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
-    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
-  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
-  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
-}
-
-function toast(msg,type){
-  var existing=document.querySelectorAll('.toast-msg');
-  existing.forEach(function(el){el.remove();});
-  var div=document.createElement('div');
-  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
-  var c=colors[type]||'#60a5fa';
-  div.className='toast-msg';
-  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
-  div.textContent=msg;
-  document.body.appendChild(div);
-  setTimeout(function(){if(div.parentNode)div.remove();},3000);
-}
-
-function confirmDialog(msg){
-  return new Promise(function(resolve){
-    var overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
-    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
-    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
-  });
-}
-
-
-var CPT_LIBRARY = {
-  'E&M - Office Visits': [
-    {code:'99202',desc:'Office visit, new patient, straightforward',default_allowed:93.00},
-    {code:'99203',desc:'Office visit, new patient, low complexity',default_allowed:140.00},
-    {code:'99204',desc:'Office visit, new patient, moderate complexity',default_allowed:213.00},
-    {code:'99205',desc:'Office visit, new patient, high complexity',default_allowed:281.00},
-    {code:'99211',desc:'Office visit, established, minimal',default_allowed:24.00},
-    {code:'99212',desc:'Office visit, established, straightforward',default_allowed:75.00},
-    {code:'99213',desc:'Office visit, established, low complexity',default_allowed:110.00},
-    {code:'99214',desc:'Office visit, established, moderate complexity',default_allowed:152.00},
-    {code:'99215',desc:'Office visit, established, high complexity',default_allowed:213.00},
-  ],
-  'E&M - Specialist Consults': [
-    {code:'99241',desc:'Office consult, straightforward',default_allowed:105.00},
-    {code:'99242',desc:'Office consult, low complexity',default_allowed:143.00},
-    {code:'99243',desc:'Office consult, moderate complexity',default_allowed:165.00},
-    {code:'99244',desc:'Office consult, specialist, moderate',default_allowed:185.00},
-    {code:'99245',desc:'Office consult, high complexity',default_allowed:242.00},
-  ],
-  'E&M - Emergency Room': [
-    {code:'99281',desc:'ER visit, self-limited, minimal',default_allowed:45.00},
-    {code:'99282',desc:'ER visit, low complexity',default_allowed:89.00},
-    {code:'99283',desc:'ER visit, moderate complexity',default_allowed:155.00},
-    {code:'99284',desc:'ER visit, moderately high complexity',default_allowed:228.00},
-    {code:'99285',desc:'ER visit, high complexity',default_allowed:320.00},
-  ],
-  'Preventive Care (ACA)': [
-    {code:'99381',desc:'Preventive exam, new patient, infant',default_allowed:168.00},
-    {code:'99382',desc:'Preventive exam, new patient, age 1-4',default_allowed:175.00},
-    {code:'99383',desc:'Preventive exam, new patient, age 5-11',default_allowed:168.00},
-    {code:'99384',desc:'Preventive exam, new patient, age 12-17',default_allowed:180.00},
-    {code:'99385',desc:'Preventive exam, new patient, age 18-39',default_allowed:190.00},
-    {code:'99386',desc:'Preventive exam, new patient, age 40-64',default_allowed:210.00},
-    {code:'99391',desc:'Preventive exam, established, infant',default_allowed:148.00},
-    {code:'99392',desc:'Preventive exam, established, age 1-4',default_allowed:152.00},
-    {code:'99395',desc:'Preventive exam, established, adult 18-39',default_allowed:175.00},
-    {code:'99396',desc:'Preventive exam, established, adult 40-64',default_allowed:195.00},
-  ],
-  'Lab / Pathology': [
-    {code:'80053',desc:'Comprehensive metabolic panel (CMP)',default_allowed:18.00},
-    {code:'80061',desc:'Lipid panel',default_allowed:22.00},
-    {code:'85025',desc:'CBC with differential',default_allowed:28.00},
-    {code:'85027',desc:'CBC without differential',default_allowed:16.00},
-    {code:'86580',desc:'TB skin test, intradermal',default_allowed:12.00},
-    {code:'87880',desc:'Rapid strep test',default_allowed:20.00},
-    {code:'83036',desc:'Hemoglobin A1C',default_allowed:18.00},
-    {code:'84443',desc:'TSH (thyroid stimulating hormone)',default_allowed:26.00},
-  ],
-  'Imaging / Radiology': [
-    {code:'71046',desc:'Chest X-ray, 2 views',default_allowed:85.00},
-    {code:'72148',desc:'MRI lumbar spine without contrast',default_allowed:380.00},
-    {code:'70450',desc:'CT head without contrast',default_allowed:295.00},
-    {code:'70553',desc:'MRI brain with and without contrast',default_allowed:420.00},
-    {code:'72141',desc:'MRI cervical spine without contrast',default_allowed:365.00},
-    {code:'73721',desc:'MRI knee without contrast',default_allowed:340.00},
-    {code:'76700',desc:'Ultrasound, abdominal complete',default_allowed:210.00},
-    {code:'93000',desc:'ECG, 12-lead with interpretation',default_allowed:22.00},
-    {code:'93306',desc:'Echocardiography, complete',default_allowed:318.00},
-  ],
-  'Surgery / Procedures': [
-    {code:'27447',desc:'Total knee arthroplasty (replacement)',default_allowed:1850.00},
-    {code:'27130',desc:'Total hip arthroplasty (replacement)',default_allowed:1920.00},
-    {code:'29881',desc:'Arthroscopy, knee, with meniscectomy',default_allowed:820.00},
-    {code:'43239',desc:'Upper GI endoscopy with biopsy',default_allowed:480.00},
-    {code:'45378',desc:'Colonoscopy, diagnostic',default_allowed:520.00},
-    {code:'45380',desc:'Colonoscopy with biopsy',default_allowed:610.00},
-    {code:'49505',desc:'Repair inguinal hernia, initial',default_allowed:745.00},
-    {code:'47562',desc:'Laparoscopic cholecystectomy',default_allowed:890.00},
-  ],
-  'Mental Health / Behavioral': [
-    {code:'90791',desc:'Psychiatric diagnostic evaluation',default_allowed:185.00},
-    {code:'90832',desc:'Psychotherapy, 30 min',default_allowed:82.00},
-    {code:'90834',desc:'Psychotherapy, 45 min',default_allowed:110.00},
-    {code:'90837',desc:'Psychotherapy, 60 min',default_allowed:143.00},
-    {code:'90847',desc:'Family psychotherapy with patient',default_allowed:120.00},
-    {code:'90853',desc:'Group psychotherapy',default_allowed:52.00},
-    {code:'96116',desc:'Neurobehavioral status exam, first hour',default_allowed:185.00},
-  ],
-  'Physical / Occupational Therapy': [
-    {code:'97010',desc:'Hot or cold packs therapy',default_allowed:18.00},
-    {code:'97014',desc:'Electrical stimulation',default_allowed:22.00},
-    {code:'97035',desc:'Ultrasound therapy',default_allowed:25.00},
-    {code:'97110',desc:'Therapeutic exercises, 15 min',default_allowed:42.00},
-    {code:'97140',desc:'Manual therapy, 15 min',default_allowed:52.00},
-    {code:'97150',desc:'Therapeutic procedure, group',default_allowed:38.00},
-  ],
-  'DRG - Facility Codes': [
-    {code:'DRG-064',desc:'Intracranial hemorrhage without MCC',default_allowed:15200.00},
-    {code:'DRG-065',desc:'Intracranial hemorrhage with MCC',default_allowed:21500.00},
-    {code:'DRG-193',desc:'Simple pneumonia without MCC',default_allowed:7400.00},
-    {code:'DRG-194',desc:'Simple pneumonia with MCC',default_allowed:9400.00},
-    {code:'DRG-291',desc:'Heart failure and shock with MCC',default_allowed:17200.00},
-    {code:'DRG-292',desc:'Heart failure and shock with CC',default_allowed:11800.00},
-    {code:'DRG-469',desc:'Major joint replacement with MCC',default_allowed:18500.00},
-    {code:'DRG-470',desc:'Major joint replacement without MCC',default_allowed:13800.00},
-    {code:'DRG-489',desc:'Back and neck procedures with MCC',default_allowed:14200.00},
-    {code:'DRG-603',desc:'Cellulitis without MCC',default_allowed:6800.00},
-  ],
-  'Dental - CDT Codes': [
-    {code:'D0120',desc:'Periodic oral evaluation',default_allowed:60.00},
-    {code:'D0150',desc:'Comprehensive oral evaluation',default_allowed:85.00},
-    {code:'D0210',desc:'Complete series X-rays',default_allowed:145.00},
-    {code:'D0330',desc:'Panoramic radiographic image',default_allowed:135.00},
-    {code:'D1110',desc:'Prophylaxis, adult cleaning',default_allowed:115.00},
-    {code:'D1120',desc:'Prophylaxis, child cleaning',default_allowed:85.00},
-    {code:'D2140',desc:'Amalgam restoration, one surface',default_allowed:175.00},
-    {code:'D2160',desc:'Amalgam restoration, three surfaces',default_allowed:285.00},
-    {code:'D2740',desc:'Crown, porcelain fused to high noble metal',default_allowed:1180.00},
-    {code:'D2750',desc:'Crown, porcelain fused to noble metal',default_allowed:1050.00},
-    {code:'D3310',desc:'Endodontic therapy, anterior tooth',default_allowed:780.00},
-    {code:'D3330',desc:'Endodontic therapy, molar tooth',default_allowed:1050.00},
-    {code:'D4341',desc:'Periodontal scaling and root planing, per quadrant',default_allowed:265.00},
-    {code:'D5110',desc:'Complete denture, maxillary',default_allowed:1650.00},
-    {code:'D7110',desc:'Simple extraction',default_allowed:195.00},
-    {code:'D7210',desc:'Surgical extraction, erupted tooth',default_allowed:285.00},
-    {code:'D8080',desc:'Comprehensive orthodontic treatment, adolescent',default_allowed:4200.00},
-    {code:'D8090',desc:'Comprehensive orthodontic treatment, adult',default_allowed:4800.00},
-  ]
-};
-
-
+ 
+<script>setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v!=null?v:'';}
+function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',in_review:'#60a5fa',resolved:'#2ed573',open:'#ff4757',high:'#ff4757',medium:'#fbbf24',low:'#4ade80',hmo:'#60a5fa',ppo:'#a78bfa',cdh:'#34d399',dental:'#e879f9',individual:'#60a5fa',facility:'#a78bfa',group:'#34d399',rbrvs:'#60a5fa',drg:'#a78bfa',capitation:'#34d399',preferred:'#a78bfa',inn:'#2ed573',oon:'#f87171',approved:'#2ed573',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
+function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
+function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
+ 
 var records=[], activeCPTs=[], statusFilter='all';
 var FB_FEE=[
   {id:'ft1',fee_table_code:'HF-FEE-2026',fee_table_name:'HealthFirst Standard Fee Schedule 2026',fee_table_type:'rbrvs',locality:'National',conversion_factor:36.04,modifier_support:'yes',effective_date:'2026-01-01',termination_date:'',status:'active',
@@ -523,7 +361,7 @@ var FB_FEE=[
     {code:'D8080',desc:'Comprehensive ortho treatment, adolescent',allowed:4200.00,notes:'Ortho, lifetime max'}
   ]}
 ];
-
+ 
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
@@ -533,7 +371,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 ['all','rbrvs','drg','ucr_dental'].forEach(function(f){
   document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
 });
-
+ 
 function switchTab(n,b){
   document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});
   document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});
@@ -542,7 +380,7 @@ function switchTab(n,b){
   if(n==='testclaims')buildChecklist();
 }
 function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
-
+ 
 // ─── CPT LIBRARY FUNCTIONS ────────────────────────────────────────────────────
 function updateCPTLibrary(){
   var type=gv('f-fee_table_type');
@@ -562,7 +400,7 @@ function updateCPTLibrary(){
     }
   });
 }
-
+ 
 function updateCodeDropdown(){
   var cat=gv('add-category');
   var codeSel=document.getElementById('add-code');
@@ -575,7 +413,7 @@ function updateCodeDropdown(){
     codeSel.appendChild(o);
   });
 }
-
+ 
 function autoFillCode(){
   var val=gv('add-code');
   if(!val)return;
@@ -585,7 +423,7 @@ function autoFillCode(){
     document.getElementById('add-notes').value='';
   }catch(e){}
 }
-
+ 
 function addCPTCode(){
   var codeVal=gv('add-code');
   var allowed=parseFloat(document.getElementById('add-allowed').value)||0;
@@ -608,12 +446,12 @@ function addCPTCode(){
   document.getElementById('add-notes').value='';
   toast(c.code+' added ✓','success');
 }
-
+ 
 function removeCPT(code){
   activeCPTs=activeCPTs.filter(function(c){return c.code!==code;});
   renderCPTList();
 }
-
+ 
 function renderCPTList(){
   document.getElementById('cpt-count').textContent=activeCPTs.length+' code'+(activeCPTs.length!==1?'s':'');
   document.getElementById('code-summary').textContent=activeCPTs.length+' CPT code'+(activeCPTs.length!==1?'s':'')+' entered';
@@ -636,7 +474,7 @@ function renderCPTList(){
     '<div><button class="btn btn-sm btn-danger" onclick="removeCPT(''+c.code+'')">Remove</button></div></div>';
   }).join('');
 }
-
+ 
 function buildChecklist(){
   var div=document.getElementById('test-checklist');
   if(!activeCPTs.length){
@@ -656,10 +494,10 @@ function buildChecklist(){
     '</div>';
   }).join('');
 }
-
+ 
 // ─── MAIN TABLE ───────────────────────────────────────────────────────────────
 function typeLabel(v){return{rbrvs:'RBRVS',drg:'DRG',ucr_dental:'UCR Dental',per_diem:'Per Diem',custom:'Custom'}[v]||v||'—';}
-
+ 
 function showCPT(id){
   var ft=records.find(function(r){return r.id===id;});
   if(!ft)return;
@@ -680,15 +518,15 @@ function showCPT(id){
   document.getElementById('cpt-panel').style.display='block';
   document.getElementById('cpt-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
-
+ 
 function hideCPT(){document.getElementById('cpt-panel').style.display='none';}
-
+ 
 async function load(){
   try{var r=await apiFetch('/api/fee-tables').catch(function(){return[];});records=r.length?r:FB_FEE;}
   catch(e){records=FB_FEE;}
   updateStats();render();
 }
-
+ 
 function updateStats(){
   document.getElementById('s-total').textContent=records.length;
   document.getElementById('s-rbrvs').textContent=records.filter(function(r){return r.fee_table_type==='rbrvs';}).length;
@@ -696,7 +534,7 @@ function updateStats(){
   var totalCodes=records.reduce(function(a,r){return a+(r.cpt_entries||[]).length;},0);
   document.getElementById('s-codes').textContent=totalCodes;
 }
-
+ 
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=[].concat(records);
@@ -724,7 +562,7 @@ function render(){
     '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+ft.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+ft.id+'">Del</button></div></td></tr>';
   }).join('');
 }
-
+ 
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   activeCPTs=d&&d.cpt_entries?JSON.parse(JSON.stringify(d.cpt_entries)):[];
@@ -740,9 +578,9 @@ function openModal(id){
   switchTab('header',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
-
+ 
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
-
+ 
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
   var fc=gv('f-fee_table_code').trim(),fn=gv('f-fee_table_name').trim();
@@ -759,14 +597,14 @@ async function save(){
     if(fresh.length)records=fresh;updateStats();render();
   }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
 }
-
+ 
 async function del(id){
   if(!await confirmDialog('Delete this fee table? Contracts and NetworX rules referencing it will lose their fee table link.'))return;
   var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();
   try{await fetch('/api/fee-tables/'+id,{method:'DELETE'});toast('Deleted','info');}
   catch(e){records=bk;updateStats();render();toast('Delete failed','error');}
 }
-
+ 
 load();
 </script></body></html>
 
