@@ -118,6 +118,7 @@
   </main>
 </div>
 
+<!-- Modal — does NOT close on outside click -->
 <div id="overlay">
   <div class="modal" style="width:820px">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Group</span><button class="modal-close" id="btn-x">&#10005;</button></div>
@@ -132,12 +133,17 @@
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
       <input type="hidden" id="f-id">
+
+      <!-- TAB: GENERAL -->
       <div class="tab-panel active" id="tab-general">
         <div class="form-grid">
           <div class="form-section-label">Group Identification</div>
           <div class="form-group"><label class="form-label">Group ID *</label><input type="text" class="form-input" id="f-group_id" placeholder="GRP-ECL-2026-001"></div>
           <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="active">Active</option><option value="pending">Pending</option><option value="renewal">Up for Renewal</option><option value="terminated">Terminated</option></select>
+            <select class="form-select" id="f-status">
+              <option value="active">Active</option><option value="pending">Pending</option>
+              <option value="renewal">Up for Renewal</option><option value="terminated">Terminated</option>
+            </select>
           </div>
           <div class="form-group full"><label class="form-label">Group Name *</label><input type="text" class="form-input" id="f-employer_name" placeholder="EchoLink Clinics &amp; Urgent Care Network"></div>
           <div class="form-group"><label class="form-label">Group Short Name</label><input type="text" class="form-input" id="f-short_name" placeholder="EchoLink Solutions"></div>
@@ -145,7 +151,11 @@
           <div class="form-group"><label class="form-label">SIC Code</label><input type="text" class="form-input" id="f-sic_code" placeholder="8011"></div>
           <div class="form-group"><label class="form-label">Industry</label>
             <select class="form-select" id="f-industry">
-              <option value="healthcare">Healthcare</option><option value="technology">Technology</option><option value="finance">Finance / Banking</option><option value="education">Education</option><option value="manufacturing">Manufacturing</option><option value="retail">Retail</option><option value="hospitality">Hospitality / Food Service</option><option value="construction">Construction</option><option value="government">Government / Public Sector</option><option value="nonprofit">Non-Profit</option><option value="other">Other</option>
+              <option value="healthcare">Healthcare</option><option value="technology">Technology</option>
+              <option value="finance">Finance / Banking</option><option value="education">Education</option>
+              <option value="manufacturing">Manufacturing</option><option value="retail">Retail</option>
+              <option value="hospitality">Hospitality / Food Service</option><option value="construction">Construction</option>
+              <option value="government">Government / Public Sector</option><option value="nonprofit">Non-Profit</option><option value="other">Other</option>
             </select>
           </div>
           <div class="form-group"><label class="form-label">Group Size (employees)</label><input type="number" class="form-input" id="f-group_size" min="1" placeholder="250"></div>
@@ -153,19 +163,38 @@
           <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
           <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
           <div class="form-group"><label class="form-label">Plan Year Start</label>
-            <select class="form-select" id="f-plan_year_start"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
+            <select class="form-select" id="f-plan_year_start">
+              <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+              <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+              <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+              <option value="October">October</option><option value="November">November</option><option value="December">December</option>
+            </select>
           </div>
           <div class="form-group"><label class="form-label">Plan Year End</label>
-            <select class="form-select" id="f-plan_year_end"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option selected>December</option></select>
+            <select class="form-select" id="f-plan_year_end">
+              <option value="January">January</option><option value="February">February</option><option value="March">March</option>
+              <option value="April">April</option><option value="May">May</option><option value="June">June</option>
+              <option value="July">July</option><option value="August">August</option><option value="September">September</option>
+              <option value="October">October</option><option value="November">November</option>
+              <option value="December" selected>December</option>
+            </select>
           </div>
           <div class="form-section-label">Compliance</div>
-          <div class="form-group"><label class="form-label">COBRA Eligible</label><select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select></div>
-          <div class="form-group"><label class="form-label">ERISA Plan</label><select class="form-select" id="f-erisa_plan"><option value="yes">Yes</option><option value="no">No</option></select></div>
-          <div class="form-group"><label class="form-label">ACA Applicable</label><select class="form-select" id="f-aca_applicable"><option value="yes">Yes &mdash; ALE (50+ FTEs)</option><option value="no">No</option></select></div>
+          <div class="form-group"><label class="form-label">COBRA Eligible</label>
+            <select class="form-select" id="f-cobra_eligible"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">ERISA Plan</label>
+            <select class="form-select" id="f-erisa_plan"><option value="yes">Yes</option><option value="no">No</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">ACA Applicable</label>
+            <select class="form-select" id="f-aca_applicable"><option value="yes">Yes &mdash; ALE (50+ FTEs)</option><option value="no">No</option></select>
+          </div>
           <div class="form-group"><label class="form-label">ERISA Plan Year</label><input type="text" class="form-input" id="f-erisa_year" placeholder="2026"></div>
           <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Key account notes, renewal flags, special handling..."></textarea></div>
         </div>
       </div>
+
+      <!-- TAB: ADDRESS & CONTACT -->
       <div class="tab-panel" id="tab-address">
         <div class="form-grid">
           <div class="form-section-label">Employer Address</div>
@@ -185,64 +214,220 @@
           <div class="form-group"><label class="form-label">Secondary Contact Email</label><input type="text" class="form-input" id="f-contact2_email" placeholder="j.okafor@company.com"></div>
         </div>
       </div>
+
+      <!-- TAB: BILLING -->
       <div class="tab-panel" id="tab-billing">
         <div class="form-grid">
           <div class="form-section-label">Billing Configuration</div>
-          <div class="form-group"><label class="form-label">Billing Frequency</label><select class="form-select" id="f-billing_frequency"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="semi_annual">Semi-Annual</option><option value="annual">Annual</option></select></div>
-          <div class="form-group"><label class="form-label">Billing Method</label><select class="form-select" id="f-billing_method"><option value="list_bill">List Bill &mdash; itemized per member</option><option value="summary_bill">Summary Bill &mdash; total invoice</option><option value="self_admin">Self-Administered</option></select></div>
+          <div class="form-group"><label class="form-label">Billing Frequency</label>
+            <select class="form-select" id="f-billing_frequency">
+              <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+              <option value="semi_annual">Semi-Annual</option><option value="annual">Annual</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Billing Method</label>
+            <select class="form-select" id="f-billing_method">
+              <option value="list_bill">List Bill &mdash; itemized per member</option>
+              <option value="summary_bill">Summary Bill &mdash; total invoice</option>
+              <option value="self_admin">Self-Administered</option>
+            </select>
+          </div>
           <div class="form-group"><label class="form-label">Billing Contact</label><input type="text" class="form-input" id="f-billing_contact" placeholder="Sandra Mitchell"></div>
           <div class="form-group"><label class="form-label">Grace Period (days)</label><input type="number" class="form-input" id="f-grace_period" placeholder="30" min="0"></div>
           <div class="form-group full"><label class="form-label">Billing Address</label><textarea class="form-textarea" id="f-billing_address" rows="2" placeholder="Same as employer address or enter separate billing address"></textarea></div>
           <div class="form-section-label">Employer Contribution</div>
-          <div class="form-group"><label class="form-label">Employer Contribution Method</label><select class="form-select" id="f-contribution_model"><option value="defined_contribution">Defined Contribution &mdash; Fixed $ per tier</option><option value="defined_benefit">Defined Benefit &mdash; % of premium</option><option value="split">Split &mdash; employer + employee share</option><option value="full_employer">Full Employer Paid</option><option value="voluntary">Voluntary &mdash; 100% employee</option></select></div>
+          <div class="form-group"><label class="form-label">Employer Contribution Method</label>
+            <select class="form-select" id="f-contribution_model">
+              <option value="defined_contribution">Defined Contribution &mdash; Fixed $ per tier</option>
+              <option value="defined_benefit">Defined Benefit &mdash; % of premium</option>
+              <option value="split">Split &mdash; employer + employee share</option>
+              <option value="full_employer">Full Employer Paid</option>
+              <option value="voluntary">Voluntary &mdash; 100% employee</option>
+            </select>
+          </div>
           <div class="form-group"><label class="form-label">Employer Contribution %</label><input type="number" class="form-input" id="f-employer_contribution_pct" min="0" max="100" placeholder="75"></div>
           <div class="form-group"><label class="form-label">Waiting Period (days)</label><input type="number" class="form-input" id="f-waiting_period_days" min="0" placeholder="30"></div>
-          <div class="form-group"><label class="form-label">Open Enrollment Month</label><select class="form-select" id="f-oe_month"><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select></div>
+          <div class="form-group"><label class="form-label">Open Enrollment Month</label>
+            <select class="form-select" id="f-oe_month">
+              <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+              <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+              <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
         </div>
       </div>
+
+      <!-- TAB: CONTRACT -->
       <div class="tab-panel" id="tab-contract">
         <div class="form-grid">
           <div class="form-section-label">Contract Details</div>
           <div class="form-group"><label class="form-label">Contract Start Date</label><input type="date" class="form-input" id="f-contract_start"></div>
           <div class="form-group"><label class="form-label">Renewal Date</label><input type="date" class="form-input" id="f-renewal_date"></div>
-          <div class="form-group"><label class="form-label">Group Type</label><select class="form-select" id="f-group_type"><option value="fully_insured">Fully Insured</option><option value="self_funded">Self-Funded / Self-Insured</option><option value="level_funded">Level-Funded</option><option value="mec">Minimum Essential Coverage (MEC)</option></select></div>
+          <div class="form-group"><label class="form-label">Group Type</label>
+            <select class="form-select" id="f-group_type">
+              <option value="fully_insured">Fully Insured</option>
+              <option value="self_funded">Self-Funded / Self-Insured</option>
+              <option value="level_funded">Level-Funded</option>
+              <option value="mec">Minimum Essential Coverage (MEC)</option>
+            </select>
+          </div>
           <div class="form-group"><label class="form-label">State of Issue</label><input type="text" class="form-input" id="f-state_of_issue" placeholder="NC" maxlength="2"></div>
           <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-textarea" id="f-contract_notes" rows="3" placeholder="Contract terms, renewal flags, special handling instructions..."></textarea></div>
         </div>
       </div>
+
+      <!-- TAB: PLAN OFFERINGS -->
       <div class="tab-panel" id="tab-plans">
         <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Select plan offerings available to this employer group.</p>
         <div id="plan-checkboxes" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px"></div>
-        <div class="form-group full"><label class="form-label">Custom Plan Offerings (override)</label><input type="text" class="form-input" id="f-plan_offerings" placeholder="Or type plan names manually, comma-separated"></div>
+        <div class="form-group full">
+          <label class="form-label">Custom Plan Offerings (override)</label>
+          <input type="text" class="form-input" id="f-plan_offerings" placeholder="Or type plan names manually, comma-separated">
+        </div>
       </div>
+
+      <!-- TAB: SECURITY & ACCESS -->
       <div class="tab-panel" id="tab-security">
         <div style="margin-bottom:20px">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Access Control &mdash; User Roles</div>
-          <div class="access-user-row"><div class="user-avatar">SM</div><div class="user-info"><div class="user-name">Sandra Mitchell</div><div class="user-role">HR Benefits Manager &mdash; Primary Admin</div></div><select class="form-select" style="width:160px;font-size:12px"><option>Full Access</option><option>Read Only</option><option>No Access</option></select></div>
-          <div class="access-user-row"><div class="user-avatar" style="background:#6366f1">JO</div><div class="user-info"><div class="user-name">James Okafor</div><div class="user-role">HR Generalist &mdash; Secondary</div></div><select class="form-select" style="width:160px;font-size:12px"><option>Read Only</option><option>Full Access</option><option>No Access</option></select></div>
-          <div class="access-user-row"><div class="user-avatar" style="background:#f59e0b">CA</div><div class="user-info"><div class="user-name">Config Analyst</div><div class="user-role">Benefits Configuration Team</div></div><select class="form-select" style="width:160px;font-size:12px"><option>Full Access</option><option>Read Only</option><option>No Access</option></select></div>
-          <div class="access-user-row"><div class="user-avatar" style="background:#10b981">QA</div><div class="user-info"><div class="user-name">QA Reviewer</div><div class="user-role">Audit &amp; Quality Assurance</div></div><select class="form-select" style="width:160px;font-size:12px"><option>Read Only</option><option>Full Access</option><option>No Access</option></select></div>
+          <div class="access-user-row">
+            <div class="user-avatar">SM</div>
+            <div class="user-info"><div class="user-name">Sandra Mitchell</div><div class="user-role">HR Benefits Manager &mdash; Primary Admin</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Full Access</option><option>Read Only</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#6366f1">JO</div>
+            <div class="user-info"><div class="user-name">James Okafor</div><div class="user-role">HR Generalist &mdash; Secondary</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Read Only</option><option>Full Access</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#f59e0b">CA</div>
+            <div class="user-info"><div class="user-name">Config Analyst</div><div class="user-role">Benefits Configuration Team</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Full Access</option><option>Read Only</option><option>No Access</option>
+            </select>
+          </div>
+          <div class="access-user-row">
+            <div class="user-avatar" style="background:#10b981">QA</div>
+            <div class="user-info"><div class="user-name">QA Reviewer</div><div class="user-role">Audit &amp; Quality Assurance</div></div>
+            <select class="form-select" style="width:160px;font-size:12px">
+              <option>Read Only</option><option>Full Access</option><option>No Access</option>
+            </select>
+          </div>
         </div>
         <div style="margin-bottom:20px">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Permission Matrix &mdash; By Function</div>
-          <div class="security-role"><div><div class="security-role-name">&#128272; Group Record Management</div><div class="security-role-desc">Create, edit, and terminate group records</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-on">Edit</div><div class="perm-badge perm-on">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
-          <div class="security-role"><div><div class="security-role-name">&#128203; Plan Assignment</div><div class="security-role-desc">Link and unlink plans from this group</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-on">Edit</div><div class="perm-badge perm-off">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
-          <div class="security-role"><div><div class="security-role-name">&#128178; Billing &amp; Rates</div><div class="security-role-desc">View and modify billing configuration and premium rates</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-off">Edit</div><div class="perm-badge perm-off">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
-          <div class="security-role"><div><div class="security-role-name">&#128100; Member Enrollment</div><div class="security-role-desc">Enroll, change, and terminate member records under this group</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-on">Edit</div><div class="perm-badge perm-on">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
-          <div class="security-role"><div><div class="security-role-name">&#128196; Claims &amp; EOBs</div><div class="security-role-desc">View and reprocess claims submitted under this group</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-off">Edit</div><div class="perm-badge perm-off">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
-          <div class="security-role"><div><div class="security-role-name">&#128269; Audit Log</div><div class="security-role-desc">View all configuration changes made to this group record</div><div class="perm-grid"><div class="perm-badge perm-on">View</div><div class="perm-badge perm-off">Edit</div><div class="perm-badge perm-off">Create</div><div class="perm-badge perm-off">Delete</div></div></div></div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128272; Group Record Management</div>
+              <div class="security-role-desc">Create, edit, and terminate group records</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-on">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128203; Plan Assignment</div>
+              <div class="security-role-desc">Link and unlink plans from this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128178; Billing &amp; Rates</div>
+              <div class="security-role-desc">View and modify billing configuration and premium rates</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128100; Member Enrollment</div>
+              <div class="security-role-desc">Enroll, change, and terminate member records under this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-on">Edit</div>
+                <div class="perm-badge perm-on">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128196; Claims &amp; EOBs</div>
+              <div class="security-role-desc">View and reprocess claims submitted under this group</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
+          <div class="security-role">
+            <div>
+              <div class="security-role-name">&#128269; Audit Log</div>
+              <div class="security-role-desc">View all configuration changes made to this group record</div>
+              <div class="perm-grid">
+                <div class="perm-badge perm-on">View</div>
+                <div class="perm-badge perm-off">Edit</div>
+                <div class="perm-badge perm-off">Create</div>
+                <div class="perm-badge perm-off">Delete</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">Security Settings</div>
           <div class="form-grid">
-            <div class="toggle-row"><div><div class="toggle-label">Require MFA for Group Access</div><div class="toggle-sub">All users accessing this group record must have multi-factor authentication enabled</div></div><label class="toggle-switch"><input type="checkbox" id="f-mfa_required" checked><span class="toggle-slider"></span></label></div>
-            <div class="toggle-row"><div><div class="toggle-label">Audit All Access Events</div><div class="toggle-sub">Log every view, edit, and export event for this group to the Audit Log</div></div><label class="toggle-switch"><input type="checkbox" id="f-audit_access" checked><span class="toggle-slider"></span></label></div>
-            <div class="toggle-row"><div><div class="toggle-label">Restrict Export of Member Data</div><div class="toggle-sub">Prevent bulk export of member PII from this group without supervisor approval</div></div><label class="toggle-switch"><input type="checkbox" id="f-restrict_export" checked><span class="toggle-slider"></span></label></div>
-            <div class="toggle-row"><div><div class="toggle-label">HIPAA Covered Entity</div><div class="toggle-sub">Employer is a HIPAA covered entity &mdash; apply enhanced PHI access controls</div></div><label class="toggle-switch"><input type="checkbox" id="f-hipaa_covered" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Require MFA for Group Access</div><div class="toggle-sub">All users accessing this group record must have multi-factor authentication enabled</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-mfa_required" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Audit All Access Events</div><div class="toggle-sub">Log every view, edit, and export event for this group to the Audit Log</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-audit_access" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Restrict Export of Member Data</div><div class="toggle-sub">Prevent bulk export of member PII from this group without supervisor approval</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-restrict_export" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">HIPAA Covered Entity</div><div class="toggle-sub">Employer is a HIPAA covered entity &mdash; apply enhanced PHI access controls</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="f-hipaa_covered" checked><span class="toggle-slider"></span></label>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
+  <div class="test-bar" style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <span style="font-size:13px;font-weight:800;color:var(--accent);flex-shrink:0">🧪 Test Claims &amp; Validation</span>
+    <span style="font-size:12px;font-weight:600;color:var(--text-secondary);flex:1;min-width:180px">Verify your configuration adjudicates correctly</span>
+    <a href="claims.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573">📄 Submit Test Claim</a>
+    <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
+    <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
+    <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
+    <a href="audit.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
+  </div>
     <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Group</button></div>
   </div>
 </div>
@@ -255,29 +440,29 @@ document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
+// NO outside click close
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 ['all','active','pending','renewal'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(name,btn){document.querySelectorAll('.modal-tab').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 function setFilter(s,btn){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');render();}
 setInterval(function(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-var FALLBACK=[
-  {id:'g1',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',short_name:'EchoLink Solutions',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink CDH HDHP + HSA, EchoLink Dental Essentials',status:'active',contact_name:'Sandra Mitchell',contact_title:'HR Benefits Manager',contact_email:'s.mitchell@echolinkclinics.com',contact_phone:'(704) 555-0192',street_address:'4200 EchoLink Medical Parkway',suite:'Suite 100',city:'Charlotte',state:'NC',zip:'28202',phone:'(704) 555-0190',tax_id:'56-7890123',sic_code:'8011',cobra_eligible:'yes',erisa_plan:'yes',aca_applicable:'yes',erisa_year:'2026',billing_frequency:'monthly',billing_method:'list_bill',billing_contact:'Sandra Mitchell',grace_period:30,contribution_model:'defined_contribution',waiting_period_days:30,oe_month:11,effective_date:'2026-01-01',termination_date:'2026-12-31',plan_year_start:'January',plan_year_end:'December',group_type:'fully_insured',state_of_issue:'NC'},
-  {id:'g2',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',short_name:'BRCH',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active',contact_name:'Marcus Webb',contact_email:'benefits@brchosp.org',contact_phone:'555-2000',city:'Asheville',state:'NC',cobra_eligible:'yes',erisa_plan:'yes',contribution_model:'defined_benefit',waiting_period_days:0},
-  {id:'g3',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com',city:'Greenville',state:'SC',cobra_eligible:'no',erisa_plan:'yes',contribution_model:'split',waiting_period_days:60}
+const FALLBACK_GROUPS=[
+  {id:'grp-ecl-001',group_id:'GRP-ECL-2026-001',employer_name:'EchoLink Clinics & Urgent Care Network',short_name:'EchoLink Solutions',industry:'healthcare',group_size:275,employer_contribution_pct:75,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'EchoLink HMO Bronze, EchoLink PPO Silver, EchoLink CDH HDHP + HSA, EchoLink Dental Essentials',status:'active',contact_name:'Sandra Mitchell',contact_title:'HR Benefits Manager',contact_email:'s.mitchell@echolinkclinics.com',contact_phone:'(704) 555-0192',street_address:'4200 EchoLink Medical Parkway',suite:'Suite 100',city:'Charlotte',state:'NC',zip:'28202',phone:'(704) 555-0190',billing_frequency:'monthly',billing_method:'list_bill',cobra_eligible:'yes',erisa_plan:'yes',aca_applicable:'yes'},
+  {id:'grp-002',group_id:'GRP-002',employer_name:'Blue Ridge Community Hospital',short_name:'BRCH',industry:'healthcare',group_size:450,employer_contribution_pct:90,contract_start:'2026-01-01',renewal_date:'2026-12-31',plan_offerings:'HMO Basic, PPO Plus, Dental Select',status:'active',contact_name:'Marcus Webb',contact_email:'benefits@brchosp.org'},
+  {id:'grp-003',group_id:'GRP-003',employer_name:'Main Street Diner Group',short_name:'Main Street Diner',industry:'hospitality',group_size:18,employer_contribution_pct:50,contract_start:'2026-04-01',renewal_date:'2026-03-31',plan_offerings:'Bronze HMO',status:'pending',contact_name:'Tony Rizzo',contact_email:'tony@mainstreetdiner.com'}
 ];
 async function load(){
-  records=FALLBACK;plans=[];
-  updateSummary();render();
   try{
-    var controller=new AbortController();
-    var timer=setTimeout(function(){controller.abort();},8000);
-    var gRes=await fetch('/api/groups',{signal:controller.signal}).then(function(r){return r.ok?r.json():[];}).catch(function(){return[];});
-    var pRes=await fetch('/api/plans',{signal:controller.signal}).then(function(r){return r.ok?r.json():[];}).catch(function(){return[];});
-    clearTimeout(timer);
-    if(gRes&&gRes.length){records=gRes;}
-    if(pRes&&pRes.length){plans=pRes;}
+    var res=await Promise.all([apiFetch('/api/groups'),apiFetch('/api/plans')]);
+    records=res[0];
+    plans=res[1];
+    if(records.length===0){records=FALLBACK_GROUPS;}
     updateSummary();render();
-  }catch(e){}
+  }catch(e){
+    records=FALLBACK_GROUPS;
+    plans=[];
+    updateSummary();render();
+  }
 }
 function updateSummary(){
   document.getElementById('s-total').textContent=records.length;
@@ -296,7 +481,7 @@ function render(){
   tbody.innerHTML=data.map(function(g){
     var planPills=(g.plan_offerings||'').split(',').filter(Boolean).slice(0,3).map(function(p){return'<span class="plan-pill">'+p.trim()+'</span>';}).join('');
     if((g.plan_offerings||'').split(',').length>3)planPills+='<span class="plan-pill">+more</span>';
-    return'<tr data-gid="'+g.id+'">'+
+    return'<tr>'+
     '<td class="mono" style="color:var(--accent);font-size:11px">'+g.group_id+'</td>'+
     '<td><strong style="font-size:13px">'+g.employer_name+'</strong></td>'+
     '<td style="font-size:12px;text-transform:capitalize">'+(g.industry||'&mdash;')+'</td>'+
@@ -305,19 +490,17 @@ function render(){
     '<td class="mono" style="font-size:11px">'+(g.contract_start?g.contract_start.split('T')[0].substring(0,7):'&mdash;')+' &rarr; '+(g.renewal_date?g.renewal_date.split('T')[0].substring(0,7):'&mdash;')+'</td>'+
     '<td style="max-width:200px">'+planPills+'</td>'+
     '<td>'+badge(g.status||'pending',sc[g.status]||'pending')+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="editRow(this)">Edit</button><button class="btn btn-sm btn-danger" onclick="delRow(this)">Del</button></div></td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="\'+ g.id +\'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="\'+ g.id +\'">Del</button></div></td>'+
     '</tr>';
   }).join('');
 }
-function editRow(btn){openModal(btn.closest('tr').dataset.gid);}
-function delRow(btn){del(btn.closest('tr').dataset.gid);}
 function buildPlanCheckboxes(sel){
   var div=document.getElementById('plan-checkboxes');div.innerHTML='';
   plans.forEach(function(p){
     var chk=sel&&sel.indexOf(p.plan_name)>-1;
     var box=document.createElement('label');
     box.style.cssText='display:flex;align-items:center;gap:8px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;';
-    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+(p.plan_code||p.plan_name)+'<br><span style="font-size:10px;color:var(--text3)">'+(p.plan_type||'')+(p.premium?' &middot; $'+parseFloat(p.premium).toFixed(2)+'/mo':'')+'</span></span>';
+    box.innerHTML='<input type="checkbox" value="'+p.plan_name+'" '+(chk?'checked':'')+' style="accent-color:var(--accent)"><span>'+p.plan_code+' &mdash; '+p.plan_name+'<br><span style="font-size:10px;color:var(--text3)">'+p.plan_type+' &middot; $'+parseFloat(p.premium||0).toFixed(2)+'/mo</span></span>';
     box.querySelector('input').addEventListener('change',function(){var c=[];document.querySelectorAll('#plan-checkboxes input:checked').forEach(function(x){c.push(x.value);});document.getElementById('f-plan_offerings').value=c.join(', ');});
     div.appendChild(box);
   });
@@ -328,29 +511,52 @@ function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Group':'New Group';
-  sv('f-id',d?d.id:'');sv('f-group_id',d?d.group_id:genCode('GRP'));sv('f-status',d?d.status:'active');
-  sv('f-employer_name',d?d.employer_name:'');sv('f-short_name',d?d.short_name:'');
-  sv('f-tax_id',d?d.tax_id:'');sv('f-sic_code',d?d.sic_code:'');sv('f-industry',d?d.industry:'healthcare');
-  sv('f-group_size',d?d.group_size:'');sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
+  sv('f-id',d?d.id:'');
+  sv('f-group_id',d?d.group_id:genCode('GRP'));
+  sv('f-status',d?d.status:'active');
+  sv('f-employer_name',d?d.employer_name:'');
+  sv('f-short_name',d?d.short_name:'');
+  sv('f-tax_id',d?d.tax_id:'');
+  sv('f-sic_code',d?d.sic_code:'');
+  sv('f-industry',d?d.industry:'healthcare');
+  sv('f-group_size',d?d.group_size:'');
+  sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-plan_year_start',d?d.plan_year_start:'January');sv('f-plan_year_end',d?d.plan_year_end:'December');
-  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');sv('f-erisa_plan',d?d.erisa_plan:'yes');
-  sv('f-aca_applicable',d?d.aca_applicable:'yes');sv('f-erisa_year',d?d.erisa_year:'2026');
-  sv('f-notes',d?d.notes:'');sv('f-street_address',d?d.street_address:'');sv('f-suite',d?d.suite:'');
-  sv('f-city',d?d.city:'');sv('f-state',d?d.state:'');sv('f-zip',d?d.zip:'');
-  sv('f-phone',d?d.phone:'');sv('f-fax',d?d.fax:'');sv('f-contact_name',d?d.contact_name:'');
-  sv('f-contact_title',d?d.contact_title:'');sv('f-contact_email',d?d.contact_email:'');
-  sv('f-contact_phone',d?d.contact_phone:'');sv('f-contact2_name',d?d.contact2_name:'');
-  sv('f-contact2_email',d?d.contact2_email:'');sv('f-billing_frequency',d?d.billing_frequency:'monthly');
-  sv('f-billing_method',d?d.billing_method:'list_bill');sv('f-billing_contact',d?d.billing_contact:'');
-  sv('f-grace_period',d?d.grace_period:'30');sv('f-billing_address',d?d.billing_address:'');
+  sv('f-plan_year_start',d?d.plan_year_start:'January');
+  sv('f-plan_year_end',d?d.plan_year_end:'December');
+  sv('f-cobra_eligible',d?d.cobra_eligible:'yes');
+  sv('f-erisa_plan',d?d.erisa_plan:'yes');
+  sv('f-aca_applicable',d?d.aca_applicable:'yes');
+  sv('f-erisa_year',d?d.erisa_year:'2026');
+  sv('f-notes',d?d.notes:'');
+  sv('f-street_address',d?d.street_address:'');
+  sv('f-suite',d?d.suite:'');
+  sv('f-city',d?d.city:'');
+  sv('f-state',d?d.state:'');
+  sv('f-zip',d?d.zip:'');
+  sv('f-phone',d?d.phone:'');
+  sv('f-fax',d?d.fax:'');
+  sv('f-contact_name',d?d.contact_name:'');
+  sv('f-contact_title',d?d.contact_title:'');
+  sv('f-contact_email',d?d.contact_email:'');
+  sv('f-contact_phone',d?d.contact_phone:'');
+  sv('f-contact2_name',d?d.contact2_name:'');
+  sv('f-contact2_email',d?d.contact2_email:'');
+  sv('f-billing_frequency',d?d.billing_frequency:'monthly');
+  sv('f-billing_method',d?d.billing_method:'list_bill');
+  sv('f-billing_contact',d?d.billing_contact:'');
+  sv('f-grace_period',d?d.grace_period:'30');
+  sv('f-billing_address',d?d.billing_address:'');
   sv('f-contribution_model',d?d.contribution_model:'defined_contribution');
   sv('f-employer_contribution_pct',d?d.employer_contribution_pct:'');
-  sv('f-waiting_period_days',d?d.waiting_period_days:'30');sv('f-oe_month',d?d.oe_month:'10');
+  sv('f-waiting_period_days',d?d.waiting_period_days:'30');
+  sv('f-oe_month',d?d.oe_month:'10');
   sv('f-contract_start',d&&d.contract_start?d.contract_start.split('T')[0]:'');
   sv('f-renewal_date',d&&d.renewal_date?d.renewal_date.split('T')[0]:'');
-  sv('f-group_type',d?d.group_type:'fully_insured');sv('f-state_of_issue',d?d.state_of_issue:'NC');
-  sv('f-contract_notes',d?d.contract_notes:'');sv('f-plan_offerings',d?d.plan_offerings:'');
+  sv('f-group_type',d?d.group_type:'fully_insured');
+  sv('f-state_of_issue',d?d.state_of_issue:'NC');
+  sv('f-contract_notes',d?d.contract_notes:'');
+  sv('f-plan_offerings',d?d.plan_offerings:'');
   buildPlanCheckboxes(d&&d.plan_offerings?d.plan_offerings.split(',').map(function(s){return s.trim();}):[]);
   switchTab('general',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
@@ -364,22 +570,10 @@ async function save(){
   var body={group_id:gid,employer_name:ename,short_name:gv('f-short_name'),tax_id:gv('f-tax_id'),sic_code:gv('f-sic_code'),industry:gv('f-industry'),group_size:parseInt(gv('f-group_size'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,plan_year_start:gv('f-plan_year_start'),plan_year_end:gv('f-plan_year_end'),cobra_eligible:gv('f-cobra_eligible'),erisa_plan:gv('f-erisa_plan'),aca_applicable:gv('f-aca_applicable'),erisa_year:gv('f-erisa_year'),notes:gv('f-notes'),street_address:gv('f-street_address'),suite:gv('f-suite'),city:gv('f-city'),state:gv('f-state'),zip:gv('f-zip'),phone:gv('f-phone'),fax:gv('f-fax'),contact_name:gv('f-contact_name'),contact_title:gv('f-contact_title'),contact_email:gv('f-contact_email'),contact_phone:gv('f-contact_phone'),contact2_name:gv('f-contact2_name'),contact2_email:gv('f-contact2_email'),billing_frequency:gv('f-billing_frequency'),billing_method:gv('f-billing_method'),billing_contact:gv('f-billing_contact'),grace_period:parseInt(gv('f-grace_period'))||30,billing_address:gv('f-billing_address'),contribution_model:gv('f-contribution_model'),employer_contribution_pct:parseInt(gv('f-employer_contribution_pct'))||0,waiting_period_days:parseInt(gv('f-waiting_period_days'))||0,oe_month:parseInt(gv('f-oe_month'))||10,contract_start:gv('f-contract_start')||null,renewal_date:gv('f-renewal_date')||null,group_type:gv('f-group_type'),state_of_issue:gv('f-state_of_issue'),contract_notes:gv('f-contract_notes'),plan_offerings:gv('f-plan_offerings'),status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateSummary();render();}
   closeModal();toast(id?'Saving...':'Creating group...','info');
-  try{
-    var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}
-    toast(id?'Group updated \u2713':'Group created \u2713','success');
-    await load();
-  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateSummary();render();toast('Save failed: '+e.message,'error');}
+  try{var res=await fetch(id?'/api/groups/'+id:'/api/groups',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Group updated \u2713':'Group created \u2713','success');await load();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateSummary();render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){
-  if(!await confirmDialog('Delete this group?'))return;
-  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();
-  try{
-    await fetch('/api/groups/'+id,{method:'DELETE'});
-    toast('Deleted','info');
-    await load();
-  }catch(e){records=bk;updateSummary();render();toast('Delete failed','error');}
-}
+async function del(id){if(!await confirmDialog('Delete this group?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateSummary();render();try{await fetch('/api/groups/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;updateSummary();render();toast('Delete failed','error');}}
 load();
 </script>
 </body>
