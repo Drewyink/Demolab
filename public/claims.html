@@ -5,36 +5,35 @@
   <title>EchoLink Solutions — Claims</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+ 
+ 
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
-    #detail-overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99998!important;display:none;align-items:center;justify-content:center;}
-    #detail-overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;width:880px;}
+    .modal{max-height:92vh;overflow-y:auto;width:840px;}
     .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
     .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
     .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
     .badge-link:hover{background:rgba(0,212,255,0.2);}
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
     .stat-card .sv{font-size:26px;font-weight:800;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
     .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
-    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
-    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
     .page-title{font-size:26px!important;font-weight:800!important;}
     .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
-    .card-title{font-size:17px!important;font-weight:800!important;}
     table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
     table td{font-size:14px!important;}
     .nav-item{font-size:14px!important;font-weight:600!important;}
     .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
     .modal-title{font-size:20px!important;font-weight:800!important;}
     .btn{font-size:13px!important;font-weight:700!important;}
-    .adj-panel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:16px;grid-column:1/-1;}
-    .adj-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:14px;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+  
+    .adj-panel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:12px;grid-column:1/-1;}
+    .adj-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;}
     .adj-row:last-child{border-bottom:none;font-weight:800;font-size:15px;color:var(--accent);}
     .adj-label{color:var(--text-secondary);font-weight:600;}
     .adj-val{font-family:"IBM Plex Mono",monospace;font-weight:700;}
@@ -67,7 +66,7 @@
       <div class="nav-section-label">Government Programs</div>
       <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html" class="nav-item active"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="claims.html" class="nav-item active" class="nav-item active"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
       <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
@@ -75,7 +74,6 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
       <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Operations &rarr; Claims</span></div>
@@ -83,20 +81,16 @@
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Claims Processing</div>
-          <div class="page-subtitle">ADJUDICATE &middot; REVIEW &middot; VALIDATE &middot; CLOSE</div>
-        </div>
+        <div><div class="page-title">Claims Processing</div>
+        <div class="page-subtitle">ADJUDICATE &middot; EOB &middot; PENDS &middot; ACCUMULATORS &middot; COB &middot; TEST CLAIMS VALIDATION</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Claim</button>
       </div>
-
       <div class="stat-cards">
         <div class="stat-card"><div class="sl">Total Claims</div><div class="sv" id="s-total">—</div></div>
         <div class="stat-card"><div class="sl">Total Billed</div><div class="sv" style="color:#60a5fa" id="s-billed">—</div></div>
         <div class="stat-card"><div class="sl">Total Paid</div><div class="sv" style="color:#4ade80" id="s-paid">—</div></div>
-        <div class="stat-card"><div class="sl">Pending / Pended</div><div class="sv" style="color:#fbbf24" id="s-pending">—</div></div>
+        <div class="stat-card"><div class="sl">Pending</div><div class="sv" style="color:#fbbf24" id="s-pending">—</div></div>
       </div>
-
       <div class="card">
         <div class="card-header">
           <span class="card-title">📄 Claims <span class="count-label" id="count"></span></span>
@@ -106,14 +100,13 @@
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-paid">Paid</button>
               <button class="filter-tab" id="tab-pending">Pending</button>
-              <button class="filter-tab" id="tab-in_review">In Review</button>
               <button class="filter-tab" id="tab-denied">Denied</button>
             </div>
           </div>
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Claim #</th><th>Member</th><th>Plan</th><th>Provider</th><th>ICD-10</th><th>CPT</th><th>Service Date</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>PA</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Claim #</th><th>Member</th><th>Plan</th><th>Provider</th><th>ICD-10</th><th>CPT</th><th>Date</th><th>Billed</th><th>Allowed</th><th>Paid</th><th>PA</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="tbody"><tr><td colspan="13"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
@@ -121,8 +114,6 @@
     </div>
   </main>
 </div>
-
-<!-- NEW CLAIM MODAL -->
 <div id="overlay">
   <div class="modal">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Claim</span><button class="modal-close" id="btn-x">✕</button></div>
@@ -134,122 +125,116 @@
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
-
       <div class="tab-panel active" id="tab-header">
         <div class="form-grid">
           <div class="fsl">Claim Identification</div>
           <div class="form-group"><label class="form-label">Claim Number *</label><input type="text" class="form-input" id="f-claim_number" placeholder="CLM-001"></div>
-          <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f-provider" placeholder="Provider name"></div>
+          <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f-provider" placeholder="Provider name"><div style="margin-top:6px"><a class="badge-link" href="providers.html">🏥 Providers</a><a class="badge-link" href="provider-contracts.html">📜 Contracts</a></div></div>
           <div class="form-group"><label class="form-label">Service Date</label><input type="date" class="form-input" id="f-service_date"></div>
           <div class="form-group"><label class="form-label">Claim Date</label><input type="date" class="form-input" id="f-claim_date"></div>
           <div class="fsl">Member &amp; Plan</div>
           <div class="form-group full"><label class="form-label">Member</label>
-            <select class="form-select" id="f-member_id"><option value="">— Select Member —</option></select>
-            <div style="margin-top:8px"><a class="badge-link" href="members.html">👤 Members</a><a class="badge-link" href="plans.html">📋 Plans</a></div>
+            <select class="form-select" id="f-member_id" onchange="autoFillPlan()"><option value="">— Select Member —</option></select>
+            <div style="margin-top:6px"><a class="badge-link" href="members.html">👤 Members</a><a class="badge-link" href="plans.html">📋 Plans</a></div>
           </div>
-          <div class="form-group full"><label class="form-label">Plan (auto-filled from member enrollment)</label>
+          <div class="form-group full"><label class="form-label">Plan (auto-filled from member)</label>
             <select class="form-select" id="f-plan_id"><option value="">— Auto-filled —</option></select>
           </div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-clinical">
         <div class="form-grid">
           <div class="fsl">Clinical Information</div>
-          <div class="form-group"><label class="form-label">Diagnosis Code (ICD-10)</label><input type="text" class="form-input" id="f-icd10" placeholder="Z00.00"></div>
-          <div class="form-group"><label class="form-label">Procedure Code (CPT)</label><input type="text" class="form-input" id="f-cpt" placeholder="99213"></div>
+          <div class="form-group"><label class="form-label">ICD-10 Diagnosis Code</label><input type="text" class="form-input" id="f-icd10" placeholder="Z00.00"></div>
+          <div class="form-group"><label class="form-label">CPT / Procedure Code</label><input type="text" class="form-input" id="f-cpt" placeholder="99213"></div>
           <div class="form-group full"><label class="form-label">Claim Type</label>
             <select class="form-select" id="f-claim_type">
               <option value="pcp">Medical — Primary Care Visit</option>
               <option value="specialist">Medical — Specialist Visit</option>
               <option value="er">Medical — Emergency Room</option>
               <option value="urgent_care">Medical — Urgent Care</option>
-              <option value="preventive">Medical — Preventive / Wellness</option>
+              <option value="preventive">Medical — Preventive / Wellness (ACA $0)</option>
               <option value="outpatient_surgery">Medical — Outpatient Surgery</option>
               <option value="inpatient">Medical — Inpatient Hospital</option>
-              <option value="imaging">Medical — MRI / CT / Imaging</option>
+              <option value="imaging">Medical — MRI / CT / Advanced Imaging</option>
               <option value="lab">Medical — Lab / Pathology</option>
-              <option value="therapy">Medical — Physical Therapy</option>
+              <option value="therapy">Medical — Physical / Occupational Therapy</option>
+              <option value="mental_health">Medical — Mental Health</option>
               <option value="rx_generic">Pharmacy — Generic Rx</option>
-              <option value="rx_brand">Pharmacy — Brand Rx</option>
               <option value="rx_specialty">Pharmacy — Specialty Rx</option>
               <option value="dental_preventive">Dental — Preventive</option>
               <option value="dental_basic">Dental — Basic Restorative</option>
               <option value="dental_major">Dental — Major Restorative</option>
-              <option value="oon">Out-of-Network — Medical</option>
-            </select>
-          </div>
-          <div style="grid-column:1/-1;margin-top:8px">
+              <option value="oon">Out-of-Network Medical</option>
+            </select></div>
+          <div style="grid-column:1/-1;margin-top:6px">
             <a class="badge-link" href="benefits.html">✚ Benefits</a>
+            <a class="badge-link" href="fee-tables.html">📊 Fee Tables</a>
+            <a class="badge-link" href="networx.html">⚙️ NetworX</a>
             <a class="badge-link" href="authorizations.html">🔐 Authorizations</a>
-            <a class="badge-link" href="service-groups.html">🗂️ Service Groups</a>
-            <a class="badge-link" href="dental.html">🦷 Dental Config</a>
           </div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-amounts">
         <div class="form-grid">
           <div class="fsl">Amounts &amp; Adjudication</div>
-          <div class="form-group"><label class="form-label">Billed Amount ($) *</label><input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">Billed Amount ($) *</label><input type="number" class="form-input" id="f-billed_amount" step="0.01" min="0" placeholder="0.00" oninput="updateAdj()"></div>
           <div class="form-group"><label class="form-label">PA On File?</label>
             <select class="form-select" id="f-pa_status">
               <option value="na">N/A — Not Required</option>
               <option value="yes">Yes — PA on file</option>
               <option value="no">No — PA required but missing</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Allowed Amount ($)</label><input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0" placeholder="0.00"></div>
-          <div class="form-group"><label class="form-label">Paid Amount ($)</label><input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0" placeholder="0.00"></div>
-          <div class="form-group"><label class="form-label">Member Cost Share ($)</label><input type="number" class="form-input" id="f-member_cost" step="0.01" min="0" placeholder="0.00"></div>
-          <div class="form-group"><label class="form-label">Adjudication Result / Status</label>
+            </select></div>
+          <div class="form-group"><label class="form-label">Allowed Amount ($)</label><input type="number" class="form-input" id="f-allowed_amount" step="0.01" min="0" placeholder="0.00" oninput="updateAdj()"></div>
+          <div class="form-group"><label class="form-label">Member Cost Share ($)</label><input type="number" class="form-input" id="f-member_cost" step="0.01" min="0" placeholder="0.00" oninput="updateAdj()"></div>
+          <div class="form-group"><label class="form-label">Paid Amount ($)</label><input type="number" class="form-input" id="f-paid_amount" step="0.01" min="0" placeholder="0.00" oninput="updateAdj()"></div>
+          <div class="form-group"><label class="form-label">Adjudication Status</label>
             <select class="form-select" id="f-status">
               <option value="pending">Pending</option>
               <option value="paid">Paid</option>
               <option value="in_review">In Review</option>
               <option value="denied">Denied</option>
-            </select>
-          </div>
-          <div class="form-group full"><label class="form-label">Notes / Remarks</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Adjudication notes, COB details, denial reason..."></textarea></div>
+            </select></div>
+          <div class="form-group full"><label class="form-label">Notes / EOB Remarks</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Adjudication notes, COB details, denial reason..."></textarea></div>
           <div class="adj-panel">
-            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:12px;letter-spacing:.05em;">⚡ ADJUDICATION RESULT</div>
+            <div style="font-size:12px;font-weight:800;color:var(--accent);margin-bottom:10px;letter-spacing:.05em;">⚡ ADJUDICATION RESULT (EOB)</div>
             <div class="adj-row"><span class="adj-label">Billed Amount</span><span class="adj-val" id="adj-billed">$0.00</span></div>
-            <div class="adj-row"><span class="adj-label">Write-Off (Billed minus Allowed)</span><span class="adj-val" id="adj-writeoff">$0.00</span></div>
+            <div class="adj-row"><span class="adj-label">Write-Off (Billed − Allowed)</span><span class="adj-val" id="adj-writeoff">$0.00</span></div>
             <div class="adj-row"><span class="adj-label">Allowed Amount</span><span class="adj-val" id="adj-allowed">$0.00</span></div>
             <div class="adj-row"><span class="adj-label">Member Cost Share</span><span class="adj-val" id="adj-member">$0.00</span></div>
             <div class="adj-row"><span class="adj-label">Plan Pays</span><span class="adj-val" id="adj-plan">$0.00</span></div>
           </div>
-          <div style="grid-column:1/-1;margin-top:12px">
-            <a class="badge-link" href="claim-pends.html">⏸️ Claim Pends</a>
-            <a class="badge-link" href="authorizations.html">🔐 Authorizations</a>
-            <a class="badge-link" href="providers.html">🏥 Providers</a>
-            <a class="badge-link" href="fee-tables.html">📊 Fee Tables</a>
-            <a class="badge-link" href="networx.html">⚙️ NetworX</a>
-            <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
-            <a class="badge-link" href="audit.html">🔍 Audit Log</a>
-          </div>
         </div>
       </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Claim</button></div>
+      <div style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:13px 16px;margin:0 24px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="font-size:12px;font-weight:800;color:var(--accent);width:100%;margin-bottom:4px">🧪 Test Claims &amp; Validation — Verify your configuration adjudicates correctly</span>
+        <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
+        <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
+        <a href="providers.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent)">🏥 Providers</a>
+        <a href="fee-tables.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent)">📊 Fee Tables</a>
+        <a href="networx.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent)">⚙️ NetworX</a>
+        <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
+        <a href="audit.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
+      </div>
+      <div class="modal-footer">
+      <button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Claim</button>
+    </div>
   </div>
 </div>
-
 <script>
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
+ 
 async function apiFetch(url){
   var res=await fetch(url);
   if(!res.ok)throw new Error('API error '+res.status+' on '+url);
   return res.json();
 }
-
+ 
 function genCode(prefix){
   return prefix+'-'+String(Date.now()).slice(-6);
 }
-
+ 
 function badge(text,type){
   var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
     terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
@@ -259,7 +244,7 @@ function badge(text,type){
   var c=colors[type&&type.toLowerCase()]||'#94a3b8';
   return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
 }
-
+ 
 function toast(msg,type){
   var existing=document.querySelectorAll('.toast-msg');
   existing.forEach(function(el){el.remove();});
@@ -272,7 +257,7 @@ function toast(msg,type){
   document.body.appendChild(div);
   setTimeout(function(){if(div.parentNode)div.remove();},3000);
 }
-
+ 
 function confirmDialog(msg){
   return new Promise(function(resolve){
     var overlay=document.createElement('div');
@@ -283,87 +268,71 @@ function confirmDialog(msg){
     overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
   });
 }
-
-var records=[],members=[],plans=[],statusFilter='all';
-var FB_MEMBERS=[
+var records=[],members=[],statusFilter='all';
+var FB_M=[
   {id:'m1',member_id:'ECL-MBR-001',first_name:'Carlos',last_name:'Mendez',plan_id:'pln1',plan_code:'ECL-HMO-BRZ'},
   {id:'m2',member_id:'ECL-MBR-002',first_name:'Priya',last_name:'Shah',plan_id:'pln1',plan_code:'ECL-HMO-BRZ'},
   {id:'m3',member_id:'ECL-MBR-003',first_name:'James',last_name:"O'Brien",plan_id:'pln2',plan_code:'ECL-PPO-SLV'},
   {id:'m4',member_id:'ECL-MBR-004',first_name:'Rachel',last_name:'Kim',plan_id:'pln2',plan_code:'ECL-PPO-SLV'},
   {id:'m5',member_id:'ECL-MBR-005',first_name:'David',last_name:'Torres',plan_id:'pln3',plan_code:'ECL-CDH-1500'},
-  {id:'m6',member_id:'ECL-MBR-006',first_name:'Sandra',last_name:'Wu',plan_id:'pln3',plan_code:'ECL-CDH-1500'},
+  {id:'m6',member_id:'ECL-MBR-006',first_name:'Rachel',last_name:'Okafor',plan_id:'pln3',plan_code:'ECL-CDH-1500'},
   {id:'m7',member_id:'ECL-MBR-007',first_name:'Michael',last_name:'Grant',plan_id:'pln4',plan_code:'ECL-DEN-01'},
   {id:'m8',member_id:'ECL-MBR-008',first_name:'Amy',last_name:'Chen',plan_id:'pln4',plan_code:'ECL-DEN-01'}
 ];
-var FB_PLANS=[
-  {id:'pln1',plan_code:'ECL-HMO-BRZ',plan_name:'EchoLink HMO Bronze'},
-  {id:'pln2',plan_code:'ECL-PPO-SLV',plan_name:'EchoLink PPO Silver'},
-  {id:'pln3',plan_code:'ECL-CDH-1500',plan_name:'EchoLink HDHP + HSA'},
-  {id:'pln4',plan_code:'ECL-DEN-01',plan_name:'EchoLink Dental Essentials'}
+var FB=[
+  {id:'cl1',claim_number:'CLM-001',member_id:'m1',member_name:'Carlos Mendez',plan_code:'ECL-HMO-BRZ',provider:'Pinnacle Primary Care Group',icd10:'Z00.00',cpt:'99395',claim_type:'preventive',service_date:'2026-01-15',billed_amount:175,allowed_amount:175,paid_amount:175,member_cost:0,pa_status:'na',status:'paid',notes:'ACA Preventive — $0 member cost. Plan pays 100%.'},
+  {id:'cl2',claim_number:'CLM-002',member_id:'m1',member_name:'Carlos Mendez',plan_code:'ECL-HMO-BRZ',provider:'Pinnacle Primary Care Group',icd10:'J06.9',cpt:'99213',claim_type:'pcp',service_date:'2026-02-03',billed_amount:175,allowed_amount:110,paid_amount:80,member_cost:30,pa_status:'na',status:'paid',notes:'PCP office visit. $30 copay applied. No deductible.'},
+  {id:'cl3',claim_number:'CLM-003',member_id:'m3',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'99244',claim_type:'specialist',service_date:'2026-02-10',billed_amount:295,allowed_amount:185,paid_amount:110,member_cost:75,pa_status:'na',status:'paid',notes:'Specialist consult. $75 copay. RBRVS Preferred 110%. Allowed $185 x 110% = $203.50 minus $75 copay.'},
+  {id:'cl4',claim_number:'CLM-004',member_id:'m5',member_name:'David Torres',plan_code:'ECL-CDH-1500',provider:'Capital Imaging and Radiology',icd10:'G43.909',cpt:'70553',claim_type:'imaging',service_date:'2026-02-15',billed_amount:650,allowed_amount:420,paid_amount:0,member_cost:420,pa_status:'yes',status:'paid',notes:'CDH HDHP — member pays 100% until $2,000 deductible met. Deductible moved from $2,000 toward $0.'},
+  {id:'cl5',claim_number:'CLM-005',member_id:'m3',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Riverside Regional Medical Center',icd10:'I21.9',cpt:'27447',claim_type:'inpatient',service_date:'2026-02-20',billed_amount:3400,allowed_amount:1850,paid_amount:0,member_cost:0,pa_status:'no',status:'pending',notes:'PENDED — PA required for inpatient admission. Go to Authorizations, create PA, return to Claims and update PA On File = Yes.'},
+  {id:'cl6',claim_number:'CLM-006',member_id:'m7',member_name:'Michael Grant',plan_code:'ECL-DEN-01',provider:'Pinnacle Dental Partners',icd10:'K02.9',cpt:'D2740',claim_type:'dental_major',service_date:'2026-03-01',billed_amount:1400,allowed_amount:1180,paid_amount:490,member_cost:690,pa_status:'na',status:'paid',notes:'Crown — Major restorative Cat III. $100 deductible applied. 50% plan, 50% member on remainder. Annual max decreased.'}
 ];
-var FB_CLAIMS=[
-  {id:'cl1',claim_number:'CLM-001',member_id:'m1',member_name:'Carlos Mendez',plan_id:'pln1',plan_code:'ECL-HMO-BRZ',provider:'Pinnacle Primary Care Group',icd10:'Z00.00',cpt:'99395',claim_type:'preventive',service_date:'2026-01-15',billed_amount:175,allowed_amount:175,paid_amount:175,member_cost:0,pa_status:'na',status:'paid',notes:'ACA Preventive, $0 member cost'},
-  {id:'cl2',claim_number:'CLM-002',member_id:'m1',member_name:'Carlos Mendez',plan_id:'pln1',plan_code:'ECL-HMO-BRZ',provider:'Pinnacle Primary Care Group',icd10:'J06.9',cpt:'99213',claim_type:'pcp',service_date:'2026-02-03',billed_amount:175,allowed_amount:110,paid_amount:80,member_cost:30,pa_status:'na',status:'paid',notes:'PCP copay $30 applied'},
-  {id:'cl3',claim_number:'CLM-003',member_id:'m3',member_name:"James O'Brien",plan_id:'pln2',plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'99244',claim_type:'specialist',service_date:'2026-02-10',billed_amount:295,allowed_amount:185,paid_amount:110,member_cost:75,pa_status:'na',status:'paid',notes:'Specialist copay $75 applied'},
-  {id:'cl4',claim_number:'CLM-004',member_id:'m5',member_name:'David Torres',plan_id:'pln3',plan_code:'ECL-CDH-1500',provider:'Capital Imaging and Radiology',icd10:'G43.909',cpt:'70553',claim_type:'imaging',service_date:'2026-02-15',billed_amount:650,allowed_amount:420,paid_amount:0,member_cost:420,pa_status:'yes',status:'paid',notes:'CDH, member pays 100% until deductible met'},
-  {id:'cl5',claim_number:'CLM-005',member_id:'m3',member_name:"James O'Brien",plan_id:'pln2',plan_code:'ECL-PPO-SLV',provider:'Riverside Regional Medical Center',icd10:'I21.9',cpt:'27447',claim_type:'inpatient',service_date:'2026-02-20',billed_amount:3400,allowed_amount:1850,paid_amount:0,member_cost:0,pa_status:'no',status:'pending',notes:'PA required, claim pending authorization'},
-  {id:'cl6',claim_number:'CLM-006',member_id:'m7',member_name:'Michael Grant',plan_id:'pln4',plan_code:'ECL-DEN-01',provider:'Pinnacle Dental Partners',icd10:'K02.9',cpt:'D2740',claim_type:'dental',service_date:'2026-03-01',billed_amount:1400,allowed_amount:1250,paid_amount:575,member_cost:675,pa_status:'na',status:'paid',notes:'Major restorative 50/50, $100 deductible applied'}
-];
-
+function fmt(n){return'$'+parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function updateAdj(){
+  var b=parseFloat(document.getElementById('f-billed_amount').value)||0;
+  var a=parseFloat(document.getElementById('f-allowed_amount').value)||0;
+  var mc=parseFloat(document.getElementById('f-member_cost').value)||0;
+  var p=parseFloat(document.getElementById('f-paid_amount').value)||0;
+  document.getElementById('adj-billed').textContent=fmt(b);
+  document.getElementById('adj-writeoff').textContent=fmt(Math.max(0,b-a));
+  document.getElementById('adj-allowed').textContent=fmt(a);
+  document.getElementById('adj-member').textContent=fmt(mc);
+  document.getElementById('adj-plan').textContent=fmt(p);
+}
+function autoFillPlan(){
+  var mid=gv('f-member_id');
+  var m=members.find(function(x){return x.id===mid;});
+  if(m){
+    var psel=document.getElementById('f-plan_id');psel.innerHTML='';
+    var o=document.createElement('option');o.value=m.plan_id||'';o.textContent=(m.plan_code||'')+(m.plan_name?' — '+m.plan_name:'');psel.appendChild(o);
+  }
+}
+function populateMembers(){
+  var sel=document.getElementById('f-member_id');var cur=sel.value;
+  sel.innerHTML='<option value="">— Select Member —</option>';
+  members.forEach(function(m){var o=document.createElement('option');o.value=m.id;o.textContent=(m.member_id||m.id)+' — '+m.first_name+' '+m.last_name+(m.plan_code?' ('+m.plan_code+')':'');sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-['all','paid','pending','in_review','denied'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
-
-['f-billed_amount','f-allowed_amount','f-member_cost','f-paid_amount'].forEach(function(id){
-  document.getElementById(id).addEventListener('input',updateAdjPanel);
-});
-
-document.getElementById('f-member_id').addEventListener('change',function(){
-  var mid=this.value;
-  var m=members.find(function(x){return x.id===mid;});
-  if(m&&m.plan_id){
-    var psel=document.getElementById('f-plan_id');
-    psel.innerHTML='';
-    var o=document.createElement('option');
-    o.value=m.plan_id;o.textContent=(m.plan_code||'')+(m.plan_name?' — '+m.plan_name:'');
-    psel.appendChild(o);
-  }
-});
-
+['all','paid','pending','denied'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
 function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
-
-function fmt(n){return'$'+parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-
-function updateAdjPanel(){
-  var billed=parseFloat(gv('f-billed_amount'))||0;
-  var allowed=parseFloat(gv('f-allowed_amount'))||0;
-  var member=parseFloat(gv('f-member_cost'))||0;
-  var paid=parseFloat(gv('f-paid_amount'))||0;
-  var writeoff=Math.max(0,billed-allowed);
-  document.getElementById('adj-billed').textContent=fmt(billed);
-  document.getElementById('adj-writeoff').textContent=fmt(writeoff);
-  document.getElementById('adj-allowed').textContent=fmt(allowed);
-  document.getElementById('adj-member').textContent=fmt(member);
-  document.getElementById('adj-plan').textContent=fmt(paid);
-}
-
+function paLabel(v){return{yes:'Yes',no:'Missing',na:'N/A'}[v]||v||'—';}
+function paColor(v){return{yes:'#4ade80',no:'#f87171',na:'#94a3b8'}[v]||'#94a3b8';}
 async function load(){
   try{
-    members=(await apiFetch('/api/members').catch(function(){return[];}));
-    plans=(await apiFetch('/api/plans').catch(function(){return[];}));
-    records=(await apiFetch('/api/claims').catch(function(){return[];}));
-    if(!members.length)members=FB_MEMBERS;
-    if(!plans.length)plans=FB_PLANS;
-    if(!records.length)records=FB_CLAIMS;
-  }catch(e){members=FB_MEMBERS;plans=FB_PLANS;records=FB_CLAIMS;}
+    members=await apiFetch('/api/members').catch(function(){return[];});
+    records=await apiFetch('/api/claims').catch(function(){return[];});
+    if(!members.length)members=FB_M;
+    if(!records.length)records=FB;
+  }catch(e){members=FB_M;records=FB;}
   updateStats();render();
 }
-
 function updateStats(){
   document.getElementById('s-total').textContent=records.length;
   var billed=records.reduce(function(a,r){return a+(parseFloat(r.billed_amount)||0);},0);
@@ -373,21 +342,10 @@ function updateStats(){
   document.getElementById('s-paid').textContent=fmt(paid);
   document.getElementById('s-pending').textContent=pend;
 }
-
-function populateMemberDrop(){
-  var sel=document.getElementById('f-member_id');var cur=sel.value;
-  sel.innerHTML='<option value="">— Select Member —</option>';
-  members.forEach(function(m){var o=document.createElement('option');o.value=m.id;o.textContent=m.member_id+' — '+m.first_name+' '+m.last_name+(m.plan_code?' ('+m.plan_code+')':'');sel.appendChild(o);});
-  if(cur)sel.value=cur;
-}
-
-function statusLabel(s){return{paid:'Paid',pending:'Pending',in_review:'In Review',denied:'Denied'}[s]||s||'—';}
-function paLabel(s){return{yes:'Yes',no:'Missing',na:'N/A'}[s]||s||'—';}
-function paColor(s){return{yes:'#2ed573',no:'#ff4757',na:'#94a3b8'}[s]||'#94a3b8';}
-
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
-  var data=statusFilter!=='all'?records.filter(function(r){return r.status===statusFilter;}):[].concat(records);
+  var data=[].concat(records);
+  if(statusFilter!=='all')data=data.filter(function(r){return r.status===statusFilter;});
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
@@ -395,61 +353,45 @@ function render(){
   tbody.innerHTML=data.map(function(c){
     var paC=paColor(c.pa_status);
     return'<tr>'+
-    '<td class="mono" style="color:var(--accent);font-size:12px;font-weight:700">'+c.claim_number+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:700;color:var(--accent)">'+c.claim_number+'</td>'+
     '<td><strong style="font-size:13px">'+c.member_name+'</strong></td>'+
-    '<td><span style="font-size:12px;font-weight:700;color:var(--accent);font-family:monospace">'+(c.plan_code||'—')+'</span></td>'+
-    '<td style="font-size:12px;font-weight:600">'+(c.provider||'—')+'</td>'+
-    '<td><span class="mono" style="font-size:12px;font-weight:700;color:#60a5fa">'+(c.icd10||'—')+'</span></td>'+
-    '<td><span class="mono" style="font-size:12px;font-weight:700;color:#a78bfa">'+(c.cpt||'—')+'</span></td>'+
+    '<td class="mono" style="font-size:12px;color:var(--accent)">'+(c.plan_code||'—')+'</td>'+
+    '<td style="font-size:12px">'+(c.provider||'—')+'</td>'+
+    '<td class="mono" style="font-size:12px;color:#60a5fa">'+(c.icd10||'—')+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:700;color:#a78bfa">'+(c.cpt||'—')+'</td>'+
     '<td class="mono" style="font-size:12px">'+(c.service_date?c.service_date.split('T')[0]:'—')+'</td>'+
     '<td class="mono" style="font-size:13px;font-weight:700">'+fmt(c.billed_amount)+'</td>'+
     '<td class="mono" style="font-size:13px;font-weight:700">'+fmt(c.allowed_amount)+'</td>'+
     '<td class="mono" style="font-size:13px;font-weight:700;color:#4ade80">'+fmt(c.paid_amount)+'</td>'+
     '<td><span style="font-size:12px;font-weight:700;color:'+paC+'">'+paLabel(c.pa_status)+'</span></td>'+
-    '<td>'+badge(statusLabel(c.status),c.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.getAttribute('data-id'))" data-id="'+c.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.getAttribute('data-id'))" data-id="'+c.id+'">Del</button></div></td></tr>';
+    '<td>'+badge(c.status,c.status==='paid'?'active':c.status==='pending'?'pending':'inactive')+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+c.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+c.id+'">Del</button></div></td></tr>';
   }).join('');
 }
-
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Claim':'New Claim';
-  populateMemberDrop();
-  sv('f-id',d?d.id:'');
-  sv('f-claim_number',d?d.claim_number:genCode('CLM'));
+  populateMembers();
+  sv('f-id',d?d.id:'');sv('f-claim_number',d?d.claim_number:genCode('CLM'));
   sv('f-provider',d?d.provider:'');
   sv('f-service_date',d&&d.service_date?d.service_date.split('T')[0]:'');
   sv('f-claim_date',d&&d.claim_date?d.claim_date.split('T')[0]:'');
-  sv('f-member_id',d?d.member_id:'');
-  sv('f-icd10',d?d.icd10:'');
-  sv('f-cpt',d?d.cpt:'');
+  sv('f-member_id',d?d.member_id:'');sv('f-icd10',d?d.icd10:'');sv('f-cpt',d?d.cpt:'');
   sv('f-claim_type',d?d.claim_type:'pcp');
-  sv('f-billed_amount',d?d.billed_amount:'');
-  sv('f-pa_status',d?d.pa_status:'na');
-  sv('f-allowed_amount',d?d.allowed_amount:'');
-  sv('f-paid_amount',d?d.paid_amount:'');
-  sv('f-member_cost',d?d.member_cost:'');
-  sv('f-status',d?d.status:'pending');
+  sv('f-billed_amount',d?d.billed_amount:'');sv('f-pa_status',d?d.pa_status:'na');
+  sv('f-allowed_amount',d?d.allowed_amount:'');sv('f-member_cost',d?d.member_cost:'');
+  sv('f-paid_amount',d?d.paid_amount:'');sv('f-status',d?d.status:'pending');
   sv('f-notes',d?d.notes:'');
   if(d&&d.member_id){
     var m=members.find(function(x){return x.id===d.member_id;});
-    if(m){
-      var psel=document.getElementById('f-plan_id');
-      psel.innerHTML='';
-      var o=document.createElement('option');
-      o.value=m.plan_id||'';
-      o.textContent=(m.plan_code||'')+(m.plan_name?' — '+m.plan_name:'');
-      psel.appendChild(o);
-    }
+    if(m){var psel=document.getElementById('f-plan_id');psel.innerHTML='';var o=document.createElement('option');o.value=m.plan_id||'';o.textContent=(m.plan_code||'');psel.appendChild(o);}
   }
-  updateAdjPanel();
+  updateAdj();
   switchTab('header',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
-
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
-
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
   var cn=gv('f-claim_number').trim();
@@ -457,38 +399,13 @@ async function save(){
   var id=gv('f-id');
   var mid=gv('f-member_id');
   var m=members.find(function(x){return x.id===mid;});
-  var body={
-    claim_number:cn,provider:gv('f-provider'),
-    service_date:gv('f-service_date')||null,claim_date:gv('f-claim_date')||null,
-    member_id:mid,
-    member_name:m?m.first_name+' '+m.last_name:'Unknown',
-    plan_id:m?m.plan_id:'',plan_code:m?m.plan_code:'',
-    icd10:gv('f-icd10'),cpt:gv('f-cpt'),claim_type:gv('f-claim_type'),
-    billed_amount:parseFloat(gv('f-billed_amount'))||0,
-    pa_status:gv('f-pa_status'),
-    allowed_amount:parseFloat(gv('f-allowed_amount'))||0,
-    paid_amount:parseFloat(gv('f-paid_amount'))||0,
-    member_cost:parseFloat(gv('f-member_cost'))||0,
-    status:gv('f-status'),notes:gv('f-notes')
-  };
+  var body={claim_number:cn,provider:gv('f-provider'),service_date:gv('f-service_date')||null,claim_date:gv('f-claim_date')||null,member_id:mid,member_name:m?m.first_name+' '+m.last_name:'Unknown',plan_id:m?m.plan_id:'',plan_code:m?m.plan_code:'',icd10:gv('f-icd10'),cpt:gv('f-cpt'),claim_type:gv('f-claim_type'),billed_amount:parseFloat(gv('f-billed_amount'))||0,pa_status:gv('f-pa_status'),allowed_amount:parseFloat(gv('f-allowed_amount'))||0,member_cost:parseFloat(gv('f-member_cost'))||0,paid_amount:parseFloat(gv('f-paid_amount'))||0,status:gv('f-status'),notes:gv('f-notes')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
   closeModal();toast(id?'Saving...':'Creating claim...','info');
-  try{
-    var res=await fetch(id?'/api/claims/'+id:'/api/claims',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    toast(id?'Updated ✓':'Claim Created ✓','success');
-    var fresh=await apiFetch('/api/claims').catch(function(){return records;});
-    if(fresh.length)records=fresh;updateStats();render();
-  }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
+  try{var res=await fetch(id?'/api/claims/'+id:'/api/claims',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Claim Created ✓','success');var fresh=await apiFetch('/api/claims').catch(function(){return records;});if(fresh.length)records=fresh;updateStats();render();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
 }
-
-async function del(id){
-  if(!await confirmDialog('Delete this claim?'))return;
-  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();
-  try{await fetch('/api/claims/'+id,{method:'DELETE'});toast('Deleted','info');}
-  catch(e){records=bk;updateStats();render();toast('Delete failed','error');}
-}
-
+async function del(id){if(!await confirmDialog('Delete this claim?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/claims/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
 load();
 </script></body></html>
 
