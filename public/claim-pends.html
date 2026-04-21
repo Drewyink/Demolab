@@ -5,15 +5,17 @@
   <title>EchoLink Solutions — Claim Pends</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+ 
+ 
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;width:820px;}
+    .modal{max-height:92vh;overflow-y:auto;width:840px;}
     .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
     .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
     .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
     .badge-link:hover{background:rgba(0,212,255,0.2);}
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
@@ -28,10 +30,11 @@
     .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
     .modal-title{font-size:20px!important;font-weight:800!important;}
     .btn{font-size:13px!important;font-weight:700!important;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+  
     .pend-box{border-radius:7px;padding:13px 16px;margin-bottom:14px;grid-column:1/-1;}
     .pend-box.red{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-left:4px solid #f87171;}
     .pend-box.green{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-left:4px solid #4ade80;}
-    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
   </style>
 </head>
 <body>
@@ -80,27 +83,22 @@
         <div class="page-subtitle">MISSING PA &middot; ELIGIBILITY &middot; NETWORK &middot; DUPLICATE &middot; COB &middot; RESOLVE &amp; RELEASE</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Pend</button>
       </div>
-
       <div class="stat-cards">
         <div class="stat-card"><div class="sl">Total Pends</div><div class="sv" id="s-total">—</div></div>
         <div class="stat-card"><div class="sl">Open</div><div class="sv" style="color:#f87171" id="s-open">—</div></div>
         <div class="stat-card"><div class="sl">In Review</div><div class="sv" style="color:#fbbf24" id="s-review">—</div></div>
         <div class="stat-card"><div class="sl">Resolved</div><div class="sv" style="color:#4ade80" id="s-resolved">—</div></div>
       </div>
-
       <div style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:14px 18px;margin-bottom:18px">
-        <div style="font-size:14px;font-weight:800;color:#a78bfa;margin-bottom:6px">💡 What Is a Claim Pend?</div>
-        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.7;margin-bottom:10px">A pend occurs when a claim cannot auto-adjudicate because something is missing or flagged for review. A pend is NOT a denial. Fix the issue and the claim releases for payment. Most common reason: missing prior authorization.</div>
-        <div>
-          <a class="badge-link" href="claims.html">📄 Claims</a>
-          <a class="badge-link" href="authorizations.html">🔐 Add Authorization</a>
-          <a class="badge-link" href="providers.html">🏥 Verify Provider</a>
-          <a class="badge-link" href="members.html">👤 Check Eligibility</a>
-          <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
-          <a class="badge-link" href="audit.html">🔍 Audit Log</a>
-        </div>
+        <div style="font-size:14px;font-weight:800;color:#a78bfa;margin-bottom:6px">💡 A pend is not a denial — fix the issue and the claim releases for payment</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">Most common fix: go to Authorizations, create the missing PA, return to Claims, set PA On File = Yes, resubmit.</div>
+        <a class="badge-link" href="claims.html">📄 Claims</a>
+        <a class="badge-link" href="authorizations.html">🔐 Add Authorization</a>
+        <a class="badge-link" href="providers.html">🏥 Verify Provider</a>
+        <a class="badge-link" href="members.html">👤 Check Eligibility</a>
+        <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
+        <a class="badge-link" href="audit.html">🔍 Audit Log</a>
       </div>
-
       <div class="card">
         <div class="card-header">
           <span class="card-title">⏸️ Pended Claims <span class="count-label" id="count"></span></span>
@@ -116,15 +114,14 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Pend #</th><th>Claim #</th><th>Member</th><th>Plan</th><th>Provider</th><th>CPT</th><th>Pend Reason</th><th>Priority</th><th>Assigned To</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+            <thead><tr><th>Pend #</th><th>Claim #</th><th>Member</th><th>Plan</th><th>CPT</th><th>Pend Reason</th><th>Priority</th><th>Assigned To</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
   </main>
 </div>
-
 <div id="overlay">
   <div class="modal">
     <div class="modal-header"><span class="modal-title" id="modal-title">Claim Pend</span><button class="modal-close" id="btn-x">✕</button></div>
@@ -132,128 +129,86 @@
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('detail',this)">Pend Detail</button>
         <button class="modal-tab" onclick="switchTab('resolve',this)">Resolve Pend</button>
-        <button class="modal-tab" onclick="switchTab('links',this)">Links &amp; Actions</button>
+        <button class="modal-tab" onclick="switchTab('guide',this)">Resolution Guide</button>
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
-
       <div class="tab-panel active" id="tab-detail">
         <div class="form-grid">
           <div id="pend-warn" class="pend-box red" style="display:none">
             <div style="font-size:13px;font-weight:800;color:#f87171;margin-bottom:4px">⚠ Pend Reason</div>
-            <div id="pend-warn-text" style="font-size:13px;font-weight:600;color:var(--text-primary)"></div>
+            <div id="pend-warn-text" style="font-size:13px;color:var(--text-primary)"></div>
           </div>
           <div class="fsl">Claim Identification</div>
           <div class="form-group"><label class="form-label">Pend Number *</label><input type="text" class="form-input" id="f-pend_number" placeholder="PEND-001"></div>
-          <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="open">Open</option><option value="in_review">In Review</option><option value="resolved">Resolved</option><option value="denied">Denied</option></select></div>
-          <div class="form-group"><label class="form-label">Claim Number</label><input type="text" class="form-input" id="f-claim_number" placeholder="CLM-001">
-            <div style="margin-top:6px"><a class="badge-link" href="claims.html">📄 Go to Claims</a></div>
-          </div>
-          <div class="form-group"><label class="form-label">Priority</label>
-            <select class="form-select" id="f-priority"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
-          <div class="form-group"><label class="form-label">Member Name</label><input type="text" class="form-input" id="f-member_name" placeholder="Member name">
-            <div style="margin-top:6px"><a class="badge-link" href="members.html">👤 Members</a></div>
-          </div>
-          <div class="form-group"><label class="form-label">Plan Code</label><input type="text" class="form-input" id="f-plan_code" placeholder="ECL-PPO-SLV">
-            <div style="margin-top:6px"><a class="badge-link" href="plans.html">📋 Plans</a></div>
-          </div>
-          <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f-provider" placeholder="Provider name">
-            <div style="margin-top:6px"><a class="badge-link" href="providers.html">🏥 Providers</a></div>
-          </div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="open">Open</option><option value="in_review">In Review</option><option value="resolved">Resolved</option><option value="denied">Denied</option></select></div>
+          <div class="form-group"><label class="form-label">Claim Number</label><input type="text" class="form-input" id="f-claim_number" placeholder="CLM-001"><div style="margin-top:6px"><a class="badge-link" href="claims.html">📄 Go to Claims</a></div></div>
+          <div class="form-group"><label class="form-label">Priority</label><select class="form-select" id="f-priority"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+          <div class="form-group"><label class="form-label">Member Name</label><input type="text" class="form-input" id="f-member_name" placeholder="Member name"><div style="margin-top:6px"><a class="badge-link" href="members.html">👤 Members</a></div></div>
+          <div class="form-group"><label class="form-label">Plan Code</label><input type="text" class="form-input" id="f-plan_code" placeholder="ECL-PPO-SLV"></div>
+          <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f-provider" placeholder="Provider name"><div style="margin-top:6px"><a class="badge-link" href="providers.html">🏥 Providers</a></div></div>
           <div class="form-group"><label class="form-label">Assigned To</label><input type="text" class="form-input" id="f-assigned_to" placeholder="Claims Examiner"></div>
-          <div class="form-group"><label class="form-label">ICD-10 Code</label><input type="text" class="form-input" id="f-icd10" placeholder="I10"></div>
+          <div class="form-group"><label class="form-label">ICD-10</label><input type="text" class="form-input" id="f-icd10" placeholder="I10"></div>
           <div class="form-group"><label class="form-label">CPT Code</label><input type="text" class="form-input" id="f-cpt" placeholder="99244"></div>
           <div class="form-group"><label class="form-label">Service Date</label><input type="date" class="form-input" id="f-service_date"></div>
-          <div class="form-group"><label class="form-label">Created Date</label><input type="date" class="form-input" id="f-created_date"></div>
-          <div class="fsl">Pend Reason</div>
-          <div class="form-group full"><label class="form-label">Pend Reason Code</label>
-            <select class="form-select" id="f-pend_reason" onchange="updateResolveInstructions()">
-              <option value="missing_pa">Missing Prior Authorization</option>
-              <option value="eligibility">Eligibility Issue</option>
-              <option value="network">Provider Not In Network</option>
-              <option value="duplicate">Duplicate Claim</option>
-              <option value="cob">COB Information Needed</option>
-              <option value="medical_necessity">Medical Necessity Review</option>
-              <option value="coding">Diagnosis / Procedure Mismatch</option>
-              <option value="missing_info">Missing Claim Information</option>
-              <option value="other">Other</option>
-            </select></div>
+          <div class="form-group"><label class="form-label">Pend Reason</label><select class="form-select" id="f-pend_reason" onchange="updateResolveHint()"><option value="missing_pa">Missing Prior Authorization</option><option value="eligibility">Eligibility Issue</option><option value="network">Provider Not In Network</option><option value="duplicate">Duplicate Claim</option><option value="cob">COB Information Needed</option><option value="medical_necessity">Medical Necessity Review</option><option value="coding">Diagnosis / Procedure Mismatch</option><option value="other">Other</option></select></div>
           <div class="form-group full"><label class="form-label">Pend Description</label><textarea class="form-textarea" id="f-pend_desc" rows="3" placeholder="Detailed pend reason..."></textarea></div>
         </div>
       </div>
-
       <div class="tab-panel" id="tab-resolve">
         <div class="form-grid">
-          <div id="resolve-box" class="pend-box green">
-            <div style="font-size:13px;font-weight:800;color:#4ade80;margin-bottom:6px">✓ How to Resolve This Pend</div>
-            <div id="resolve-instructions" style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.7">Open the Detail tab and select a pend reason to see resolution steps here.</div>
+          <div id="resolve-hint" class="pend-box green">
+            <div style="font-size:13px;font-weight:800;color:#4ade80;margin-bottom:6px">✓ Resolution Steps</div>
+            <div id="resolve-hint-text" style="font-size:13px;color:var(--text-secondary);line-height:1.7"></div>
           </div>
           <div class="fsl">Resolution Details</div>
-          <div class="form-group full"><label class="form-label">Action Taken</label><textarea class="form-textarea" id="f-resolution_action" rows="3" placeholder="Describe what was done to resolve..."></textarea></div>
+          <div class="form-group full"><label class="form-label">Action Taken</label><textarea class="form-textarea" id="f-resolution_action" rows="3" placeholder="What was done to resolve this pend..."></textarea></div>
           <div class="form-group"><label class="form-label">Resolved By</label><input type="text" class="form-input" id="f-resolved_by" placeholder="Your name"></div>
           <div class="form-group"><label class="form-label">Resolution Date</label><input type="date" class="form-input" id="f-resolved_date"></div>
-          <div class="form-group full"><label class="form-label">Update Status To</label>
-            <select class="form-select" id="f-resolve_status">
-              <option value="resolved">Resolved — Release for Payment</option>
-              <option value="denied">Denied — Issue EOB Denial</option>
-              <option value="in_review">In Review — Needs More Info</option>
-            </select></div>
+          <div class="form-group full"><label class="form-label">Update Status To</label><select class="form-select" id="f-resolve_status"><option value="resolved">Resolved — Release for Payment</option><option value="denied">Denied — Issue EOB Denial</option><option value="in_review">In Review — Needs More Info</option></select></div>
         </div>
       </div>
-
-      <div class="tab-panel" id="tab-links">
-        <div class="form-grid">
-          <div class="fsl">Resolution Workflow</div>
-          <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;padding:6px 0">
-            <a class="badge-link" href="claims.html">📄 Claims</a>
-            <a class="badge-link" href="authorizations.html">🔐 Add Authorization</a>
-            <a class="badge-link" href="members.html">👤 Verify Eligibility</a>
-            <a class="badge-link" href="providers.html">🏥 Verify Provider</a>
-            <a class="badge-link" href="provider-contracts.html">📜 Provider Contracts</a>
-            <a class="badge-link" href="fee-tables.html">📊 Fee Tables</a>
-            <a class="badge-link" href="networx.html">⚙️ NetworX</a>
-            <a class="badge-link" href="benefits.html">✚ Benefits</a>
-            <a class="badge-link" href="plans.html">📋 Plans</a>
-            <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
-            <a class="badge-link" href="audit.html">🔍 Audit Log</a>
-          </div>
-          <div class="fsl">Pend Resolution Guide</div>
-          <div style="grid-column:1/-1">
-            <table style="width:100%">
-              <thead><tr><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Pend Reason</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Resolution Steps</th></tr></thead>
-              <tbody>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#f87171">Missing PA</td><td style="padding:10px 12px;font-size:13px">Authorizations module. Create auth for member, provider, and CPT code. Return to Claims. Set PA On File = Yes. Resubmit.</td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#60a5fa">Provider Not Found</td><td style="padding:10px 12px;font-size:13px">Providers module. Verify NPI is active and In-Network. Provider Contracts. Confirm active contract exists. Fix and resubmit.</td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#fbbf24">Eligibility Issue</td><td style="padding:10px 12px;font-size:13px">Members module. Confirm member is Active. Check coverage effective and term dates against service date. Fix and resubmit.</td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#a78bfa">Duplicate Claim</td><td style="padding:10px 12px;font-size:13px">Compare to original paid claim. If confirmed duplicate, deny with duplicate reason code. If different, override edit and release.</td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#34d399">COB Needed</td><td style="padding:10px 12px;font-size:13px">Members module. Add or verify other insurance information. Return to claim and reprocess with Non-Duplication COB applied.</td></tr>
-              </tbody>
-            </table>
-          </div>
+      <div class="tab-panel" id="tab-guide">
+        <div style="margin-top:8px">
+          <table style="width:100%">
+            <thead><tr><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Pend Reason</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Resolution Steps</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Go To</th></tr></thead>
+            <tbody>
+              <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#f87171">Missing PA</td><td style="padding:10px;font-size:13px">Create auth in Authorizations. Return to Claims. Set PA On File = Yes. Resubmit.</td><td style="padding:10px"><a class="badge-link" href="authorizations.html">🔐 Auth</a></td></tr>
+              <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">Provider Not Found</td><td style="padding:10px;font-size:13px">Verify NPI in Providers. Confirm active contract in Provider Contracts. Resubmit.</td><td style="padding:10px"><a class="badge-link" href="providers.html">🏥 Providers</a></td></tr>
+              <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#fbbf24">Eligibility Issue</td><td style="padding:10px;font-size:13px">Check member status and coverage dates in Members. Fix and resubmit.</td><td style="padding:10px"><a class="badge-link" href="members.html">👤 Members</a></td></tr>
+              <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#a78bfa">Duplicate Claim</td><td style="padding:10px;font-size:13px">Compare to original claim. Deny if true duplicate. Override edit if different service.</td><td style="padding:10px"><a class="badge-link" href="claims.html">📄 Claims</a></td></tr>
+              <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#34d399">COB Needed</td><td style="padding:10px;font-size:13px">Add other insurance in Members. Reprocess with Non-Duplication COB applied.</td><td style="padding:10px"><a class="badge-link" href="members.html">👤 Members</a></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
-      <button class="btn btn-primary" id="btn-save">Save Pend</button>
+      <div style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:13px 16px;margin:0 24px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="font-size:12px;font-weight:800;color:var(--accent);width:100%;margin-bottom:4px">🧪 Test Claims &amp; Validation — Verify your configuration adjudicates correctly</span>
+        <a href="claims.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573">📄 Submit Test Claim</a>
+        <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
+        <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
+        <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
+        <a href="audit.html" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
+      </div>
+      <div class="modal-footer">
+      <button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Pend</button>
     </div>
   </div>
 </div>
-
 <script>
 setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
-
+ 
 async function apiFetch(url){
   var res=await fetch(url);
   if(!res.ok)throw new Error('API error '+res.status+' on '+url);
   return res.json();
 }
-
+ 
 function genCode(prefix){
   return prefix+'-'+String(Date.now()).slice(-6);
 }
-
+ 
 function badge(text,type){
   var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
     terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
@@ -263,7 +218,7 @@ function badge(text,type){
   var c=colors[type&&type.toLowerCase()]||'#94a3b8';
   return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
 }
-
+ 
 function toast(msg,type){
   var existing=document.querySelectorAll('.toast-msg');
   existing.forEach(function(el){el.remove();});
@@ -276,7 +231,7 @@ function toast(msg,type){
   document.body.appendChild(div);
   setTimeout(function(){if(div.parentNode)div.remove();},3000);
 }
-
+ 
 function confirmDialog(msg){
   return new Promise(function(resolve){
     var overlay=document.createElement('div');
@@ -289,13 +244,14 @@ function confirmDialog(msg){
 }
 var records=[],statusFilter='all';
 var FB=[
-  {id:'pd1',pend_number:'PEND-001',claim_number:'CLM-004',member_name:'David Torres',plan_code:'ECL-CDH-1500',provider:'Capital Imaging and Radiology',icd10:'G43.909',cpt:'70553',service_date:'2026-02-15',pend_reason:'missing_pa',pend_desc:'Prior authorization required for MRI Brain (CPT 70553). No PA on file. Go to Authorizations, create PA for this member and provider, return to claim and update PA On File to Yes.',status:'open',priority:'high',assigned_to:'Claims Examiner',created_date:'2026-02-15'},
-  {id:'pd2',pend_number:'PEND-002',claim_number:'CLM-005',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Riverside Regional Medical Center',icd10:'I21.9',cpt:'27447',service_date:'2026-02-20',pend_reason:'missing_pa',pend_desc:'Inpatient hospital admission (I21.9 AMI) requires prior authorization. PA not submitted before admission.',status:'open',priority:'high',assigned_to:'UM Department',created_date:'2026-02-20'},
-  {id:'pd3',pend_number:'PEND-003',claim_number:'CLM-007',member_name:'Rachel Kim',plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'93306',service_date:'2026-02-22',pend_reason:'missing_pa',pend_desc:'Echocardiography (CPT 93306) requires authorization. Add PA in Authorizations module then resubmit.',status:'open',priority:'medium',assigned_to:'Claims Examiner',created_date:'2026-02-22'},
-  {id:'pd4',pend_number:'PEND-004',claim_number:'CLM-008',member_name:'Carlos Mendez',plan_code:'ECL-HMO-BRZ',provider:'Unknown Provider NPI 9999999999',icd10:'J06.9',cpt:'99213',service_date:'2026-02-18',pend_reason:'network',pend_desc:'Provider NPI 9999999999 not found in active provider directory. Verify provider is in-network and contract is active in Provider Contracts module.',status:'open',priority:'medium',assigned_to:'Network Team',created_date:'2026-02-18'},
-  {id:'pd5',pend_number:'PEND-005',claim_number:'CLM-009',member_name:'Sandra Wu',plan_code:'ECL-CDH-1500',provider:'Pinnacle Primary Care Group',icd10:'Z00.00',cpt:'99395',service_date:'2026-01-10',pend_reason:'duplicate',pend_desc:'Possible duplicate. Same member, provider, DOS, and CPT code submitted previously as CLM-001 on 2026-01-10. Compare and deny if confirmed duplicate.',status:'in_review',priority:'low',assigned_to:'Claims Examiner',created_date:'2026-01-10'},
-  {id:'pd6',pend_number:'PEND-006',claim_number:'CLM-003',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'99244',service_date:'2026-02-10',pend_reason:'resolved',pend_desc:'PA submitted and verified on 2026-02-11. Claim released for payment at RBRVS Preferred 110% rate.',status:'resolved',priority:'low',assigned_to:'Claims Examiner',created_date:'2026-02-10'}
+  {id:'pd1',pend_number:'PEND-001',claim_number:'CLM-004',member_name:'David Torres',plan_code:'ECL-CDH-1500',provider:'Capital Imaging and Radiology',icd10:'G43.909',cpt:'70553',service_date:'2026-02-15',pend_reason:'missing_pa',pend_desc:'Prior authorization required for MRI Brain (CPT 70553). No PA on file. Go to Authorizations, create PA, return to Claims and set PA On File = Yes, then resubmit.',status:'open',priority:'high',assigned_to:'Claims Examiner'},
+  {id:'pd2',pend_number:'PEND-002',claim_number:'CLM-005',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Riverside Regional Medical Center',icd10:'I21.9',cpt:'27447',service_date:'2026-02-20',pend_reason:'missing_pa',pend_desc:'Inpatient hospital admission requires prior authorization. PA was not submitted before admission. Add PA in Authorizations module then resubmit.',status:'open',priority:'high',assigned_to:'UM Department'},
+  {id:'pd3',pend_number:'PEND-003',claim_number:'CLM-007',member_name:'Rachel Kim',plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'93306',service_date:'2026-02-22',pend_reason:'missing_pa',pend_desc:'Echocardiography (CPT 93306) requires authorization for cardiology. Awaiting PA submission.',status:'open',priority:'medium',assigned_to:'Claims Examiner'},
+  {id:'pd4',pend_number:'PEND-004',claim_number:'CLM-008',member_name:'Carlos Mendez',plan_code:'ECL-HMO-BRZ',provider:'Unknown Provider NPI 9999999999',icd10:'J06.9',cpt:'99213',service_date:'2026-02-18',pend_reason:'network',pend_desc:'Provider NPI 9999999999 not found in active provider directory. Verify provider is in-network and contract is active.',status:'open',priority:'medium',assigned_to:'Network Team'},
+  {id:'pd5',pend_number:'PEND-005',claim_number:'CLM-009',member_name:'Sandra Wu',plan_code:'ECL-CDH-1500',provider:'Pinnacle Primary Care Group',icd10:'Z00.00',cpt:'99395',service_date:'2026-01-10',pend_reason:'duplicate',pend_desc:'Possible duplicate. Same member, provider, service date, and CPT as CLM-001. Compare and deny if confirmed duplicate.',status:'in_review',priority:'low',assigned_to:'Claims Examiner'},
+  {id:'pd6',pend_number:'PEND-006',claim_number:'CLM-003',member_name:"James O'Brien",plan_code:'ECL-PPO-SLV',provider:'Triangle Specialty Associates',icd10:'I10',cpt:'99244',service_date:'2026-02-10',pend_reason:'resolved',pend_desc:'PA submitted and verified 2026-02-11. Claim released for payment at RBRVS Preferred 110% rate.',status:'resolved',priority:'low',assigned_to:'Claims Examiner'}
 ];
+var resolveMap={missing_pa:'Step 1: Go to Authorizations. Step 2: Create a prior authorization for this member, this provider, and the CPT code. Step 3: Return to Claims. Step 4: Set PA On File = Yes. Step 5: Resubmit the claim.',eligibility:'Step 1: Go to Members. Step 2: Verify the member is Active and coverage effective date is on or before the service date. Step 3: Fix any issues. Step 4: Return to Claims and resubmit.',network:'Step 1: Go to Providers. Step 2: Verify the NPI is Active and In-Network. Step 3: Go to Provider Contracts. Step 4: Confirm an active contract exists. Step 5: Fix and resubmit.',duplicate:'Step 1: Find the original claim with same member, DOS, provider, and CPT. Step 2: If true duplicate, set Status = Denied. Step 3: If different service, override the duplicate edit and release for payment.',cob:'Step 1: Go to Members. Step 2: Add or verify other insurance information. Step 3: Return to Claims. Step 4: Reprocess with Non-Duplication COB applied.',medical_necessity:'Step 1: Review ICD-10 code and whether diagnosis supports the CPT billed. Step 2: Request additional documentation from provider if needed. Step 3: Override pend or deny based on clinical review.',coding:'Step 1: Review the ICD-10 and CPT code combination. Step 2: Verify diagnosis supports the procedure. Step 3: Contact provider for corrected claim if needed.',other:'Review the pend description. Contact supervisor or QA reviewer for specific resolution guidance.'};
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
@@ -305,11 +261,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 ['all','open','in_review','resolved'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
 function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
 function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
-function reasonLabel(v){return{missing_pa:'Missing PA',eligibility:'Eligibility Issue',network:'Not In Network',duplicate:'Duplicate',cob:'COB Needed',medical_necessity:'Med Necessity',coding:'Coding Error',missing_info:'Missing Info',other:'Other'}[v]||v||'—';}
+function updateResolveHint(){document.getElementById('resolve-hint-text').textContent=resolveMap[gv('f-pend_reason')]||'Select a pend reason on the Detail tab.';}
+function reasonLabel(v){return{missing_pa:'Missing PA',eligibility:'Eligibility',network:'Not In Network',duplicate:'Duplicate',cob:'COB Needed',medical_necessity:'Med Necessity',coding:'Coding Error',other:'Other'}[v]||v||'—';}
 function reasonColor(v){return{missing_pa:'#f87171',eligibility:'#fbbf24',network:'#60a5fa',duplicate:'#a78bfa',cob:'#34d399',medical_necessity:'#fb923c',coding:'#f87171',other:'#94a3b8'}[v]||'#94a3b8';}
 function priorityColor(v){return{high:'#f87171',medium:'#fbbf24',low:'#4ade80'}[v]||'#94a3b8';}
-function resolveInstructions(r){return{missing_pa:'Step 1: Go to Authorizations module. Step 2: Create a prior authorization for this member, this provider, and the CPT code on this claim. Step 3: Return to Claims. Step 4: Update PA On File to Yes. Step 5: Resubmit. The claim will now adjudicate.',eligibility:'Step 1: Go to Members. Step 2: Find this member. Step 3: Verify Status = Active and the coverage effective date is on or before the service date on the claim. Step 4: Fix any issues. Step 5: Return to Claims and resubmit.',network:'Step 1: Go to Providers. Step 2: Search for the provider NPI. Step 3: Verify Status = Active and Network = In-Network. Step 4: Go to Provider Contracts. Step 5: Confirm an active contract exists. Step 6: Fix any gaps and resubmit.',duplicate:'Step 1: Find the original claim with the same member, DOS, provider, and CPT code. Step 2: If it is a true duplicate, set Status = Denied with duplicate claim reason code. Step 3: If it is a different service, override the duplicate edit on the claim record and release for payment.',cob:'Step 1: Go to Members. Step 2: Find this member and add or verify other insurance information under the COB tab. Step 3: Return to Claims. Step 4: Reprocess with Non-Duplication COB. Secondary pays only the gap between what primary paid and what secondary would have paid as primary.',other:'Review the pend description for specific resolution steps. Contact your supervisor or QA reviewer if guidance is needed.'}[r]||'Select a pend reason on the Detail tab to see resolution steps.';};
-function updateResolveInstructions(){document.getElementById('resolve-instructions').textContent=resolveInstructions(gv('f-pend_reason'));}
 async function load(){
   try{var r=await apiFetch('/api/claim-pends').catch(function(){return[];});records=r.length?r:FB;}
   catch(e){records=FB;}
@@ -328,15 +283,14 @@ function render(){
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⏸️</div><p>No pends found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏸️</div><p>No pends found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(p){
-    var rc=reasonColor(p.pend_reason);var pc=priorityColor(p.priority);
+    var rc=reasonColor(p.pend_reason),pc=priorityColor(p.priority);
     return'<tr>'+
     '<td class="mono" style="font-size:12px;font-weight:700;color:var(--accent)">'+p.pend_number+'</td>'+
     '<td class="mono" style="font-size:12px;font-weight:700">'+p.claim_number+'</td>'+
-    '<td><strong style="font-size:13px">'+p.member_name+'</strong></td>'+
+    '<td style="font-size:13px;font-weight:600">'+p.member_name+'</td>'+
     '<td class="mono" style="font-size:12px;color:var(--accent)">'+p.plan_code+'</td>'+
-    '<td style="font-size:12px">'+p.provider+'</td>'+
     '<td class="mono" style="font-size:12px;font-weight:700;color:#a78bfa">'+p.cpt+'</td>'+
     '<td><span style="font-size:12px;font-weight:700;color:'+rc+'">'+reasonLabel(p.pend_reason)+'</span></td>'+
     '<td><span style="font-size:12px;font-weight:700;color:'+pc+';text-transform:capitalize">'+p.priority+'</span></td>'+
@@ -350,20 +304,18 @@ function openModal(id){
   document.getElementById('form-error').style.display='none';
   document.getElementById('modal-title').textContent=d?'Pend: '+d.pend_number:'New Pend';
   var wb=document.getElementById('pend-warn');
-  if(d&&d.pend_desc){wb.style.display='block';document.getElementById('pend-warn-text').textContent=d.pend_desc;}
-  else{wb.style.display='none';}
+  if(d&&d.pend_desc){wb.style.display='block';document.getElementById('pend-warn-text').textContent=d.pend_desc;}else{wb.style.display='none';}
   sv('f-id',d?d.id:'');sv('f-pend_number',d?d.pend_number:genCode('PEND'));sv('f-status',d?d.status:'open');
   sv('f-claim_number',d?d.claim_number:'');sv('f-priority',d?d.priority:'medium');
   sv('f-member_name',d?d.member_name:'');sv('f-plan_code',d?d.plan_code:'');
   sv('f-provider',d?d.provider:'');sv('f-assigned_to',d?d.assigned_to:'Claims Examiner');
   sv('f-icd10',d?d.icd10:'');sv('f-cpt',d?d.cpt:'');
   sv('f-service_date',d&&d.service_date?d.service_date.split('T')[0]:'');
-  sv('f-created_date',d&&d.created_date?d.created_date.split('T')[0]:'');
   sv('f-pend_reason',d?d.pend_reason:'missing_pa');sv('f-pend_desc',d?d.pend_desc:'');
   sv('f-resolution_action',d?d.resolution_action:'');sv('f-resolved_by',d?d.resolved_by:'');
   sv('f-resolved_date',d&&d.resolved_date?d.resolved_date.split('T')[0]:'');
   sv('f-resolve_status',d?d.resolve_status||d.status:'resolved');
-  document.getElementById('resolve-instructions').textContent=resolveInstructions(d?d.pend_reason:'missing_pa');
+  document.getElementById('resolve-hint-text').textContent=resolveMap[d?d.pend_reason:'missing_pa']||'';
   switchTab('detail',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
@@ -373,13 +325,15 @@ async function save(){
   var pn=gv('f-pend_number').trim();
   if(!pn){errEl.textContent='Pend Number is required.';errEl.style.display='block';return;}
   var id=gv('f-id');
-  var body={pend_number:pn,status:gv('f-status'),claim_number:gv('f-claim_number'),priority:gv('f-priority'),member_name:gv('f-member_name'),plan_code:gv('f-plan_code'),provider:gv('f-provider'),assigned_to:gv('f-assigned_to'),icd10:gv('f-icd10'),cpt:gv('f-cpt'),service_date:gv('f-service_date')||null,created_date:gv('f-created_date')||null,pend_reason:gv('f-pend_reason'),pend_desc:gv('f-pend_desc'),resolution_action:gv('f-resolution_action'),resolved_by:gv('f-resolved_by'),resolved_date:gv('f-resolved_date')||null,resolve_status:gv('f-resolve_status')};
+  var rs=gv('f-resolve_status'),ra=gv('f-resolution_action');
+  var newStatus=rs&&ra?rs:gv('f-status');
+  var body={pend_number:pn,status:newStatus,claim_number:gv('f-claim_number'),priority:gv('f-priority'),member_name:gv('f-member_name'),plan_code:gv('f-plan_code'),provider:gv('f-provider'),assigned_to:gv('f-assigned_to'),icd10:gv('f-icd10'),cpt:gv('f-cpt'),service_date:gv('f-service_date')||null,pend_reason:gv('f-pend_reason'),pend_desc:gv('f-pend_desc'),resolution_action:ra,resolved_by:gv('f-resolved_by'),resolved_date:gv('f-resolved_date')||null,resolve_status:rs};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
   closeModal();toast(id?'Saving...':'Creating pend...','info');
   try{var res=await fetch(id?'/api/claim-pends/'+id:'/api/claim-pends',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Pend Created ✓','success');var fresh=await apiFetch('/api/claim-pends').catch(function(){return records;});if(fresh.length)records=fresh;updateStats();render();}
   catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this pend record?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/claim-pends/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
+async function del(id){if(!await confirmDialog('Delete this pend?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/claim-pends/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
 load();
 </script></body></html>
 
