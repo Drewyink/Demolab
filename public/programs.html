@@ -1,67 +1,54 @@
+===FILE:programs.html===
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EchoLink Solutions — Government Programs → Medicaid / Medicare</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>EchoLink Solutions — Government Programs</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.82)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;width:860px;}
+    .modal{max-height:92vh;overflow-y:auto;width:900px;}
     .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
-    .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
-    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-    .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
-    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .modal-tab{padding:11px 16px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:#00d4ff;border-bottom-color:#00d4ff;}
+    .tab-panel{display:none!important;}.tab-panel.active{display:block!important;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#00d4ff;margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;margin:3px;}
     .badge-link:hover{background:rgba(0,212,255,0.2);}
-    .test-bar{display:flex;flex-wrap:wrap;gap:6px;padding:14px;background:rgba(46,213,115,0.06);border:1px solid rgba(46,213,115,0.22);border-radius:8px;margin-top:14px;grid-column:1/-1;}
-    .test-bar-label{font-size:12px;font-weight:800;color:#2ed573;width:100%;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;}
-    .tlink{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;margin:2px;}
-    .tlink-green{background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.3);color:#2ed573;}
-    .tlink-orange{background:rgba(255,165,2,0.1);border:1px solid rgba(255,165,2,0.3);color:#ffa502;}
-    .tlink-blue{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);}
-    .tlink-slate{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.3);color:#94a3b8;}
-    .tlink-purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;}
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
-    .stat-card .sv{font-size:26px;font-weight:800;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
-    .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .stat-card .sv{font-size:26px;font-weight:800;font-family:monospace;margin:4px 0;}
+    .stat-card .sl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;}
     .page-title{font-size:26px!important;font-weight:800!important;}
     .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
-    .card-title{font-size:17px!important;font-weight:800!important;}
-    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table th{font-size:13px!important;font-weight:800!important;}
     table td{font-size:14px!important;}
     .nav-item{font-size:14px!important;font-weight:600!important;}
-    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .logo-text{font-size:16px!important;font-weight:900!important;}
     .modal-title{font-size:20px!important;font-weight:800!important;}
     .btn{font-size:13px!important;font-weight:700!important;}
-    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
-    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
-    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
-    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
-    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-    .toggle-switch input{opacity:0;width:0;height:0;}
-    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
-    .toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
-    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
-    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
-
-
-  </style>
+    .form-label{font-size:13px;font-weight:700;margin-bottom:6px;display:block;}
+    .info-box{background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-left:4px solid #00d4ff;border-radius:6px;padding:12px 16px;grid-column:1/-1;margin-bottom:4px;}
+    .warn-box{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-left:4px solid #fbbf24;border-radius:6px;padding:12px 16px;grid-column:1/-1;}
+    .prog-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px;}
+    .prog-card-title{font-size:14px;font-weight:800;color:#00d4ff;margin-bottom:8px;}
+    .prog-card-body{font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.7;}
+    .stars{color:#fbbf24;font-size:16px;}
+    .tlink{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;}
+    .tg{background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573;}
+    .to{background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502;}
+    .tb{background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;}
+    .tp{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;}
+    .ts{background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8;}</style>
 </head>
 <body>
 <div class="app-layout">
-  <aside class="sidebar">
+    <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">EL</div>
-      <div>
-        <div class="logo-text">EchoLink Solutions</div>
-        <div class="logo-sub">Facets Sandbox</div>
-      </div>
+      <div><div class="logo-text">EchoLink Solutions</div><div class="logo-sub">Facets Sandbox</div></div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
@@ -94,142 +81,328 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">EchoLink · v2.0</div></div>
   </aside>
-
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Government Programs → Medicaid / Medicare</span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Government Programs &rarr; Medicaid / Medicare</span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
+
       <div class="page-header">
         <div><div class="page-title">Government Programs</div>
-        <div class="page-subtitle">MEDICAID · MEDICARE ADVANTAGE · MEDICARE SUPPLEMENT · DUAL ELIGIBLE · CHIP · LTSS</div></div>
+        <div class="page-subtitle">MEDICARE ADVANTAGE &middot; MEDICAID MANAGED CARE &middot; DUAL ELIGIBLE &middot; D-SNP &middot; CHIP &middot; LTSS &middot; MSP</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Program</button>
       </div>
+
       <div class="stat-cards">
         <div class="stat-card"><div class="sl">Total Programs</div><div class="sv" id="s-total">—</div></div>
-        <div class="stat-card"><div class="sl">Medicare</div><div class="sv" style="color:#34d399" id="s-mc">—</div></div>
-        <div class="stat-card"><div class="sl">Medicaid</div><div class="sv" style="color:#f59e0b" id="s-ma">—</div></div>
+        <div class="stat-card"><div class="sl">Medicare</div><div class="sv" style="color:#60a5fa" id="s-medicare">—</div></div>
+        <div class="stat-card"><div class="sl">Medicaid</div><div class="sv" style="color:#4ade80" id="s-medicaid">—</div></div>
         <div class="stat-card"><div class="sl">Dual Eligible</div><div class="sv" style="color:#a78bfa" id="s-dual">—</div></div>
       </div>
+
+      <!-- INFO PANELS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+        <div class="prog-card">
+          <div class="prog-card-title">🔵 Medicare Advantage (Part C)</div>
+          <div class="prog-card-body">Medicare Advantage plans are approved by CMS and must meet all federal requirements. Each plan has a CMS Contract Number (H#), a Plan Benefit Package (PBP) number, and is assigned to a CMS Region. Plans earn STARS ratings that determine quality bonus payments. Medicare is always primary payer except in specific MSP situations such as active employment or ESRD.</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-title">🟢 Medicaid Managed Care</div>
+          <div class="prog-card-body">Medicaid is jointly funded by federal and state governments using the FMAP formula. Managed care organizations contract with states to serve Medicaid members on a capitation basis. EPSDT (Early and Periodic Screening, Diagnostic, and Treatment) requires comprehensive coverage for members under 21. CHIP extends coverage to children in families up to 200% of the Federal Poverty Level.</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-title">🟣 Dual Eligible (Medicare + Medicaid)</div>
+          <div class="prog-card-body">Dual eligible members are enrolled in both Medicare and Medicaid simultaneously. Medicare is primary payer. Medicaid is secondary and wraps around Medicare to cover cost-sharing, long-term services, and benefits not covered by Medicare. D-SNP plans serve full duals with coordinated benefits. The COB sequencing must be set correctly or claims will pay in the wrong order.</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-card-title">⚡ How Programs Connect to Claims</div>
+          <div class="prog-card-body">Every government program flows through the same adjudication chain as commercial plans. Members must be enrolled in a program-linked plan. Benefits, fee tables, and provider contracts must all be configured for the government program line of business. MSP rules determine payer sequencing. Dual eligible claims require COB with Non-Duplication or Medicare Supplement COB method.</div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">🏛️ Programs <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search programs..." id="search-input"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" id="search-input" placeholder="Search programs..." style="font-size:14px"></div>
             <div class="filter-tabs">
-              <button class="filter-tab active" id="tab-all">All</button>
-              <button class="filter-tab" id="tab-medicare">Medicare</button>
-              <button class="filter-tab" id="tab-medicaid">Medicaid</button>
-              <button class="filter-tab" id="tab-dual">Dual</button>
+              <button class="filter-tab active" id="ftab-all">All</button>
+              <button class="filter-tab" id="ftab-medicare">Medicare</button>
+              <button class="filter-tab" id="ftab-medicaid">Medicaid</button>
+              <button class="filter-tab" id="ftab-dual">Dual</button>
             </div>
           </div>
         </div>
         <div class="table-wrapper"><table>
-          <thead><tr><th>Program Code</th><th>Program Name</th><th>Type</th><th>Contract No.</th><th>Plan ID (H#)</th><th>CMS Region</th><th>Effective</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          <thead><tr><th>Program Code</th><th>Program Name</th><th>Type</th><th>Contract #</th><th>Plan ID (H#)</th><th>CMS Region</th><th>STARS</th><th>Cap. Rate</th><th>Dual</th><th>MSP</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody"><tr><td colspan="12"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
         </table></div>
       </div>
+
     </div>
   </main>
 </div>
+
+<!-- MODAL -->
 <div id="overlay">
   <div class="modal">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Program</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
-        <button class="modal-tab active" onclick="switchTab('setup',this)">Program Setup</button>
-        <button class="modal-tab" onclick="switchTab('cms',this)">CMS / Regulatory</button>
-        <button class="modal-tab" onclick="switchTab('validation',this)">Links &amp; Validation</button>
+        <button class="modal-tab active" onclick="switchTab('setup',this)">🏛️ Program Setup</button>
+        <button class="modal-tab" onclick="switchTab('cms',this)">📋 CMS / Regulatory</button>
+        <button class="modal-tab" onclick="switchTab('dual',this)">🟣 Dual Eligible / MSP</button>
+        <button class="modal-tab" onclick="switchTab('benefits',this)">✚ Benefits Config</button>
+        <button class="modal-tab" onclick="switchTab('links',this)">🔗 Module Links</button>
       </div>
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px;margin-bottom:14px;color:#ff4757;font-size:14px;font-weight:600"></div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:14px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
+
+      <!-- TAB 1: PROGRAM SETUP -->
       <div class="tab-panel active" id="tab-setup">
         <div class="form-grid">
           <div class="fsl">Program Identification</div>
-          <div class="form-group"><label class="form-label">Program Code *</label><input type="text" class="form-input" id="f-program_code" placeholder="MCR-ADV-2026"></div>
-          <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-          <div class="form-group full"><label class="form-label">Program Name *</label><input type="text" class="form-input" id="f-program_name" placeholder="Medicare Advantage PPO 2026"></div>
-          <div class="form-group"><label class="form-label">Program Type</label>
-            <select class="form-select" id="f-program_type">
+          <div class="form-group"><label class="form-label">Program Code *</label><input type="text" class="form-input" id="f-program_code" placeholder="MA-2026-001"></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="pending">Pending Approval</option></select></div>
+          <div class="form-group full"><label class="form-label">Program Name *</label><input type="text" class="form-input" id="f-program_name" placeholder="EchoLink Medicare Advantage HMO"></div>
+          <div class="form-group full"><label class="form-label">Program Type</label>
+            <select class="form-select" id="f-program_type" onchange="updateProgramType()">
               <option value="medicare_advantage">Medicare Advantage (Part C)</option>
-              <option value="medicare_supplement">Medicare Supplement</option>
-              <option value="medicare_pd">Medicare Part D (Rx)</option>
-              <option value="medicaid_managed">Medicaid Managed Care</option>
-              <option value="medicaid_fee">Medicaid Fee-for-Service</option>
-              <option value="chip">CHIP (Childrens Health Ins.)</option>
-              <option value="dual_eligible">Dual Eligible (Medicare + Medicaid)</option>
+              <option value="medicare_supplement">Medicare Supplement (Medigap)</option>
+              <option value="medicare_part_d">Medicare Part D (Rx Only)</option>
+              <option value="medicaid_managed_care">Medicaid Managed Care</option>
+              <option value="medicaid_ffs">Medicaid Fee-for-Service</option>
+              <option value="chip">CHIP (Children's Health Insurance Program)</option>
               <option value="dsnp">D-SNP (Dual Special Needs Plan)</option>
-              <option value="ltss">LTSS (Long-Term Services &amp; Supports)</option>
+              <option value="csnp">C-SNP (Chronic Condition Special Needs Plan)</option>
+              <option value="isnp">I-SNP (Institutional Special Needs Plan)</option>
+              <option value="ltss">LTSS (Long-Term Services and Supports)</option>
+              <option value="pace">PACE (Program of All-Inclusive Care for the Elderly)</option>
             </select></div>
           <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
           <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
-          <div class="form-group full"><label class="form-label">Description</label>
-            <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Program purpose, population served..."></textarea></div>
-          <div class="test-bar" style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
-    <span style="font-size:13px;font-weight:800;color:var(--accent);flex-shrink:0">🧪 Test Claims &amp; Validation</span>
-    <span style="font-size:12px;font-weight:600;color:var(--text-secondary);flex:1;min-width:180px">Verify your configuration adjudicates correctly</span>
-    <a href="claims.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573">📄 Submit Test Claim</a>
-    <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
-    <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
-    <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
-    <a href="audit.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
-  </div>
-  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
-  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
-  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
-  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
-  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
-</div>
+          <div class="form-group"><label class="form-label">Line of Business</label>
+            <select class="form-select" id="f-lob">
+              <option value="medicare">Medicare</option>
+              <option value="medicaid">Medicaid</option>
+              <option value="dual">Dual Eligible</option>
+              <option value="chip">CHIP</option>
+              <option value="commercial">Commercial</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">State / Jurisdiction</label>
+            <select class="form-select" id="f-state">
+              <option value="IL">Illinois</option><option value="NC">North Carolina</option>
+              <option value="VA">Virginia</option><option value="OH">Ohio</option>
+              <option value="MI">Michigan</option><option value="GA">Georgia</option>
+              <option value="TX">Texas</option><option value="CA">California</option>
+              <option value="FL">Florida</option><option value="NY">New York</option>
+              <option value="other">Other</option>
+            </select></div>
+          <div class="form-group full"><label class="form-label">Description / Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Program description, special conditions, state contract notes..."></textarea></div>
+
+          <div id="prog-info-box" class="info-box" style="display:none">
+            <div style="font-size:13px;font-weight:800;color:#00d4ff;margin-bottom:6px" id="prog-info-title"></div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary)" id="prog-info-body"></div>
+          </div>
         </div>
       </div>
+
+      <!-- TAB 2: CMS / REGULATORY -->
       <div class="tab-panel" id="tab-cms">
         <div class="form-grid">
-          <div class="fsl">CMS Contract Information</div>
-          <div class="form-group"><label class="form-label">CMS Contract Number</label><input type="text" class="form-input" id="f-cms_contract" placeholder="H1234 (test data only)"></div>
-          <div class="form-group"><label class="form-label">Plan ID (H Number)</label><input type="text" class="form-input" id="f-plan_id" placeholder="H1234-001"></div>
-          <div class="form-group"><label class="form-label">PBP Number</label><input type="text" class="form-input" id="f-pbp_number" placeholder="001"></div>
+          <div class="fsl">CMS Contract Information (Medicare Plans)</div>
+          <div class="info-box">
+            <div style="font-size:13px;font-weight:800;color:#00d4ff;margin-bottom:4px">CMS Contract Structure</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Every Medicare Advantage plan requires a CMS Contract Number (H number), a Plan ID combining H number and PBP, and a Plan Benefit Package number. The H number identifies the sponsoring organization. The PBP identifies the specific plan within that organization. Example: H1234-001 where H1234 is the contract and 001 is the PBP.</div>
+          </div>
+          <div class="form-group"><label class="form-label">CMS Contract Number (H#)</label><input type="text" class="form-input" id="f-cms_contract" placeholder="H1234"></div>
+          <div class="form-group"><label class="form-label">Plan ID (H# + PBP)</label><input type="text" class="form-input" id="f-plan_id" placeholder="H1234-001"></div>
+          <div class="form-group"><label class="form-label">PBP Number</label><input type="text" class="form-input" id="f-pbp" placeholder="001"></div>
           <div class="form-group"><label class="form-label">CMS Region</label>
             <select class="form-select" id="f-cms_region">
-              <option value="r1">Region 1 — Northeast</option><option value="r2">Region 2 — Mid-Atlantic</option>
-              <option value="r3">Region 3 — Southeast</option><option value="r4">Region 4 — Great Lakes</option>
-              <option value="r5">Region 5 — Midwest</option><option value="r6">Region 6 — South Central</option>
-              <option value="r7">Region 7 — Heartland</option><option value="r8">Region 8 — Mountain</option>
-              <option value="r9">Region 9 — Pacific</option><option value="r10">Region 10 — Northwest</option>
+              <option value="">— Select Region —</option>
+              <option value="Region 1 — Northeast">Region 1 — Northeast</option>
+              <option value="Region 2 — Mid-Atlantic">Region 2 — Mid-Atlantic</option>
+              <option value="Region 3 — Southeast">Region 3 — Southeast</option>
+              <option value="Region 4 — Great Lakes">Region 4 — Great Lakes</option>
+              <option value="Region 5 — Midwest">Region 5 — Midwest</option>
+              <option value="Region 6 — South Central">Region 6 — South Central</option>
+              <option value="Region 7 — Heartland">Region 7 — Heartland</option>
+              <option value="Region 8 — Mountain">Region 8 — Mountain</option>
+              <option value="Region 9 — Pacific">Region 9 — Pacific</option>
+              <option value="Region 10 — Northwest">Region 10 — Northwest</option>
             </select></div>
+          <div class="fsl">STARS Rating and Quality</div>
+          <div class="info-box">
+            <div style="font-size:13px;font-weight:800;color:#00d4ff;margin-bottom:4px">STARS Rating Impact</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">CMS rates every Medicare Advantage plan on a 1 to 5 STARS scale based on HEDIS quality measures, CAHPS member satisfaction, and health outcomes. Plans with 4 or more STARS earn quality bonus payments that increase capitation rates. Plans below 3 STARS for three consecutive years face enrollment sanctions and potential contract termination.</div>
+          </div>
           <div class="form-group"><label class="form-label">STARS Rating</label>
             <select class="form-select" id="f-stars_rating">
-              <option value="">Not Rated</option><option value="5">5 Stars</option>
-              <option value="4.5">4.5 Stars</option><option value="4">4 Stars</option>
-              <option value="3.5">3.5 Stars</option><option value="3">3 Stars</option>
+              <option value="not_rated">Not Rated (new plan)</option>
+              <option value="5.0">⭐⭐⭐⭐⭐ 5 Stars — Excellent</option>
+              <option value="4.5">⭐⭐⭐⭐½ 4.5 Stars</option>
+              <option value="4.0">⭐⭐⭐⭐ 4 Stars — Above Average</option>
+              <option value="3.5">⭐⭐⭐½ 3.5 Stars</option>
+              <option value="3.0">⭐⭐⭐ 3 Stars — Average</option>
+              <option value="2.5">⭐⭐½ 2.5 Stars — Below Average</option>
+              <option value="2.0">⭐⭐ 2 Stars — Poor</option>
             </select></div>
-          <div class="form-group"><label class="form-label">Benchmark Premium</label><input type="number" class="form-input" id="f-benchmark" step="0.01" min="0" placeholder="0.00"></div>
-          <div class="test-bar">
-  <div class="test-bar-label">🧪 Test Claims &amp; Validation — Verify Your Configuration Is Working</div>
-  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
-  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
-  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
-  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
-  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
-</div>
+          <div class="form-group"><label class="form-label">Quality Bonus Eligible?</label><select class="form-select" id="f-quality_bonus"><option value="yes">Yes — 4+ STARS</option><option value="no">No</option></select></div>
+          <div class="form-group"><label class="form-label">Benchmark Premium ($)</label><input type="text" class="form-input" id="f-benchmark_premium" placeholder="$0.00"></div>
+          <div class="form-group"><label class="form-label">CMS Capitation Rate (PMPM $)</label><input type="number" class="form-input" id="f-capitation_rate" step="0.01" placeholder="1085.00"></div>
+          <div class="fsl">Risk Model and Reimbursement</div>
+          <div class="form-group"><label class="form-label">Risk Adjustment Model</label>
+            <select class="form-select" id="f-risk_model">
+              <option value="CMS-HCC">CMS-HCC — Medicare Advantage standard risk model</option>
+              <option value="PMPM Capitation">PMPM Capitation — Medicaid flat rate</option>
+              <option value="RxHCC">RxHCC — Part D prescription drug risk model</option>
+              <option value="CDPS">CDPS — Chronic Illness and Disability Payment System (Medicaid)</option>
+              <option value="ACG">ACG — Adjusted Clinical Groups (Medicaid)</option>
+              <option value="FFS">Fee-for-Service — No risk adjustment</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Low Income Subsidy (LIS/Extra Help)?</label><select class="form-select" id="f-low_income_subsidy"><option value="yes">Yes — plan supports LIS members</option><option value="no">No</option></select></div>
+          <div class="form-group"><label class="form-label">Auto Enrollment?</label><select class="form-select" id="f-auto_enroll"><option value="no">No — voluntary enrollment only</option><option value="yes">Yes — auto-enrolled by CMS or state</option></select></div>
         </div>
       </div>
-      <div class="tab-panel" id="tab-validation">
+
+      <!-- TAB 3: DUAL ELIGIBLE / MSP -->
+      <div class="tab-panel" id="tab-dual">
         <div class="form-grid">
-          <div class="fsl">Module Links &amp; Test Claims</div>
-          <div style="grid-column:1/-1;font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:14px;line-height:1.7">
-            Government programs use the same claims adjudication chain as commercial plans. After configuring a Medicare or Medicaid program, submit test claims to verify COB coordination, dual eligible sequencing, and MSP (Medicare as Secondary Payer) rules are working correctly.
+          <div class="fsl">Dual Eligible Configuration</div>
+          <div class="info-box">
+            <div style="font-size:13px;font-weight:800;color:#00d4ff;margin-bottom:6px">Dual Eligible — How It Works in Facets</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.8">
+              Full duals are enrolled in both Medicare and Medicaid. Medicare is always the primary payer. Medicaid wraps around Medicare as secondary. In Facets, you must configure COB on the member record with Medicare as Plan 1 and Medicaid as Plan 2. The COB method for dual eligible members is typically Non-Duplication — Medicaid pays only what Medicare did not cover. Partial duals receive Medicaid assistance with cost-sharing only.
+            </div>
           </div>
-          <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px">
-            <a href="claims.html" class="badge-link">📄 Submit Test Claim</a>
-            <a href="claim-pends.html" class="badge-link">⏸️ Claim Pends</a>
-            <a href="authorizations.html" class="badge-link">🔐 Authorizations</a>
-            <a href="benefits.html" class="badge-link">✚ Benefits</a>
-            <a href="plans.html" class="badge-link">📋 Plans</a>
-            <a href="members.html" class="badge-link">👤 Members</a>
-            <a href="sql-validator.html" class="badge-link">🔬 SQL Validator</a>
-            <a href="audit.html" class="badge-link">🔍 Audit Log</a>
+          <div class="form-group"><label class="form-label">Dual Eligible Plan?</label><select class="form-select" id="f-dual_eligible"><option value="no">No</option><option value="yes">Yes — Full Dual (Medicare + Medicaid)</option><option value="partial">Partial Dual (cost-sharing assistance only)</option></select></div>
+          <div class="form-group"><label class="form-label">SNP Type</label>
+            <select class="form-select" id="f-snp_type">
+              <option value="none">None — not a Special Needs Plan</option>
+              <option value="dsnp">D-SNP — Dual Special Needs Plan</option>
+              <option value="csnp">C-SNP — Chronic Condition SNP</option>
+              <option value="isnp">I-SNP — Institutional SNP</option>
+            </select></div>
+          <div class="fsl">Medicare Secondary Payer (MSP)</div>
+          <div class="warn-box">
+            <div style="font-size:13px;font-weight:800;color:#fbbf24;margin-bottom:6px">⚠ MSP Rules — Critical Configuration</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.8">Medicare Secondary Payer rules require Medicare to pay AFTER another insurer in specific situations. MSP applies when the member has employer group health coverage through current employment (EGHP), is covered under a working spouse employer plan, has workers compensation, has no-fault or liability insurance, or has ESRD and is within the 30-month coordination period. Incorrectly setting Medicare as primary when MSP applies is a federal compliance violation.</div>
+          </div>
+          <div class="form-group"><label class="form-label">MSP Flag</label><select class="form-select" id="f-msp_flag"><option value="no">No — Medicare is Primary</option><option value="yes">Yes — MSP Applies (Medicare Secondary)</option></select></div>
+          <div class="form-group"><label class="form-label">MSP Reason (if applicable)</label>
+            <select class="form-select" id="f-msp_reason">
+              <option value="none">None — MSP does not apply</option>
+              <option value="eghp">EGHP — Employer Group Health Plan (active employment)</option>
+              <option value="spouse_eghp">Working Spouse EGHP</option>
+              <option value="workers_comp">Workers Compensation</option>
+              <option value="no_fault">No-Fault / Liability Insurance</option>
+              <option value="esrd">ESRD — 30-month coordination period</option>
+              <option value="va">VA Benefits</option>
+            </select></div>
+          <div class="fsl">COB Configuration for Dual Eligible</div>
+          <div class="form-group"><label class="form-label">Primary Payer</label><input type="text" class="form-input" id="f-primary_payer" placeholder="Medicare — CMS" value="Medicare — CMS"></div>
+          <div class="form-group"><label class="form-label">Secondary Payer</label><input type="text" class="form-input" id="f-secondary_payer" placeholder="State Medicaid Program"></div>
+          <div class="form-group"><label class="form-label">COB Method</label>
+            <select class="form-select" id="f-cob_method">
+              <option value="non_dup">Non-Duplication — Medicaid pays gap only</option>
+              <option value="complement">Complementary — Medicaid pays member cost share</option>
+              <option value="crossover">Crossover Claims — State processes after Medicare</option>
+              <option value="birthday_rule">Birthday Rule — Commercial COB</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Crossover Claim Processing</label><select class="form-select" id="f-crossover"><option value="auto">Automatic — system routes to Medicaid after Medicare pays</option><option value="manual">Manual — examiner routes crossover claims</option><option value="na">N/A — not applicable</option></select></div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="members.html">👤 Set Member COB</a>
+            <a class="badge-link" href="plans.html">📋 COB on Plan</a>
+            <a class="badge-link" href="claims.html">📄 Test Crossover Claim</a>
+            <a class="badge-link" href="claim-pends.html">⏸️ Claim Pends</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: BENEFITS CONFIG -->
+      <div class="tab-panel" id="tab-benefits">
+        <div class="form-grid">
+          <div class="fsl">Government Program Benefit Requirements</div>
+
+          <div style="grid-column:1/-1">
+            <table style="width:100%">
+              <thead><tr><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8;text-align:left">Benefit Category</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Medicare Advantage</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Medicaid</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Dual Eligible / D-SNP</th></tr></thead>
+              <tbody>
+                <tr style="background:var(--surface2)"><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#4ade80">Preventive Care</td><td style="padding:9px 12px;font-size:13px">$0 for all CMS-covered preventive services</td><td style="padding:9px 12px;font-size:13px">$0 — EPSDT covers all preventive for under 21</td><td style="padding:9px 12px;font-size:13px">$0 from Medicare, Medicaid wraps cost sharing</td></tr>
+                <tr><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#60a5fa">Hospital Inpatient</td><td style="padding:9px 12px;font-size:13px">DRG-based, days 1-60 deductible then daily coinsurance</td><td style="padding:9px 12px;font-size:13px">FMAP rates, state fee schedule, prior auth required</td><td style="padding:9px 12px;font-size:13px">Medicare DRG pays first, Medicaid wraps copay</td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#a78bfa">Part D / Pharmacy</td><td style="padding:9px 12px;font-size:13px">Formulary required. LIS members reduced cost share</td><td style="padding:9px 12px;font-size:13px">State PDL (preferred drug list) applies</td><td style="padding:9px 12px;font-size:13px">Part D primary, Medicaid pays for non-covered drugs</td></tr>
+                <tr><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fbbf24">Mental Health</td><td style="padding:9px 12px;font-size:13px">Mental Health Parity Act applies. Same cost share as medical</td><td style="padding:9px 12px;font-size:13px">PARITY required. EPSDT covers behavioral health</td><td style="padding:9px 12px;font-size:13px">Carve-out common — separate behavioral health MCO</td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#34d399">LTSS / LTC</td><td style="padding:9px 12px;font-size:13px">Not covered by standard Medicare. SNF limited to 100 days</td><td style="padding:9px 12px;font-size:13px">Primary payer for nursing home and home care</td><td style="padding:9px 12px;font-size:13px">Medicaid pays all LTSS costs. Key D-SNP benefit</td></tr>
+                <tr><td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fb923c">Dental / Vision</td><td style="padding:9px 12px;font-size:13px">Supplemental benefit — optional, plan specific</td><td style="padding:9px 12px;font-size:13px">Covered — state plan defines scope</td><td style="padding:9px 12px;font-size:13px">Medicaid dental and vision wrap Medicare gaps</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="fsl">Key Compliance Flags</div>
+          <div class="form-group"><label class="form-label">EPSDT Required?</label><select class="form-select" id="f-epsdt"><option value="no">No</option><option value="yes">Yes — Medicaid EPSDT (members under 21)</option></select></div>
+          <div class="form-group"><label class="form-label">Mental Health Parity Applied?</label><select class="form-select" id="f-parity"><option value="yes">Yes — MHPAEA parity compliant</option><option value="no">No</option></select></div>
+          <div class="form-group"><label class="form-label">Part D Formulary Required?</label><select class="form-select" id="f-part_d"><option value="no">No</option><option value="yes">Yes — CMS-approved formulary on file</option></select></div>
+          <div class="form-group"><label class="form-label">Network Adequacy Standard</label>
+            <select class="form-select" id="f-network_standard">
+              <option value="cms_ma">CMS Medicare Advantage — time and distance standards</option>
+              <option value="state_medicaid">State Medicaid — state-defined network requirements</option>
+              <option value="both">Both CMS and State standards apply</option>
+            </select></div>
+          <div style="grid-column:1/-1;margin-top:10px">
+            <a class="badge-link" href="benefits.html">✚ Configure Benefits</a>
+            <a class="badge-link" href="plans.html">📋 Plan Setup</a>
+            <a class="badge-link" href="dental.html">🦷 Dental Config</a>
+            <a class="badge-link" href="service-groups.html">🗂️ Service Groups</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: MODULE LINKS -->
+      <div class="tab-panel" id="tab-links">
+        <div class="form-grid">
+          <div class="fsl">Full Adjudication Chain — Government Programs</div>
+
+          <div style="grid-column:1/-1">
+            <table style="width:100%">
+              <thead><tr><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8;text-align:left">Module</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">What to Configure for Government Programs</th><th style="font-size:12px;font-weight:800;padding:8px 12px;background:#1e293b;color:#94a3b8">Link</th></tr></thead>
+              <tbody>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#4ade80">🏢 Groups</td><td style="padding:10px;font-size:13px">Create a group for the government program. Set LOB to Medicare or Medicaid. Carrier code must match CMS H number for MA plans.</td><td style="padding:10px"><a class="badge-link" href="groups.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">👤 Members</td><td style="padding:10px;font-size:13px">Enroll members with Medicare ID (MBI) or Medicaid ID. Set COB for dual eligible members — Medicare primary, Medicaid secondary. Set MSP flag if applicable.</td><td style="padding:10px"><a class="badge-link" href="members.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#a78bfa">📋 Plans</td><td style="padding:10px;font-size:13px">Set plan type to Medicare Advantage or Medicaid. Configure COB method as Non-Duplication for dual eligible. Set EPSDT flag for Medicaid plans. Link to correct product.</td><td style="padding:10px"><a class="badge-link" href="plans.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#fbbf24">✚ Benefits</td><td style="padding:10px;font-size:13px">Configure all CMS mandatory benefits. Set preventive to $0. Apply Mental Health Parity. Set Part D drug benefit rows. EPSDT must cover all medically necessary services for under-21 members.</td><td style="padding:10px"><a class="badge-link" href="benefits.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#34d399">🏥 Providers</td><td style="padding:10px;font-size:13px">All providers must meet CMS or state credentialing requirements. OIG exclusion screening is mandatory monthly. Medicare and Medicaid providers must not be on the excluded providers list.</td><td style="padding:10px"><a class="badge-link" href="providers.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#fb923c">📊 Fee Tables</td><td style="padding:10px;font-size:13px">Medicare uses CMS RBRVS conversion factor and Medicare DRG rates. Medicaid uses state fee schedule rates which are typically lower than Medicare. Build separate fee tables for each line of business.</td><td style="padding:10px"><a class="badge-link" href="fee-tables.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">⚙️ NetworX</td><td style="padding:10px;font-size:13px">Configure Medicare RBRVS at 100% of CMS rates. DRG grouper at CMS DRG base rates. Medicaid rates at state fee schedule. Dual eligible claims run Medicare NetworX first, then Medicaid NetworX on the remainder.</td><td style="padding:10px"><a class="badge-link" href="networx.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#f87171">📄 Claims</td><td style="padding:10px;font-size:13px">Submit test claims for each program. Verify Medicare pays first on dual eligible claims. Verify crossover to Medicaid processes correctly. Inpatient MA claims require PA and DRG pricing. Medicaid FFS claims use state fee schedule. Check COB sequencing on every dual eligible claim.</td><td style="padding:10px"><a class="badge-link" href="claims.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#fbbf24">⏸️ Claim Pends</td><td style="padding:10px;font-size:13px">Government program pends often involve MSP issues, missing Medicare ID, COB sequencing errors, or EPSDT authorization. Crossover claims may pend if Medicaid rate table is missing.</td><td style="padding:10px"><a class="badge-link" href="claim-pends.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#34d399">🔐 Authorizations</td><td style="padding:10px;font-size:13px">Medicare Advantage requires PA for inpatient, post-acute, advanced imaging, and specialty services. Medicaid requires PA for most non-emergency services. EPSDT overrides PA denials for medically necessary services for members under 21.</td><td style="padding:10px"><a class="badge-link" href="authorizations.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">🔬 SQL Validator</td><td style="padding:10px;font-size:13px">Run SQL Validator to verify all government program members have correct COB setup, all providers passed OIG screening, all plans have mandatory government program benefit rows, and no dual eligible members are missing Medicaid ID.</td><td style="padding:10px"><a class="badge-link" href="sql-validator.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#94a3b8">🔍 Audit Log</td><td style="padding:10px;font-size:13px">All government program configuration changes are subject to CMS audit. The Audit Log provides the required documentation trail. Every provider OIG check, every member enrollment, and every benefit change must be logged.</td><td style="padding:10px"><a class="badge-link" href="audit.html">Open →</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="fsl">Test Claims Validation — Government Programs</div>
+          <div style="grid-column:1/-1">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px">
+              <div style="font-size:13px;font-weight:800;color:#00d4ff;margin-bottom:10px">Required Test Claim Scenarios for Government Programs</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Test 1 — Medicare Preventive</strong><br>Member: Medicare only. CPT 99395. Expected: $0 member cost. Medicare pays 100%.</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Test 2 — Medicare Inpatient DRG</strong><br>Member: MA plan. Inpatient hospital. PA required. DRG pricing. Verify CMS rate applies.</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Test 3 — Dual Eligible Crossover</strong><br>Member: Full dual. PCP visit. Medicare pays first. Medicaid wraps the copay. Member owes $0.</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Test 4 — Medicaid EPSDT</strong><br>Member: Medicaid under 21. Any medically necessary service. Expected: $0 member cost. No PA denial allowed.</div>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+                <a href="claims.html" class="tg tlink">📄 Submit Test Claim</a>
+                <a href="claim-pends.html" class="to tlink">⏸️ Claim Pends</a>
+                <a href="authorizations.html" class="tb tlink">🔐 Authorizations</a>
+                <a href="members.html" class="tp tlink">👤 Member COB Setup</a>
+                <a href="sql-validator.html" class="tp tlink">🔬 SQL Validator</a>
+                <a href="audit.html" class="ts tlink">🔍 Audit Log</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -237,60 +410,107 @@
     <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Program</button></div>
   </div>
 </div>
-<script>
 
+<script>
 setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
 async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
 function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
-function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',dental:'#e879f9',commercial:'#60a5fa',medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v!=null?v:'';}
+function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',in_review:'#60a5fa',resolved:'#2ed573',open:'#ff4757',high:'#ff4757',medium:'#fbbf24',low:'#4ade80',hmo:'#60a5fa',ppo:'#a78bfa',cdh:'#34d399',dental:'#e879f9',individual:'#60a5fa',facility:'#a78bfa',group:'#34d399',rbrvs:'#60a5fa',drg:'#a78bfa',capitation:'#34d399',preferred:'#a78bfa',inn:'#2ed573',oon:'#f87171',approved:'#2ed573',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
 function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
 function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
-function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
-function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
-function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
-function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+
+
+var PROG_INFO = {
+  medicare_advantage: ['Medicare Advantage (Part C)','Plans contract directly with CMS and must provide all Original Medicare benefits plus supplemental benefits. Requires CMS H number, PBP, and annual bid submission. Subject to STARS quality ratings. Risk adjusted via CMS-HCC model. Enrollment periods: AEP Oct 15 – Dec 7, OEP Jan 1 – Mar 31.'],
+  medicare_supplement: ['Medicare Supplement (Medigap)','Medigap plans wrap around Original Medicare to cover cost sharing. Plans are standardized (A through N). They do not replace Medicare but pay after Medicare pays. Not subject to STARS ratings or CMS bidding. Cannot be sold to MA plan enrollees.'],
+  medicare_part_d: ['Medicare Part D (Prescription Drug Plan)','Standalone Part D plans cover outpatient prescription drugs. Must have CMS-approved formulary with all six protected classes covered. Subject to STARS ratings. LIS (Low Income Subsidy) members receive reduced cost sharing. Creditable coverage rules apply.'],
+  medicaid_managed_care: ['Medicaid Managed Care Organization (MCO)','States contract with MCOs to provide Medicaid benefits on a capitation basis. Federal FMAP (Federal Medical Assistance Percentage) applies. EPSDT is mandatory for members under 21. Network adequacy standards set by state. Subject to state quality measurement programs.'],
+  medicaid_ffs: ['Medicaid Fee-for-Service','State pays providers directly for each service rendered. No capitation. Claims processed using state Medicaid Management Information System (MMIS). State fee schedule applies. Provider must be enrolled in state Medicaid program.'],
+  chip: ['CHIP — Children's Health Insurance Program','Covers children in families between 100% and 200% of FPL who do not qualify for Medicaid. Enhanced federal matching rate (E-FMAP). EPSDT applies. States can run CHIP as Medicaid expansion or separate program. Dental and vision required.'],
+  dsnp: ['D-SNP — Dual Special Needs Plan','Must have a Memorandum of Understanding (MOU) with the state Medicaid agency. Medicare is primary. Medicaid is secondary. Full duals receive $0 cost sharing through Medicaid wraparound. Crossover claims process automatically in most states. LTSS coordination required.'],
+  csnp: ['C-SNP — Chronic Condition Special Needs Plan','Designed for members with specific severe chronic conditions such as diabetes, heart failure, or ESRD. Must demonstrate how plan design addresses the target condition. Disease management programs required. CMS approves eligible conditions.'],
+  isnp: ['I-SNP — Institutional Special Needs Plan','Serves members who require nursing home level of care. Must have partnerships with institutional providers. High acuity members with complex LTSS needs. Typically bundled with nursing facility contracts. High capitation rates from CMS.'],
+  ltss: ['LTSS — Long-Term Services and Supports','Covers nursing home care, home and community-based services (HCBS), personal care, and adult day services. Medicaid is typically the primary or sole payer for LTSS. Waiver programs (1915c) allow home and community alternatives to institutional care.'],
+  pace: ['PACE — Program of All-Inclusive Care for the Elderly','Fully integrated care for frail elderly individuals who qualify for nursing home level of care. PACE organizations receive both Medicare and Medicaid capitation and accept full financial risk. All services delivered through PACE interdisciplinary team. No separate claims — capitation covers everything.']
+};
 
 var records=[],statusFilter='all';
 var FB=[
-  {id:'pg1',program_code:'MCR-ADV-2026',program_name:'Medicare Advantage PPO — Region 3',program_type:'medicare_advantage',cms_contract:'H1234',plan_id:'H1234-001',cms_region:'r3',stars_rating:'4',effective_date:'2026-01-01',status:'active'},
-  {id:'pg2',program_code:'MCD-MCO-2026',program_name:'Medicaid Managed Care — State Contract',program_type:'medicaid_managed',cms_region:'r3',effective_date:'2026-01-01',status:'active'},
-  {id:'pg3',program_code:'DSNP-2026',program_name:'Dual Special Needs Plan 2026',program_type:'dsnp',cms_contract:'H1234',plan_id:'H1234-002',cms_region:'r3',stars_rating:'4.5',effective_date:'2026-01-01',status:'active'},
+  {id:'pg1',program_code:'MA-2026-001',program_name:'EchoLink Medicare Advantage HMO',program_type:'medicare_advantage',cms_contract:'H1234',plan_id:'H1234-001',pbp:'001',cms_region:'Region 4 — Great Lakes',stars_rating:'4.5',benchmark_premium:'$0.00',msp_flag:'yes',dual_eligible:'no',snp_type:'none',risk_model:'CMS-HCC',capitation_rate:1085.00,quality_bonus:'yes',auto_enroll:'no',low_income_subsidy:'no',effective_date:'2026-01-01',status:'active',notes:'MA HMO plan, 4.5 STARS, quality bonus eligible'},
+  {id:'pg2',program_code:'DSNP-2026-001',program_name:'EchoLink Dual Special Needs Plan',program_type:'dsnp',cms_contract:'H1234',plan_id:'H1234-002',pbp:'002',cms_region:'Region 4 — Great Lakes',stars_rating:'4.0',benchmark_premium:'$0.00',msp_flag:'yes',dual_eligible:'yes',snp_type:'dsnp',risk_model:'CMS-HCC',capitation_rate:1420.00,quality_bonus:'yes',auto_enroll:'yes',low_income_subsidy:'yes',effective_date:'2026-01-01',status:'active',notes:'D-SNP for full duals. Medicare primary, Medicaid secondary. MSP rules apply.'},
+  {id:'pg3',program_code:'MCD-2026-001',program_name:'EchoLink Medicaid Managed Care',program_type:'medicaid_managed_care',cms_contract:'',plan_id:'',pbp:'',cms_region:'Region 3 — Southeast',stars_rating:'not_rated',benchmark_premium:'',msp_flag:'no',dual_eligible:'no',snp_type:'none',risk_model:'PMPM Capitation',capitation_rate:485.00,quality_bonus:'no',auto_enroll:'yes',low_income_subsidy:'yes',effective_date:'2026-01-01',status:'active',notes:'State Medicaid contract. FMAP applies. EPSDT covered for members under 21.'},
+  {id:'pg4',program_code:'CHIP-2026-001',program_name:'EchoLink CHIP',program_type:'chip',cms_contract:'',plan_id:'',pbp:'',cms_region:'Region 3 — Southeast',stars_rating:'not_rated',benchmark_premium:'',msp_flag:'no',dual_eligible:'no',snp_type:'none',risk_model:'PMPM Capitation',capitation_rate:225.00,quality_bonus:'no',auto_enroll:'no',low_income_subsidy:'yes',effective_date:'2026-01-01',status:'active',notes:'CHIP coverage for children 0-18 up to 200% FPL. EPSDT applies.'}
 ];
+
+function switchTab(n,b){
+  document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+}
+function setFilter(s,el){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});el.classList.add('active');render();}
+function updateProgramType(){
+  var t=gv('f-program_type');
+  var info=PROG_INFO[t];
+  var box=document.getElementById('prog-info-box');
+  if(info){
+    document.getElementById('prog-info-title').textContent=info[0];
+    document.getElementById('prog-info-body').textContent=info[1];
+    box.style.display='block';
+  }else{box.style.display='none';}
+}
+['all','medicare','medicaid','dual'].forEach(function(f){
+  document.getElementById('ftab-'+f).addEventListener('click',function(){setFilter(f,this);});
+});
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-['all','medicare','medicaid','dual'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
-function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
-function ptLabel(v){return{medicare_advantage:'Medicare Advantage',medicare_supplement:'Medicare Supplement',medicare_pd:'Part D Rx',medicaid_managed:'Medicaid MCO',medicaid_fee:'Medicaid FFS',chip:'CHIP',dual_eligible:'Dual Eligible',dsnp:'D-SNP',ltss:'LTSS'}[v]||v||'—';}
-async function load(){try{var r=await apiFetch('/api/programs').catch(function(){return[];});records=r.length?r:FB;}catch(e){records=FB;}updateStats();render();}
+
+function typeLabel(v){return{medicare_advantage:'Medicare Advantage',medicare_supplement:'Med Supplement',medicare_part_d:'Part D',medicaid_managed_care:'Medicaid MCO',medicaid_ffs:'Medicaid FFS',chip:'CHIP',dsnp:'D-SNP',csnp:'C-SNP',isnp:'I-SNP',ltss:'LTSS',pace:'PACE'}[v]||v||'—';}
+function typeColor(v){return{medicare_advantage:'#60a5fa',medicare_supplement:'#60a5fa',medicare_part_d:'#60a5fa',medicaid_managed_care:'#4ade80',medicaid_ffs:'#4ade80',chip:'#4ade80',dsnp:'#a78bfa',csnp:'#a78bfa',isnp:'#a78bfa',ltss:'#fb923c',pace:'#fb923c'}[v]||'#94a3b8';}
+function starsDisplay(v){if(!v||v==='not_rated')return'<span style="color:#94a3b8;font-size:12px">Not Rated</span>';var n=parseFloat(v);var s=Math.round(n*2);var full=Math.floor(s/2);var half=s%2;var out='';for(var i=0;i<full;i++)out+='⭐';if(half)out+='½';return'<span style="font-size:12px">'+out+' '+v+'</span>';}
+
+async function load(){
+  try{var r=await apiFetch('/api/programs').catch(function(){return[];});records=r.length?r:FB;}catch(e){records=FB;}
+  updateStats();render();
+}
 function updateStats(){
   document.getElementById('s-total').textContent=records.length;
-  document.getElementById('s-mc').textContent=records.filter(function(r){return r.program_type&&r.program_type.startsWith('medicare');}).length;
-  document.getElementById('s-ma').textContent=records.filter(function(r){return r.program_type&&r.program_type.startsWith('medicaid');}).length;
-  document.getElementById('s-dual').textContent=records.filter(function(r){return r.program_type==='dual_eligible'||r.program_type==='dsnp';}).length;
+  document.getElementById('s-medicare').textContent=records.filter(function(r){return r.lob==='medicare'||r.program_type==='medicare_advantage'||r.program_type==='medicare_supplement'||r.program_type==='medicare_part_d';}).length;
+  document.getElementById('s-medicaid').textContent=records.filter(function(r){return r.lob==='medicaid'||r.program_type==='medicaid_managed_care'||r.program_type==='medicaid_ffs'||r.program_type==='chip';}).length;
+  document.getElementById('s-dual').textContent=records.filter(function(r){return r.dual_eligible==='yes'||r.program_type==='dsnp';}).length;
 }
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=[].concat(records);
-  if(statusFilter==='medicare')data=data.filter(function(r){return r.program_type&&r.program_type.startsWith('medicare');});
-  else if(statusFilter==='medicaid')data=data.filter(function(r){return r.program_type&&r.program_type.startsWith('medicaid');});
-  else if(statusFilter==='dual')data=data.filter(function(r){return r.program_type==='dual_eligible'||r.program_type==='dsnp';});
+  if(statusFilter==='medicare')data=data.filter(function(r){return r.program_type==='medicare_advantage'||r.program_type==='medicare_supplement'||r.program_type==='medicare_part_d';});
+  else if(statusFilter==='medicaid')data=data.filter(function(r){return r.program_type==='medicaid_managed_care'||r.program_type==='medicaid_ffs'||r.program_type==='chip';});
+  else if(statusFilter==='dual')data=data.filter(function(r){return r.dual_eligible==='yes'||r.program_type==='dsnp';});
   if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
   document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🏛️</div><p>No programs found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">🏛️</div><p>No programs found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(p){
+    var tc=typeColor(p.program_type);
+    var cap=p.capitation_rate?'<span class="mono" style="font-size:12px;font-weight:800">$'+parseFloat(p.capitation_rate).toLocaleString('en-US',{minimumFractionDigits:2})+'</span>':'—';
+    var dual=p.dual_eligible==='yes'?'<span style="color:#a78bfa;font-weight:700;font-size:12px">Full Dual</span>':p.dual_eligible==='partial'?'<span style="color:#fbbf24;font-weight:700;font-size:12px">Partial</span>':'<span style="color:#94a3b8;font-size:12px">No</span>';
+    var msp=p.msp_flag==='yes'?'<span style="color:#fbbf24;font-weight:700;font-size:12px">MSP</span>':'<span style="color:#94a3b8;font-size:12px">No</span>';
     return'<tr>'+
-    '<td class="mono" style="font-size:12px;font-weight:800;color:var(--accent)">'+p.program_code+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:800;color:#00d4ff">'+p.program_code+'</td>'+
     '<td><strong style="font-size:13px">'+p.program_name+'</strong></td>'+
-    '<td>'+badge(ptLabel(p.program_type),p.program_type&&p.program_type.startsWith('medicare')?'medicare':p.program_type&&p.program_type.startsWith('medicaid')?'medicaid':'active')+'</td>'+
+    '<td><span style="font-size:12px;font-weight:700;color:'+tc+'">'+typeLabel(p.program_type)+'</span></td>'+
     '<td class="mono" style="font-size:12px">'+(p.cms_contract||'—')+'</td>'+
     '<td class="mono" style="font-size:12px">'+(p.plan_id||'—')+'</td>'+
-    '<td style="font-size:12px">'+(p.cms_region||'—').toUpperCase()+'</td>'+
-    '<td class="mono" style="font-size:12px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
+    '<td style="font-size:12px">'+(p.cms_region||'—')+'</td>'+
+    '<td>'+starsDisplay(p.stars_rating)+'</td>'+
+    '<td>'+cap+'</td>'+
+    '<td>'+dual+'</td>'+
+    '<td>'+msp+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
     '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+p.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+p.id+'">Del</button></div></td></tr>';
   }).join('');
@@ -298,31 +518,52 @@ function render(){
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
+  document.getElementById('prog-info-box').style.display='none';
   document.getElementById('modal-title').textContent=d?'Edit Program':'New Program';
-  sv('f-id',d?d.id:'');sv('f-program_code',d?d.program_code:genCode('PGM'));sv('f-status',d?d.status:'active');
+  sv('f-id',d?d.id:'');sv('f-program_code',d?d.program_code:genCode('PG'));sv('f-status',d?d.status:'active');
   sv('f-program_name',d?d.program_name:'');sv('f-program_type',d?d.program_type:'medicare_advantage');
+  sv('f-lob',d?d.lob:'medicare');sv('f-state',d?d.state:'IL');
   sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-notes',d?d.notes:'');sv('f-cms_contract',d?d.cms_contract:'');sv('f-plan_id',d?d.plan_id:'');
-  sv('f-pbp_number',d?d.pbp_number:'');sv('f-cms_region',d?d.cms_region:'r3');
-  sv('f-stars_rating',d?d.stars_rating:'');sv('f-benchmark',d?d.benchmark:'');
+  sv('f-notes',d?d.notes:'');
+  sv('f-cms_contract',d?d.cms_contract:'');sv('f-plan_id',d?d.plan_id:'');
+  sv('f-pbp',d?d.pbp:'');sv('f-cms_region',d?d.cms_region:'');
+  sv('f-stars_rating',d?d.stars_rating:'not_rated');sv('f-quality_bonus',d?d.quality_bonus:'no');
+  sv('f-benchmark_premium',d?d.benchmark_premium:'');sv('f-capitation_rate',d?d.capitation_rate:'');
+  sv('f-risk_model',d?d.risk_model:'CMS-HCC');sv('f-low_income_subsidy',d?d.low_income_subsidy:'no');
+  sv('f-auto_enroll',d?d.auto_enroll:'no');
+  sv('f-dual_eligible',d?d.dual_eligible:'no');sv('f-snp_type',d?d.snp_type:'none');
+  sv('f-msp_flag',d?d.msp_flag:'no');sv('f-msp_reason',d?d.msp_reason:'none');
+  sv('f-primary_payer',d?d.primary_payer:'Medicare — CMS');sv('f-secondary_payer',d?d.secondary_payer:'');
+  sv('f-cob_method',d?d.cob_method:'non_dup');sv('f-crossover',d?d.crossover:'na');
+  sv('f-epsdt',d?d.epsdt:'no');sv('f-parity',d?d.parity:'yes');
+  sv('f-part_d',d?d.part_d:'no');sv('f-network_standard',d?d.network_standard:'cms_ma');
+  updateProgramType();
   switchTab('setup',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 async function save(){
-  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var e=document.getElementById('form-error');e.style.display='none';
   var pc=gv('f-program_code').trim(),pn=gv('f-program_name').trim();
-  if(!pc||!pn){errEl.textContent='Program Code and Name required.';errEl.style.display='block';return;}
+  if(!pc||!pn){e.textContent='Program Code and Name are required.';e.style.display='block';return;}
   var id=gv('f-id');
-  var body={program_code:pc,program_name:pn,program_type:gv('f-program_type'),effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,notes:gv('f-notes'),cms_contract:gv('f-cms_contract'),plan_id:gv('f-plan_id'),pbp_number:gv('f-pbp_number'),cms_region:gv('f-cms_region'),stars_rating:gv('f-stars_rating'),benchmark:parseFloat(gv('f-benchmark'))||0,status:gv('f-status')};
+  var body={program_code:pc,program_name:pn,program_type:gv('f-program_type'),lob:gv('f-lob'),state:gv('f-state'),effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,notes:gv('f-notes'),cms_contract:gv('f-cms_contract'),plan_id:gv('f-plan_id'),pbp:gv('f-pbp'),cms_region:gv('f-cms_region'),stars_rating:gv('f-stars_rating'),quality_bonus:gv('f-quality_bonus'),benchmark_premium:gv('f-benchmark_premium'),capitation_rate:parseFloat(gv('f-capitation_rate'))||0,risk_model:gv('f-risk_model'),low_income_subsidy:gv('f-low_income_subsidy'),auto_enroll:gv('f-auto_enroll'),dual_eligible:gv('f-dual_eligible'),snp_type:gv('f-snp_type'),msp_flag:gv('f-msp_flag'),msp_reason:gv('f-msp_reason'),primary_payer:gv('f-primary_payer'),secondary_payer:gv('f-secondary_payer'),cob_method:gv('f-cob_method'),crossover:gv('f-crossover'),epsdt:gv('f-epsdt'),parity:gv('f-parity'),part_d:gv('f-part_d'),network_standard:gv('f-network_standard'),status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
-  closeModal();toast(id?'Saving...':'Creating...','info');
-  try{var res=await fetch(id?'/api/programs/'+id:'/api/programs',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast('Saved ✓','success');var fr=await apiFetch('/api/programs').catch(function(){return records;});if(fr.length)records=fr;updateStats();render();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed','error');}
+  closeModal();toast(id?'Saving...':'Creating program...','info');
+  try{var r=await fetch(id?'/api/programs/'+id:'/api/programs',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error('HTTP '+r.status);toast(id?'Updated ✓':'Program Created ✓','success');var f=await apiFetch('/api/programs').catch(function(){return records;});if(f.length)records=f;updateStats();render();}
+  catch(ex){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+ex.message,'error');}
 }
-async function del(id){if(!await confirmDialog('Delete this program?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/programs/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
+async function del(id){
+  if(!await confirmDialog('Delete this program?'))return;
+  var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();
+  try{await fetch('/api/programs/'+id,{method:'DELETE'});toast('Deleted','info');}
+  catch(e){records=bk;updateStats();render();toast('Delete failed','error');}
+}
 load();
-</script></body></html>
+</script>
+</body>
+</html>
+===END:programs.html===
 
 
