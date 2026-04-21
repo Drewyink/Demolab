@@ -1,3 +1,5 @@
+
+===FILE:fee-tables.html===
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,56 +7,37 @@
   <title>EchoLink Solutions — Fee Tables</title>
   <link rel="stylesheet" href="styles.css">
   <style>
- 
     #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
-    .modal{max-height:92vh;overflow-y:auto;width:880px;}
+    .modal{max-height:92vh;overflow-y:auto;width:900px;}
     .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
     .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
     .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
     .tab-panel{display:none;}.tab-panel.active{display:block;}
-    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
     .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
     .badge-link:hover{background:rgba(0,212,255,0.2);}
     .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
     .stat-card .sv{font-size:26px;font-weight:800;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
     .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
-    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
-    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
     .page-title{font-size:26px!important;font-weight:800!important;}
     .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
-    .card-title{font-size:17px!important;font-weight:800!important;}
     table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
     table td{font-size:14px!important;}
     .nav-item{font-size:14px!important;font-weight:600!important;}
     .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
     .modal-title{font-size:20px!important;font-weight:800!important;}
     .btn{font-size:13px!important;font-weight:700!important;}
-    .warn-banner{background:rgba(255,71,87,0.10);border:1px solid rgba(255,71,87,0.35);border-radius:6px;padding:10px 14px;font-size:13px;font-weight:700;color:#ff4757;grid-column:1/-1;display:none;}
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
-    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
-    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
-    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-    .toggle-switch input{opacity:0;width:0;height:0;}
-    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
-    .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
-    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
-    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
- 
-    .cpt-section{margin-top:20px;}
-    .cpt-row{display:grid;grid-template-columns:1fr 2.5fr 1fr 1.5fr auto;gap:10px;align-items:end;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:8px;}
-    .cpt-row:hover{background:rgba(0,212,255,0.04);border-color:rgba(0,212,255,0.2);}
-    .cpt-add-row{display:grid;grid-template-columns:1fr 2.5fr 1fr 1.5fr auto;gap:10px;align-items:end;padding:14px;background:rgba(0,212,255,0.04);border:1px dashed rgba(0,212,255,0.3);border-radius:7px;margin-top:10px;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .cpt-row{display:grid;grid-template-columns:140px 1fr 120px 1fr 80px;gap:10px;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:8px;}
+    .cpt-row:hover{border-color:rgba(0,212,255,0.3);}
+    .cpt-add-row{display:grid;grid-template-columns:1fr 1.8fr 120px 1fr 90px;gap:10px;align-items:end;padding:14px;background:rgba(0,212,255,0.04);border:1px dashed rgba(0,212,255,0.3);border-radius:7px;margin-top:8px;}
     .cpt-label{font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
     .cpt-count{display:inline-flex;align-items:center;justify-content:center;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.25);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:700;color:var(--accent);margin-left:8px;}
-    .code-select-wrap{position:relative;}
-    .code-select-wrap select{width:100%;}
-    .allowed-display{font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:800;color:#4ade80;}
-    .test-claim-link{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.3);color:#2ed573;margin:2px;}
-    .test-claim-link:hover{background:rgba(46,213,115,0.2);}
-  </style>
+    .test-link{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.3);color:#2ed573;margin:3px;}
+    .test-link:hover{background:rgba(46,213,115,0.2);}</style>
 </head>
 <body>
 <div class="app-layout">
@@ -78,12 +61,12 @@
       <div class="nav-section-label">Network</div>
       <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item" href="fee-tables.html" class="nav-item active"><span class="nav-icon">📊</span> Fee Tables</a>
       <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
       <div class="nav-section-label">Government Programs</div>
       <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item" href="claims.html" class="nav-item active"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
       <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
       <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
@@ -91,33 +74,30 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
- 
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Network → Fee Tables</span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Network &rarr; Fee Tables</span></div>
       <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div>
-          <div class="page-title">Fee Tables</div>
-          <div class="page-subtitle">RBRVS · DRG · UCR DENTAL · CPT CODES · ALLOWED AMOUNTS · TEST CLAIMS VALIDATION</div>
-        </div>
+        <div><div class="page-title">Fee Tables</div>
+        <div class="page-subtitle">RBRVS &middot; DRG &middot; UCR DENTAL &middot; CPT CODE ENTRIES &middot; ALLOWED AMOUNTS &middot; TEST CLAIMS VALIDATION</div></div>
         <button class="btn btn-primary" id="new-btn">+ New Fee Table</button>
       </div>
- 
+
       <div class="stat-cards">
         <div class="stat-card"><div class="sl">Total Fee Tables</div><div class="sv" id="s-total">—</div></div>
         <div class="stat-card"><div class="sl">RBRVS Tables</div><div class="sv" style="color:#60a5fa" id="s-rbrvs">—</div></div>
         <div class="stat-card"><div class="sl">DRG Tables</div><div class="sv" style="color:#a78bfa" id="s-drg">—</div></div>
         <div class="stat-card"><div class="sl">Total CPT Codes</div><div class="sv" style="color:#4ade80" id="s-codes">—</div></div>
       </div>
- 
+
       <div class="card">
         <div class="card-header">
           <span class="card-title">📊 Fee Tables <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search..." id="search-input" style="font-size:14px"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search fee tables..." id="search-input" style="font-size:14px"></div>
             <div class="filter-tabs">
               <button class="filter-tab active" id="tab-all">All</button>
               <button class="filter-tab" id="tab-rbrvs">RBRVS</button>
@@ -129,52 +109,47 @@
         <div class="table-wrapper">
           <table>
             <thead><tr><th>Fee Table Code</th><th>Name</th><th>Type</th><th>Locality</th><th>Conv. Factor</th><th>CPT Codes</th><th>Effective</th><th>Status</th><th>Test Claims</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
- 
-      <!-- INLINE CPT VIEWER -->
+
       <div id="cpt-panel" style="display:none;margin-top:16px">
         <div class="card">
           <div class="card-header">
             <span class="card-title" id="cpt-panel-title">CPT Code Entries</span>
-            <button class="btn btn-sm btn-ghost" onclick="hideCPT()">Close ✕</button>
+            <button class="btn btn-sm btn-ghost" onclick="document.getElementById('cpt-panel').style.display='none'">Close ✕</button>
           </div>
           <div class="table-wrapper">
             <table>
-              <thead><tr><th>CPT / Code</th><th>Service Description</th><th>Allowed Amount</th><th>Notes</th><th>Test Claim</th></tr></thead>
+              <thead><tr><th>CPT / Code</th><th>Description</th><th>Allowed Amount</th><th>Notes</th><th>Test Claim</th></tr></thead>
               <tbody id="cpt-tbody"></tbody>
             </table>
           </div>
         </div>
       </div>
- 
     </div>
   </main>
 </div>
- 
-<!-- FEE TABLE MODAL -->
+
 <div id="overlay">
-  <div class="modal" style="width:920px">
+  <div class="modal">
     <div class="modal-header"><span class="modal-title" id="modal-title">New Fee Table</span><button class="modal-close" id="btn-x">✕</button></div>
     <div class="modal-body" style="padding-top:0">
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchTab('header',this)">📋 Fee Table Header</button>
         <button class="modal-tab" onclick="switchTab('codes',this)">⚕️ CPT Code Entries</button>
-        <button class="modal-tab" onclick="switchTab('testclaims',this)">🧪 Test Claims &amp; Validation</button>
+        <button class="modal-tab" onclick="switchTab('testclaims',this)">🧪 Test Claims</button>
         <button class="modal-tab" onclick="switchTab('links',this)">🔗 Module Links</button>
       </div>
       <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
       <input type="hidden" id="f-id">
- 
-      <!-- TAB 1: HEADER -->
+
       <div class="tab-panel active" id="tab-header">
         <div class="form-grid">
           <div class="fsl">Fee Table Identification</div>
           <div class="form-group"><label class="form-label">Fee Table Code *</label><input type="text" class="form-input" id="f-fee_table_code" placeholder="HF-FEE-2026"></div>
-          <div class="form-group"><label class="form-label">Status</label>
-            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
           <div class="form-group full"><label class="form-label">Fee Table Name *</label><input type="text" class="form-input" id="f-fee_table_name" placeholder="HealthFirst Standard Fee Schedule 2026"></div>
           <div class="form-group"><label class="form-label">Fee Table Type</label>
             <select class="form-select" id="f-fee_table_type" onchange="updateCPTLibrary()">
@@ -186,145 +161,112 @@
             </select></div>
           <div class="form-group"><label class="form-label">Locality</label>
             <select class="form-select" id="f-locality">
-              <option value="National">National</option>
-              <option value="Midwest">Midwest Region</option>
-              <option value="Northeast">Northeast Region</option>
-              <option value="Southeast">Southeast Region</option>
-              <option value="Southwest">Southwest Region</option>
-              <option value="West">West Region</option>
+              <option value="National">National</option><option value="Midwest">Midwest</option>
+              <option value="Northeast">Northeast</option><option value="Southeast">Southeast</option>
+              <option value="Southwest">Southwest</option><option value="West">West</option>
             </select></div>
           <div class="form-group"><label class="form-label">Conversion Factor (RBRVS)</label><input type="number" class="form-input" id="f-conversion_factor" step="0.0001" placeholder="36.04"></div>
           <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
           <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
-          <div class="form-group"><label class="form-label">Modifier Support</label>
-            <select class="form-select" id="f-modifier_support"><option value="yes">Yes — modifiers adjust payment</option><option value="no">No</option></select></div>
-          <div class="form-group"><label class="form-label">Geographic Adjustment</label>
-            <select class="form-select" id="f-geo_adj"><option value="national">National (GPCI = 1.0)</option><option value="local">Local GPCI applied</option></select></div>
+          <div class="form-group"><label class="form-label">Modifier Support</label><select class="form-select" id="f-modifier_support"><option value="yes">Yes</option><option value="no">No</option></select></div>
         </div>
       </div>
- 
-      <!-- TAB 2: CPT CODE ENTRIES -->
+
       <div class="tab-panel" id="tab-codes">
-        <div style="margin-bottom:16px">
-          <div style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:6px">CPT Code Entries <span class="cpt-count" id="cpt-count">0 codes</span></div>
-          <div style="font-size:13px;font-weight:600;color:var(--text-secondary)">Select a CPT code from the dropdown. Description and default allowed amount fill in automatically. Adjust the allowed amount and add notes before clicking Add Code.</div>
+        <div style="margin-bottom:14px">
+          <div style="font-size:14px;font-weight:800;color:var(--text-primary)">CPT Code Entries <span class="cpt-count" id="cpt-count">0 codes</span></div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-top:4px">Pick a category, select a CPT code, adjust the allowed amount, add notes, click Add Code.</div>
         </div>
- 
-        <!-- ADD NEW CODE ROW -->
         <div class="cpt-add-row">
-          <div>
-            <div class="cpt-label">Category</div>
-            <select class="form-select" id="add-category" onchange="updateCodeDropdown()">
-              <option value="">— Select Category —</option>
-            </select>
-          </div>
-          <div>
-            <div class="cpt-label">CPT / Code</div>
-            <select class="form-select" id="add-code" onchange="autoFillCode()">
-              <option value="">— Select Code —</option>
-            </select>
-          </div>
-          <div>
-            <div class="cpt-label">Allowed Amount ($)</div>
-            <input type="number" class="form-input" id="add-allowed" step="0.01" min="0" placeholder="0.00" style="font-size:15px;font-weight:700">
-          </div>
-          <div>
-            <div class="cpt-label">Notes</div>
-            <input type="text" class="form-input" id="add-notes" placeholder="PA required, ACA preventive, etc.">
-          </div>
-          <div style="padding-bottom:2px">
-            <button class="btn btn-primary" onclick="addCPTCode()" style="width:100%">+ Add Code</button>
-          </div>
+          <div><div class="cpt-label">Category</div><select class="form-select" id="add-category" onchange="updateCodeDropdown()"><option value="">— Category —</option></select></div>
+          <div><div class="cpt-label">CPT / Code</div><select class="form-select" id="add-code" onchange="autoFillCode()"><option value="">— Select Code —</option></select></div>
+          <div><div class="cpt-label">Allowed ($)</div><input type="number" class="form-input" id="add-allowed" step="0.01" min="0" placeholder="0.00" style="font-size:15px;font-weight:700"></div>
+          <div><div class="cpt-label">Notes</div><input type="text" class="form-input" id="add-notes" placeholder="PA required, ACA preventive..."></div>
+          <div><div class="cpt-label">&nbsp;</div><button class="btn btn-primary" onclick="addCPTCode()" style="width:100%">+ Add</button></div>
         </div>
- 
-        <!-- ENTERED CODES LIST -->
-        <div class="cpt-section" id="cpt-list">
-          <div style="font-size:13px;font-weight:700;color:var(--text-secondary);text-align:center;padding:20px">No codes added yet. Use the form above to add CPT codes.</div>
-        </div>
+        <div style="margin-top:14px" id="cpt-list"><div style="font-size:13px;font-weight:600;color:var(--text-secondary);text-align:center;padding:20px">No codes added yet. Use the form above.</div></div>
       </div>
- 
-      <!-- TAB 3: TEST CLAIMS & VALIDATION -->
+
       <div class="tab-panel" id="tab-testclaims">
         <div class="form-grid">
-          <div class="fsl">🧪 Test Claims — Validate Your Fee Table</div>
-          <div style="grid-column:1/-1;font-size:14px;font-weight:600;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">
-            After saving this fee table, submit test claims for each CPT code entered above. The claim adjudication result should show the Allowed Amount matching exactly what you entered in this fee table. If the numbers do not match, there is a configuration error.
+          <div class="fsl">Validate Your Fee Table with Test Claims</div>
+          <div style="grid-column:1/-1;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:12px">After saving this fee table, submit a test claim for each CPT code. The allowed amount on the EOB must match exactly what you entered here.</div>
+          <div style="grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px">
+            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:10px">Checklist — one claim per CPT code</div>
+            <div id="test-checklist" style="font-size:13px;color:var(--text-secondary)">Add CPT codes first, then return to this tab to see the checklist.</div>
           </div>
- 
-          <div style="grid-column:1/-1">
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">
-              <div style="font-size:14px;font-weight:800;color:var(--accent);margin-bottom:12px">📋 Required Test Claim Checklist</div>
-              <div id="test-checklist" style="font-size:13px;font-weight:600;color:var(--text-secondary)">Save the fee table and add CPT codes first. The checklist will appear here.</div>
-            </div>
-          </div>
- 
-          <div class="fsl">What to Validate on Each Test Claim</div>
+          <div class="fsl">What to Check on Each Claim</div>
           <div style="grid-column:1/-1">
             <table style="width:100%">
-              <thead><tr><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8;text-align:left">Check</th><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8;text-align:left">What to Look For</th><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8;text-align:left">If It Fails</th></tr></thead>
+              <thead><tr><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800;text-align:left">Check</th><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800">What to Look For</th><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800">If It Fails</th></tr></thead>
               <tbody>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ Allowed Amount</td><td style="padding:10px 12px;font-size:13px">Matches your fee table entry exactly</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">Fee table code mismatch or wrong table linked on contract</td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ Contract Rate Applied</td><td style="padding:10px 12px;font-size:13px">Plan paid amount = allowed × contract % (e.g. 110%)</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">NetworX rule not triggered or wrong tier on contract</td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ Write-Off</td><td style="padding:10px 12px;font-size:13px">Billed minus Allowed = provider write-off amount</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">Normal if billed exceeds allowed. Expected in all INN claims.</td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ ACA Preventive $0</td><td style="padding:10px 12px;font-size:13px">99395 and preventive codes: member cost = $0</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">Benefit row missing ACA preventive flag</td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ PA Pend</td><td style="padding:10px 12px;font-size:13px">MRI, surgery, inpatient: claim pends if no PA on file</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">Add auth in Authorizations, resubmit claim</td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#2ed573">✓ Accumulators</td><td style="padding:10px 12px;font-size:13px">Deductible and OOP balances decrease correctly</td><td style="padding:10px 12px;font-size:13px;color:#fbbf24">Plan accumulator config error on benefit row</td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:9px;font-size:13px;font-weight:700;color:#4ade80">Allowed Amount</td><td style="padding:9px;font-size:13px">Matches fee table exactly</td><td style="padding:9px;font-size:13px;color:#fbbf24">Wrong fee table linked on contract</td></tr>
+                <tr><td style="padding:9px;font-size:13px;font-weight:700;color:#4ade80">Contract Rate</td><td style="padding:9px;font-size:13px">Paid = allowed × contract % (e.g. 110%)</td><td style="padding:9px;font-size:13px;color:#fbbf24">NetworX rule not triggered</td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:9px;font-size:13px;font-weight:700;color:#4ade80">ACA Preventive</td><td style="padding:9px;font-size:13px">99395 and preventive codes — member cost $0</td><td style="padding:9px;font-size:13px;color:#fbbf24">Benefit row missing ACA flag</td></tr>
+                <tr><td style="padding:9px;font-size:13px;font-weight:700;color:#4ade80">PA Pend</td><td style="padding:9px;font-size:13px">MRI, surgery, inpatient pend without PA</td><td style="padding:9px;font-size:13px;color:#fbbf24">Add auth, resubmit</td></tr>
               </tbody>
             </table>
           </div>
- 
-          <div class="fsl">Quick Links — Run Test Claims</div>
-          <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px">
-            <a class="test-claim-link" href="claims.html">📄 Submit New Claim</a>
-            <a class="test-claim-link" href="claim-pends.html">⏸️ Check Claim Pends</a>
-            <a class="test-claim-link" href="authorizations.html">🔐 Add Prior Authorization</a>
-            <a class="test-claim-link" href="sql-validator.html">🔬 Run SQL Validator</a>
-            <a class="test-claim-link" href="audit.html">🔍 Audit Log</a>
-            <a class="test-claim-link" href="networx.html">⚙️ Check NetworX Rules</a>
-            <a class="test-claim-link" href="provider-contracts.html">📜 Check Provider Contracts</a>
+          <div class="fsl">Quick Links</div>
+          <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px">
+            <a class="badge-link" href="claims.html">📄 Submit Test Claim</a>
+            <a class="badge-link" href="claim-pends.html">⏸️ Claim Pends</a>
+            <a class="badge-link" href="authorizations.html">🔐 Authorizations</a>
+            <a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
+            <a class="badge-link" href="audit.html">🔍 Audit Log</a>
+            <a class="badge-link" href="networx.html">⚙️ NetworX Rules</a>
+            <a class="badge-link" href="provider-contracts.html">📜 Provider Contracts</a>
           </div>
         </div>
       </div>
- 
-      <!-- TAB 4: MODULE LINKS -->
+
       <div class="tab-panel" id="tab-links">
         <div class="form-grid">
-          <div class="fsl">🔗 How This Fee Table Connects to Every Module</div>
+          <div class="fsl">How This Fee Table Connects to Every Module</div>
           <div style="grid-column:1/-1">
             <table style="width:100%">
-              <thead><tr><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8">Module</th><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8">How It Connects</th><th style="font-size:13px;font-weight:800;padding:10px 12px;background:#1e293b;color:#94a3b8">Link</th></tr></thead>
+              <thead><tr><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800;text-align:left">Module</th><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800">Connection</th><th style="font-size:12px;padding:8px;background:#1e293b;color:#94a3b8;font-weight:800">Link</th></tr></thead>
               <tbody>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#4ade80">🏥 Providers</td><td style="padding:10px 12px;font-size:13px">Each provider record references this fee table by name. The name must match exactly.</td><td style="padding:10px 12px"><a class="badge-link" href="providers.html">Open →</a></td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#60a5fa">📜 Provider Contracts</td><td style="padding:10px 12px;font-size:13px">Contracts reference this fee table. The contract rate % is applied on top of allowed amounts here.</td><td style="padding:10px 12px"><a class="badge-link" href="provider-contracts.html">Open →</a></td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#a78bfa">⚙️ NetworX Pricing</td><td style="padding:10px 12px;font-size:13px">NetworX rules link to this fee table to apply tier-based pricing at claim adjudication.</td><td style="padding:10px 12px"><a class="badge-link" href="networx.html">Open →</a></td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#fbbf24">📄 Claims</td><td style="padding:10px 12px;font-size:13px">When a claim arrives, the adjudication engine looks up the CPT code in this table to find the allowed amount.</td><td style="padding:10px 12px"><a class="badge-link" href="claims.html">Open →</a></td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#f87171">⏸️ Claim Pends</td><td style="padding:10px 12px;font-size:13px">If a CPT code is missing from this table, the claim pends with a pricing error. Add the code here to resolve it.</td><td style="padding:10px 12px"><a class="badge-link" href="claim-pends.html">Open →</a></td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#34d399">🔐 Authorizations</td><td style="padding:10px 12px;font-size:13px">PA-required CPT codes (MRI, surgery, inpatient) must have prior auth before the claim adjudicates using this table.</td><td style="padding:10px 12px"><a class="badge-link" href="authorizations.html">Open →</a></td></tr>
-                <tr style="background:var(--surface2)"><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#60a5fa">🔬 SQL Validator</td><td style="padding:10px 12px;font-size:13px">SQL query 7 checks for providers with no active fee table. Run before project submission.</td><td style="padding:10px 12px"><a class="badge-link" href="sql-validator.html">Open →</a></td></tr>
-                <tr><td style="padding:10px 12px;font-size:13px;font-weight:700;color:#94a3b8">🔍 Audit Log</td><td style="padding:10px 12px;font-size:13px">Every save and edit to this fee table is timestamped and recorded in the audit log.</td><td style="padding:10px 12px"><a class="badge-link" href="audit.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#4ade80">🏥 Providers</td><td style="padding:10px;font-size:13px">Provider records reference this fee table by name. Name must match exactly.</td><td style="padding:10px"><a class="badge-link" href="providers.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">📜 Contracts</td><td style="padding:10px;font-size:13px">Contracts reference this fee table. Contract rate % applies on top of allowed amounts.</td><td style="padding:10px"><a class="badge-link" href="provider-contracts.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#a78bfa">⚙️ NetworX</td><td style="padding:10px;font-size:13px">NetworX rules link to this fee table to apply tier-based pricing at claim time.</td><td style="padding:10px"><a class="badge-link" href="networx.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#fbbf24">📄 Claims</td><td style="padding:10px;font-size:13px">Adjudication engine looks up each CPT code in this table to find the allowed amount.</td><td style="padding:10px"><a class="badge-link" href="claims.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#f87171">⏸️ Claim Pends</td><td style="padding:10px;font-size:13px">If a CPT code is missing from this table the claim pends with a pricing error.</td><td style="padding:10px"><a class="badge-link" href="claim-pends.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#34d399">🔐 Authorizations</td><td style="padding:10px;font-size:13px">PA-required CPT codes must have auth on file before the claim uses this table.</td><td style="padding:10px"><a class="badge-link" href="authorizations.html">Open →</a></td></tr>
+                <tr style="background:var(--surface2)"><td style="padding:10px;font-size:13px;font-weight:700;color:#60a5fa">🔬 SQL Validator</td><td style="padding:10px;font-size:13px">Query 7 checks providers with no active fee table. Run before project submission.</td><td style="padding:10px"><a class="badge-link" href="sql-validator.html">Open →</a></td></tr>
+                <tr><td style="padding:10px;font-size:13px;font-weight:700;color:#94a3b8">🔍 Audit Log</td><td style="padding:10px;font-size:13px">Every save and edit to this fee table is recorded with timestamp.</td><td style="padding:10px"><a class="badge-link" href="audit.html">Open →</a></td></tr>
               </tbody>
             </table>
           </div>
- 
           <div class="fsl">RBRVS Formula</div>
-          <div style="grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:7px;padding:16px;font-size:13px;font-weight:700;color:var(--accent);font-family:monospace;line-height:1.8">
-            Allowed Amount = (Work RVU + Practice Expense RVU + Malpractice RVU) × GPCI × Conversion Factor<br>
-            Example: 3.5 total RVU × 1.0 GPCI × 36.04 CF = $126.14 allowed<br>
-            Your Contract Rate: Allowed × 110% (Preferred) = $138.75 paid to provider
+          <div style="grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:7px;padding:14px;font-size:13px;font-weight:700;color:var(--accent);font-family:monospace;line-height:1.8">
+            Allowed Amount = (Work RVU + PE RVU + Malpractice RVU) x GPCI x Conversion Factor<br>
+            Example: 3.5 RVU x 1.0 GPCI x 36.04 CF = $126.14 allowed<br>
+            Contract: Allowed x 110% (Preferred) = $138.75 paid to provider
           </div>
         </div>
       </div>
- 
     </div>
-    <div class="modal-footer">
+      <div style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:13px 16px;margin:0 24px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="font-size:12px;font-weight:800;color:var(--accent);width:100%;margin-bottom:4px">🧪 Test Claims &amp; Validation — Verify your fee table adjudicates correctly</span>
+        <a href="claims.html" class="test-link">📄 Submit Test Claim</a>
+        <a href="claim-pends.html" class="test-link">⏸️ Claim Pends</a>
+        <a href="authorizations.html" class="test-link">🔐 Authorizations</a>
+        <a href="networx.html" class="test-link">⚙️ NetworX</a>
+        <a href="provider-contracts.html" class="test-link">📜 Contracts</a>
+        <a href="sql-validator.html" class="test-link">🔬 SQL Validator</a>
+        <a href="audit.html" class="test-link">🔍 Audit Log</a>
+      </div>
+      <div class="modal-footer">
       <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
       <span style="font-size:13px;font-weight:600;color:var(--text-secondary)" id="code-summary"></span>
       <button class="btn btn-primary" id="btn-save">Save Fee Table</button>
     </div>
   </div>
 </div>
- 
-<script>setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+<script>
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
 async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
 function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
 function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
@@ -332,7 +274,114 @@ function sv(id,v){if(document.getElementById(id))document.getElementById(id).val
 function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',in_review:'#60a5fa',resolved:'#2ed573',open:'#ff4757',high:'#ff4757',medium:'#fbbf24',low:'#4ade80',hmo:'#60a5fa',ppo:'#a78bfa',cdh:'#34d399',dental:'#e879f9',individual:'#60a5fa',facility:'#a78bfa',group:'#34d399',rbrvs:'#60a5fa',drg:'#a78bfa',capitation:'#34d399',preferred:'#a78bfa',inn:'#2ed573',oon:'#f87171',approved:'#2ed573',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
 function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
 function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
- 
+
+
+var CPT_LIBRARY = {
+  'E&M - Office Visits': [
+    {code:'99202',desc:'Office visit, new patient, straightforward',allowed:93.00},
+    {code:'99203',desc:'Office visit, new patient, low complexity',allowed:140.00},
+    {code:'99204',desc:'Office visit, new patient, moderate complexity',allowed:213.00},
+    {code:'99205',desc:'Office visit, new patient, high complexity',allowed:281.00},
+    {code:'99211',desc:'Office visit, established, minimal',allowed:24.00},
+    {code:'99212',desc:'Office visit, established, straightforward',allowed:75.00},
+    {code:'99213',desc:'Office visit, established, low complexity',allowed:110.00},
+    {code:'99214',desc:'Office visit, established, moderate complexity',allowed:152.00},
+    {code:'99215',desc:'Office visit, established, high complexity',allowed:213.00}
+  ],
+  'E&M - Specialist Consults': [
+    {code:'99241',desc:'Office consult, straightforward',allowed:105.00},
+    {code:'99242',desc:'Office consult, low complexity',allowed:143.00},
+    {code:'99243',desc:'Office consult, moderate complexity',allowed:165.00},
+    {code:'99244',desc:'Office consult, specialist, moderate',allowed:185.00},
+    {code:'99245',desc:'Office consult, high complexity',allowed:242.00}
+  ],
+  'E&M - Emergency Room': [
+    {code:'99281',desc:'ER visit, minimal',allowed:45.00},
+    {code:'99282',desc:'ER visit, low complexity',allowed:89.00},
+    {code:'99283',desc:'ER visit, moderate complexity',allowed:155.00},
+    {code:'99284',desc:'ER visit, moderately high complexity',allowed:228.00},
+    {code:'99285',desc:'ER visit, high complexity',allowed:320.00}
+  ],
+  'Preventive Care (ACA)': [
+    {code:'99381',desc:'Preventive exam, new patient, infant',allowed:168.00},
+    {code:'99385',desc:'Preventive exam, new patient, age 18-39',allowed:190.00},
+    {code:'99386',desc:'Preventive exam, new patient, age 40-64',allowed:210.00},
+    {code:'99391',desc:'Preventive exam, established, infant',allowed:148.00},
+    {code:'99395',desc:'Preventive exam, established, adult 18-39',allowed:175.00},
+    {code:'99396',desc:'Preventive exam, established, adult 40-64',allowed:195.00}
+  ],
+  'Lab / Pathology': [
+    {code:'80053',desc:'Comprehensive metabolic panel (CMP)',allowed:18.00},
+    {code:'80061',desc:'Lipid panel',allowed:22.00},
+    {code:'83036',desc:'Hemoglobin A1C',allowed:18.00},
+    {code:'84443',desc:'TSH thyroid stimulating hormone',allowed:26.00},
+    {code:'85025',desc:'CBC with differential',allowed:28.00},
+    {code:'87880',desc:'Rapid strep test',allowed:20.00}
+  ],
+  'Imaging / Radiology': [
+    {code:'70450',desc:'CT head without contrast',allowed:295.00},
+    {code:'70553',desc:'MRI brain with and without contrast',allowed:420.00},
+    {code:'71046',desc:'Chest X-ray, 2 views',allowed:85.00},
+    {code:'72141',desc:'MRI cervical spine without contrast',allowed:365.00},
+    {code:'72148',desc:'MRI lumbar spine without contrast',allowed:380.00},
+    {code:'73721',desc:'MRI knee without contrast',allowed:340.00},
+    {code:'76700',desc:'Ultrasound, abdominal complete',allowed:210.00},
+    {code:'93000',desc:'ECG, 12-lead with interpretation',allowed:22.00},
+    {code:'93306',desc:'Echocardiography, complete',allowed:318.00}
+  ],
+  'Surgery / Procedures': [
+    {code:'27130',desc:'Total hip arthroplasty',allowed:1920.00},
+    {code:'27447',desc:'Total knee arthroplasty',allowed:1850.00},
+    {code:'29881',desc:'Arthroscopy, knee, with meniscectomy',allowed:820.00},
+    {code:'43239',desc:'Upper GI endoscopy with biopsy',allowed:480.00},
+    {code:'45378',desc:'Colonoscopy, diagnostic',allowed:520.00},
+    {code:'45380',desc:'Colonoscopy with biopsy',allowed:610.00},
+    {code:'47562',desc:'Laparoscopic cholecystectomy',allowed:890.00},
+    {code:'49505',desc:'Repair inguinal hernia, initial',allowed:745.00}
+  ],
+  'Mental Health': [
+    {code:'90791',desc:'Psychiatric diagnostic evaluation',allowed:185.00},
+    {code:'90832',desc:'Psychotherapy, 30 min',allowed:82.00},
+    {code:'90834',desc:'Psychotherapy, 45 min',allowed:110.00},
+    {code:'90837',desc:'Psychotherapy, 60 min',allowed:143.00},
+    {code:'90847',desc:'Family psychotherapy with patient',allowed:120.00},
+    {code:'90853',desc:'Group psychotherapy',allowed:52.00}
+  ],
+  'Physical / Occupational Therapy': [
+    {code:'97010',desc:'Hot or cold packs therapy',allowed:18.00},
+    {code:'97110',desc:'Therapeutic exercises, 15 min',allowed:42.00},
+    {code:'97140',desc:'Manual therapy, 15 min',allowed:52.00},
+    {code:'97150',desc:'Therapeutic procedure, group',allowed:38.00}
+  ],
+  'DRG - Facility Codes': [
+    {code:'DRG-064',desc:'Intracranial hemorrhage without MCC',allowed:15200.00},
+    {code:'DRG-065',desc:'Intracranial hemorrhage with MCC',allowed:21500.00},
+    {code:'DRG-193',desc:'Simple pneumonia without MCC',allowed:7400.00},
+    {code:'DRG-194',desc:'Simple pneumonia with MCC',allowed:9400.00},
+    {code:'DRG-291',desc:'Heart failure and shock with MCC',allowed:17200.00},
+    {code:'DRG-292',desc:'Heart failure and shock with CC',allowed:11800.00},
+    {code:'DRG-469',desc:'Major joint replacement with MCC',allowed:18500.00},
+    {code:'DRG-470',desc:'Major joint replacement without MCC',allowed:13800.00},
+    {code:'DRG-603',desc:'Cellulitis without MCC',allowed:6800.00}
+  ],
+  'Dental - CDT Codes': [
+    {code:'D0120',desc:'Periodic oral evaluation',allowed:60.00},
+    {code:'D0150',desc:'Comprehensive oral evaluation',allowed:85.00},
+    {code:'D0210',desc:'Complete series X-rays',allowed:145.00},
+    {code:'D1110',desc:'Prophylaxis, adult cleaning',allowed:115.00},
+    {code:'D1120',desc:'Prophylaxis, child cleaning',allowed:85.00},
+    {code:'D2140',desc:'Amalgam restoration, one surface',allowed:175.00},
+    {code:'D2740',desc:'Crown, porcelain fused to high noble metal',allowed:1180.00},
+    {code:'D3310',desc:'Endodontic therapy, anterior tooth',allowed:780.00},
+    {code:'D3330',desc:'Endodontic therapy, molar tooth',allowed:1050.00},
+    {code:'D4341',desc:'Periodontal scaling and root planing, per quadrant',allowed:265.00},
+    {code:'D7110',desc:'Simple extraction',allowed:195.00},
+    {code:'D7210',desc:'Surgical extraction, erupted tooth',allowed:285.00},
+    {code:'D8080',desc:'Comprehensive orthodontic treatment, adolescent',allowed:4200.00},
+    {code:'D8090',desc:'Comprehensive orthodontic treatment, adult',allowed:4800.00}
+  ]
+};
+
 var records=[], activeCPTs=[], statusFilter='all';
 var FB_FEE=[
   {id:'ft1',fee_table_code:'HF-FEE-2026',fee_table_name:'HealthFirst Standard Fee Schedule 2026',fee_table_type:'rbrvs',locality:'National',conversion_factor:36.04,modifier_support:'yes',effective_date:'2026-01-01',termination_date:'',status:'active',
@@ -357,21 +406,22 @@ var FB_FEE=[
    cpt_entries:[
     {code:'D0120',desc:'Periodic oral evaluation',allowed:60.00,notes:'Preventive, Cat I'},
     {code:'D1110',desc:'Prophylaxis, adult cleaning',allowed:115.00,notes:'Preventive, Cat I'},
-    {code:'D2740',desc:'Crown, porcelain fused to high noble metal',allowed:1180.00,notes:'Major, Cat III - PA'},
-    {code:'D8080',desc:'Comprehensive ortho treatment, adolescent',allowed:4200.00,notes:'Ortho, lifetime max'}
+    {code:'D2740',desc:'Crown, porcelain fused to high noble metal',allowed:1180.00,notes:'Major, Cat III'},
+    {code:'D8080',desc:'Comprehensive ortho treatment, adolescent',allowed:4200.00,notes:'Ortho - lifetime max'}
   ]}
 ];
- 
+
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
 ['all','rbrvs','drg','ucr_dental'].forEach(function(f){
   document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});
 });
- 
+
 function switchTab(n,b){
   document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});
   document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});
@@ -379,28 +429,30 @@ function switchTab(n,b){
   document.getElementById('tab-'+n).classList.add('active');
   if(n==='testclaims')buildChecklist();
 }
-function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
- 
-// ─── CPT LIBRARY FUNCTIONS ────────────────────────────────────────────────────
+
+function setFilter(s,b){
+  statusFilter=s;
+  document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  render();
+}
+
 function updateCPTLibrary(){
   var type=gv('f-fee_table_type');
   var catSel=document.getElementById('add-category');
   var codeSel=document.getElementById('add-code');
-  catSel.innerHTML='<option value="">— Select Category —</option>';
+  catSel.innerHTML='<option value="">— Category —</option>';
   codeSel.innerHTML='<option value="">— Select Code —</option>';
-  
   Object.keys(CPT_LIBRARY).forEach(function(cat){
-    var include=false;
-    if(type==='rbrvs'&&!cat.includes('DRG')&&!cat.includes('Dental'))include=true;
-    if(type==='drg'&&cat.includes('DRG'))include=true;
-    if(type==='ucr_dental'&&cat.includes('Dental'))include=true;
-    if(type==='per_diem'||type==='custom')include=true;
-    if(include){
-      var o=document.createElement('option');o.value=cat;o.textContent=cat;catSel.appendChild(o);
-    }
+    var inc=false;
+    if(type==='rbrvs'&&!cat.includes('DRG')&&!cat.includes('Dental'))inc=true;
+    if(type==='drg'&&cat.includes('DRG'))inc=true;
+    if(type==='ucr_dental'&&cat.includes('Dental'))inc=true;
+    if(type==='per_diem'||type==='custom')inc=true;
+    if(inc){var o=document.createElement('option');o.value=cat;o.textContent=cat;catSel.appendChild(o);}
   });
 }
- 
+
 function updateCodeDropdown(){
   var cat=gv('add-category');
   var codeSel=document.getElementById('add-code');
@@ -409,132 +461,119 @@ function updateCodeDropdown(){
   CPT_LIBRARY[cat].forEach(function(c){
     var o=document.createElement('option');
     o.value=JSON.stringify(c);
-    o.textContent=c.code+' — '+c.desc+' ($'+c.default_allowed.toFixed(2)+')';
+    o.textContent=c.code+' — '+c.desc+' ($'+c.allowed.toFixed(2)+')';
     codeSel.appendChild(o);
   });
 }
- 
+
 function autoFillCode(){
   var val=gv('add-code');
   if(!val)return;
   try{
     var c=JSON.parse(val);
-    document.getElementById('add-allowed').value=c.default_allowed.toFixed(2);
+    document.getElementById('add-allowed').value=c.allowed.toFixed(2);
     document.getElementById('add-notes').value='';
   }catch(e){}
 }
- 
+
 function addCPTCode(){
   var codeVal=gv('add-code');
   var allowed=parseFloat(document.getElementById('add-allowed').value)||0;
   var notes=gv('add-notes');
-  
   if(!codeVal){toast('Select a CPT code first','error');return;}
   var c;
   try{c=JSON.parse(codeVal);}catch(e){return;}
-  
-  // Check duplicate
-  if(activeCPTs.find(function(x){return x.code===c.code;})){
-    toast(c.code+' already added','error');return;
-  }
-  
+  if(activeCPTs.find(function(x){return x.code===c.code;})){toast(c.code+' already added','error');return;}
   activeCPTs.push({code:c.code,desc:c.desc,allowed:allowed,notes:notes});
   renderCPTList();
-  // Reset selectors
-  document.getElementById('add-code').value='';
+  sv('add-code','');
   document.getElementById('add-allowed').value='';
-  document.getElementById('add-notes').value='';
-  toast(c.code+' added ✓','success');
+  sv('add-notes','');
+  toast(c.code+' added','success');
 }
- 
+
 function removeCPT(code){
   activeCPTs=activeCPTs.filter(function(c){return c.code!==code;});
   renderCPTList();
 }
- 
+
 function renderCPTList(){
-  document.getElementById('cpt-count').textContent=activeCPTs.length+' code'+(activeCPTs.length!==1?'s':'');
-  document.getElementById('code-summary').textContent=activeCPTs.length+' CPT code'+(activeCPTs.length!==1?'s':'')+' entered';
+  var cnt=activeCPTs.length;
+  document.getElementById('cpt-count').textContent=cnt+' code'+(cnt!==1?'s':'');
+  var el=document.getElementById('code-summary');
+  if(el)el.textContent=cnt+' CPT code'+(cnt!==1?'s':'')+' entered';
   var div=document.getElementById('cpt-list');
-  if(!activeCPTs.length){
-    div.innerHTML='<div style="font-size:13px;font-weight:700;color:var(--text-secondary);text-align:center;padding:20px">No codes added yet. Use the form above to add CPT codes.</div>';
-    return;
-  }
-  div.innerHTML=activeCPTs.map(function(c,i){
-    var paNote=c.notes&&(c.notes.toLowerCase().includes('pa')||c.notes.toLowerCase().includes('auth')||c.notes.toLowerCase().includes('imaging')||c.notes.toLowerCase().includes('surgery')||c.notes.toLowerCase().includes('inpatient'));
-    var acaNote=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
+  if(!cnt){div.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--text-secondary);text-align:center;padding:20px">No codes added yet.</div>';return;}
+  div.innerHTML=activeCPTs.map(function(c){
+    var paTag=c.notes&&(c.notes.toLowerCase().includes('pa')||c.notes.toLowerCase().includes('auth')||c.notes.toLowerCase().includes('imaging')||c.notes.toLowerCase().includes('surgery')||c.notes.toLowerCase().includes('inpatient'));
+    var acaTag=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
     return'<div class="cpt-row">'+
-    '<div><div class="cpt-label">CPT / Code</div><span class="mono" style="font-size:14px;font-weight:800;color:var(--accent)">'+c.code+'</span></div>'+
-    '<div><div class="cpt-label">Service Description</div><span style="font-size:13px;font-weight:600">'+c.desc+'</span></div>'+
-    '<div><div class="cpt-label">Allowed Amount</div><span class="allowed-display">$'+parseFloat(c.allowed).toFixed(2)+'</span></div>'+
-    '<div><div class="cpt-label">Notes</div>'+
-    (paNote?'<span style="font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:4px;padding:2px 7px">PA Required</span> ':'')+ 
-    (acaNote?'<span style="font-size:11px;font-weight:700;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 7px">ACA $0</span> ':'')+ 
-    '<span style="font-size:12px;color:var(--text-secondary)">'+(c.notes||'')+'</span></div>'+
-    '<div><button class="btn btn-sm btn-danger" onclick="removeCPT(''+c.code+'')">Remove</button></div></div>';
+    '<span class="mono" style="font-size:14px;font-weight:800;color:var(--accent)">'+c.code+'</span>'+
+    '<span style="font-size:13px;font-weight:600">'+c.desc+'</span>'+
+    '<span style="font-size:16px;font-weight:800;color:#4ade80;font-family:monospace">$'+parseFloat(c.allowed).toFixed(2)+'</span>'+
+    '<span style="font-size:12px">'+
+    (paTag?'<span style="font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">PA</span>':'')+
+    (acaTag?'<span style="font-size:11px;font-weight:700;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">ACA $0</span>':'')+
+    (c.notes||'')+'</span>'+
+    '<button class="btn btn-sm btn-danger" onclick="removeCPT(''+c.code+'')">Remove</button></div>';
   }).join('');
 }
- 
+
 function buildChecklist(){
   var div=document.getElementById('test-checklist');
-  if(!activeCPTs.length){
-    div.innerHTML='<span style="color:var(--text-secondary)">No CPT codes entered yet. Add codes in the CPT Code Entries tab first, then return here.</span>';
-    return;
-  }
+  if(!activeCPTs.length){div.innerHTML='<span style="color:var(--text-secondary)">Add CPT codes first, then return here.</span>';return;}
   div.innerHTML=activeCPTs.map(function(c){
     var needsPA=c.notes&&(c.notes.toLowerCase().includes('pa')||c.notes.toLowerCase().includes('imaging')||c.notes.toLowerCase().includes('surgery')||c.notes.toLowerCase().includes('inpatient'));
-    var isPreventive=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
-    return'<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">'+
-    '<span style="font-size:18px;margin-top:1px">🧪</span>'+
-    '<div style="flex:1">'+
-    '<div style="font-size:13px;font-weight:800;color:var(--text-primary)">'+c.code+' — '+c.desc+'</div>'+
-    '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-top:3px">Submit claim with CPT '+c.code+'. Expected allowed amount: <span style="color:#4ade80;font-weight:800">$'+parseFloat(c.allowed).toFixed(2)+'</span>'+(isPreventive?' | Member cost: <span style="color:#34d399;font-weight:800">$0.00 (ACA preventive)</span>':'')+(needsPA?' | <span style="color:#fbbf24;font-weight:700">⚠ Prior Authorization required before submitting</span>':'')+'</div>'+
-    '</div>'+
-    '<a class="test-claim-link" href="claims.html" style="flex-shrink:0;margin-top:4px">Submit Claim →</a>'+
-    '</div>';
+    var isACA=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
+    return'<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">'+
+    '<span style="font-size:16px">🧪</span>'+
+    '<div style="flex:1"><div style="font-size:13px;font-weight:800;color:var(--text-primary)">'+c.code+' — '+c.desc+'</div>'+
+    '<div style="font-size:12px;color:var(--text-secondary);margin-top:2px">Expected allowed: <span style="color:#4ade80;font-weight:800">$'+parseFloat(c.allowed).toFixed(2)+'</span>'+
+    (isACA?' | Member cost: <span style="color:#34d399;font-weight:800">$0.00 (ACA)</span>':'')+
+    (needsPA?' | <span style="color:#fbbf24;font-weight:700">⚠ PA Required first</span>':'')+
+    '</div></div>'+
+    '<a class="badge-link" href="claims.html" style="font-size:12px;padding:4px 10px;flex-shrink:0">Submit →</a></div>';
   }).join('');
 }
- 
-// ─── MAIN TABLE ───────────────────────────────────────────────────────────────
+
 function typeLabel(v){return{rbrvs:'RBRVS',drg:'DRG',ucr_dental:'UCR Dental',per_diem:'Per Diem',custom:'Custom'}[v]||v||'—';}
- 
+
 function showCPT(id){
   var ft=records.find(function(r){return r.id===id;});
   if(!ft)return;
   var codes=ft.cpt_entries||[];
   document.getElementById('cpt-panel-title').textContent='CPT Codes — '+ft.fee_table_name+' ('+codes.length+' entries)';
   document.getElementById('cpt-tbody').innerHTML=codes.map(function(c,i){
-    var needsPA=c.notes&&(c.notes.toLowerCase().includes('pa')||c.notes.toLowerCase().includes('imaging')||c.notes.toLowerCase().includes('surgery'));
-    var isACA=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
-    var paBadge=needsPA?'<span style="font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">PA</span>':'';
-    var acaBadge=isACA?'<span style="font-size:11px;font-weight:700;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">ACA $0</span>':'';
+    var paTag=c.notes&&(c.notes.toLowerCase().includes('pa')||c.notes.toLowerCase().includes('imaging'));
+    var acaTag=c.notes&&(c.notes.toLowerCase().includes('aca')||c.notes.toLowerCase().includes('preventive'));
     return'<tr style="background:'+(i%2===0?'var(--surface2)':'')+'">'+
     '<td class="mono" style="font-size:13px;font-weight:800;color:var(--accent)">'+c.code+'</td>'+
-    '<td style="font-size:13px;font-weight:600">'+c.desc+'</td>'+
+    '<td style="font-size:13px">'+c.desc+'</td>'+
     '<td class="mono" style="font-size:15px;font-weight:800;color:#4ade80">$'+parseFloat(c.allowed).toFixed(2)+'</td>'+
-    '<td style="font-size:12px">'+paBadge+acaBadge+(c.notes||'')+'</td>'+
-    '<td><a class="test-claim-link" href="claims.html">Test →</a></td></tr>';
+    '<td style="font-size:12px">'+
+    (paTag?'<span style="font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">PA</span>':'')+
+    (acaTag?'<span style="font-size:11px;font-weight:700;color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:4px;padding:2px 7px;margin-right:4px">ACA $0</span>':'')+
+    (c.notes||'')+'</td>'+
+    '<td><a class="test-link" href="claims.html">Test →</a></td></tr>';
   }).join('');
   document.getElementById('cpt-panel').style.display='block';
   document.getElementById('cpt-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
- 
-function hideCPT(){document.getElementById('cpt-panel').style.display='none';}
- 
+
 async function load(){
   try{var r=await apiFetch('/api/fee-tables').catch(function(){return[];});records=r.length?r:FB_FEE;}
   catch(e){records=FB_FEE;}
   updateStats();render();
 }
- 
+
 function updateStats(){
   document.getElementById('s-total').textContent=records.length;
   document.getElementById('s-rbrvs').textContent=records.filter(function(r){return r.fee_table_type==='rbrvs';}).length;
   document.getElementById('s-drg').textContent=records.filter(function(r){return r.fee_table_type==='drg';}).length;
-  var totalCodes=records.reduce(function(a,r){return a+(r.cpt_entries||[]).length;},0);
-  document.getElementById('s-codes').textContent=totalCodes;
+  var tc=records.reduce(function(a,r){return a+(r.cpt_entries||[]).length;},0);
+  document.getElementById('s-codes').textContent=tc;
 }
- 
+
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
   var data=[].concat(records);
@@ -548,11 +587,11 @@ function render(){
   tbody.innerHTML=data.map(function(ft){
     var codes=ft.cpt_entries||[];
     var cfStr=ft.conversion_factor?'<span class="mono" style="font-size:13px;font-weight:800;color:#60a5fa">'+parseFloat(ft.conversion_factor).toFixed(4)+'</span>':'<span style="color:#94a3b8">N/A</span>';
-    var testLinks='<div style="display:flex;flex-wrap:wrap;gap:3px"><a class="test-claim-link" href="claims.html" style="font-size:11px;padding:2px 7px">📄 Claims</a><a class="test-claim-link" href="claim-pends.html" style="font-size:11px;padding:2px 7px">⏸️ Pends</a><a class="test-claim-link" href="sql-validator.html" style="font-size:11px;padding:2px 7px">🔬 SQL</a></div>';
+    var testLinks='<a class="test-link" href="claims.html" style="font-size:11px;padding:2px 7px">📄 Claims</a><a class="test-link" href="claim-pends.html" style="font-size:11px;padding:2px 7px">⏸️ Pends</a>';
     return'<tr>'+
     '<td class="mono" style="font-size:12px;font-weight:800;color:var(--accent)">'+ft.fee_table_code+'</td>'+
     '<td><strong style="font-size:13px">'+ft.fee_table_name+'</strong></td>'+
-    '<td>'+badge(typeLabel(ft.fee_table_type),ft.fee_table_type==='rbrvs'?'hmo':ft.fee_table_type==='drg'?'ppo':'dental')+'</td>'+
+    '<td>'+badge(typeLabel(ft.fee_table_type),ft.fee_table_type)+'</td>'+
     '<td style="font-size:13px">'+(ft.locality||'—')+'</td>'+
     '<td>'+cfStr+'</td>'+
     '<td><button class="btn btn-sm btn-secondary" style="font-size:12px" onclick="showCPT(''+ft.id+'')">View '+codes.length+' codes</button></td>'+
@@ -562,7 +601,7 @@ function render(){
     '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+ft.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+ft.id+'">Del</button></div></td></tr>';
   }).join('');
 }
- 
+
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   activeCPTs=d&&d.cpt_entries?JSON.parse(JSON.stringify(d.cpt_entries)):[];
@@ -573,20 +612,20 @@ function openModal(id){
   sv('f-locality',d?d.locality:'National');sv('f-conversion_factor',d?d.conversion_factor:'');
   sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
   sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
-  sv('f-modifier_support',d?d.modifier_support:'yes');sv('f-geo_adj',d?d.geo_adj:'national');
+  sv('f-modifier_support',d?d.modifier_support:'yes');
   updateCPTLibrary();renderCPTList();
   switchTab('header',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
- 
+
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
- 
+
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
   var fc=gv('f-fee_table_code').trim(),fn=gv('f-fee_table_name').trim();
   if(!fc||!fn){errEl.textContent='Fee Table Code and Name are required.';errEl.style.display='block';return;}
   var id=gv('f-id');
-  var body={fee_table_code:fc,fee_table_name:fn,fee_table_type:gv('f-fee_table_type'),locality:gv('f-locality'),conversion_factor:parseFloat(gv('f-conversion_factor'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,modifier_support:gv('f-modifier_support'),geo_adj:gv('f-geo_adj'),cpt_entries:activeCPTs,status:gv('f-status')};
+  var body={fee_table_code:fc,fee_table_name:fn,fee_table_type:gv('f-fee_table_type'),locality:gv('f-locality'),conversion_factor:parseFloat(gv('f-conversion_factor'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,modifier_support:gv('f-modifier_support'),cpt_entries:activeCPTs,status:gv('f-status')};
   if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
   closeModal();toast(id?'Saving...':'Creating fee table...','info');
   try{
@@ -597,14 +636,14 @@ async function save(){
     if(fresh.length)records=fresh;updateStats();render();
   }catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
 }
- 
+
 async function del(id){
   if(!await confirmDialog('Delete this fee table? Contracts and NetworX rules referencing it will lose their fee table link.'))return;
   var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();
   try{await fetch('/api/fee-tables/'+id,{method:'DELETE'});toast('Deleted','info');}
   catch(e){records=bk;updateStats();render();toast('Delete failed','error');}
 }
- 
+
 load();
 </script></body></html>
-
+===END:fee-tables.html===
