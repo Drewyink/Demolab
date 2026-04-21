@@ -2,156 +2,326 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — Pricing</title>
+  <title>EchoLink Solutions — Configuration → Pricing</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
     .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal{max-height:92vh;overflow-y:auto;width:860px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .test-bar{display:flex;flex-wrap:wrap;gap:6px;padding:14px;background:rgba(46,213,115,0.06);border:1px solid rgba(46,213,115,0.22);border-radius:8px;margin-top:14px;grid-column:1/-1;}
+    .test-bar-label{font-size:12px;font-weight:800;color:#2ed573;width:100%;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;}
+    .tlink{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;margin:2px;}
+    .tlink-green{background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.3);color:#2ed573;}
+    .tlink-orange{background:rgba(255,165,2,0.1);border:1px solid rgba(255,165,2,0.3);color:#ffa502;}
+    .tlink-blue{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);}
+    .tlink-slate{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.3);color:#94a3b8;}
+    .tlink-purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+    .stat-card .sv{font-size:26px;font-weight:800;font-family:'IBM Plex Mono',monospace;margin:4px 0;}
+    .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .page-title{font-size:26px!important;font-weight:800!important;}
+    .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
+    .card-title{font-size:17px!important;font-weight:800!important;}
+    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table td{font-size:14px!important;}
+    .nav-item{font-size:14px!important;font-weight:600!important;}
+    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .modal-title{font-size:20px!important;font-weight:800!important;}
+    .btn{font-size:13px!important;font-weight:700!important;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
+    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
+    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
+
+
   </style>
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite</div></div></div>
-        <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+    <div class="sidebar-logo">
+      <div class="logo-icon">EL</div>
+      <div>
+        <div class="logo-text">EchoLink Solutions</div>
+        <div class="logo-sub">Facets Sandbox</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item " href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
-      <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
-      <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
+      <a class="nav-item " href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
+      <a class="nav-item " href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
       <div class="nav-section-label">Configuration</div>
-      <a class="nav-item" href="members.html"><span class="nav-icon">👤</span> Members</a>
-      <a class="nav-item" href="products.html"><span class="nav-icon">📦</span> Products</a>
-      <a class="nav-item" href="plans.html"><span class="nav-icon">📋</span> Plans</a>
-      <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
+      <a class="nav-item " href="members.html"><span class="nav-icon">👤</span> Members</a>
+      <a class="nav-item " href="products.html"><span class="nav-icon">📦</span> Products</a>
+      <a class="nav-item " href="plans.html"><span class="nav-icon">📋</span> Plans</a>
+      <a class="nav-item " href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item active" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
-      <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <a class="nav-item " href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
+      <div class="nav-section-label">Dental</div>
+      <a class="nav-item " href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
-      <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
-      <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
-      <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item " href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
+      <a class="nav-item " href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
+      <a class="nav-item " href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
+      <a class="nav-item " href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div>
+      <a class="nav-item " href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
-      <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
-      <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
-      <a class="nav-item" href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
-      <a class="nav-item" href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
-      <a class="nav-item" href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
+      <a class="nav-item " href="claims.html"><span class="nav-icon">📄</span> Claims</a>
+      <a class="nav-item " href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
+      <a class="nav-item " href="authorizations.html"><span class="nav-icon">🔐</span> Authorizations</a>
+      <a class="nav-item " href="sql-validator.html"><span class="nav-icon">🔬</span> SQL Validator</a>
+      <a class="nav-item " href="audit.html"><span class="nav-icon">🔍</span> Audit Log</a>
     </nav>
-    <div class="sidebar-footer"><div class="env-badge">Sandbox · v1.0</div></div>
+    <div class="sidebar-footer"><div class="env-badge">EchoLink · v2.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Configuration → <span>Pricing</span></span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Configuration → Pricing</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">Pricing Tiers</div><div class="page-subtitle">PREMIUM RATES · EMPLOYER CONTRIBUTIONS · EMPLOYEE SHARE</div></div>
-        <button class="btn btn-primary" id="new-btn">+ New Pricing Tier</button>
+        <div><div class="page-title">Pricing / Premium Rates</div>
+        <div class="page-subtitle">PREMIUM TIERS · EMPLOYER CONTRIBUTION · EMPLOYEE COST · COBRA RATES · ALL PLANS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New Rate</button>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sl">Rate Records</div><div class="sv" id="s-total">—</div></div>
+        <div class="stat-card"><div class="sl">Avg EE Premium</div><div class="sv" style="color:#60a5fa" id="s-avg">—</div></div>
+        <div class="stat-card"><div class="sl">Plans Priced</div><div class="sv" style="color:#4ade80" id="s-plans">—</div></div>
+        <div class="stat-card"><div class="sl">COBRA Rates Set</div><div class="sv" style="color:#fbbf24" id="s-cobra">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title">💲 Pricing <span class="count-label" id="count"></span></span>
-          <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search pricing..." id="search-input"></div>
+          <span class="card-title">💲 Premium Rates <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search rates..." id="search-input"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-ee">EE Only</button>
+              <button class="filter-tab" id="tab-fam">Family</button>
+            </div>
+          </div>
         </div>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>Code</th><th>Tier</th><th>Base Premium</th><th>Employer Share</th><th>Employee Share</th><th>Effective Date</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
-          </table>
-        </div>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>Plan Code</th><th>Plan Name</th><th>Tier</th><th>Total Premium</th><th>Employer Pays</th><th>Employee Pays</th><th>COBRA Rate</th><th>Effective</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+        </table></div>
       </div>
     </div>
   </main>
 </div>
 <div id="overlay">
-  <div class="modal" style="width:620px">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Pricing Tier</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
-      <form class="form-grid" onsubmit="return false">
-        <input type="hidden" id="f-id">
-        <div class="form-group"><label class="form-label">Pricing Code *</label><input type="text" class="form-input" id="f-pricing_code" placeholder="PRC-005"></div>
-        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-        <div class="form-group full"><label class="form-label">Enrollment Tier</label>
-          <select class="form-select" id="f-tier">
-            <option value="employee_only">Employee Only</option>
-            <option value="employee_spouse">Employee + Spouse</option>
-            <option value="employee_child">Employee + Child</option>
-            <option value="family">Family</option>
-          </select>
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New Rate</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('rate',this)">Premium Rate</button>
+        <button class="modal-tab" onclick="switchTab('contrib',this)">Contributions</button>
+        <button class="modal-tab" onclick="switchTab('cobra',this)">COBRA &amp; Validation</button>
+      </div>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px;margin-bottom:14px;color:#ff4757;font-size:14px;font-weight:600"></div>
+      <input type="hidden" id="f-id">
+      <div class="tab-panel active" id="tab-rate">
+        <div class="form-grid">
+          <div class="fsl">Plan &amp; Tier</div>
+          <div class="form-group"><label class="form-label">Plan Code *</label><input type="text" class="form-input" id="f-plan_code" placeholder="SRH-HMO-BRZ"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="form-group full"><label class="form-label">Plan Name</label><input type="text" class="form-input" id="f-plan_name" placeholder="Summit Ridge HMO Bronze"></div>
+          <div class="form-group"><label class="form-label">Coverage Tier</label>
+            <select class="form-select" id="f-tier">
+              <option value="ee">EE — Employee Only</option>
+              <option value="es">ES — Employee + Spouse</option>
+              <option value="ec">EC — Employee + Child(ren)</option>
+              <option value="fam">FAM — Employee + Family</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Rate Factor</label><input type="number" class="form-input" id="f-rate_factor" step="0.01" placeholder="1.00"></div>
+          <div class="form-group"><label class="form-label">Total Monthly Premium ($)</label><input type="number" class="form-input" id="f-total_premium" step="0.01" min="0" placeholder="298.00"></div>
+          <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
+          <div class="form-group"><label class="form-label">Termination Date</label><input type="date" class="form-input" id="f-termination_date"></div>
+          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Rate basis, underwriting notes..."></textarea></div>
+          <div class="test-bar" style="background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(99,102,241,0.06));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <span style="font-size:13px;font-weight:800;color:var(--accent);flex-shrink:0">🧪 Test Claims &amp; Validation</span>
+    <span style="font-size:12px;font-weight:600;color:var(--text-secondary);flex:1;min-width:180px">Verify your configuration adjudicates correctly</span>
+    <a href="claims.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.3);color:#2ed573">📄 Submit Test Claim</a>
+    <a href="claim-pends.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,165,2,0.12);border:1px solid rgba(255,165,2,0.3);color:#ffa502">⏸️ Claim Pends</a>
+    <a href="authorizations.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.3);color:#60a5fa">🔐 Authorizations</a>
+    <a href="sql-validator.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa">🔬 SQL Validator</a>
+    <a href="audit.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);color:#94a3b8">🔍 Audit Log</a>
+  </div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
         </div>
-        <div class="form-group"><label class="form-label">Base Premium ($)</label><input type="number" class="form-input" id="f-base_premium" step="0.01" min="0"></div>
-        <div class="form-group"><label class="form-label">Employer Contribution ($)</label><input type="number" class="form-input" id="f-employer_contribution" step="0.01" min="0"></div>
-        <div class="form-group"><label class="form-label">Employee Contribution ($)</label><input type="number" class="form-input" id="f-employee_contribution" step="0.01" min="0"></div>
-        <div class="form-group"><label class="form-label">Effective Date</label><input type="date" class="form-input" id="f-effective_date"></div>
-      </form>
+      </div>
+      <div class="tab-panel" id="tab-contrib">
+        <div class="form-grid">
+          <div class="fsl">Employer / Employee Contribution Split</div>
+          <div class="form-group"><label class="form-label">Employer Contribution ($)</label><input type="number" class="form-input" id="f-employer_amount" step="0.01" min="0" placeholder="215.00"></div>
+          <div class="form-group"><label class="form-label">Employee Contribution ($)</label><input type="number" class="form-input" id="f-employee_amount" step="0.01" min="0" placeholder="83.00"></div>
+          <div class="form-group"><label class="form-label">Employer Contribution %</label><input type="number" class="form-input" id="f-employer_pct" step="0.1" min="0" max="100" placeholder="72"></div>
+          <div class="form-group"><label class="form-label">Contribution Type</label>
+            <select class="form-select" id="f-contrib_type">
+              <option value="pct_premium">% of Total Premium</option>
+              <option value="fixed_dollar">Fixed Dollar Amount</option>
+              <option value="flat_ee">Flat EE Rate (same regardless of tier)</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">HSA Employer Contribution ($)</label><input type="number" class="form-input" id="f-hsa_contribution" step="0.01" min="0" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">HRA Employer Contribution ($)</label><input type="number" class="form-input" id="f-hra_contribution" step="0.01" min="0" placeholder="0.00"></div>
+          <div class="test-bar">
+  <div class="test-bar-label">🧪 Test Claims &amp; Validation — Verify Your Configuration Is Working</div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-cobra">
+        <div class="form-grid">
+          <div class="fsl">COBRA Rates</div>
+          <div class="form-group"><label class="form-label">COBRA Monthly Rate ($)</label><input type="number" class="form-input" id="f-cobra_rate" step="0.01" min="0" placeholder="303.96"></div>
+          <div class="form-group"><label class="form-label">COBRA Admin Fee %</label><input type="number" class="form-input" id="f-cobra_admin_pct" step="0.1" min="0" max="5" placeholder="2"></div>
+          <div class="form-group"><label class="form-label">Max COBRA Duration (months)</label><input type="number" class="form-input" id="f-cobra_months" min="0" placeholder="18"></div>
+          <div class="test-bar">
+  <div class="test-bar-label">🧪 Test Claims &amp; Validation — Verify Your Configuration Is Working</div>
+  <a href="claims.html" class="tlink tlink-green">📄 Submit Test Claim</a>
+  <a href="claim-pends.html" class="tlink tlink-orange">⏸️ Claim Pends</a>
+  <a href="authorizations.html" class="tlink tlink-blue">🔐 Authorizations</a>
+  <a href="sql-validator.html" class="tlink tlink-purple">🔬 SQL Validator</a>
+  <a href="audit.html" class="tlink tlink-slate">🔍 Audit Log</a>
+</div>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Pricing</button></div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save Rate</button></div>
   </div>
 </div>
-<script src="app.js"></script>
 <script>
-var records=[];
+
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+async function apiFetch(url){var r=await fetch(url);if(!r.ok)throw new Error('API '+r.status);return r.json();}
+function genCode(p){return p+'-'+String(Date.now()).slice(-6);}
+function badge(text,type){var m={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',paid:'#2ed573',denied:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',dental:'#e879f9',commercial:'#60a5fa',medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757'};var c=m[type&&type.toLowerCase()]||'#94a3b8';return'<span style="display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';}
+function toast(msg,type){document.querySelectorAll('.toast-msg').forEach(function(e){e.remove();});var d=document.createElement('div');var c={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'}[type]||'#60a5fa';d.className='toast-msg';d.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:14px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:360px;';d.textContent=msg;document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},3500);}
+function confirmDialog(msg){return new Promise(function(resolve){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9999999;display:flex;align-items:center;justify-content:center;';ov.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:32px 36px;max-width:380px;text-align:center"><p style="font-size:16px;font-weight:600;color:#f1f5f9;margin:0 0 22px">'+msg+'</p><div style="display:flex;gap:14px;justify-content:center"><button id="cd-no" style="padding:10px 26px;border-radius:7px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:10px 26px;border-radius:7px;border:none;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Delete</button></div></div>';document.body.appendChild(ov);ov.querySelector('#cd-yes').onclick=function(){ov.remove();resolve(true);};ov.querySelector('#cd-no').onclick=function(){ov.remove();resolve(false);};});}
+function gv(id){return document.getElementById(id)?document.getElementById(id).value:'';}
+function sv(id,v){if(document.getElementById(id))document.getElementById(id).value=v||'';}
+function ck(id,v){if(document.getElementById(id))document.getElementById(id).checked=!!v;}
+function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+
+var records=[],statusFilter='all';
+var FB=[
+  {id:'p1',plan_code:'SRH-HMO-BRZ',plan_name:'Summit Ridge HMO Bronze',tier:'ee',rate_factor:1.00,total_premium:298.00,employer_amount:215.00,employee_amount:83.00,employer_pct:72,cobra_rate:303.96,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p2',plan_code:'SRH-HMO-BRZ',plan_name:'Summit Ridge HMO Bronze',tier:'es',rate_factor:2.00,total_premium:596.00,employer_amount:390.00,employee_amount:206.00,employer_pct:65,cobra_rate:607.92,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p3',plan_code:'SRH-HMO-BRZ',plan_name:'Summit Ridge HMO Bronze',tier:'ec',rate_factor:1.80,total_premium:536.40,employer_amount:360.00,employee_amount:176.40,employer_pct:67,cobra_rate:547.13,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p4',plan_code:'SRH-HMO-BRZ',plan_name:'Summit Ridge HMO Bronze',tier:'fam',rate_factor:2.70,total_premium:804.60,employer_amount:510.00,employee_amount:294.60,employer_pct:63,cobra_rate:820.69,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p5',plan_code:'SRH-PPO-SLV',plan_name:'Summit Ridge PPO Silver',tier:'ee',rate_factor:1.00,total_premium:512.00,employer_amount:380.00,employee_amount:132.00,employer_pct:74,cobra_rate:522.24,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p6',plan_code:'SRH-CDH-2000',plan_name:'Summit Ridge HDHP Plus HSA',tier:'ee',rate_factor:1.00,total_premium:381.00,employer_amount:290.00,employee_amount:91.00,employer_pct:76,hsa_contribution:750.00,cobra_rate:388.62,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+  {id:'p7',plan_code:'SRH-DEN-01',plan_name:'Summit Ridge Dental Select',tier:'ee',rate_factor:1.00,total_premium:43.00,employer_amount:28.00,employee_amount:15.00,employer_pct:65,cobra_rate:43.86,cobra_admin_pct:2,status:'active',effective_date:'2026-01-01'},
+];
 document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
 document.getElementById('btn-cancel').addEventListener('click',closeModal);
 document.getElementById('btn-x').addEventListener('click',closeModal);
 document.getElementById('btn-save').addEventListener('click',save);
 document.getElementById('search-input').addEventListener('input',render);
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===document.getElementById('overlay'))closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-async function load(){try{records=await apiFetch('/api/pricing');render();}catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--red)">'+e.message+'</p></div></td></tr>';}}
+['all','ee','fam'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
+function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
+function fmt(n){return'$'+parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function tierLabel(v){return{ee:'EE Only',es:'EE + Spouse',ec:'EE + Child(ren)',fam:'Family'}[v]||v||'—';}
+async function load(){
+  try{var r=await apiFetch('/api/pricing').catch(function(){return[];});records=r.length?r:FB;}
+  catch(e){records=FB;}
+  updateStats();render();
+}
+function updateStats(){
+  document.getElementById('s-total').textContent=records.length;
+  var eeRecs=records.filter(function(r){return r.tier==='ee';});
+  var avg=eeRecs.length?eeRecs.reduce(function(a,r){return a+(parseFloat(r.employee_amount)||0);},0)/eeRecs.length:0;
+  document.getElementById('s-avg').textContent=fmt(avg);
+  var plans=[...new Set(records.map(function(r){return r.plan_code;}))];
+  document.getElementById('s-plans').textContent=plans.length;
+  document.getElementById('s-cobra').textContent=records.filter(function(r){return r.cobra_rate>0;}).length;
+}
 function render(){
   var q=document.getElementById('search-input').value.toLowerCase();
-  var data=q?records.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);}):([].concat(records));
-  document.getElementById('count').textContent='· '+data.length+' records';
+  var data=[].concat(records);
+  if(statusFilter==='ee')data=data.filter(function(r){return r.tier==='ee';});
+  else if(statusFilter==='fam')data=data.filter(function(r){return r.tier==='fam';});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='('+data.length+')';
   var tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">💲</div><p>No pricing found</p></div></td></tr>';return;}
+  if(!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">💲</div><p>No rates found</p></div></td></tr>';return;}
   tbody.innerHTML=data.map(function(p){
     return'<tr>'+
-    '<td class="mono" style="color:var(--accent);font-size:11px">'+p.pricing_code+'</td>'+
-    '<td style="text-transform:capitalize">'+(p.tier||'').replace(/_/g,' ')+'</td>'+
-    '<td class="mono">$'+parseFloat(p.base_premium||0).toFixed(2)+'</td>'+
-    '<td class="mono" style="color:#4ade80">$'+parseFloat(p.employer_contribution||0).toFixed(2)+'</td>'+
-    '<td class="mono" style="color:#fbbf24">$'+parseFloat(p.employee_contribution||0).toFixed(2)+'</td>'+
-    '<td style="font-size:12px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
+    '<td class="mono" style="font-size:12px;font-weight:800;color:var(--accent)">'+p.plan_code+'</td>'+
+    '<td><strong style="font-size:13px">'+p.plan_name+'</strong></td>'+
+    '<td>'+badge(tierLabel(p.tier),'active')+'</td>'+
+    '<td class="mono" style="font-size:14px;font-weight:800">'+fmt(p.total_premium)+'</td>'+
+    '<td class="mono" style="font-size:13px;font-weight:700;color:#60a5fa">'+fmt(p.employer_amount)+'</td>'+
+    '<td class="mono" style="font-size:13px;font-weight:700;color:#4ade80">'+fmt(p.employee_amount)+'</td>'+
+    '<td class="mono" style="font-size:12px;color:#94a3b8">'+fmt(p.cobra_rate)+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(p.effective_date?p.effective_date.split('T')[0]:'—')+'</td>'+
     '<td>'+badge(p.status,p.status)+'</td>'+
-    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(\''+p.id+'\')">Edit</button><button class="btn btn-sm btn-danger" onclick="del(\''+p.id+'\')">Del</button></div></td>'+
-    '</tr>';
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="'+p.id+'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="'+p.id+'">Del</button></div></td></tr>';
   }).join('');
 }
 function openModal(id){
   var d=id?records.find(function(r){return r.id===id;}):null;
   document.getElementById('form-error').style.display='none';
-  document.getElementById('modal-title').textContent=d?'Edit Pricing':'New Pricing Tier';
-  document.getElementById('f-id').value=d?d.id:'';
-  document.getElementById('f-pricing_code').value=d?d.pricing_code:genCode('PRC');
-  document.getElementById('f-tier').value=d?(d.tier||'employee_only'):'employee_only';
-  document.getElementById('f-base_premium').value=d?(d.base_premium||''):'';
-  document.getElementById('f-employer_contribution').value=d?(d.employer_contribution||''):'';
-  document.getElementById('f-employee_contribution').value=d?(d.employee_contribution||''):'';
-  document.getElementById('f-effective_date').value=d&&d.effective_date?d.effective_date.split('T')[0]:'';
-  document.getElementById('f-status').value=d?(d.status||'active'):'active';
+  document.getElementById('modal-title').textContent=d?'Edit Rate':'New Rate';
+  sv('f-id',d?d.id:'');sv('f-plan_code',d?d.plan_code:'');sv('f-status',d?d.status:'active');
+  sv('f-plan_name',d?d.plan_name:'');sv('f-tier',d?d.tier:'ee');
+  sv('f-rate_factor',d?d.rate_factor:'1.00');sv('f-total_premium',d?d.total_premium:'');
+  sv('f-effective_date',d&&d.effective_date?d.effective_date.split('T')[0]:'');
+  sv('f-termination_date',d&&d.termination_date?d.termination_date.split('T')[0]:'');
+  sv('f-notes',d?d.notes:'');sv('f-employer_amount',d?d.employer_amount:'');
+  sv('f-employee_amount',d?d.employee_amount:'');sv('f-employer_pct',d?d.employer_pct:'');
+  sv('f-contrib_type',d?d.contrib_type:'pct_premium');sv('f-hsa_contribution',d?d.hsa_contribution||'':'');
+  sv('f-hra_contribution',d?d.hra_contribution||'':'');sv('f-cobra_rate',d?d.cobra_rate:'');
+  sv('f-cobra_admin_pct',d?d.cobra_admin_pct:'2');sv('f-cobra_months',d?d.cobra_months:'18');
+  switchTab('rate',document.querySelector('.modal-tab'));
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 async function save(){
   var errEl=document.getElementById('form-error');errEl.style.display='none';
-  var pc=document.getElementById('f-pricing_code').value.trim();
-  if(!pc){errEl.textContent='⚠ Pricing Code is required.';errEl.style.display='block';return;}
-  var id=document.getElementById('f-id').value;
-  var body={pricing_code:pc,tier:document.getElementById('f-tier').value,base_premium:parseFloat(document.getElementById('f-base_premium').value)||0,employer_contribution:parseFloat(document.getElementById('f-employer_contribution').value)||0,employee_contribution:parseFloat(document.getElementById('f-employee_contribution').value)||0,effective_date:document.getElementById('f-effective_date').value||null,status:document.getElementById('f-status').value};
-  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body,created_at:new Date().toISOString()});render();}
-  closeModal();toast(id?'Saving...':'Creating...','info');
-  try{var res=await fetch(id?'/api/pricing/'+id:'/api/pricing',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){var msg='HTTP '+res.status;try{var dd=await res.json();msg=dd.error||msg;}catch{}throw new Error(msg);}toast(id?'Updated ✓':'Created ✓','success');await load();}
-  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});render();toast('Save failed: '+e.message,'error');}
+  var pc=gv('f-plan_code').trim();
+  if(!pc){errEl.textContent='Plan Code is required.';errEl.style.display='block';return;}
+  var id=gv('f-id');
+  var body={plan_code:pc,plan_name:gv('f-plan_name'),tier:gv('f-tier'),rate_factor:parseFloat(gv('f-rate_factor'))||1,total_premium:parseFloat(gv('f-total_premium'))||0,effective_date:gv('f-effective_date')||null,termination_date:gv('f-termination_date')||null,notes:gv('f-notes'),employer_amount:parseFloat(gv('f-employer_amount'))||0,employee_amount:parseFloat(gv('f-employee_amount'))||0,employer_pct:parseFloat(gv('f-employer_pct'))||0,contrib_type:gv('f-contrib_type'),hsa_contribution:parseFloat(gv('f-hsa_contribution'))||0,hra_contribution:parseFloat(gv('f-hra_contribution'))||0,cobra_rate:parseFloat(gv('f-cobra_rate'))||0,cobra_admin_pct:parseFloat(gv('f-cobra_admin_pct'))||2,cobra_months:parseInt(gv('f-cobra_months'))||18,status:gv('f-status')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
+  closeModal();toast(id?'Saving...':'Creating rate...','info');
+  try{var res=await fetch(id?'/api/pricing/'+id:'/api/pricing',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'Created ✓','success');var fr=await apiFetch('/api/pricing').catch(function(){return records;});if(fr.length)records=fr;updateStats();render();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed','error');}
 }
-async function del(id){if(!await confirmDialog('Delete this pricing tier?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});render();try{await fetch('/api/pricing/'+id,{method:'DELETE'});toast('Deleted','info');await load();}catch(e){records=bk;render();toast('Delete failed','error');}}
+async function del(id){if(!await confirmDialog('Delete this rate?'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/pricing/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
 load();
-</script>
-</body>
-</html>
-
+</script></body></html>
