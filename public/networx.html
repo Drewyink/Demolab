@@ -1,22 +1,58 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facets — NetworX Pricing</title>
+  <title>EchoLink Solutions — Network → NetworX Pricing</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.78)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
+
+    #overlay{position:fixed!important;inset:0!important;background:rgba(0,0,0,0.80)!important;z-index:99999!important;display:none;align-items:center;justify-content:center;}
     #overlay.open{display:flex!important;}
-    
+    .sidebar{z-index:50!important;}.topbar{z-index:40!important;}
+    .modal{max-height:92vh;overflow-y:auto;width:880px;}
+    .modal-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+    .modal-tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+    .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab-panel{display:none;}.tab-panel.active{display:block;}
+    .fsl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border);width:100%;grid-column:1/-1;}
+    .badge-link{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:5px;font-size:13px;font-weight:700;text-decoration:none;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);margin:3px;transition:background .15s;}
+    .badge-link:hover{background:rgba(0,212,255,0.2);}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+    .stat-card .sv{font-size:26px;font-weight:800;font-family:"IBM Plex Mono",monospace;margin:4px 0;}
+    .stat-card .sl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+    .form-label{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:block;}
+    .form-input,.form-select,.form-textarea{font-size:14px!important;font-weight:500;}
+    .page-title{font-size:26px!important;font-weight:800!important;}
+    .page-subtitle{font-size:13px!important;font-weight:600!important;letter-spacing:.06em;}
+    .card-title{font-size:17px!important;font-weight:800!important;}
+    table th{font-size:13px!important;font-weight:800!important;letter-spacing:.04em;}
+    table td{font-size:14px!important;}
+    .nav-item{font-size:14px!important;font-weight:600!important;}
+    .sidebar-logo .logo-text{font-size:16px!important;font-weight:900!important;}
+    .modal-title{font-size:20px!important;font-weight:800!important;}
+    .btn{font-size:13px!important;font-weight:700!important;}
+    .warn-banner{background:rgba(255,71,87,0.10);border:1px solid rgba(255,71,87,0.35);border-radius:6px;padding:10px 14px;font-size:13px;font-weight:700;color:#ff4757;grid-column:1/-1;display:none;}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);grid-column:1/-1;}
+    .toggle-label{font-size:14px;color:var(--text-primary);font-weight:700;}
+    .toggle-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.14);border-radius:24px;cursor:pointer;transition:.2s;}
+    .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+    .toggle-switch input:checked+.toggle-slider{background:var(--accent);}
+    .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
+
+
   </style>
 </head>
 <body>
 <div class="app-layout">
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-logo"><div class="logo-icon">FX</div><div><div class="logo-text">FACETS</div><div class="logo-sub">Config Suite v2</div></div></div>
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div><a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">◈</span> Dashboard</a>
       <div class="nav-section-label">Employer</div>
       <a class="nav-item" href="groups.html"><span class="nav-icon">🏢</span> Groups / Employers</a>
       <a class="nav-item" href="classes.html"><span class="nav-icon">🏷️</span> Classes</a>
@@ -27,13 +63,15 @@
       <a class="nav-item" href="benefits.html"><span class="nav-icon">✚</span> Benefits</a>
       <a class="nav-item" href="pricing.html"><span class="nav-icon">💲</span> Pricing</a>
       <a class="nav-item" href="service-groups.html"><span class="nav-icon">🗂️</span> Service Groups</a>
-      <div class="nav-section-label">Dental</div><a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
+      <div class="nav-section-label">Dental</div>
+      <a class="nav-item" href="dental.html"><span class="nav-icon">🦷</span> Dental Config</a>
       <div class="nav-section-label">Network</div>
       <a class="nav-item" href="providers.html"><span class="nav-icon">🏥</span> Providers</a>
       <a class="nav-item" href="provider-contracts.html"><span class="nav-icon">📜</span> Provider Contracts</a>
       <a class="nav-item" href="fee-tables.html"><span class="nav-icon">📊</span> Fee Tables</a>
-      <a class="nav-item" href="networx.html" class="nav-item active"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
-      <div class="nav-section-label">Government Programs</div><a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
+      <a class="nav-item" href="networx.html"><span class="nav-icon">⚙️</span> NetworX Pricing</a>
+      <div class="nav-section-label">Government Programs</div>
+      <a class="nav-item" href="programs.html"><span class="nav-icon">🏛️</span> Medicaid / Medicare</a>
       <div class="nav-section-label">Operations</div>
       <a class="nav-item" href="claims.html"><span class="nav-icon">📄</span> Claims</a>
       <a class="nav-item" href="claim-pends.html"><span class="nav-icon">⏸️</span> Claim Pends</a>
@@ -43,24 +81,41 @@
     </nav>
     <div class="sidebar-footer"><div class="env-badge">Sandbox · v2.0</div></div>
   </aside>
+
   <main class="main-content">
     <div class="topbar">
-      <div class="topbar-left"><span class="topbar-breadcrumb">Network → NetworX Pricing</span></div>
-      <div class="topbar-right"><span class="topbar-clock" id="clock"></span></div>
+      <div class="topbar-left"><span class="topbar-breadcrumb" style="font-size:14px;font-weight:700">Network → NetworX Pricing</span></div>
+      <div class="topbar-right"><span class="topbar-clock" id="clock" style="font-size:14px;font-weight:700"></span></div>
     </div>
     <div class="page-content">
       <div class="page-header">
-        <div><div class="page-title">NetworX Pricing</div><div class="page-subtitle">RBRVS · DRG GROUPER · QUALIFIERS · MODIFIER ADJUSTMENTS · GEOGRAPHIC FACTORS</div></div>
-        <button class="btn btn-primary" id="new-btn">+ New NetworX</button>
+        <div><div class="page-title">NetworX Pricing</div>
+        <div class="page-subtitle">RBRVS · DRG GROUPER · MEDICARE LIMITING · QUALIFIERS · MODIFIER ADJUSTMENTS · OUTLIER THRESHOLDS · GEOGRAPHIC FACTORS</div></div>
+        <button class="btn btn-primary" id="new-btn">+ New NetworX Rule</button>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sl">Total Rules</div><div class="sv" id="s-total">—</div></div>
+        <div class="stat-card"><div class="sl">RBRVS Rules</div><div class="sv" style="color:#60a5fa" id="s-rbrvs">—</div></div>
+        <div class="stat-card"><div class="sl">DRG Rules</div><div class="sv" style="color:#a78bfa" id="s-drg">—</div></div>
+        <div class="stat-card"><div class="sl">OON / Limiting</div><div class="sv" style="color:#fbbf24" id="s-oon">—</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <span class="card-title" id="card-title">NetworX Pricing <span class="count-label" id="count"></span></span>
-          <div style="display:flex;gap:10px"><div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search..." id="search-input"></div></div>
+          <span class="card-title">⚙️ NetworX Pricing Rules <span class="count-label" id="count"></span></span>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="search-bar" style="margin:0;width:220px"><span class="search-icon">🔎</span><input type="text" placeholder="Search rules..." id="search-input" style="font-size:14px"></div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" id="tab-all">All</button>
+              <button class="filter-tab" id="tab-inn">In-Network</button>
+              <button class="filter-tab" id="tab-preferred">Preferred</button>
+              <button class="filter-tab" id="tab-oon">Out-of-Network</button>
+            </div>
+          </div>
         </div>
         <div class="table-wrapper">
-          <table><thead><tr><th>Code</th><th>Name</th><th>Tier</th><th>Method</th><th>RBRVS %</th><th>Fee Table</th><th>Qualifier</th><th>Geo Adj.</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="tbody"><tr><td colspan="10"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
+          <table>
+            <thead><tr><th>Code</th><th>Rule Name</th><th>Network Tier</th><th>Method</th><th>Rate %</th><th>Fee Table</th><th>Qualifier</th><th>Geo Adj.</th><th>Outlier Threshold</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -68,91 +123,256 @@
   </main>
 </div>
 <div id="overlay">
-  <div class="modal" style="width:700px;max-height:90vh;overflow-y:auto">
-    <div class="modal-header"><span class="modal-title" id="modal-title">New Record</span><button class="modal-close" id="btn-x">✕</button></div>
-    <div class="modal-body">
-      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:#ff4757;font-size:12px"></div>
-      <input type="hidden" id="f-id">
-      <div class="form-grid">
-        
-        <div class="form-group"><label class="form-label">Config Code *</label><input type="text" class="form-input" id="f-config_code" placeholder="NWX-005"></div>
-        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-        <div class="form-group full"><label class="form-label">Config Name *</label><input type="text" class="form-input" id="f-config_name"></div>
-        <div class="form-group"><label class="form-label">Network Tier</label><select class="form-select" id="f-network_tier"><option value="in_network">In-Network</option><option value="preferred">Preferred</option><option value="out_of_network">Out-of-Network</option></select></div>
-        <div class="form-group"><label class="form-label">Pricing Method</label><select class="form-select" id="f-pricing_method"><option value="rbrvs_pct">RBRVS %</option><option value="drg_grouper">DRG Grouper</option><option value="medicare_limiting">Medicare Limiting Charge</option><option value="fee_schedule">Fee Schedule</option><option value="billed_pct">% of Billed</option></select></div>
-        <div class="form-group"><label class="form-label">RBRVS % of Medicare</label><input type="number" class="form-input" id="f-rbrvs_pct" placeholder="110" min="50" max="200"></div>
-        <div class="form-group"><label class="form-label">Fee Table Code</label><input type="text" class="form-input" id="f-fee_table_code" placeholder="FT-NWRX-PPO"></div>
-        <div class="form-group"><label class="form-label">Qualifier Type</label><select class="form-select" id="f-qualifier_type"><option value="all">All</option><option value="taxonomy">Taxonomy</option><option value="specialty">Specialty</option><option value="provider_type">Provider Type</option><option value="npi">NPI</option></select></div>
-        <div class="form-group"><label class="form-label">Qualifier Value</label><input type="text" class="form-input" id="f-qualifier_value" placeholder="207Q00000X or cardiology"></div>
-        <div class="form-group full"><label class="form-label">Modifier Adjustments</label><input type="text" class="form-input" id="f-modifier_adjustments" placeholder="51:-10%, 52:-25%, 22:+15%"></div>
-        <div class="form-group"><label class="form-label">POS Override</label><input type="text" class="form-input" id="f-place_of_service_override" placeholder="22:+15% or none"></div>
-        <div class="form-group"><label class="form-label">Geographic Adjustment</label><select class="form-select" id="f-geographic_adjustment"><option value="gaf_applied">GAF Applied</option><option value="none">None</option></select></div>
-        <div class="form-group"><label class="form-label">Outlier Threshold ($)</label><input type="number" class="form-input" id="f-outlier_threshold" placeholder="40000"></div>
-        <div class="form-group"><label class="form-label">Outlier Pay %</label><input type="number" class="form-input" id="f-outlier_pct" placeholder="80" min="50" max="100"></div>
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="modal-title">New NetworX Rule</span><button class="modal-close" id="btn-x">✕</button></div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('config',this)">Pricing Config</button>
+        <button class="modal-tab" onclick="switchTab('qualifiers',this)">Qualifiers</button>
+        <button class="modal-tab" onclick="switchTab('modifiers',this)">Modifiers &amp; POS</button>
+        <button class="modal-tab" onclick="switchTab('outliers',this)">Outliers &amp; Links</button>
       </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
-        <button class="btn btn-primary" id="btn-save">Save</button>
+      <div id="form-error" style="display:none;background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.4);border-radius:6px;padding:12px 16px;margin-bottom:16px;color:#ff4757;font-size:14px;font-weight:600"></div>
+      <input type="hidden" id="f-id">
+
+      <div class="tab-panel active" id="tab-config">
+        <div class="form-grid">
+          <div class="fsl">NetworX Rule Configuration</div>
+          <div class="form-group"><label class="form-label">Config Code *</label><input type="text" class="form-input" id="f-config_code" placeholder="HF-PREF-RBRVS"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" id="f-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="form-group full"><label class="form-label">Config Name *</label><input type="text" class="form-input" id="f-config_name" placeholder="HealthFirst Preferred, RBRVS"></div>
+          <div class="form-group"><label class="form-label">Network Tier</label>
+            <select class="form-select" id="f-network_tier">
+              <option value="inn">In-Network</option>
+              <option value="preferred">Preferred</option>
+              <option value="oon">Out-of-Network</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Pricing Method</label>
+            <select class="form-select" id="f-pricing_method">
+              <option value="rbrvs">RBRVS % of Medicare</option>
+              <option value="drg">DRG Grouper</option>
+              <option value="limiting">Medicare Limiting Charge</option>
+              <option value="fee_schedule">Fee Schedule</option>
+              <option value="billed_pct">% of Billed Charges</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">RBRVS % of Medicare (or rate %)</label><input type="number" class="form-input" id="f-rbrvs_pct" placeholder="110" min="0" max="500"></div>
+          <div class="form-group"><label class="form-label">Fee Table Code</label><input type="text" class="form-input" id="f-fee_table_code" placeholder="HF-FEE-2026">
+            <div style="margin-top:8px"><a class="badge-link" href="fee-tables.html">📊 Fee Tables</a></div>
+          </div>
+          <div class="form-group"><label class="form-label">Geographic Adjustment</label>
+            <select class="form-select" id="f-geo_adjustment">
+              <option value="gaf">GAF Applied — Geographic Adjustment Factor</option>
+              <option value="none">None — national rates, no adjustment</option>
+            </select></div>
+          <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" rows="2" placeholder="Rule description, applicable providers, special conditions..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-qualifiers">
+        <div class="form-grid">
+          <div class="fsl">Qualifier Rules — Who This Pricing Rule Applies To</div>
+          <div class="form-group"><label class="form-label">Qualifier Type</label>
+            <select class="form-select" id="f-qualifier_type">
+              <option value="all">All — applies to all providers on this tier</option>
+              <option value="taxonomy">Taxonomy Code</option>
+              <option value="specialty">Specialty</option>
+              <option value="provider_type">Provider Type</option>
+              <option value="npi">Specific NPI</option>
+            </select></div>
+          <div class="form-group"><label class="form-label">Qualifier Value</label><input type="text" class="form-input" id="f-qualifier_value" placeholder="207Q00000X or leave blank for All"></div>
+          <div class="form-group full" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;grid-column:1/-1">
+            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:10px">How Qualifiers Work in Production</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.8">
+              When a claim arrives, the adjudication engine checks all active NetworX rules for the provider network tier. It then applies qualifier logic to narrow down which rule applies. A rule with Qualifier Type = Taxonomy and value 207RC0000X will only activate for Cardiology providers. A rule with Qualifier Type = All activates for every provider on that tier. Rules are evaluated in priority order. The first matching rule wins.
+            </div>
+          </div>
+          <div style="grid-column:1/-1;margin-top:8px"><a class="badge-link" href="providers.html">🏥 Providers</a>
+<a class="badge-link" href="provider-contracts.html">📜 Provider Contracts</a>
+<a class="badge-link" href="claims.html">📄 Claims</a></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-modifiers">
+        <div class="form-grid">
+          <div class="fsl">Modifier Adjustments</div>
+          <div class="form-group full"><label class="form-label">Modifier Adjustment Rules</label>
+            <textarea class="form-textarea" id="f-modifier_adjustments" rows="5" placeholder="Modifier 25: simultaneous E&M — no payment reduction&#10;Modifier 51: multiple procedures — 50% reduction on secondary&#10;Modifier 59: distinct procedural service — bypass edit&#10;Modifier 26: professional component only — 26% of allowed&#10;Modifier TC: technical component only — 74% of allowed"></textarea>
+          </div>
+          <div class="fsl">Place of Service (POS) Override</div>
+          <div class="form-group"><label class="form-label">POS Code Override</label>
+            <select class="form-select" id="f-pos_override">
+              <option value="">No override — use claim POS</option>
+              <option value="11">11 — Office</option>
+              <option value="21">21 — Inpatient Hospital</option>
+              <option value="22">22 — Outpatient Hospital</option>
+              <option value="23">23 — Emergency Room</option>
+              <option value="31">31 — Skilled Nursing Facility</option>
+            </select></div>
+          <div style="grid-column:1/-1;margin-top:8px"><a class="badge-link" href="benefits.html">✚ Benefits</a>
+<a class="badge-link" href="claims.html">📄 Claims</a></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-outliers">
+        <div class="form-grid">
+          <div class="fsl">Outlier / High-Cost Case Configuration</div>
+          <div class="form-group"><label class="form-label">Outlier Threshold ($)</label><input type="number" class="form-input" id="f-outlier_threshold" step="0.01" min="0" placeholder="100000.00"></div>
+          <div class="form-group"><label class="form-label">Outlier Payment % (above threshold)</label><input type="number" class="form-input" id="f-outlier_pay_pct" step="1" min="0" max="100" placeholder="80"></div>
+          <div style="grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:8px">
+            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:8px">Outlier Example</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-secondary);line-height:1.8">
+              If threshold is $100,000 and outlier pay is 80%: claims where the allowed amount exceeds $100,000 are split. The plan pays the standard DRG rate up to $100,000, then pays 80% of the amount above $100,000. This protects the plan from catastrophic single-case losses while still reimbursing the facility for extraordinary cases.
+            </div>
+          </div>
+          <div class="fsl">Connected Modules</div>
+          <div style="grid-column:1/-1;margin-top:4px"><a class="badge-link" href="providers.html">🏥 Providers</a>
+<a class="badge-link" href="provider-contracts.html">📜 Provider Contracts</a>
+<a class="badge-link" href="fee-tables.html">📊 Fee Tables</a>
+<a class="badge-link" href="claims.html">📄 Claims</a>
+<a class="badge-link" href="claim-pends.html">⏸️ Claim Pends</a>
+<a class="badge-link" href="networx.html">⚙️ NetworX Pricing</a>
+<a class="badge-link" href="sql-validator.html">🔬 SQL Validator</a>
+<a class="badge-link" href="audit.html">🔍 Audit Log</a></div>
+        </div>
       </div>
     </div>
+    <div class="modal-footer"><button class="btn btn-ghost" id="btn-cancel">Cancel</button><button class="btn btn-primary" id="btn-save">Save NetworX Rule</button></div>
   </div>
 </div>
-<script src="app.js"></script>
 <script>
-const API = '/api/networx-configs';
-let all = [], editId = null;
-const overlay = document.getElementById('overlay');
-const tbody = document.getElementById('tbody');
-document.getElementById('new-btn').onclick = () => openModal();
-document.getElementById('btn-x').onclick = document.getElementById('btn-cancel').onclick = () => overlay.classList.remove('open');
-document.getElementById('btn-save').onclick = save;
-document.getElementById('search-input').oninput = function(){ render(all.filter(r => JSON.stringify(r).toLowerCase().includes(this.value.toLowerCase()))); };
 
-async function load() {
-  all = await apiFetch(API);
-  document.getElementById('count').textContent = '(' + all.length + ')';
-  render(all);
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},1000);
+
+async function apiFetch(url){
+  var res=await fetch(url);
+  if(!res.ok)throw new Error('API error '+res.status+' on '+url);
+  return res.json();
 }
-function render(rows) {
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📂</div><p>No records found.</p></div></td></tr>'; return; }
-  tbody.innerHTML = rows.map(r => `<tr>
-    <td><span class="badge badge-blue">${r.config_code}</span></td>
-    <td><strong>${r.config_name}</strong></td>
-    <td><span class="badge ${r.network_tier==='in_network'?'badge-green':r.network_tier==='preferred'?'badge-blue':'badge-gray'}">${r.network_tier}</span></td>
-    <td><span class="badge badge-gray">${r.pricing_method||'—'}</span></td>
-    <td style="font-family:monospace">${r.rbrvs_pct?r.rbrvs_pct+'%':'—'}</td>
-    <td style="font-size:11px">${r.fee_table_code||'—'}</td>
-    <td style="font-size:11px">${r.qualifier_type||'—'}: ${r.qualifier_value||'all'}</td>
-    <td style="font-size:11px">${r.geographic_adjustment||'—'}</td>
-    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
-    <td><button class="btn btn-sm btn-secondary" onclick="edit('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="del('${r.id}')">Delete</button></td>
-  </tr>`).join('');
+
+function genCode(prefix){
+  return prefix+'-'+String(Date.now()).slice(-6);
 }
-function openModal(r) {
-  editId = r ? r.id : null;
-  document.getElementById('modal-title').textContent = r ? 'Edit Record' : 'New Record';
-  document.getElementById('form-error').style.display = 'none';
-  document.querySelectorAll('[id^="f-"]').forEach(el => {
-    if(el.id === 'f-id') { el.value = r ? (r.id||'') : ''; return; }
-    const field = el.id.replace('f-','');
-    if(r && r[field] !== undefined) el.value = r[field]||'';
-    else if(!r) el.value = el.tagName==='SELECT' ? el.options[0].value : '';
+
+function badge(text,type){
+  var colors={active:'#2ed573',inactive:'#ff4757',pending:'#ffa502',renewal:'#ffa502',
+    terminated:'#ff4757',hmo:'#60a5fa',ppo:'#a78bfa',hdhp:'#34d399',cdh:'#34d399',
+    epo:'#fb923c',pos:'#f472b6',dental:'#e879f9',commercial:'#60a5fa',
+    medicare:'#34d399',medicaid:'#f59e0b',yes:'#2ed573',no:'#ff4757',
+    full_time:'#60a5fa',part_time:'#fbbf24',executive:'#a78bfa',union:'#fb923c'};
+  var c=colors[type&&type.toLowerCase()]||'#94a3b8';
+  return'<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:'+c+'22;border:1px solid '+c+'44;color:'+c+'">'+text+'</span>';
+}
+
+function toast(msg,type){
+  var existing=document.querySelectorAll('.toast-msg');
+  existing.forEach(function(el){el.remove();});
+  var div=document.createElement('div');
+  var colors={success:'#2ed573',error:'#ff4757',info:'#60a5fa',warning:'#ffa502'};
+  var c=colors[type]||'#60a5fa';
+  div.className='toast-msg';
+  div.style.cssText='position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid '+c+';border-left:4px solid '+c+';color:#f1f5f9;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999999;box-shadow:0 4px 24px rgba(0,0,0,0.4);max-width:340px;';
+  div.textContent=msg;
+  document.body.appendChild(div);
+  setTimeout(function(){if(div.parentNode)div.remove();},3000);
+}
+
+function confirmDialog(msg){
+  return new Promise(function(resolve){
+    var overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:28px 32px;max-width:360px;text-align:center;"><p style="font-size:15px;color:#f1f5f9;margin:0 0 20px">'+msg+'</p><div style="display:flex;gap:12px;justify-content:center"><button id="cd-no" style="padding:8px 22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button><button id="cd-yes" style="padding:8px 22px;border-radius:6px;border:none;background:#ef4444;color:#fff;font-size:13px;cursor:pointer;font-weight:600">Delete</button></div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#cd-yes').onclick=function(){overlay.remove();resolve(true);};
+    overlay.querySelector('#cd-no').onclick=function(){overlay.remove();resolve(false);};
   });
-  overlay.classList.add('open');
 }
-function edit(id) { openModal(all.find(r=>r.id===id)); }
-async function del(id) { if(confirm('Delete this record?')) { await apiFetch(API+'/'+id,{method:'DELETE'}); load(); } }
-async function save() {
-  const body = {};
-  document.querySelectorAll('[id^="f-"]').forEach(el => {
-    if(el.id !== 'f-id') body[el.id.replace('f-','')] = el.value;
-  });
-  const method = editId ? 'PUT' : 'POST';
-  const url = editId ? API+'/'+editId : API;
-  await apiFetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  overlay.classList.remove('open'); load();
+
+var records=[],statusFilter='all';
+var FB=[
+  {id:'nx1',config_code:'HF-PREF-RBRVS',config_name:'HealthFirst Preferred, RBRVS',network_tier:'preferred',pricing_method:'rbrvs',rbrvs_pct:110,fee_table_code:'HF-FEE-2026',qualifier_type:'all',qualifier_value:'',modifier_adjustments:'Modifier 25: no change. Modifier 51: 50% reduction. Modifier 59: bypass edit.',pos_override:'',geo_adjustment:'gaf',outlier_threshold:0,outlier_pay_pct:0,status:'active',notes:'Preferred tier providers, 110% Medicare RBRVS'},
+  {id:'nx2',config_code:'HF-STD-RBRVS',config_name:'HealthFirst Standard, RBRVS',network_tier:'inn',pricing_method:'rbrvs',rbrvs_pct:105,fee_table_code:'HF-FEE-2026',qualifier_type:'all',qualifier_value:'',modifier_adjustments:'Modifier 51: 50% reduction. Modifier 59: bypass edit.',pos_override:'',geo_adjustment:'none',outlier_threshold:0,outlier_pay_pct:0,status:'active',notes:'Standard in-network RBRVS, 105% Medicare'},
+  {id:'nx3',config_code:'HF-DRG-GROUPER',config_name:'HealthFirst DRG Facility Grouper',network_tier:'inn',pricing_method:'drg',rbrvs_pct:95,fee_table_code:'HF-DRG-2026',qualifier_type:'provider_type',qualifier_value:'Facility / Hospital',modifier_adjustments:'',pos_override:'21',geo_adjustment:'none',outlier_threshold:100000,outlier_pay_pct:80,status:'active',notes:'Inpatient facility DRG, 95% Medicare, outlier threshold $100K at 80%'},
+  {id:'nx4',config_code:'HF-OON-LIMIT',config_name:'HealthFirst OON Limiting Charge',network_tier:'oon',pricing_method:'limiting',rbrvs_pct:115,fee_table_code:'HF-FEE-2026',qualifier_type:'all',qualifier_value:'',modifier_adjustments:'',pos_override:'',geo_adjustment:'gaf',outlier_threshold:0,outlier_pay_pct:0,status:'active',notes:'OON providers limited to 115% Medicare. Member balance billed for difference.'},
+  {id:'nx5',config_code:'HF-DENT-UCR',config_name:'HealthFirst Dental UCR',network_tier:'inn',pricing_method:'fee_schedule',rbrvs_pct:90,fee_table_code:'HF-DENT-2026',qualifier_type:'taxonomy',qualifier_value:'122300000X',modifier_adjustments:'',pos_override:'',geo_adjustment:'none',outlier_threshold:0,outlier_pay_pct:0,status:'active',notes:'Dental PPO UCR 90th percentile, dental taxonomy providers only'}
+];
+document.getElementById('new-btn').addEventListener('click',function(){openModal(null);});
+document.getElementById('btn-cancel').addEventListener('click',closeModal);
+document.getElementById('btn-x').addEventListener('click',closeModal);
+document.getElementById('btn-save').addEventListener('click',save);
+document.getElementById('search-input').addEventListener('input',render);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+['all','inn','preferred','oon'].forEach(function(f){document.getElementById('tab-'+f).addEventListener('click',function(){setFilter(f,this);});});
+function switchTab(n,b){document.querySelectorAll('.modal-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById('tab-'+n).classList.add('active');}
+function setFilter(s,b){statusFilter=s;document.querySelectorAll('.filter-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');render();}
+function methodLabel(v){return{rbrvs:'RBRVS %',drg:'DRG Grouper',limiting:'Medicare Limiting',fee_schedule:'Fee Schedule',billed_pct:'% Billed'}[v]||v||'—';}
+function tierLabel(v){return{inn:'In-Network',preferred:'Preferred',oon:'Out-of-Network'}[v]||v||'—';}
+function tierColor(v){return{inn:'#2ed573',preferred:'#a78bfa',oon:'#f87171'}[v]||'#94a3b8';}
+async function load(){
+  try{var r=await apiFetch('/api/networx').catch(function(){return[];});records=r.length?r:FB;}
+  catch(e){records=FB;}
+  updateStats();render();
 }
+function updateStats(){
+  document.getElementById('s-total').textContent=records.length;
+  document.getElementById('s-rbrvs').textContent=records.filter(function(r){return r.pricing_method==='rbrvs';}).length;
+  document.getElementById('s-drg').textContent=records.filter(function(r){return r.pricing_method==='drg';}).length;
+  document.getElementById('s-oon').textContent=records.filter(function(r){return r.network_tier==='oon'||r.pricing_method==='limiting';}).length;
+}
+function render(){
+  var q=document.getElementById('search-input').value.toLowerCase();
+  var data=[].concat(records);
+  if(statusFilter==='inn')data=data.filter(function(r){return r.network_tier==='inn';});
+  else if(statusFilter==='preferred')data=data.filter(function(r){return r.network_tier==='preferred';});
+  else if(statusFilter==='oon')data=data.filter(function(r){return r.network_tier==='oon';});
+  if(q)data=data.filter(function(r){return JSON.stringify(r).toLowerCase().includes(q);});
+  document.getElementById('count').textContent='('+data.length+')';
+  var tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">⚙️</div><p>No NetworX rules found</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(function(n){
+    var outlierStr=n.outlier_threshold>0?'<span class="mono" style="font-size:12px;color:#fbbf24;font-weight:700">$'+parseFloat(n.outlier_threshold).toLocaleString()+' @ '+n.outlier_pay_pct+'%</span>':'<span style="font-size:12px;color:#94a3b8">None</span>';
+    return'<tr>'+
+    '<td class="mono" style="font-size:12px;font-weight:700;color:var(--accent)">'+(n.config_code||'—')+'</td>'+
+    '<td><strong style="font-size:13px">'+(n.config_name||'—')+'</strong></td>'+
+    '<td><span style="font-size:12px;font-weight:700;color:'+tierColor(n.network_tier)+'">'+tierLabel(n.network_tier)+'</span></td>'+
+    '<td>'+badge(methodLabel(n.pricing_method),n.pricing_method)+'</td>'+
+    '<td class="mono" style="font-size:13px;font-weight:800;color:#4ade80">'+(n.rbrvs_pct?n.rbrvs_pct+'%':'—')+'</td>'+
+    '<td class="mono" style="font-size:12px">'+(n.fee_table_code||'—')+'</td>'+
+    '<td style="font-size:12px">'+(n.qualifier_type==='all'?'All':n.qualifier_type+': '+(n.qualifier_value||''))+'</td>'+
+    '<td>'+badge(n.geo_adjustment==='gaf'?'GAF':'None',n.geo_adjustment==='gaf'?'active':'inactive')+'</td>'+
+    '<td>'+outlierStr+'</td>'+
+    '<td>'+badge(n.status,n.status)+'</td>'+
+    '<td><div class="actions"><button class="btn btn-sm btn-secondary" onclick="openModal(this.dataset.rid)" data-rid="\'+ n.id +\'">Edit</button><button class="btn btn-sm btn-danger" onclick="del(this.dataset.rid)" data-rid="\'+ n.id +\'">Del</button></div></td></tr>';
+  }).join('');
+}
+function openModal(id){
+  var d=id?records.find(function(r){return r.id===id;}):null;
+  document.getElementById('form-error').style.display='none';
+  document.getElementById('modal-title').textContent=d?'Edit NetworX Rule':'New NetworX Rule';
+  sv('f-id',d?d.id:'');sv('f-config_code',d?d.config_code:genCode('NWX'));sv('f-status',d?d.status:'active');
+  sv('f-config_name',d?d.config_name:'');sv('f-network_tier',d?d.network_tier:'inn');
+  sv('f-pricing_method',d?d.pricing_method:'rbrvs');sv('f-rbrvs_pct',d?d.rbrvs_pct:'');
+  sv('f-fee_table_code',d?d.fee_table_code:'');sv('f-geo_adjustment',d?d.geo_adjustment:'none');
+  sv('f-notes',d?d.notes:'');sv('f-qualifier_type',d?d.qualifier_type:'all');
+  sv('f-qualifier_value',d?d.qualifier_value:'');sv('f-modifier_adjustments',d?d.modifier_adjustments:'');
+  sv('f-pos_override',d?d.pos_override:'');
+  sv('f-outlier_threshold',d?d.outlier_threshold:'');sv('f-outlier_pay_pct',d?d.outlier_pay_pct:'');
+  switchTab('config',document.querySelector('.modal-tab'));
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+async function save(){
+  var errEl=document.getElementById('form-error');errEl.style.display='none';
+  var cc=gv('f-config_code').trim(),cn=gv('f-config_name').trim();
+  if(!cc||!cn){errEl.textContent='Config Code and Config Name are required.';errEl.style.display='block';return;}
+  var id=gv('f-id');
+  var body={config_code:cc,config_name:cn,network_tier:gv('f-network_tier'),pricing_method:gv('f-pricing_method'),rbrvs_pct:parseFloat(gv('f-rbrvs_pct'))||0,fee_table_code:gv('f-fee_table_code'),geo_adjustment:gv('f-geo_adjustment'),notes:gv('f-notes'),qualifier_type:gv('f-qualifier_type'),qualifier_value:gv('f-qualifier_value'),modifier_adjustments:gv('f-modifier_adjustments'),pos_override:gv('f-pos_override'),outlier_threshold:parseFloat(gv('f-outlier_threshold'))||0,outlier_pay_pct:parseFloat(gv('f-outlier_pay_pct'))||0,status:gv('f-status')};
+  if(!id){records.unshift({id:'_tmp_'+Date.now(),...body});updateStats();render();}
+  closeModal();toast(id?'Saving...':'Creating NetworX rule...','info');
+  try{var res=await fetch(id?'/api/networx/'+id:'/api/networx',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);toast(id?'Updated ✓':'NetworX Rule Created ✓','success');var fresh=await apiFetch('/api/networx').catch(function(){return records;});if(fresh.length)records=fresh;updateStats();render();}
+  catch(e){records=records.filter(function(r){return!String(r.id).startsWith('_tmp_');});updateStats();render();toast('Save failed: '+e.message,'error');}
+}
+async function del(id){if(!await confirmDialog('Delete this NetworX rule? Claims using this tier will lose pricing logic.'))return;var bk=[].concat(records);records=records.filter(function(r){return r.id!==id;});updateStats();render();try{await fetch('/api/networx/'+id,{method:'DELETE'});toast('Deleted','info');}catch(e){records=bk;updateStats();render();toast('Delete failed','error');}}
 load();
-</script>
-</body>
-</html>
+</script></body></html>
