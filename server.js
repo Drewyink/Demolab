@@ -1,12 +1,46 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+const express    = require('express');
+const cors       = require('cors');
 const bodyParser = require('body-parser');
-const path = require('path');
+const path       = require('path');
+const fs         = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3000;
+
+// ─── FILE PERSISTENCE ─────────────────────────────────────────────────────────
+// Saves to data.json so records survive Render restarts when no Postgres is set
+const DATA_FILE = path.join(__dirname, 'data.json');
+
+function loadFromFile() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
+      const parsed = JSON.parse(raw);
+      console.log('✅ Loaded data.json from disk');
+      return parsed;
+    }
+  } catch (e) {
+    console.log('⚠ Could not read data.json:', e.message);
+  }
+  return null;
+}
+
+function saveToFile() {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
+  } catch (e) {
+    console.error('⚠ Could not write data.json:', e.message);
+  }
+}
+
+// Debounced save — writes at most once per second to avoid hammering disk
+let saveTimer = null;
+function debouncedSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToFile, 1000);
+}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -18,113 +52,125 @@ const db = {
   claims: [], audit_logs: [],
   groups: [], providers: [], authorizations: [],
   'service-groups': [], 'provider-contracts': [], 'fee-tables': [],
-  'networx-configs': [], 'program-configs': [], 'claim-pends': [], 'classes': []
+  'networx-configs': [], 'program-configs': [], 'claim-pends': [], 'classes': [],
+  'dental': [], 'programs': [], 'networx': []
 };
 
 function seedDB() {
   const pid1 = uuidv4(), pid2 = uuidv4(), pid3 = uuidv4(), pid4 = uuidv4();
   db.products = [
     { id: pid1, product_code: 'PROD-HMO', product_name: 'HMO Basic', product_type: 'medical', description: 'Health Maintenance Organization basic coverage', status: 'active', created_at: new Date() },
-    { id: pid2, product_code: 'PROD-PPO', product_name: 'PPO Plus', product_type: 'medical', description: 'Preferred Provider Organization plus coverage', status: 'active', created_at: new Date() },
+    { id: pid2, product_code: 'PROD-PPO', product_name: 'PPO Plus',  product_type: 'medical', description: 'Preferred Provider Organization plus coverage', status: 'active', created_at: new Date() },
     { id: pid3, product_code: 'PROD-DEN', product_name: 'Dental Select', product_type: 'dental', description: 'Full dental coverage including orthodontics', status: 'active', created_at: new Date() },
-    { id: pid4, product_code: 'PROD-VIS', product_name: 'Vision Care', product_type: 'vision', description: 'Comprehensive vision care plan', status: 'active', created_at: new Date() }
+    { id: pid4, product_code: 'PROD-VIS', product_name: 'Vision Care',  product_type: 'vision', description: 'Comprehensive vision care plan', status: 'active', created_at: new Date() }
   ];
   db.plans = [
-    { id: uuidv4(), plan_code: 'PLN-001', plan_name: 'Bronze HMO', product_id: pid1, plan_type: 'hmo', effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 1500.00, oop_max: 5000.00, premium: 320.00, status: 'active', created_at: new Date() },
-    { id: uuidv4(), plan_code: 'PLN-002', plan_name: 'Silver PPO', product_id: pid2, plan_type: 'ppo', effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 800.00, oop_max: 3500.00, premium: 480.00, status: 'active', created_at: new Date() },
-    { id: uuidv4(), plan_code: 'PLN-003', plan_name: 'Gold PPO Elite', product_id: pid2, plan_type: 'ppo', effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 300.00, oop_max: 2000.00, premium: 720.00, status: 'active', created_at: new Date() },
-    { id: uuidv4(), plan_code: 'PLN-004', plan_name: 'Platinum HDHP', product_id: pid1, plan_type: 'hdhp', effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 1400.00, oop_max: 3000.00, premium: 560.00, status: 'active', created_at: new Date() }
+    { id: uuidv4(), plan_code: 'PLN-001', plan_name: 'Bronze HMO',       product_id: pid1, plan_type: 'hmo',  effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 1500, oop_max: 5000, premium: 320, status: 'active', created_at: new Date() },
+    { id: uuidv4(), plan_code: 'PLN-002', plan_name: 'Silver PPO',        product_id: pid2, plan_type: 'ppo',  effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 800,  oop_max: 3500, premium: 480, status: 'active', created_at: new Date() },
+    { id: uuidv4(), plan_code: 'PLN-003', plan_name: 'Gold PPO Elite',    product_id: pid2, plan_type: 'ppo',  effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 300,  oop_max: 2000, premium: 720, status: 'active', created_at: new Date() },
+    { id: uuidv4(), plan_code: 'PLN-004', plan_name: 'Platinum HDHP',     product_id: pid1, plan_type: 'hdhp', effective_date: '2026-01-01', termination_date: '2026-12-31', deductible: 1400, oop_max: 3000, premium: 560, status: 'active', created_at: new Date() }
   ];
   db.members = [
-    { id: uuidv4(), member_id: 'MBR-001', first_name: 'James', last_name: 'Carter', dob: '1985-03-15', email: 'james.carter@email.com', phone: '555-0101', plan_id: null, enrollment_tier: 'employee_only', enrollment_date: '2026-01-01', status: 'active', created_at: new Date() },
-    { id: uuidv4(), member_id: 'MBR-002', first_name: 'Sarah', last_name: 'Nguyen', dob: '1990-07-22', email: 'sarah.nguyen@email.com', phone: '555-0102', plan_id: null, enrollment_tier: 'employee_spouse', enrollment_date: '2026-01-01', status: 'active', created_at: new Date() },
-    { id: uuidv4(), member_id: 'MBR-003', first_name: 'Robert', last_name: 'Kim', dob: '1978-11-04', email: 'robert.kim@email.com', phone: '555-0103', plan_id: null, enrollment_tier: null, enrollment_date: null, status: 'inactive', created_at: new Date() },
-    { id: uuidv4(), member_id: 'MBR-004', first_name: 'Maria', last_name: 'Santos', dob: '1995-05-30', email: 'maria.santos@email.com', phone: '555-0104', plan_id: null, enrollment_tier: 'family', enrollment_date: '2026-01-01', status: 'active', created_at: new Date() }
+    { id: uuidv4(), member_id: 'MBR-001', first_name: 'James',  last_name: 'Carter',  dob: '1985-03-15', email: 'james.carter@email.com',  phone: '555-0101', plan_id: null, enrollment_tier: 'employee_only',   enrollment_date: '2026-01-01', status: 'active',   created_at: new Date() },
+    { id: uuidv4(), member_id: 'MBR-002', first_name: 'Sarah',  last_name: 'Nguyen',  dob: '1990-07-22', email: 'sarah.nguyen@email.com',  phone: '555-0102', plan_id: null, enrollment_tier: 'employee_spouse', enrollment_date: '2026-01-01', status: 'active',   created_at: new Date() },
+    { id: uuidv4(), member_id: 'MBR-003', first_name: 'Robert', last_name: 'Kim',     dob: '1978-11-04', email: 'robert.kim@email.com',    phone: '555-0103', plan_id: null, enrollment_tier: null,              enrollment_date: null,         status: 'inactive', created_at: new Date() },
+    { id: uuidv4(), member_id: 'MBR-004', first_name: 'Maria',  last_name: 'Santos',  dob: '1995-05-30', email: 'maria.santos@email.com',  phone: '555-0104', plan_id: null, enrollment_tier: 'family',          enrollment_date: '2026-01-01', status: 'active',   created_at: new Date() }
   ];
   db.benefits = [
-    { id: uuidv4(), benefit_code: 'BEN-PCP', benefit_name: 'Primary Care Visit', plan_type: 'hmo', benefit_type: 'medical', copay: 20.00, coinsurance: 0, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-SPC', benefit_name: 'Specialist Visit', plan_type: 'ppo', benefit_type: 'medical', copay: 50.00, coinsurance: 20, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-ER', benefit_name: 'Emergency Room', plan_type: 'all', benefit_type: 'medical', copay: 250.00, coinsurance: 20, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-RX-GEN', benefit_name: 'Generic Prescriptions', plan_type: 'all', benefit_type: 'pharmacy', copay: 10.00, coinsurance: 0, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-MRI', benefit_name: 'MRI / CT Scan', plan_type: 'all', benefit_type: 'imaging', copay: 0, coinsurance: 20, covered: 'yes', prior_auth_required: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-PREV', benefit_name: 'Preventive Care (ACA)', plan_type: 'all', benefit_type: 'preventive', copay: 0, coinsurance: 0, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-RX-BRAND', benefit_name: 'Brand Prescriptions', plan_type: 'all', benefit_type: 'pharmacy', copay: 40.00, coinsurance: 0, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-SURG', benefit_name: 'Inpatient Surgery', plan_type: 'all', benefit_type: 'surgical', copay: 0, coinsurance: 20, covered: 'yes', prior_auth_required: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), benefit_code: 'BEN-DENT-PREV', benefit_name: 'Dental Preventive', plan_type: 'all', benefit_type: 'dental', copay: 0, coinsurance: 0, covered: 'yes', prior_auth_required: 'no', status: 'active', created_at: new Date() }
+    { id: uuidv4(), benefit_code: 'BEN-PCP',       benefit_name: 'Primary Care Visit',      plan_type: 'hmo', benefit_type: 'medical',    copay: 20,   coinsurance: 0,  covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-SPC',        benefit_name: 'Specialist Visit',        plan_type: 'ppo', benefit_type: 'medical',    copay: 50,   coinsurance: 20, covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-ER',         benefit_name: 'Emergency Room',          plan_type: 'all', benefit_type: 'medical',    copay: 250,  coinsurance: 20, covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-RX-GEN',     benefit_name: 'Generic Prescriptions',   plan_type: 'all', benefit_type: 'pharmacy',   copay: 10,   coinsurance: 0,  covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-MRI',        benefit_name: 'MRI / CT Scan',           plan_type: 'all', benefit_type: 'imaging',    copay: 0,    coinsurance: 20, covered: 'yes', prior_auth_required: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-PREV',       benefit_name: 'Preventive Care (ACA)',   plan_type: 'all', benefit_type: 'preventive', copay: 0,    coinsurance: 0,  covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-RX-BRAND',   benefit_name: 'Brand Prescriptions',     plan_type: 'all', benefit_type: 'pharmacy',   copay: 40,   coinsurance: 0,  covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-SURG',       benefit_name: 'Inpatient Surgery',       plan_type: 'all', benefit_type: 'surgical',   copay: 0,    coinsurance: 20, covered: 'yes', prior_auth_required: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), benefit_code: 'BEN-DENT-PREV',  benefit_name: 'Dental Preventive',       plan_type: 'all', benefit_type: 'dental',     copay: 0,    coinsurance: 0,  covered: 'yes', prior_auth_required: 'no',  status: 'active', created_at: new Date() }
   ];
   db.pricing = [
-    { id: uuidv4(), pricing_code: 'PRC-001', plan_id: null, tier: 'employee_only', base_premium: 320.00, employer_contribution: 250.00, employee_contribution: 70.00, effective_date: '2026-01-01', status: 'active', created_at: new Date() },
-    { id: uuidv4(), pricing_code: 'PRC-002', plan_id: null, tier: 'employee_spouse', base_premium: 640.00, employer_contribution: 450.00, employee_contribution: 190.00, effective_date: '2026-01-01', status: 'active', created_at: new Date() },
-    { id: uuidv4(), pricing_code: 'PRC-003', plan_id: null, tier: 'employee_child', base_premium: 500.00, employer_contribution: 380.00, employee_contribution: 120.00, effective_date: '2026-01-01', status: 'active', created_at: new Date() },
-    { id: uuidv4(), pricing_code: 'PRC-004', plan_id: null, tier: 'family', base_premium: 900.00, employer_contribution: 600.00, employee_contribution: 300.00, effective_date: '2026-01-01', status: 'active', created_at: new Date() }
+    { id: uuidv4(), pricing_code: 'PRC-001', plan_id: null, tier: 'employee_only',   base_premium: 320,  employer_contribution: 250, employee_contribution: 70,  effective_date: '2026-01-01', status: 'active', created_at: new Date() },
+    { id: uuidv4(), pricing_code: 'PRC-002', plan_id: null, tier: 'employee_spouse', base_premium: 640,  employer_contribution: 450, employee_contribution: 190, effective_date: '2026-01-01', status: 'active', created_at: new Date() },
+    { id: uuidv4(), pricing_code: 'PRC-003', plan_id: null, tier: 'employee_child',  base_premium: 500,  employer_contribution: 380, employee_contribution: 120, effective_date: '2026-01-01', status: 'active', created_at: new Date() },
+    { id: uuidv4(), pricing_code: 'PRC-004', plan_id: null, tier: 'family',          base_premium: 900,  employer_contribution: 600, employee_contribution: 300, effective_date: '2026-01-01', status: 'active', created_at: new Date() }
   ];
   db.claims = [
-    { id: uuidv4(), claim_number: 'CLM-2026-001', member_id: null, plan_id: null, claim_type: 'professional_837p', service_date: '2026-03-10', claim_date: '2026-03-15', provider: 'City Medical Center', diagnosis_code: 'Z00.00', procedure_code: '99213', billed_amount: 250.00, allowed_amount: 180.00, paid_amount: 144.00, status: 'paid', notes: '', created_at: new Date() },
-    { id: uuidv4(), claim_number: 'CLM-2026-002', member_id: null, plan_id: null, claim_type: 'professional_837p', service_date: '2026-04-05', claim_date: '2026-04-10', provider: 'Westside Specialist Group', diagnosis_code: 'M54.5', procedure_code: '99214', billed_amount: 420.00, allowed_amount: 310.00, paid_amount: 248.00, status: 'pending', notes: 'Awaiting EOB', created_at: new Date() },
-    { id: uuidv4(), claim_number: 'CLM-2026-003', member_id: null, plan_id: null, claim_type: 'institutional_837i', service_date: '2026-04-20', claim_date: '2026-04-25', provider: 'Metro Emergency Hospital', diagnosis_code: 'S09.90', procedure_code: '99283', billed_amount: 3200.00, allowed_amount: 2400.00, paid_amount: 1920.00, status: 'paid', notes: '', created_at: new Date() },
-    { id: uuidv4(), claim_number: 'CLM-2026-004', member_id: null, plan_id: null, claim_type: 'institutional_837i', service_date: '2026-06-15', claim_date: '2026-06-20', provider: 'Valley Surgical Center', diagnosis_code: 'K40.90', procedure_code: '49505', billed_amount: 12500.00, allowed_amount: 9000.00, paid_amount: 0, status: 'in_review', notes: 'Prior auth submitted — awaiting UM decision', created_at: new Date() },
-    { id: uuidv4(), claim_number: 'CLM-2026-005', member_id: null, plan_id: null, claim_type: 'professional_837p', service_date: '2026-08-10', claim_date: '2026-08-15', provider: 'City Medical Center', diagnosis_code: 'I10', procedure_code: '99215', billed_amount: 380.00, allowed_amount: 280.00, paid_amount: 0, status: 'denied', notes: 'Out of network — no OON benefit', created_at: new Date() }
+    { id: uuidv4(), claim_number: 'CLM-2026-001', member_id: null, plan_id: null, claim_type: 'professional_837p',  service_date: '2026-03-10', claim_date: '2026-03-15', provider: 'City Medical Center',       diagnosis_code: 'Z00.00', procedure_code: '99213', billed_amount: 250,   allowed_amount: 180,  paid_amount: 144,  status: 'paid',      notes: '',                                           created_at: new Date() },
+    { id: uuidv4(), claim_number: 'CLM-2026-002', member_id: null, plan_id: null, claim_type: 'professional_837p',  service_date: '2026-04-05', claim_date: '2026-04-10', provider: 'Westside Specialist Group', diagnosis_code: 'M54.5',  procedure_code: '99214', billed_amount: 420,   allowed_amount: 310,  paid_amount: 248,  status: 'pending',   notes: 'Awaiting EOB',                               created_at: new Date() },
+    { id: uuidv4(), claim_number: 'CLM-2026-003', member_id: null, plan_id: null, claim_type: 'institutional_837i', service_date: '2026-04-20', claim_date: '2026-04-25', provider: 'Metro Emergency Hospital',  diagnosis_code: 'S09.90', procedure_code: '99283', billed_amount: 3200,  allowed_amount: 2400, paid_amount: 1920, status: 'paid',      notes: '',                                           created_at: new Date() },
+    { id: uuidv4(), claim_number: 'CLM-2026-004', member_id: null, plan_id: null, claim_type: 'institutional_837i', service_date: '2026-06-15', claim_date: '2026-06-20', provider: 'Valley Surgical Center',   diagnosis_code: 'K40.90', procedure_code: '49505', billed_amount: 12500, allowed_amount: 9000, paid_amount: 0,    status: 'in_review', notes: 'Prior auth submitted — awaiting UM decision', created_at: new Date() },
+    { id: uuidv4(), claim_number: 'CLM-2026-005', member_id: null, plan_id: null, claim_type: 'professional_837p',  service_date: '2026-08-10', claim_date: '2026-08-15', provider: 'City Medical Center',       diagnosis_code: 'I10',    procedure_code: '99215', billed_amount: 380,   allowed_amount: 280,  paid_amount: 0,    status: 'denied',    notes: 'Out of network — no OON benefit',            created_at: new Date() }
   ];
   db.groups = [
-    { id: uuidv4(), group_id: 'GRP-001', employer_name: 'Acme Technology Corp', tax_id: '12-3456789', sic_code: '7372', industry: 'technology', group_size: 120, contract_start: '2026-01-01', renewal_date: '2026-12-31', contribution_model: 'defined_contribution', employer_contribution_pct: 75, waiting_period_days: 30, oe_month: 10, contact_name: 'Linda Davis', contact_email: 'hr@acmetech.com', contact_phone: '555-1000', billing_address: '100 Tech Blvd, Austin TX 78701', plan_offerings: 'Silver PPO, Gold PPO Elite, Dental Select', cobra_eligible: 'yes', erisa_plan: 'yes', status: 'active', notes: '', created_at: new Date() },
-    { id: uuidv4(), group_id: 'GRP-002', employer_name: 'Blue Ridge Community Hospital', tax_id: '98-7654321', sic_code: '8062', industry: 'healthcare', group_size: 450, contract_start: '2026-01-01', renewal_date: '2026-12-31', contribution_model: 'defined_benefit', employer_contribution_pct: 90, waiting_period_days: 0, oe_month: 11, contact_name: 'Marcus Webb', contact_email: 'benefits@brchosp.org', contact_phone: '555-2000', billing_address: '500 Hospital Way, Asheville NC 28801', plan_offerings: 'HMO Basic, PPO Plus, Platinum HDHP, Dental Select, Vision Care', cobra_eligible: 'yes', erisa_plan: 'yes', status: 'active', notes: 'Key account — annual review April', created_at: new Date() },
-    { id: uuidv4(), group_id: 'GRP-003', employer_name: 'Main Street Diner Group', tax_id: '55-1122334', sic_code: '5812', industry: 'hospitality', group_size: 18, contract_start: '2026-04-01', renewal_date: '2026-03-31', contribution_model: 'split', employer_contribution_pct: 50, waiting_period_days: 60, oe_month: 3, contact_name: 'Tony Rizzo', contact_email: 'tony@mainstreetdiner.com', contact_phone: '555-3000', billing_address: '22 Main St, Greenville SC 29601', plan_offerings: 'Bronze HMO', cobra_eligible: 'no', erisa_plan: 'yes', status: 'pending', notes: 'New group — awaiting final contract signatures', created_at: new Date() }
+    { id: uuidv4(), group_id: 'GRP-001', employer_name: 'Acme Technology Corp',         tax_id: '12-3456789', sic_code: '7372', industry: 'technology',  group_size: 120, contract_start: '2026-01-01', renewal_date: '2026-12-31', contribution_model: 'defined_contribution', employer_contribution_pct: 75, waiting_period_days: 30, oe_month: 10, contact_name: 'Linda Davis',  contact_email: 'hr@acmetech.com',        contact_phone: '555-1000', billing_address: '100 Tech Blvd, Austin TX 78701',       plan_offerings: 'Silver PPO, Gold PPO Elite, Dental Select',                           cobra_eligible: 'yes', erisa_plan: 'yes', status: 'active',  notes: '',                                          created_at: new Date() },
+    { id: uuidv4(), group_id: 'GRP-002', employer_name: 'Blue Ridge Community Hospital', tax_id: '98-7654321', sic_code: '8062', industry: 'healthcare', group_size: 450, contract_start: '2026-01-01', renewal_date: '2026-12-31', contribution_model: 'defined_benefit',       employer_contribution_pct: 90, waiting_period_days: 0,  oe_month: 11, contact_name: 'Marcus Webb', contact_email: 'benefits@brchosp.org',   contact_phone: '555-2000', billing_address: '500 Hospital Way, Asheville NC 28801', plan_offerings: 'HMO Basic, PPO Plus, Platinum HDHP, Dental Select, Vision Care',    cobra_eligible: 'yes', erisa_plan: 'yes', status: 'active',  notes: 'Key account — annual review April',         created_at: new Date() },
+    { id: uuidv4(), group_id: 'GRP-003', employer_name: 'Main Street Diner Group',       tax_id: '55-1122334', sic_code: '5812', industry: 'hospitality',group_size: 18,  contract_start: '2026-04-01', renewal_date: '2026-03-31', contribution_model: 'split',                 employer_contribution_pct: 50, waiting_period_days: 60, oe_month: 3,  contact_name: 'Tony Rizzo', contact_email: 'tony@mainstreetdiner.com', contact_phone: '555-3000', billing_address: '22 Main St, Greenville SC 29601',      plan_offerings: 'Bronze HMO',                                                          cobra_eligible: 'no',  erisa_plan: 'yes', status: 'pending', notes: 'New group — awaiting final contract signatures', created_at: new Date() }
   ];
   db.providers = [
-    { id: uuidv4(), npi: '1234567890', provider_name: 'City Medical Center', provider_type: 'facility', specialty: 'hospital', taxonomy_code: '282N00000X', network: 'in_network', fee_schedule: 'drg', credentialing_status: 'credentialed', capitation_eligible: 'no', pcp_panel_open: 'na', sanctioned: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), npi: '0987654321', provider_name: 'Dr. Sarah Patel', first_name: 'Sarah', last_name: 'Patel', provider_type: 'individual', specialty: 'primary_care', taxonomy_code: '207Q00000X', network: 'in_network', fee_schedule: 'rbrvs', credentialing_status: 'credentialed', capitation_eligible: 'yes', capitation_pmpm: 22.50, pcp_panel_open: 'yes', panel_capacity: 500, sanctioned: 'no', status: 'active', created_at: new Date() },
-    { id: uuidv4(), npi: '1122334455', provider_name: 'Westside Specialist Group', provider_type: 'group', specialty: 'internal_medicine', taxonomy_code: '207R00000X', network: 'preferred', fee_schedule: 'rbrvs', credentialing_status: 'credentialed', capitation_eligible: 'no', pcp_panel_open: 'no', sanctioned: 'no', status: 'active', created_at: new Date() }
+    { id: uuidv4(), npi: '1234567890', provider_name: 'City Medical Center',      provider_type: 'facility',   specialty: 'hospital',        taxonomy_code: '282N00000X', network: 'in_network', fee_schedule: 'drg',   credentialing_status: 'credentialed', capitation_eligible: 'no',  pcp_panel_open: 'na',  sanctioned: 'no', status: 'active', created_at: new Date() },
+    { id: uuidv4(), npi: '0987654321', provider_name: 'Dr. Sarah Patel',          provider_type: 'individual', specialty: 'primary_care',    taxonomy_code: '207Q00000X', network: 'in_network', fee_schedule: 'rbrvs', credentialing_status: 'credentialed', capitation_eligible: 'yes', capitation_pmpm: 22.50, pcp_panel_open: 'yes', panel_capacity: 500, sanctioned: 'no', status: 'active', created_at: new Date() },
+    { id: uuidv4(), npi: '1122334455', provider_name: 'Westside Specialist Group', provider_type: 'group',      specialty: 'internal_medicine', taxonomy_code: '207R00000X', network: 'preferred',  fee_schedule: 'rbrvs', credentialing_status: 'credentialed', capitation_eligible: 'no',  pcp_panel_open: 'no',  sanctioned: 'no', status: 'active', created_at: new Date() }
   ];
   db.authorizations = [
-    { id: uuidv4(), auth_number: 'AUTH-2026-001', member_id: null, provider_id: null, auth_type: 'inpatient', service_requested: 'Inpatient hospitalization — cardiac catheterization', diagnosis_code: 'I25.10', procedure_code: '93454', units_requested: 3, units_approved: 2, effective_date: '2026-04-15', expiration_date: '2026-07-15', um_decision: 'approved', decision_date: '2026-04-10', decision_by: 'Dr. Kelsey Morton, MD', urgency: 'routine', status: 'active', notes: 'Approved for 2-day inpatient stay', created_at: new Date() },
-    { id: uuidv4(), auth_number: 'AUTH-2026-002', member_id: null, provider_id: null, auth_type: 'specialty_rx', service_requested: 'Adalimumab 40mg — rheumatoid arthritis', diagnosis_code: 'M05.79', procedure_code: 'J0135', units_requested: 12, units_approved: 0, effective_date: null, expiration_date: null, um_decision: 'pending', decision_date: null, decision_by: null, urgency: 'routine', status: 'pending', notes: 'Awaiting clinical documentation from prescribing physician', created_at: new Date() },
-    { id: uuidv4(), auth_number: 'AUTH-2026-003', member_id: null, provider_id: null, auth_type: 'outpatient_surgery', service_requested: 'Knee arthroscopy — right knee', diagnosis_code: 'M23.61', procedure_code: '29881', units_requested: 1, units_approved: 0, effective_date: null, expiration_date: null, um_decision: 'denied', decision_date: '2026-05-02', decision_by: 'UM Team', urgency: 'routine', status: 'closed', notes: 'Denied — conservative treatment required first (PT x12 visits)', created_at: new Date() }
+    { id: uuidv4(), auth_number: 'AUTH-2026-001', member_id: null, provider_id: null, auth_type: 'inpatient',       service_requested: 'Inpatient hospitalization — cardiac catheterization', diagnosis_code: 'I25.10', procedure_code: '93454', units_requested: 3, units_approved: 2, effective_date: '2026-04-15', expiration_date: '2026-07-15', um_decision: 'approved', decision_date: '2026-04-10', decision_by: 'Dr. Kelsey Morton, MD', urgency: 'routine', status: 'active',  notes: 'Approved for 2-day inpatient stay',                                                  created_at: new Date() },
+    { id: uuidv4(), auth_number: 'AUTH-2026-002', member_id: null, provider_id: null, auth_type: 'specialty_rx',    service_requested: 'Adalimumab 40mg — rheumatoid arthritis',              diagnosis_code: 'M05.79', procedure_code: 'J0135', units_requested: 12, units_approved: 0, effective_date: null, expiration_date: null, um_decision: 'pending',  decision_date: null, decision_by: null, urgency: 'routine', status: 'pending', notes: 'Awaiting clinical documentation from prescribing physician',                         created_at: new Date() },
+    { id: uuidv4(), auth_number: 'AUTH-2026-003', member_id: null, provider_id: null, auth_type: 'outpatient_surgery', service_requested: 'Knee arthroscopy — right knee',                    diagnosis_code: 'M23.61', procedure_code: '29881', units_requested: 1,  units_approved: 0, effective_date: null, expiration_date: null, um_decision: 'denied',   decision_date: '2026-05-02', decision_by: 'UM Team', urgency: 'routine', status: 'closed',  notes: 'Denied — conservative treatment required first (PT x12 visits)',                    created_at: new Date() }
   ];
   db['service-groups'] = [
-    { id: uuidv4(), service_group_code: 'SG-MED', service_group_name: 'Medical Services', category: 'medical', accumulator_bucket: 'medical', procedure_ranges: '99201-99499', revenue_codes: '', place_of_service: '11,21,22', benefit_cross_reference: 'BEN-PCP,BEN-SPC', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), service_group_code: 'SG-RX', service_group_name: 'Pharmacy Services', category: 'pharmacy', accumulator_bucket: 'pharmacy', procedure_ranges: '', revenue_codes: '0250-0259', place_of_service: '01', benefit_cross_reference: 'BEN-RX-GEN,BEN-RX-BRAND', applies_to_deductible: 'no', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), service_group_code: 'SG-SURG', service_group_name: 'Surgical Services', category: 'surgical', accumulator_bucket: 'medical', procedure_ranges: '10004-69990', revenue_codes: '0360-0369', place_of_service: '21,24', benefit_cross_reference: 'BEN-SURG', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), service_group_code: 'SG-DENT', service_group_name: 'Dental Services', category: 'dental', accumulator_bucket: 'dental', procedure_ranges: 'D0100-D9999', revenue_codes: '0320', place_of_service: '11', benefit_cross_reference: 'BEN-DENT-PREV', applies_to_deductible: 'no', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), service_group_code: 'SG-IMG', service_group_name: 'Imaging & Radiology', category: 'imaging', accumulator_bucket: 'medical', procedure_ranges: '70010-79999', revenue_codes: '0320,0324', place_of_service: '11,19,22', benefit_cross_reference: 'BEN-MRI', applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() }
+    { id: uuidv4(), service_group_code: 'SG-MED',  service_group_name: 'Medical Services',      category: 'medical',    accumulator_bucket: 'medical',    procedure_ranges: '99201-99499', revenue_codes: '',          place_of_service: '11,21,22', benefit_cross_reference: 'BEN-PCP,BEN-SPC',       applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), service_group_code: 'SG-RX',   service_group_name: 'Pharmacy Services',     category: 'pharmacy',   accumulator_bucket: 'pharmacy',   procedure_ranges: '',            revenue_codes: '0250-0259', place_of_service: '01',       benefit_cross_reference: 'BEN-RX-GEN,BEN-RX-BRAND', applies_to_deductible: 'no',  applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), service_group_code: 'SG-SURG', service_group_name: 'Surgical Services',     category: 'surgical',   accumulator_bucket: 'medical',    procedure_ranges: '10004-69990', revenue_codes: '0360-0369', place_of_service: '21,24',    benefit_cross_reference: 'BEN-SURG',                 applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), service_group_code: 'SG-DENT', service_group_name: 'Dental Services',       category: 'dental',     accumulator_bucket: 'dental',     procedure_ranges: 'D0100-D9999', revenue_codes: '0320',      place_of_service: '11',       benefit_cross_reference: 'BEN-DENT-PREV',            applies_to_deductible: 'no',  applies_to_oop: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), service_group_code: 'SG-IMG',  service_group_name: 'Imaging & Radiology',  category: 'imaging',    accumulator_bucket: 'medical',    procedure_ranges: '70010-79999', revenue_codes: '0320,0324', place_of_service: '11,19,22', benefit_cross_reference: 'BEN-MRI',                  applies_to_deductible: 'yes', applies_to_oop: 'yes', status: 'active', created_at: new Date() }
   ];
   db['provider-contracts'] = [
-    { id: uuidv4(), contract_number: 'CTR-2026-001', provider_name: 'City Medical Center', contract_type: 'facility', network_tier: 'in_network', reimbursement_method: 'drg', reimbursement_rate: 92.00, capitation_pmpm: 0, risk_arrangement: 'none', quality_incentive: 'yes', quality_withhold_pct: 2, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: 'transplants,CAR-T', notes: 'Tier 1 facility', status: 'active', created_at: new Date() },
-    { id: uuidv4(), contract_number: 'CTR-2026-002', provider_name: 'Dr. Sarah Patel', contract_type: 'individual', network_tier: 'in_network', reimbursement_method: 'rbrvs', reimbursement_rate: 110.00, capitation_pmpm: 22.50, risk_arrangement: 'partial_capitation', quality_incentive: 'yes', quality_withhold_pct: 5, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '', notes: 'PCP capitation model', status: 'active', created_at: new Date() },
-    { id: uuidv4(), contract_number: 'CTR-2026-003', provider_name: 'Westside Specialist Group', contract_type: 'group', network_tier: 'preferred', reimbursement_method: 'rbrvs', reimbursement_rate: 105.00, capitation_pmpm: 0, risk_arrangement: 'none', quality_incentive: 'no', quality_withhold_pct: 0, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '', notes: '', status: 'active', created_at: new Date() }
+    { id: uuidv4(), contract_number: 'CTR-2026-001', provider_name: 'City Medical Center',       contract_type: 'facility',   network_tier: 'in_network', reimbursement_method: 'drg',   reimbursement_rate: 92,  capitation_pmpm: 0,     risk_arrangement: 'none',              quality_incentive: 'yes', quality_withhold_pct: 2, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: 'transplants,CAR-T', notes: 'Tier 1 facility',       status: 'active', created_at: new Date() },
+    { id: uuidv4(), contract_number: 'CTR-2026-002', provider_name: 'Dr. Sarah Patel',           contract_type: 'individual', network_tier: 'in_network', reimbursement_method: 'rbrvs', reimbursement_rate: 110, capitation_pmpm: 22.50, risk_arrangement: 'partial_capitation', quality_incentive: 'yes', quality_withhold_pct: 5, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '',                  notes: 'PCP capitation model', status: 'active', created_at: new Date() },
+    { id: uuidv4(), contract_number: 'CTR-2026-003', provider_name: 'Westside Specialist Group', contract_type: 'group',      network_tier: 'preferred',  reimbursement_method: 'rbrvs', reimbursement_rate: 105, capitation_pmpm: 0,     risk_arrangement: 'none',              quality_incentive: 'no',  quality_withhold_pct: 0, auto_adjudicate: 'yes', edi_enabled: 'yes', effective_date: '2026-01-01', termination_date: '2026-12-31', carve_outs: '',                  notes: '',                     status: 'active', created_at: new Date() }
   ];
   db['fee-tables'] = [
-    { id: uuidv4(), fee_table_code: 'FT-RBRVS-NAT', fee_table_name: 'RBRVS National Standard', fee_table_type: 'rbrvs', locality: 'National', conversion_factor: 38.87, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214,99215', status: 'active', created_at: new Date() },
-    { id: uuidv4(), fee_table_code: 'FT-DRG-2026', fee_table_name: 'DRG Grouper 2026', fee_table_type: 'drg', locality: 'National', conversion_factor: 1.00, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no', sample_codes: 'DRG-470,DRG-291', status: 'active', created_at: new Date() },
-    { id: uuidv4(), fee_table_code: 'FT-DENT-ADA', fee_table_name: 'ADA Dental Fee Schedule', fee_table_type: 'dental', locality: 'National', conversion_factor: 1.00, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no', sample_codes: 'D0120,D0210,D1110', status: 'active', created_at: new Date() },
-    { id: uuidv4(), fee_table_code: 'FT-RBRVS-CAL', fee_table_name: 'RBRVS California Locality', fee_table_type: 'rbrvs', locality: 'California', conversion_factor: 41.20, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214', status: 'active', created_at: new Date() }
+    { id: uuidv4(), fee_table_code: 'FT-RBRVS-NAT', fee_table_name: 'RBRVS National Standard',    fee_table_type: 'rbrvs',  locality: 'National',    conversion_factor: 38.87, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214,99215', status: 'active', created_at: new Date() },
+    { id: uuidv4(), fee_table_code: 'FT-DRG-2026',  fee_table_name: 'DRG Grouper 2026',           fee_table_type: 'drg',    locality: 'National',    conversion_factor: 1.00,  effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no',  sample_codes: 'DRG-470,DRG-291', status: 'active', created_at: new Date() },
+    { id: uuidv4(), fee_table_code: 'FT-DENT-ADA',  fee_table_name: 'ADA Dental Fee Schedule',    fee_table_type: 'dental', locality: 'National',    conversion_factor: 1.00,  effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'no',  sample_codes: 'D0120,D0210,D1110', status: 'active', created_at: new Date() },
+    { id: uuidv4(), fee_table_code: 'FT-RBRVS-CAL', fee_table_name: 'RBRVS California Locality',  fee_table_type: 'rbrvs',  locality: 'California',  conversion_factor: 41.20, effective_date: '2026-01-01', termination_date: '2026-12-31', modifier_support: 'yes', sample_codes: '99213,99214', status: 'active', created_at: new Date() }
   ];
   db['networx-configs'] = [
-    { id: uuidv4(), config_code: 'NX-INN-RBRVS', config_name: 'In-Network RBRVS Pricing', network_tier: 'in_network', pricing_method: 'rbrvs', rbrvs_pct: 110.00, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'none', qualifier_value: '', modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 50000, outlier_pct: 80, status: 'active', created_at: new Date() },
-    { id: uuidv4(), config_code: 'NX-PREF-RBRVS', config_name: 'Preferred Network RBRVS', network_tier: 'preferred', pricing_method: 'rbrvs', rbrvs_pct: 105.00, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'specialty', qualifier_value: 'internal_medicine', modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 75000, outlier_pct: 75, status: 'active', created_at: new Date() },
-    { id: uuidv4(), config_code: 'NX-OON-UCR', config_name: 'Out-of-Network UCR', network_tier: 'out_of_network', pricing_method: 'ucr', rbrvs_pct: 80.00, fee_table_code: '', qualifier_type: 'none', qualifier_value: '', modifier_adjustments: 'no', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 100000, outlier_pct: 60, status: 'active', created_at: new Date() },
-    { id: uuidv4(), config_code: 'NX-CAP-PCP', config_name: 'PCP Capitation Model', network_tier: 'in_network', pricing_method: 'capitation', rbrvs_pct: 0, fee_table_code: '', qualifier_type: 'specialty', qualifier_value: 'primary_care', modifier_adjustments: 'no', place_of_service_override: 'no', geographic_adjustment: 'no', outlier_threshold: 0, outlier_pct: 0, status: 'active', created_at: new Date() }
+    { id: uuidv4(), config_code: 'NX-INN-RBRVS',  config_name: 'In-Network RBRVS Pricing',   network_tier: 'in_network',     pricing_method: 'rbrvs',      rbrvs_pct: 110, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'none',      qualifier_value: '',               modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 50000,  outlier_pct: 80, status: 'active', created_at: new Date() },
+    { id: uuidv4(), config_code: 'NX-PREF-RBRVS', config_name: 'Preferred Network RBRVS',    network_tier: 'preferred',      pricing_method: 'rbrvs',      rbrvs_pct: 105, fee_table_code: 'FT-RBRVS-NAT', qualifier_type: 'specialty', qualifier_value: 'internal_medicine', modifier_adjustments: 'yes', place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 75000,  outlier_pct: 75, status: 'active', created_at: new Date() },
+    { id: uuidv4(), config_code: 'NX-OON-UCR',    config_name: 'Out-of-Network UCR',         network_tier: 'out_of_network', pricing_method: 'ucr',        rbrvs_pct: 80,  fee_table_code: '',              qualifier_type: 'none',      qualifier_value: '',               modifier_adjustments: 'no',  place_of_service_override: 'no', geographic_adjustment: 'yes', outlier_threshold: 100000, outlier_pct: 60, status: 'active', created_at: new Date() },
+    { id: uuidv4(), config_code: 'NX-CAP-PCP',    config_name: 'PCP Capitation Model',       network_tier: 'in_network',     pricing_method: 'capitation', rbrvs_pct: 0,   fee_table_code: '',              qualifier_type: 'specialty', qualifier_value: 'primary_care',     modifier_adjustments: 'no',  place_of_service_override: 'no', geographic_adjustment: 'no',  outlier_threshold: 0,      outlier_pct: 0,  status: 'active', created_at: new Date() }
   ];
   db['program-configs'] = [
-    { id: uuidv4(), program_code: 'PGM-MCR-ADV', program_name: 'Medicare Advantage Plan', program_type: 'medicare', sub_type: 'mapd', state: 'National', cms_contract_id: 'H1234', effective_date: '2026-01-01', formulary_type: 'standard', snp_type: 'none', msp_primary: 'medicare', msp_secondary: 'commercial', crossover_claims: 'yes', spend_down_applies: 'no', prior_auth_override: 'cms_exempt', waiver_type: 'none', risk_score_model: 'v28', encounter_data_required: 'yes', cost_sharing_rules: 'cms_standard', status: 'active', created_at: new Date() },
-    { id: uuidv4(), program_code: 'PGM-MCD-FFS', program_name: 'Medicaid Fee-for-Service', program_type: 'medicaid', sub_type: 'ffs', state: 'TX', cms_contract_id: 'TX-MCD-001', effective_date: '2026-01-01', formulary_type: 'state_pdl', snp_type: 'none', msp_primary: 'medicaid', msp_secondary: 'none', crossover_claims: 'yes', spend_down_applies: 'yes', prior_auth_override: 'state_exempt', waiver_type: '1115_waiver', risk_score_model: 'none', encounter_data_required: 'no', cost_sharing_rules: 'state_standard', status: 'active', created_at: new Date() },
-    { id: uuidv4(), program_code: 'PGM-DSNP-001', program_name: 'D-SNP Dual Eligible Plan', program_type: 'medicare', sub_type: 'dsnp', state: 'TX', cms_contract_id: 'H5678', effective_date: '2026-01-01', formulary_type: 'enhanced', snp_type: 'dual_eligible', msp_primary: 'medicare', msp_secondary: 'medicaid', crossover_claims: 'yes', spend_down_applies: 'no', prior_auth_override: 'cms_exempt', waiver_type: 'mou', risk_score_model: 'v28', encounter_data_required: 'yes', cost_sharing_rules: 'zero_cost_share', status: 'active', created_at: new Date() }
+    { id: uuidv4(), program_code: 'PGM-MCR-ADV',  program_name: 'Medicare Advantage Plan',     program_type: 'medicare', sub_type: 'mapd',        state: 'National', cms_contract_id: 'H1234',    effective_date: '2026-01-01', formulary_type: 'standard',  snp_type: 'none',         msp_primary: 'medicare', msp_secondary: 'commercial', crossover_claims: 'yes', spend_down_applies: 'no',  prior_auth_override: 'cms_exempt',   waiver_type: 'none',       risk_score_model: 'v28',  encounter_data_required: 'yes', cost_sharing_rules: 'cms_standard',  status: 'active', created_at: new Date() },
+    { id: uuidv4(), program_code: 'PGM-MCD-FFS',  program_name: 'Medicaid Fee-for-Service',    program_type: 'medicaid', sub_type: 'ffs',         state: 'TX',       cms_contract_id: 'TX-MCD-001', effective_date: '2026-01-01', formulary_type: 'state_pdl', snp_type: 'none',         msp_primary: 'medicaid', msp_secondary: 'none',       crossover_claims: 'yes', spend_down_applies: 'yes', prior_auth_override: 'state_exempt', waiver_type: '1115_waiver', risk_score_model: 'none', encounter_data_required: 'no',  cost_sharing_rules: 'state_standard', status: 'active', created_at: new Date() },
+    { id: uuidv4(), program_code: 'PGM-DSNP-001', program_name: 'D-SNP Dual Eligible Plan',   program_type: 'medicare', sub_type: 'dsnp',        state: 'TX',       cms_contract_id: 'H5678',    effective_date: '2026-01-01', formulary_type: 'enhanced',  snp_type: 'dual_eligible', msp_primary: 'medicare', msp_secondary: 'medicaid',   crossover_claims: 'yes', spend_down_applies: 'no',  prior_auth_override: 'cms_exempt',   waiver_type: 'mou',        risk_score_model: 'v28',  encounter_data_required: 'yes', cost_sharing_rules: 'zero_cost_share', status: 'active', created_at: new Date() }
   ];
   db['claim-pends'] = [
-    { id: uuidv4(), pend_number: 'PND-2026-001', claim_id: 'CLM-2026-002', reason_code: 'AUTH-001', category: 'authorization', severity: 'high', assigned_to: 'UM Team', due_date: '2026-04-20', description: 'Prior auth not on file for specialty service', resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open', created_at: new Date() },
-    { id: uuidv4(), pend_number: 'PND-2026-002', claim_id: 'CLM-2026-004', reason_code: 'COB-002', category: 'coordination_of_benefits', severity: 'medium', assigned_to: 'COB Team', due_date: '2026-06-30', description: 'COB information missing — member may have other coverage', resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open', created_at: new Date() },
-    { id: uuidv4(), pend_number: 'PND-2026-003', claim_id: 'CLM-2026-001', reason_code: 'DUP-001', category: 'duplicate', severity: 'low', assigned_to: 'Claims Team', due_date: '2026-03-25', description: 'Possible duplicate claim — same DOS and procedure', resolution_action: 'denied_duplicate', resolved_by: 'J. Smith', resolution_notes: 'Confirmed duplicate — original paid', status: 'resolved', created_at: new Date() }
+    { id: uuidv4(), pend_number: 'PND-2026-001', claim_id: 'CLM-2026-002', reason_code: 'AUTH-001', category: 'authorization',         severity: 'high',   assigned_to: 'UM Team',     due_date: '2026-04-20', description: 'Prior auth not on file for specialty service',              resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open',     created_at: new Date() },
+    { id: uuidv4(), pend_number: 'PND-2026-002', claim_id: 'CLM-2026-004', reason_code: 'COB-002', category: 'coordination_of_benefits', severity: 'medium', assigned_to: 'COB Team',    due_date: '2026-06-30', description: 'COB information missing — member may have other coverage', resolution_action: null, resolved_by: null, resolution_notes: null, status: 'open',     created_at: new Date() },
+    { id: uuidv4(), pend_number: 'PND-2026-003', claim_id: 'CLM-2026-001', reason_code: 'DUP-001', category: 'duplicate',               severity: 'low',    assigned_to: 'Claims Team', due_date: '2026-03-25', description: 'Possible duplicate claim — same DOS and procedure',          resolution_action: 'denied_duplicate', resolved_by: 'J. Smith', resolution_notes: 'Confirmed duplicate — original paid', status: 'resolved', created_at: new Date() }
   ];
   db['classes'] = [
-    { id: uuidv4(), class_code: 'CLS-FT', class_name: 'Full-Time Employees', description: 'Standard full-time employees working 30+ hours/week', eligible_plans: 'Bronze HMO, Silver PPO, Gold PPO Elite, Platinum HDHP', waiting_period_days: 30, contribution_override_pct: 75, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), class_code: 'CLS-PT', class_name: 'Part-Time Employees', description: 'Part-time employees working 20-29 hours/week', eligible_plans: 'Bronze HMO, Silver PPO', waiting_period_days: 60, contribution_override_pct: 50, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), class_code: 'CLS-EXEC', class_name: 'Executive / Management', description: 'Director level and above — enhanced benefits', eligible_plans: 'Gold PPO Elite, Platinum HDHP', waiting_period_days: 0, contribution_override_pct: 90, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
-    { id: uuidv4(), class_code: 'CLS-CONTR', class_name: 'Contract / Temporary', description: 'Contract workers — limited benefit eligibility', eligible_plans: 'Bronze HMO', waiting_period_days: 90, contribution_override_pct: 25, cobra_eligible: 'no', status: 'active', created_at: new Date() }
+    { id: uuidv4(), class_code: 'CLS-FT',    class_name: 'Full-Time Employees',    description: 'Standard full-time employees working 30+ hours/week', eligible_plans: 'Bronze HMO, Silver PPO, Gold PPO Elite, Platinum HDHP', waiting_period_days: 30, contribution_override_pct: 75, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), class_code: 'CLS-PT',    class_name: 'Part-Time Employees',    description: 'Part-time employees working 20-29 hours/week',         eligible_plans: 'Bronze HMO, Silver PPO',                               waiting_period_days: 60, contribution_override_pct: 50, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), class_code: 'CLS-EXEC',  class_name: 'Executive / Management', description: 'Director level and above — enhanced benefits',          eligible_plans: 'Gold PPO Elite, Platinum HDHP',                        waiting_period_days: 0,  contribution_override_pct: 90, cobra_eligible: 'yes', status: 'active', created_at: new Date() },
+    { id: uuidv4(), class_code: 'CLS-CONTR', class_name: 'Contract / Temporary',   description: 'Contract workers — limited benefit eligibility',        eligible_plans: 'Bronze HMO',                                           waiting_period_days: 90, contribution_override_pct: 25, cobra_eligible: 'no',  status: 'active', created_at: new Date() }
   ];
-  console.log('✅ In-memory DB seeded');
+  console.log('✅ In-memory DB seeded with defaults');
 }
 
-// ─── Always seed in-memory first, then try Postgres ───────────────────────────
-seedDB();
+// ─── BOOT SEQUENCE ────────────────────────────────────────────────────────────
+// 1. Try to load saved data from disk
+const saved = loadFromFile();
+if (saved) {
+  // Merge saved data over defaults — only overwrite keys that exist in saved file
+  Object.keys(saved).forEach(k => { if (Array.isArray(saved[k])) db[k] = saved[k]; });
+  // Seed any keys that are empty (new modules added after initial deploy)
+  const needsSeed = Object.keys(db).every(k => (db[k] || []).length === 0);
+  if (needsSeed) seedDB();
+} else {
+  // No saved file — seed defaults
+  seedDB();
+}
 
 // ─── POSTGRES (optional) ──────────────────────────────────────────────────────
 let pool = null;
@@ -135,29 +181,51 @@ if (process.env.DATABASE_URL) {
     const { Pool } = require('pg');
     pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 5000 });
     pool.query('SELECT 1')
-      .then(() => { console.log('✅ PostgreSQL connected'); usePostgres = true; })
-      .catch(err => { console.log('⚠ PG failed, staying in-memory:', err.message); });
+      .then(() => { console.log('✅ PostgreSQL connected — Postgres mode active'); usePostgres = true; })
+      .catch(err => { console.log('⚠ PG ping failed, staying in-memory+file mode:', err.message); });
   } catch (e) { console.log('⚠ pg module error:', e.message); }
 } else {
-  console.log('ℹ No DATABASE_URL — using in-memory store');
+  console.log('ℹ No DATABASE_URL — using in-memory + file persistence');
 }
 
 // ─── IN-MEMORY HELPERS ────────────────────────────────────────────────────────
-function memAll(t) { return [...db[t]]; }
-function memFind(t, id) { return db[t].find(r => r.id === id); }
-function memCreate(t, data) { const rec = { id: uuidv4(), ...data, created_at: new Date() }; db[t].push(rec); auditLog('CREATE', t, rec.id, rec); return rec; }
-function memUpdate(t, id, data) { const i = db[t].findIndex(r => r.id === id); if (i === -1) return null; db[t][i] = { ...db[t][i], ...data, updated_at: new Date() }; auditLog('UPDATE', t, id, data); return db[t][i]; }
-function memDelete(t, id) { const i = db[t].findIndex(r => r.id === id); if (i === -1) return false; auditLog('DELETE', t, id, {}); db[t].splice(i, 1); return true; }
-function auditLog(action, table_name, record_id, changes) {
+function memAll(t)         { return [...(db[t] || [])]; }
+function memFind(t, id)    { return (db[t] || []).find(r => r.id === id); }
+function memCreate(t, data){
+  if (!db[t]) db[t] = [];
+  const rec = { id: uuidv4(), ...data, created_at: new Date() };
+  db[t].unshift(rec);
+  auditLog('CREATE', t, rec.id, rec);
+  debouncedSave();
+  return rec;
+}
+function memUpdate(t, id, data){
+  const i = (db[t] || []).findIndex(r => r.id === id);
+  if (i === -1) return null;
+  db[t][i] = { ...db[t][i], ...data, updated_at: new Date() };
+  auditLog('UPDATE', t, id, data);
+  debouncedSave();
+  return db[t][i];
+}
+function memDelete(t, id){
+  const i = (db[t] || []).findIndex(r => r.id === id);
+  if (i === -1) return false;
+  auditLog('DELETE', t, id, {});
+  db[t].splice(i, 1);
+  debouncedSave();
+  return true;
+}
+function auditLog(action, table_name, record_id, changes){
+  if (!db.audit_logs) db.audit_logs = [];
   db.audit_logs.unshift({ id: uuidv4(), action, table_name, record_id, changes: JSON.stringify(changes), performed_by: 'system', created_at: new Date() });
   if (db.audit_logs.length > 1000) db.audit_logs.pop();
 }
-async function pgQuery(text, params = []) { const client = await pool.connect(); try { return await client.query(text, params); } finally { client.release(); } }
+async function pgQuery(text, params = []){ const client = await pool.connect(); try { return await client.query(text, params); } finally { client.release(); } }
 
 // ─── ROUTE FACTORY ────────────────────────────────────────────────────────────
-function crudRoutes(app, route, table, pgInsert, pgUpdate) {
+function crudRoutes(app, route, table, pgInsert, pgUpdate){
   app.get(`/api/${route}`, async (req, res) => {
-    try { if (usePostgres) { const r = await pgQuery(`SELECT * FROM ${table} ORDER BY created_at DESC`); return res.json(r.rows); } res.json(memAll(table)); } catch (e) { res.status(500).json({ error: e.message }); }
+    try { if (usePostgres) { const r = await pgQuery(`SELECT * FROM ${table} ORDER BY created_at DESC`); return res.json(r.rows); } res.json(memAll(table)); } catch (e) { res.json(memAll(table)); }
   });
   app.get(`/api/${route}/:id`, async (req, res) => {
     try { if (usePostgres) { const r = await pgQuery(`SELECT * FROM ${table} WHERE id=$1`, [req.params.id]); return r.rows.length ? res.json(r.rows[0]) : res.status(404).json({ error: 'Not found' }); } const rec = memFind(table, req.params.id); rec ? res.json(rec) : res.status(404).json({ error: 'Not found' }); } catch (e) { res.status(500).json({ error: e.message }); }
@@ -173,20 +241,43 @@ function crudRoutes(app, route, table, pgInsert, pgUpdate) {
   });
 }
 
-// ─── SIMPLE CRUD HELPER (in-memory only, for new tables) ─────────────────────
-function simpleCrud(route, key) {
-  app.get(`/api/${route}`, (req, res) => res.json([...db[key]]));
-  app.get(`/api/${route}/:id`, (req, res) => { const r = db[key].find(x => x.id === req.params.id); r ? res.json(r) : res.status(404).json({ error: 'Not found' }); });
-  app.post(`/api/${route}`, (req, res) => { const r = { id: uuidv4(), ...req.body, created_at: new Date() }; db[key].push(r); res.status(201).json(r); });
-  app.put(`/api/${route}/:id`, (req, res) => { const i = db[key].findIndex(x => x.id === req.params.id); if (i === -1) return res.status(404).json({ error: 'Not found' }); db[key][i] = { ...db[key][i], ...req.body, updated_at: new Date() }; res.json(db[key][i]); });
-  app.delete(`/api/${route}/:id`, (req, res) => { const i = db[key].findIndex(x => x.id === req.params.id); if (i === -1) return res.status(404).json({ error: 'Not found' }); db[key].splice(i, 1); res.json({ success: true }); });
+// ─── SIMPLE CRUD (file-persisted in-memory, all new modules) ─────────────────
+function simpleCrud(route, key){
+  if (!db[key]) db[key] = [];
+  app.get(`/api/${route}`, (req, res) => res.json([...(db[key] || [])]));
+  app.get(`/api/${route}/:id`, (req, res) => {
+    const r = (db[key] || []).find(x => x.id === req.params.id);
+    r ? res.json(r) : res.status(404).json({ error: 'Not found' });
+  });
+  app.post(`/api/${route}`, (req, res) => {
+    if (!db[key]) db[key] = [];
+    const r = { id: uuidv4(), ...req.body, created_at: new Date() };
+    db[key].unshift(r);
+    auditLog('CREATE', key, r.id, r);
+    debouncedSave();
+    res.status(201).json(r);
+  });
+  app.put(`/api/${route}/:id`, (req, res) => {
+    const i = (db[key] || []).findIndex(x => x.id === req.params.id);
+    if (i === -1) return res.status(404).json({ error: 'Not found' });
+    db[key][i] = { ...db[key][i], ...req.body, updated_at: new Date() };
+    auditLog('UPDATE', key, req.params.id, req.body);
+    debouncedSave();
+    res.json(db[key][i]);
+  });
+  app.delete(`/api/${route}/:id`, (req, res) => {
+    const i = (db[key] || []).findIndex(x => x.id === req.params.id);
+    if (i === -1) return res.status(404).json({ error: 'Not found' });
+    auditLog('DELETE', key, req.params.id, {});
+    db[key].splice(i, 1);
+    debouncedSave();
+    res.json({ success: true });
+  });
 }
 
-// ─── ALL API ROUTES (must be before the wildcard catch-all) ──────────────────
-
-// Core CRUD with Postgres support
+// ─── CORE CRUD WITH POSTGRES SUPPORT ─────────────────────────────────────────
 crudRoutes(app, 'members', 'members',
-  async (d) => { try { const r = await pgQuery(`INSERT INTO members(id,member_id,first_name,last_name,dob,email,phone,plan_id,enrollment_tier,enrollment_date,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`, [uuidv4(),d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.enrollment_tier||null,d.enrollment_date||null,d.status||'active']); return r.rows[0]; } catch(e) { const r = await pgQuery(`INSERT INTO members(id,member_id,first_name,last_name,dob,email,phone,plan_id,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,[uuidv4(),d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.status||'active']); return r.rows[0]; } },
+  async (d) => { try { const r = await pgQuery(`INSERT INTO members(id,member_id,first_name,last_name,dob,email,phone,plan_id,enrollment_tier,enrollment_date,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,[uuidv4(),d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.enrollment_tier||null,d.enrollment_date||null,d.status||'active']); return r.rows[0]; } catch(e) { const r = await pgQuery(`INSERT INTO members(id,member_id,first_name,last_name,dob,email,phone,plan_id,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,[uuidv4(),d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.status||'active']); return r.rows[0]; } },
   async (id, d) => { try { const r = await pgQuery(`UPDATE members SET member_id=$1,first_name=$2,last_name=$3,dob=$4,email=$5,phone=$6,plan_id=$7,enrollment_tier=$8,enrollment_date=$9,status=$10,updated_at=NOW() WHERE id=$11 RETURNING *`,[d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.enrollment_tier||null,d.enrollment_date||null,d.status,id]); return r.rows[0]; } catch(e) { const r = await pgQuery(`UPDATE members SET member_id=$1,first_name=$2,last_name=$3,dob=$4,email=$5,phone=$6,plan_id=$7,status=$8,updated_at=NOW() WHERE id=$9 RETURNING *`,[d.member_id,d.first_name,d.last_name,d.dob||null,d.email||null,d.phone||null,d.plan_id||null,d.status,id]); return r.rows[0]; } }
 );
 crudRoutes(app, 'products', 'products',
@@ -205,18 +296,13 @@ crudRoutes(app, 'claims', 'claims',
   async (d) => { const r = await pgQuery(`INSERT INTO claims(id,claim_number,member_id,plan_id,service_date,claim_date,provider,diagnosis_code,procedure_code,billed_amount,allowed_amount,paid_amount,status,notes) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,[uuidv4(),d.claim_number,d.member_id||null,d.plan_id||null,d.service_date||null,d.claim_date||null,d.provider||'',d.diagnosis_code||'',d.procedure_code||'',d.billed_amount||0,d.allowed_amount||0,d.paid_amount||0,d.status||'pending',d.notes||'']); return r.rows[0]; },
   async (id, d) => { const r = await pgQuery(`UPDATE claims SET claim_number=$1,member_id=$2,plan_id=$3,service_date=$4,claim_date=$5,provider=$6,diagnosis_code=$7,procedure_code=$8,billed_amount=$9,allowed_amount=$10,paid_amount=$11,status=$12,notes=$13,updated_at=NOW() WHERE id=$14 RETURNING *`,[d.claim_number,d.member_id||null,d.plan_id||null,d.service_date||null,d.claim_date||null,d.provider||'',d.diagnosis_code||'',d.procedure_code||'',d.billed_amount||0,d.allowed_amount||0,d.paid_amount||0,d.status,d.notes||'',id]); return r.rows[0]; }
 );
-// Groups — full schema with safe Postgres fallback if columns are missing
+
+// Groups — full schema with safe Postgres fallback
 app.get('/api/groups', async (req, res) => {
-  try {
-    if (usePostgres) { const r = await pgQuery('SELECT * FROM groups ORDER BY created_at DESC'); return res.json(r.rows); }
-    res.json([...db.groups]);
-  } catch(e) { res.json([...db.groups]); } // fallback to in-memory on schema error
+  try { if (usePostgres) { const r = await pgQuery('SELECT * FROM groups ORDER BY created_at DESC'); return res.json(r.rows); } res.json([...db.groups]); } catch(e) { res.json([...db.groups]); }
 });
 app.get('/api/groups/:id', async (req, res) => {
-  try {
-    if (usePostgres) { const r = await pgQuery('SELECT * FROM groups WHERE id=$1', [req.params.id]); return r.rows.length ? res.json(r.rows[0]) : res.status(404).json({error:'Not found'}); }
-    const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'});
-  } catch(e) { const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'}); }
+  try { if (usePostgres) { const r = await pgQuery('SELECT * FROM groups WHERE id=$1', [req.params.id]); return r.rows.length ? res.json(r.rows[0]) : res.status(404).json({error:'Not found'}); } const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'}); } catch(e) { const rec = db.groups.find(r => r.id === req.params.id); rec ? res.json(rec) : res.status(404).json({error:'Not found'}); }
 });
 app.post('/api/groups', async (req, res) => {
   const d = req.body;
@@ -225,11 +311,13 @@ app.post('/api/groups', async (req, res) => {
       try {
         const r = await pgQuery(`INSERT INTO groups(id,group_id,employer_name,tax_id,sic_code,industry,group_size,contract_start,renewal_date,contribution_model,employer_contribution_pct,waiting_period_days,oe_month,plan_offerings,contact_name,contact_email,contact_phone,billing_address,cobra_eligible,erisa_plan,notes,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING *`,[uuidv4(),d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active']);
         return res.status(201).json(r.rows[0]);
-      } catch(pgErr) {
-        console.log('Groups PG insert failed (schema mismatch?), using in-memory:', pgErr.message);
-      }
+      } catch(pgErr) { console.log('Groups PG insert failed, using in-memory+file:', pgErr.message); }
     }
-    const rec = { id: uuidv4(), ...d, created_at: new Date() }; db.groups.push(rec); res.status(201).json(rec);
+    const rec = { id: uuidv4(), ...d, created_at: new Date() };
+    db.groups.unshift(rec);
+    auditLog('CREATE', 'groups', rec.id, rec);
+    debouncedSave();
+    res.status(201).json(rec);
   } catch(e) { res.status(500).json({error: e.message}); }
 });
 app.put('/api/groups/:id', async (req, res) => {
@@ -239,13 +327,14 @@ app.put('/api/groups/:id', async (req, res) => {
       try {
         const r = await pgQuery(`UPDATE groups SET group_id=$1,employer_name=$2,tax_id=$3,sic_code=$4,industry=$5,group_size=$6,contract_start=$7,renewal_date=$8,contribution_model=$9,employer_contribution_pct=$10,waiting_period_days=$11,oe_month=$12,plan_offerings=$13,contact_name=$14,contact_email=$15,contact_phone=$16,billing_address=$17,cobra_eligible=$18,erisa_plan=$19,notes=$20,status=$21,updated_at=NOW() WHERE id=$22 RETURNING *`,[d.group_id,d.employer_name,d.tax_id||'',d.sic_code||'',d.industry||'other',d.group_size||0,d.contract_start||null,d.renewal_date||null,d.contribution_model||'defined_contribution',d.employer_contribution_pct||0,d.waiting_period_days||0,d.oe_month||10,d.plan_offerings||'',d.contact_name||'',d.contact_email||'',d.contact_phone||'',d.billing_address||'',d.cobra_eligible||'yes',d.erisa_plan||'yes',d.notes||'',d.status||'active',req.params.id]);
         return r.rows[0] ? res.json(r.rows[0]) : res.status(404).json({error:'Not found'});
-      } catch(pgErr) {
-        console.log('Groups PG update failed (schema mismatch?), using in-memory:', pgErr.message);
-      }
+      } catch(pgErr) { console.log('Groups PG update failed, using in-memory+file:', pgErr.message); }
     }
     const i = db.groups.findIndex(r => r.id === req.params.id);
     if (i === -1) return res.status(404).json({error:'Not found'});
-    db.groups[i] = { ...db.groups[i], ...d, updated_at: new Date() }; res.json(db.groups[i]);
+    db.groups[i] = { ...db.groups[i], ...d, updated_at: new Date() };
+    auditLog('UPDATE', 'groups', req.params.id, d);
+    debouncedSave();
+    res.json(db.groups[i]);
   } catch(e) { res.status(500).json({error: e.message}); }
 });
 app.delete('/api/groups/:id', async (req, res) => {
@@ -253,9 +342,13 @@ app.delete('/api/groups/:id', async (req, res) => {
     if (usePostgres) { try { await pgQuery('DELETE FROM groups WHERE id=$1', [req.params.id]); return res.json({success:true}); } catch(pgErr) { console.log('Groups PG delete failed:', pgErr.message); } }
     const i = db.groups.findIndex(r => r.id === req.params.id);
     if (i === -1) return res.status(404).json({error:'Not found'});
-    db.groups.splice(i, 1); res.json({success:true});
+    auditLog('DELETE', 'groups', req.params.id, {});
+    db.groups.splice(i, 1);
+    debouncedSave();
+    res.json({success:true});
   } catch(e) { res.status(500).json({error: e.message}); }
 });
+
 crudRoutes(app, 'providers', 'providers',
   async (d) => { const r = await pgQuery(`INSERT INTO providers(id,npi,provider_name,provider_type,specialty,status) VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[uuidv4(),d.npi,d.provider_name,d.provider_type||'individual',d.specialty||'',d.status||'active']); return r.rows[0]; },
   async (id, d) => { const r = await pgQuery(`UPDATE providers SET npi=$1,provider_name=$2,provider_type=$3,specialty=$4,status=$5,updated_at=NOW() WHERE id=$6 RETURNING *`,[d.npi,d.provider_name,d.provider_type,d.specialty||'',d.status,id]); return r.rows[0]; }
@@ -266,78 +359,79 @@ crudRoutes(app, 'authorizations', 'authorizations',
 );
 
 // Benefits
-app.get('/api/benefits', async (req, res) => { try { if (usePostgres) { const r = await pgQuery('SELECT * FROM benefits ORDER BY created_at DESC'); return res.json(r.rows); } res.json(memAll('benefits')); } catch (e) { res.status(500).json({ error: e.message }); } });
+app.get('/api/benefits',     async (req, res) => { try { if (usePostgres) { const r = await pgQuery('SELECT * FROM benefits ORDER BY created_at DESC'); return res.json(r.rows); } res.json(memAll('benefits')); } catch (e) { res.json(memAll('benefits')); } });
 app.get('/api/benefits/:id', async (req, res) => { try { if (usePostgres) { const r = await pgQuery('SELECT * FROM benefits WHERE id=$1', [req.params.id]); return r.rows.length ? res.json(r.rows[0]) : res.status(404).json({ error: 'Not found' }); } const rec = memFind('benefits', req.params.id); rec ? res.json(rec) : res.status(404).json({ error: 'Not found' }); } catch (e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/benefits', async (req, res) => { try { const d = req.body; if (usePostgres) { const r = await pgQuery('INSERT INTO benefits(id,benefit_code,benefit_name,plan_id,benefit_type,copay,coinsurance,covered,prior_auth_required) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',[uuidv4(),d.benefit_code,d.benefit_name,d.plan_id||null,d.benefit_type||'medical',d.copay||0,d.coinsurance||0,d.covered||'yes',d.prior_auth_required||'no']); return res.status(201).json(r.rows[0]); } res.status(201).json(memCreate('benefits', d)); } catch (e) { res.status(500).json({ error: e.message }); } });
+app.post('/api/benefits',    async (req, res) => { try { const d = req.body; if (usePostgres) { const r = await pgQuery('INSERT INTO benefits(id,benefit_code,benefit_name,plan_id,benefit_type,copay,coinsurance,covered,prior_auth_required) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',[uuidv4(),d.benefit_code,d.benefit_name,d.plan_id||null,d.benefit_type||'medical',d.copay||0,d.coinsurance||0,d.covered||'yes',d.prior_auth_required||'no']); return res.status(201).json(r.rows[0]); } res.status(201).json(memCreate('benefits', d)); } catch (e) { res.status(500).json({ error: e.message }); } });
 app.put('/api/benefits/:id', async (req, res) => { try { const d = req.body; if (usePostgres) { const r = await pgQuery('UPDATE benefits SET benefit_code=$1,benefit_name=$2,plan_id=$3,benefit_type=$4,copay=$5,coinsurance=$6,covered=$7,prior_auth_required=$8,updated_at=NOW() WHERE id=$9 RETURNING *',[d.benefit_code,d.benefit_name,d.plan_id||null,d.benefit_type,d.copay||0,d.coinsurance||0,d.covered||'yes',d.prior_auth_required||'no',req.params.id]); return r.rows[0] ? res.json(r.rows[0]) : res.status(404).json({ error: 'Not found' }); } const rec = memUpdate('benefits', req.params.id, d); rec ? res.json(rec) : res.status(404).json({ error: 'Not found' }); } catch (e) { res.status(500).json({ error: e.message }); } });
 app.delete('/api/benefits/:id', async (req, res) => { try { if (usePostgres) { await pgQuery('DELETE FROM benefits WHERE id=$1', [req.params.id]); return res.json({ success: true }); } memDelete('benefits', req.params.id) ? res.json({ success: true }) : res.status(404).json({ error: 'Not found' }); } catch (e) { res.status(500).json({ error: e.message }); } });
 
-// In-memory only routes (new tables not yet in Postgres schema)
-simpleCrud('service-groups', 'service-groups');
+// ─── SIMPLE CRUD ROUTES (all file-persisted) ──────────────────────────────────
+simpleCrud('service-groups',     'service-groups');
 simpleCrud('provider-contracts', 'provider-contracts');
-simpleCrud('fee-tables', 'fee-tables');
-simpleCrud('networx-configs', 'networx-configs');
-simpleCrud('program-configs', 'program-configs');
-simpleCrud('classes', 'classes');
+simpleCrud('fee-tables',         'fee-tables');
+simpleCrud('networx-configs',    'networx-configs');
+simpleCrud('networx',            'networx');
+simpleCrud('program-configs',    'program-configs');
+simpleCrud('programs',           'programs');
+simpleCrud('classes',            'classes');
+simpleCrud('dental',             'dental');
 
-// Claim pends (has extra resolve endpoint)
+// Claim pends with extra resolve endpoint
 simpleCrud('claim-pends', 'claim-pends');
 app.post('/api/claim-pends/:id/resolve', (req, res) => {
-  const i = db['claim-pends'].findIndex(x => x.id === req.params.id);
+  const i = (db['claim-pends'] || []).findIndex(x => x.id === req.params.id);
   if (i === -1) return res.status(404).json({ error: 'Not found' });
   db['claim-pends'][i] = { ...db['claim-pends'][i], ...req.body, status: 'resolved', updated_at: new Date() };
+  auditLog('RESOLVE', 'claim-pends', req.params.id, req.body);
+  debouncedSave();
   res.json(db['claim-pends'][i]);
 });
 
-// SQL Validator
+// ─── SQL VALIDATOR ────────────────────────────────────────────────────────────
 const SQL_QUERIES = [
-  { query_type: 'orphan_members', name: 'Orphan Members', category: 'Enrollment', risk_level: 'HIGH', description: 'Members enrolled without a valid plan assignment.', sql_template: 'SELECT m.member_id, m.first_name, m.last_name FROM members m LEFT JOIN plans p ON m.plan_id = p.id WHERE p.id IS NULL AND m.status = \'active\'' },
-  { query_type: 'expired_plans', name: 'Expired Active Plans', category: 'Plans', risk_level: 'HIGH', description: 'Plans marked active but past their termination date.', sql_template: 'SELECT plan_code, plan_name, termination_date FROM plans WHERE status = \'active\' AND termination_date < CURRENT_DATE' },
-  { query_type: 'missing_benefits', name: 'Plans Without Benefits', category: 'Benefits', risk_level: 'MEDIUM', description: 'Plans that have no benefit configurations linked.', sql_template: 'SELECT p.plan_code, p.plan_name FROM plans p LEFT JOIN benefits b ON b.plan_id = p.id WHERE b.id IS NULL' },
-  { query_type: 'duplicate_members', name: 'Duplicate Member IDs', category: 'Enrollment', risk_level: 'HIGH', description: 'Duplicate member_id values in the members table.', sql_template: 'SELECT member_id, COUNT(*) as count FROM members GROUP BY member_id HAVING COUNT(*) > 1' },
-  { query_type: 'groups_no_plans', name: 'Groups Without Plans', category: 'Groups', risk_level: 'MEDIUM', description: 'Employer groups with no plan offerings configured.', sql_template: 'SELECT group_id, employer_name FROM groups WHERE plan_offerings IS NULL OR plan_offerings = \'\''},
-  { query_type: 'pending_claims', name: 'Long-Pending Claims', category: 'Claims', risk_level: 'MEDIUM', description: 'Claims pending for more than 30 days.', sql_template: 'SELECT claim_number, provider, billed_amount, claim_date FROM claims WHERE status = \'pending\' AND claim_date < CURRENT_DATE - INTERVAL \'30 days\'' },
-  { query_type: 'pricing_gaps', name: 'Pricing Coverage Gaps', category: 'Pricing', risk_level: 'MEDIUM', description: 'Plans missing one or more coverage tier pricing records.', sql_template: 'SELECT p.plan_name, COUNT(pr.id) as tier_count FROM plans p LEFT JOIN pricing pr ON pr.plan_id = p.id GROUP BY p.plan_name HAVING COUNT(pr.id) < 4' },
-  { query_type: 'high_value_claims', name: 'High-Value Unpaid Claims', category: 'Claims', risk_level: 'LOW', description: 'Claims over $10,000 not yet in paid status.', sql_template: 'SELECT claim_number, provider, billed_amount, status FROM claims WHERE billed_amount > 10000 AND status != \'paid\'' },
-  { query_type: 'inactive_providers', name: 'Inactive Providers With Claims', category: 'Network', risk_level: 'HIGH', description: 'Claims submitted by providers with inactive network status.', sql_template: 'SELECT DISTINCT c.provider, p.status FROM claims c JOIN providers p ON c.provider = p.provider_name WHERE p.status != \'active\'' },
-  { query_type: 'auth_expired', name: 'Expired Authorizations', category: 'Authorizations', risk_level: 'LOW', description: 'Active authorizations past their expiration date.', sql_template: 'SELECT auth_number, service_requested, expiration_date FROM authorizations WHERE status = \'active\' AND expiration_date < CURRENT_DATE' }
+  { query_type: 'orphan_members',     name: 'Orphan Members',               category: 'Enrollment',     risk_level: 'HIGH',   description: 'Members enrolled without a valid plan assignment.',                       sql_template: "SELECT m.member_id, m.first_name, m.last_name FROM members m LEFT JOIN plans p ON m.plan_id = p.id WHERE p.id IS NULL AND m.status = 'active'" },
+  { query_type: 'expired_plans',      name: 'Expired Active Plans',          category: 'Plans',          risk_level: 'HIGH',   description: 'Plans marked active but past their termination date.',                    sql_template: "SELECT plan_code, plan_name, termination_date FROM plans WHERE status = 'active' AND termination_date < CURRENT_DATE" },
+  { query_type: 'missing_benefits',   name: 'Plans Without Benefits',        category: 'Benefits',       risk_level: 'MEDIUM', description: 'Plans that have no benefit configurations linked.',                        sql_template: 'SELECT p.plan_code, p.plan_name FROM plans p LEFT JOIN benefits b ON b.plan_id = p.id WHERE b.id IS NULL' },
+  { query_type: 'duplicate_members',  name: 'Duplicate Member IDs',          category: 'Enrollment',     risk_level: 'HIGH',   description: 'Duplicate member_id values in the members table.',                        sql_template: 'SELECT member_id, COUNT(*) as count FROM members GROUP BY member_id HAVING COUNT(*) > 1' },
+  { query_type: 'groups_no_plans',    name: 'Groups Without Plans',          category: 'Groups',         risk_level: 'MEDIUM', description: 'Employer groups with no plan offerings configured.',                      sql_template: "SELECT group_id, employer_name FROM groups WHERE plan_offerings IS NULL OR plan_offerings = ''" },
+  { query_type: 'pending_claims',     name: 'Long-Pending Claims',           category: 'Claims',         risk_level: 'MEDIUM', description: 'Claims pending for more than 30 days.',                                   sql_template: "SELECT claim_number, provider, billed_amount, claim_date FROM claims WHERE status = 'pending' AND claim_date < CURRENT_DATE - INTERVAL '30 days'" },
+  { query_type: 'pricing_gaps',       name: 'Pricing Coverage Gaps',         category: 'Pricing',        risk_level: 'MEDIUM', description: 'Plans missing one or more coverage tier pricing records.',                sql_template: 'SELECT p.plan_name, COUNT(pr.id) as tier_count FROM plans p LEFT JOIN pricing pr ON pr.plan_id = p.id GROUP BY p.plan_name HAVING COUNT(pr.id) < 4' },
+  { query_type: 'high_value_claims',  name: 'High-Value Unpaid Claims',      category: 'Claims',         risk_level: 'LOW',    description: 'Claims over $10,000 not yet in paid status.',                             sql_template: "SELECT claim_number, provider, billed_amount, status FROM claims WHERE billed_amount > 10000 AND status != 'paid'" },
+  { query_type: 'inactive_providers', name: 'Inactive Providers With Claims', category: 'Network',       risk_level: 'HIGH',   description: 'Claims submitted by providers with inactive network status.',              sql_template: "SELECT DISTINCT c.provider, p.status FROM claims c JOIN providers p ON c.provider = p.provider_name WHERE p.status != 'active'" },
+  { query_type: 'auth_expired',       name: 'Expired Authorizations',        category: 'Authorizations', risk_level: 'LOW',    description: 'Active authorizations past their expiration date.',                       sql_template: "SELECT auth_number, service_requested, expiration_date FROM authorizations WHERE status = 'active' AND expiration_date < CURRENT_DATE" }
 ];
 
-// Demo result generator
-function demoResult(query_type) {
+function demoResult(query_type){
   const demos = {
-    orphan_members: { status: 'WARN', results: [{ member_id: 'MBR-003', first_name: 'Robert', last_name: 'Kim' }], row_count: 1 },
-    expired_plans: { status: 'PASS', results: [], row_count: 0 },
-    missing_benefits: { status: 'PASS', results: [], row_count: 0 },
-    duplicate_members: { status: 'PASS', results: [], row_count: 0 },
-    groups_no_plans: { status: 'PASS', results: [], row_count: 0 },
-    pending_claims: { status: 'WARN', results: [{ claim_number: 'CLM-2026-002', provider: 'Westside Specialist Group', billed_amount: 420.00, claim_date: '2026-04-10' }], row_count: 1 },
-    pricing_gaps: { status: 'INFO', results: [{ plan_name: 'Bronze HMO', tier_count: 0 }, { plan_name: 'Silver PPO', tier_count: 0 }], row_count: 2 },
-    high_value_claims: { status: 'WARN', results: [{ claim_number: 'CLM-2026-004', provider: 'Valley Surgical Center', billed_amount: 12500.00, status: 'in_review' }], row_count: 1 },
+    orphan_members:     { status: 'WARN', results: [{ member_id: 'MBR-003', first_name: 'Robert', last_name: 'Kim' }], row_count: 1 },
+    expired_plans:      { status: 'PASS', results: [], row_count: 0 },
+    missing_benefits:   { status: 'PASS', results: [], row_count: 0 },
+    duplicate_members:  { status: 'PASS', results: [], row_count: 0 },
+    groups_no_plans:    { status: 'PASS', results: [], row_count: 0 },
+    pending_claims:     { status: 'WARN', results: [{ claim_number: 'CLM-2026-002', provider: 'Westside Specialist Group', billed_amount: 420, claim_date: '2026-04-10' }], row_count: 1 },
+    pricing_gaps:       { status: 'INFO', results: [{ plan_name: 'Bronze HMO', tier_count: 0 }, { plan_name: 'Silver PPO', tier_count: 0 }], row_count: 2 },
+    high_value_claims:  { status: 'WARN', results: [{ claim_number: 'CLM-2026-004', provider: 'Valley Surgical Center', billed_amount: 12500, status: 'in_review' }], row_count: 1 },
     inactive_providers: { status: 'PASS', results: [], row_count: 0 },
-    auth_expired: { status: 'PASS', results: [], row_count: 0 }
+    auth_expired:       { status: 'PASS', results: [], row_count: 0 }
   };
-  const base = demos[query_type] || { status: 'INFO', results: [], row_count: 0 };
-  return { ...base, query_type, timestamp: new Date().toISOString() };
+  return { ...(demos[query_type] || { status: 'INFO', results: [], row_count: 0 }), query_type, timestamp: new Date().toISOString() };
 }
 
 app.get('/api/sql-validate/queries', (req, res) => res.json(SQL_QUERIES));
-
 app.post('/api/sql-validate', (req, res) => {
   const { query_type } = req.body;
   if (!query_type) return res.status(400).json({ error: 'query_type required' });
   const q = SQL_QUERIES.find(x => x.query_type === query_type);
   if (!q) return res.status(404).json({ error: 'Unknown query type' });
-  // Simulate a short delay then return demo result
   setTimeout(() => res.json(demoResult(query_type)), 400);
 });
 
-// Audit
+// ─── AUDIT ────────────────────────────────────────────────────────────────────
 app.get('/api/audit', async (req, res) => {
   try { if (usePostgres) { const r = await pgQuery('SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 500'); return res.json(r.rows); } res.json(memAll('audit_logs')); } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// Stats
+// ─── STATS ────────────────────────────────────────────────────────────────────
 app.get('/api/stats', async (req, res) => {
   try {
     if (usePostgres) {
@@ -356,9 +450,14 @@ app.get('/api/stats', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', mode: usePostgres ? 'postgres' : 'memory', uptime: process.uptime() }));
+// ─── HEALTH ───────────────────────────────────────────────────────────────────
+app.get('/api/health', (req, res) => {
+  const counts = {};
+  Object.keys(db).forEach(k => { counts[k] = Array.isArray(db[k]) ? db[k].length : 0; });
+  res.json({ status: 'ok', mode: usePostgres ? 'postgres' : 'memory+file', uptime: process.uptime(), records: counts });
+});
 
-// ─── WILDCARD — must be LAST, after all API routes ────────────────────────────
+// ─── WILDCARD — must be LAST ──────────────────────────────────────────────────
 app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'public', 'index.html')));
 
-app.listen(PORT, () => console.log(`🚀 Facets running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 EchoLink Demolab running on port ${PORT} | mode: ${usePostgres ? 'postgres' : 'memory+file'}`));
