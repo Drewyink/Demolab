@@ -777,6 +777,351 @@ var MODULES = [
   },
 ];
 
+
+// ── ADDITIONAL TABLES injected into existing modules ──────────────────────
+// These go into a new combined "Complete Table Reference" module section
+
+var EXTRA_MODULES = [
+  {
+    prefix:'MEME — Full', name:'Member — All Sub-Tables', color:'#60a5fa',
+    desc:'All member sub-tables covering name records, history, cross-references, locks, HCC risk adjustment, and LIS eligibility.',
+    tables:[
+      {name:'MEMN', full:'Member Name', desc:'Name variations — legal name, prior name after marriage or divorce, preferred name',
+       cols:[['MEMN_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMN_TYPE','VARCHAR2(10)','','LEGAL / PRIOR / PREFERRED'],['MEMN_LAST','VARCHAR2(40)','','Last name'],['MEMN_FIRST','VARCHAR2(40)','','First name'],['MEMN_MI','CHAR(1)','','Middle initial'],['MEMN_SUFFIX','VARCHAR2(5)','','Jr / Sr / III'],['MEMN_EFF','DATE','','Effective date of this name record']]},
+      {name:'MEMH', full:'Member History', desc:'Complete history of changes to the member master record — every field change archived',
+       cols:[['MEMH_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMH_FIELD','VARCHAR2(30)','','Field that changed — MEME_LAST / MEME_STS'],['MEMH_OLD','VARCHAR2(100)','','Value before change'],['MEMH_NEW','VARCHAR2(100)','','Value after change'],['MEMH_DT','TIMESTAMP','','Date and time of change'],['MEMH_USER','VARCHAR2(40)','','User who made the change']]},
+      {name:'MEMX', full:'Member Cross-Reference', desc:'Links member to subscriber and stores alternate member IDs from other systems',
+       cols:[['MEMX_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['SBSB_CK','NUMBER','FK','Links to SBSB subscriber'],['MEMX_TYPE','VARCHAR2(10)','','PAYROLL / HR_SYS / LEGACY / SSN'],['MEMX_ID','VARCHAR2(30)','','Alternate ID value in the other system']]},
+      {name:'MEML', full:'Member Lock', desc:'Record lock flag preventing concurrent edits — set when a user is actively editing the member record',
+       cols:[['MEML_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEML_USER','VARCHAR2(40)','','User who holds the lock'],['MEML_DT','TIMESTAMP','','Time lock was acquired'],['MEML_STS','CHAR(1)','','L=Locked U=Unlocked']]},
+      {name:'MEMAU', full:'Member Audit', desc:'Full audit trail for the member record — every change logged with user, timestamp, and old/new value',
+       cols:[['MEMAU_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['MEMAU_FIELD','VARCHAR2(30)','','Field changed'],['MEMAU_OLD','VARCHAR2(200)','','Old value'],['MEMAU_NEW','VARCHAR2(200)','','New value'],['MEMAU_USER','VARCHAR2(40)','','User who made the change'],['MEMAU_TS','TIMESTAMP','','Exact timestamp']]},
+      {name:'MEMS', full:'Member Status History', desc:'Complete status transition history — Active, Termed, COBRA, Suspended — in chronological order',
+       cols:[['MEMS_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMS_OLD','CHAR(1)','','Prior status'],['MEMS_NEW','CHAR(1)','','New status A=Active T=Termed C=COBRA S=Suspended'],['MEMS_DT','DATE','','Date of status change'],['MEMS_REASON','VARCHAR2(40)','','Reason for change'],['MEMS_USER','VARCHAR2(40)','','User who made the change']]},
+      {name:'MEMR', full:'Member Remarks', desc:'Free-text notes and internal remarks attached to the member record — visible to examiners only',
+       cols:[['MEMR_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMR_TYPE','VARCHAR2(10)','','INTERNAL / CLINICAL / BILLING'],['MEMR_TEXT','CLOB','','Remark text'],['MEMR_USER','VARCHAR2(40)','','Author'],['MEMR_DT','TIMESTAMP','','Date note was added']]},
+      {name:'MEMDX', full:'Member Diagnosis', desc:'Chronic condition diagnoses on file for the member — used in risk adjustment, HEDIS, and care management',
+       cols:[['MEMDX_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['DGDG_CK','NUMBER','FK','Links to DGDG diagnosis code'],['MEMDX_SRC','VARCHAR2(10)','','CLAIM / ENCOUNTER / MANUAL'],['MEMDX_EFF','DATE','','Diagnosis effective date'],['MEMDX_TERM','DATE','','Diagnosis end date if resolved']]},
+      {name:'MEMHCC', full:'Member HCC', desc:'HCC category assignments per member per year — drives the CMS-HCC risk score used in Medicare Advantage capitation',
+       cols:[['MEMHCC_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMHCC_YEAR','NUMBER(4)','','Payment year'],['MEMHCC_CAT','VARCHAR2(10)','','HCC category code — HCC19 / HCC85'],['MEMHCC_DESC','VARCHAR2(100)','','HCC description'],['MEMHCC_RAF','NUMBER(8,4)','','Risk Adjustment Factor for this HCC'],['MEMHCC_SRC','VARCHAR2(10)','','SOURCE — CLAIM / ENCOUNTER / SUBMITTED']]},
+      {name:'MEMLIS', full:'Member LIS', desc:'Low Income Subsidy / Extra Help eligibility record — determines reduced cost sharing for Part D members',
+       cols:[['MEMLIS_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['MEMLIS_LEVEL','VARCHAR2(5)','','LIS level 1 2 3 4 — determines subsidy tier'],['MEMLIS_EFF','DATE','','LIS eligibility effective date'],['MEMLIS_TERM','DATE','','LIS eligibility end date'],['MEMLIS_SRC','VARCHAR2(10)','','CMS / STATE / AUTO']]},
+    ]
+  },
+  {
+    prefix:'SBSB — Full', name:'Subscriber — All Sub-Tables', color:'#34d399',
+    desc:'Subscriber detail, phone, cross-reference, and audit records.',
+    tables:[
+      {name:'SBSD', full:'Subscriber Detail', desc:'Extended subscriber attributes — SSN, hire date, employment status, hours per week',
+       cols:[['SBSD_CK','NUMBER','PK',''],['SBSB_CK','NUMBER','FK','Links to SBSB'],['SBSD_SSN','VARCHAR2(11)','','Social security number — encrypted'],['SBSD_HIRE','DATE','','Date of hire'],['SBSD_EMPL','VARCHAR2(10)','','Employment status — FT / PT / TERM'],['SBSD_HRS','NUMBER(5,2)','','Hours per week — used for ACA eligibility']]},
+      {name:'SBSP', full:'Subscriber Phone', desc:'Subscriber phone numbers by type — home, work, mobile, fax',
+       cols:[['SBSP_CK','NUMBER','PK',''],['SBSB_CK','NUMBER','FK','Links to SBSB'],['SBSP_TYPE','VARCHAR2(10)','','HOME / WORK / MOBILE / FAX'],['SBSP_NUM','VARCHAR2(15)','','Phone number'],['SBSP_PREF','CHAR(1)','','Y=Preferred contact number N=Secondary']]},
+      {name:'SBSX', full:'Subscriber Cross-Reference', desc:'Alternate subscriber IDs from payroll, HR, and legacy systems',
+       cols:[['SBSX_CK','NUMBER','PK',''],['SBSB_CK','NUMBER','FK','Links to SBSB'],['SBSX_TYPE','VARCHAR2(10)','','PAYROLL / HR / LEGACY / EMP_ID'],['SBSX_ID','VARCHAR2(30)','','Alternate ID in the external system']]},
+      {name:'SBSAU', full:'Subscriber Audit', desc:'Audit trail for all subscriber record changes',
+       cols:[['SBSAU_CK','NUMBER','PK',''],['SBSB_CK','NUMBER','FK','Links to SBSB'],['SBSAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['SBSAU_FIELD','VARCHAR2(30)','','Field that changed'],['SBSAU_OLD','VARCHAR2(200)','','Old value'],['SBSAU_NEW','VARCHAR2(200)','','New value'],['SBSAU_USER','VARCHAR2(40)','','User'],['SBSAU_TS','TIMESTAMP','','Timestamp']]},
+    ]
+  },
+  {
+    prefix:'GRGR — Full', name:'Group — All Sub-Tables', color:'#34d399',
+    desc:'Group subsidiary records, history, audit trail, broker linkage, and contract terms.',
+    tables:[
+      {name:'GRGS', full:'Group Subsidiary', desc:'Subsidiary or division records under a parent group — large employers with multiple business units',
+       cols:[['GRGS_CK','NUMBER','PK',''],['GRGR_CK','NUMBER','FK','Parent group record'],['GRGS_NAME','VARCHAR2(80)','','Subsidiary name'],['GRGS_TAX','VARCHAR2(15)','','Subsidiary tax ID if separate'],['GRGS_STS','CHAR(1)','','A=Active I=Inactive']]},
+      {name:'GRGH', full:'Group History', desc:'Historical changes to group master and plan design — contract amendments, contribution changes',
+       cols:[['GRGH_CK','NUMBER','PK',''],['GRGR_CK','NUMBER','FK','Links to GRGR'],['GRGH_FIELD','VARCHAR2(30)','','Field that changed'],['GRGH_OLD','VARCHAR2(100)','','Old value'],['GRGH_NEW','VARCHAR2(100)','','New value'],['GRGH_DT','TIMESTAMP','','Date of change'],['GRGH_USER','VARCHAR2(40)','','User who made the change']]},
+      {name:'GRGAU', full:'Group Audit', desc:'Full audit trail for all group configuration changes',
+       cols:[['GRGAU_CK','NUMBER','PK',''],['GRGR_CK','NUMBER','FK','Links to GRGR'],['GRGAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['GRGAU_TABLE','VARCHAR2(10)','','Table changed — GRGR / GRPD'],['GRGAU_USER','VARCHAR2(40)','','User'],['GRGAU_TS','TIMESTAMP','','Timestamp']]},
+      {name:'GRGB', full:'Group Broker', desc:'Broker of record linkage — broker name, NPN number, commission rate, appointment status',
+       cols:[['GRGB_CK','NUMBER','PK',''],['GRGR_CK','NUMBER','FK','Links to GRGR'],['GRGB_NAME','VARCHAR2(80)','','Broker or agency name'],['GRGB_NPN','VARCHAR2(15)','','National Producer Number'],['GRGB_COMM','NUMBER(5,2)','','Commission rate percent'],['GRGB_EFF','DATE','','Broker appointment effective date'],['GRGB_TERM','DATE','','Broker appointment end date']]},
+      {name:'GRGT', full:'Group Contract Terms', desc:'Contract renewal terms, termination reason, non-renewal notice requirements',
+       cols:[['GRGT_CK','NUMBER','PK',''],['GRGR_CK','NUMBER','FK','Links to GRGR'],['GRGT_RENEW','DATE','','Renewal date'],['GRGT_NOTICE','NUMBER(3)','','Days notice required for non-renewal'],['GRGT_TERM_REASON','VARCHAR2(30)','','Termination reason if group is leaving'],['GRGT_RUNOUT','NUMBER(3)','','Claim runout period in days after termination']]},
+    ]
+  },
+  {
+    prefix:'CSCS — Full', name:'Plan — All Sub-Tables', color:'#a78bfa',
+    desc:'Extended plan configuration including financial parameters, benefit year, network assignment, and audit.',
+    tables:[
+      {name:'CSCF', full:'Plan Financial', desc:'Stop loss threshold, reinsurance attachment point, risk corridor parameters',
+       cols:[['CSCF_CK','NUMBER','PK',''],['CSCS_CK','NUMBER','FK','Links to CSCS'],['CSCF_STOPLOSS','NUMBER(12,2)','','Stop loss threshold per member per year'],['CSCF_REINS_ATT','NUMBER(12,2)','','Reinsurance attachment point'],['CSCF_RISK_CORR','CHAR(1)','','Y=Risk corridor applies N=No'],['CSCF_CAPITATION','NUMBER(10,2)','','Capitation PMPM if plan is capitated']]},
+      {name:'CSCB', full:'Plan Benefit Year', desc:'Benefit year parameters — calendar vs plan year, accumulator reset month, open enrollment window',
+       cols:[['CSCB_CK','NUMBER','PK',''],['CSCS_CK','NUMBER','FK','Links to CSCS'],['CSCB_TYPE','VARCHAR2(10)','','CALENDAR / PLAN_YEAR'],['CSCB_START_MO','NUMBER(2)','','Benefit year start month — 1=Jan'],['CSCB_OE_START','DATE','','Open enrollment start date'],['CSCB_OE_END','DATE','','Open enrollment end date']]},
+      {name:'CSCN', full:'Plan Network Assignment', desc:'Assigns a network to a plan — links CSCS plan to NTNK network definition',
+       cols:[['CSCN_CK','NUMBER','PK',''],['CSCS_CK','NUMBER','FK','Links to CSCS'],['NTNK_CK','NUMBER','FK','Links to NTNK network'],['CSCN_EFF','DATE','','Network assignment effective date'],['CSCN_TERM','DATE','','Network assignment end date'],['CSCN_DEFAULT','CHAR(1)','','Y=Default network for this plan']]},
+      {name:'CSCAU', full:'Plan Audit', desc:'Audit trail for all plan configuration changes — required for CMS compliance',
+       cols:[['CSCAU_CK','NUMBER','PK',''],['CSCS_CK','NUMBER','FK','Links to CSCS'],['CSCAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['CSCAU_FIELD','VARCHAR2(30)','','Field changed'],['CSCAU_OLD','VARCHAR2(200)','','Old value'],['CSCAU_NEW','VARCHAR2(200)','','New value'],['CSCAU_USER','VARCHAR2(40)','','User'],['CSCAU_TS','TIMESTAMP','','Timestamp']]},
+      {name:'PDDX', full:'Product Cross-Reference', desc:'Links product to state regulatory filing, CMS approval, and market segment designation',
+       cols:[['PDDX_CK','NUMBER','PK',''],['PDDS_CK','NUMBER','FK','Links to PDDS product'],['PDDX_TYPE','VARCHAR2(10)','','STATE_FILING / CMS_APPROVAL / MARKET'],['PDDX_ID','VARCHAR2(30)','','Filing or approval ID number'],['PDDX_STATE','CHAR(2)','','State if state-specific filing'],['PDDX_DT','DATE','','Approval or filing date']]},
+    ]
+  },
+  {
+    prefix:'PDPD — Full', name:'Procedure Code — All Sub-Tables', color:'#f59e0b',
+    desc:'Procedure code modifiers, NCCI bundling rules, code groupings, and DRG linkage.',
+    tables:[
+      {name:'PDMOD', full:'Procedure Modifier', desc:'Modifier definitions and pricing impact — modifier 25 for significant separate E&M, modifier 59 for distinct procedure',
+       cols:[['PDMOD_CK','NUMBER','PK',''],['PDMOD_CODE','VARCHAR2(2)','IDX','Two-character modifier — 25 / 59 / GT / 95'],['PDMOD_DESC','VARCHAR2(100)','','Modifier description'],['PDMOD_IMPACT','VARCHAR2(10)','','PRICE / BYPASS / REDUCE / INCREASE'],['PDMOD_PCT','NUMBER(5,2)','','Percent change to allowed amount if REDUCE or INCREASE']]},
+      {name:'PDBND', full:'Procedure Bundle Rule', desc:'NCCI bundling rules — which CPT codes cannot be billed together on the same date of service',
+       cols:[['PDBND_CK','NUMBER','PK',''],['PDBND_COL1','VARCHAR2(10)','','Column 1 CPT — the comprehensive code'],['PDBND_COL2','VARCHAR2(10)','','Column 2 CPT — the component code that bundles into Col 1'],['PDBND_EFF','DATE','','Bundle rule effective date'],['PDBND_MOD_IND','CHAR(1)','','0=No modifier bypass 1=Modifier can bypass the edit']]},
+      {name:'PDGP', full:'Procedure Code Group', desc:'CPT groupings for HEDIS measure mapping, reporting categories, and specialty-specific code sets',
+       cols:[['PDGP_CK','NUMBER','PK',''],['PDPD_CK','NUMBER','FK','Links to PDPD'],['PDGP_GROUP','VARCHAR2(20)','','Group name — HEDIS_WELL_CHILD / PREV_CARE'],['PDGP_MEASURE','VARCHAR2(30)','','HEDIS measure code if applicable'],['PDGP_EFF','DATE','','Group assignment effective date']]},
+    ]
+  },
+  {
+    prefix:'DGDG — Full', name:'Diagnosis Code — All Sub-Tables', color:'#f87171',
+    desc:'HCC category assignments, MCC/CC flags for DRG grouping, and pharmacy-relevant diagnosis indicators.',
+    tables:[
+      {name:'DGHCC', full:'Diagnosis HCC Category', desc:'Maps each ICD-10 diagnosis to its HCC category — the foundation of CMS risk adjustment for Medicare Advantage',
+       cols:[['DGHCC_CK','NUMBER','PK',''],['DGDG_CK','NUMBER','FK','Links to DGDG diagnosis'],['DGHCC_CAT','VARCHAR2(10)','','HCC category — HCC19 / HCC85 / HCC111'],['DGHCC_MODEL','VARCHAR2(10)','','Risk model — CMS-HCC v28 / RxHCC'],['DGHCC_RAF','NUMBER(8,4)','','Risk Adjustment Factor value for this diagnosis']]},
+      {name:'DGMCC', full:'Diagnosis MCC/CC Flag', desc:'Major Complication and Comorbidity flags used by the DRG grouper — affects which DRG a case is assigned to',
+       cols:[['DGMCC_CK','NUMBER','PK',''],['DGDG_CK','NUMBER','FK','Links to DGDG'],['DGMCC_TYPE','VARCHAR2(3)','','MCC=Major Complication CC=Complication'],['DGMCC_EFF','DATE','','Effective year for this DRG classification']]},
+      {name:'DGRX', full:'Diagnosis Rx Indicator', desc:'Pharmacy-relevant diagnosis flags — used in Part D coverage determination and specialty drug PA criteria',
+       cols:[['DGRX_CK','NUMBER','PK',''],['DGDG_CK','NUMBER','FK','Links to DGDG'],['DGRX_FLAG','CHAR(1)','','Y=Relevant to Rx coverage determination'],['DGRX_DRUG_CLASS','VARCHAR2(30)','','Drug class typically prescribed for this diagnosis']]},
+    ]
+  },
+  {
+    prefix:'PRPR — Full', name:'Provider — All Sub-Tables', color:'#34d399',
+    desc:'Provider address, phone, eligibility history, contract detail, tax, group affiliation, hospital privileges, malpractice, specialty, and language.',
+    tables:[
+      {name:'PRPA', full:'Provider Address', desc:'Practice locations with multiple addresses for multi-site providers — each location has its own effective date',
+       cols:[['PRPA_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRPA_TYPE','VARCHAR2(10)','','PRIMARY / SATELLITE / BILLING / LAB'],['PRPA_ADDR1','VARCHAR2(60)','','Street address'],['PRPA_CITY','VARCHAR2(40)','','City'],['PRPA_STATE','CHAR(2)','','State'],['PRPA_ZIP','VARCHAR2(10)','','ZIP or ZIP+4'],['PRPA_EFF','DATE','','Location effective date'],['PRPA_TERM','DATE','','Location end date']]},
+      {name:'PRPN', full:'Provider Name', desc:'Legal name, DBA name, group practice name variations',
+       cols:[['PRPN_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRPN_TYPE','VARCHAR2(10)','','LEGAL / DBA / GROUP / FORMER'],['PRPN_NAME','VARCHAR2(80)','','Name value'],['PRPN_EFF','DATE','','Effective date for this name']]},
+      {name:'PRPP', full:'Provider Phone', desc:'Phone and fax numbers by practice location',
+       cols:[['PRPP_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRPP_TYPE','VARCHAR2(10)','','MAIN / FAX / AFTER_HOURS / BILLING'],['PRPP_NUM','VARCHAR2(15)','','Phone number'],['PRPP_EXT','VARCHAR2(6)','','Extension']]},
+      {name:'PRPE', full:'Provider Network Eligibility', desc:'Network participation history — when provider joined and left each network tier',
+       cols:[['PRPE_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRPE_NET','VARCHAR2(10)','','in_network / preferred / oon'],['PRPE_EFF','DATE','','Network participation effective date'],['PRPE_TERM','DATE','','Network participation termination date'],['PRPE_REASON','VARCHAR2(30)','','Reason for termination if terminated']]},
+      {name:'PRCD', full:'Provider Contract Detail', desc:'Extended contract terms — carve-out services, risk arrangement specifics, quality incentive structure',
+       cols:[['PRCD_CK','NUMBER','PK',''],['PRCN_CK','NUMBER','FK','Links to PRCN contract master'],['PRCD_CARVEOUT','VARCHAR2(100)','','Services carved out of contract — transplants CAR-T'],['PRCD_RISK','VARCHAR2(20)','','Risk arrangement — partial_cap / full_risk / none'],['PRCD_QUAL_TYPE','VARCHAR2(20)','','Quality incentive type — STARS / HEDIS / P4P'],['PRCD_QUAL_AMT','NUMBER(10,2)','','Quality bonus amount if targets met']]},
+      {name:'PRCX', full:'Provider Cross-Reference', desc:'Maps NPI to group NPI, legacy provider ID, and alternate identification systems',
+       cols:[['PRCX_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRCX_TYPE','VARCHAR2(10)','','GROUP_NPI / LEGACY / UPIN / TAXONOMY'],['PRCX_ID','VARCHAR2(30)','','ID value in the alternate system']]},
+      {name:'PRCH', full:'Provider History', desc:'Archive of all changes to the provider master record',
+       cols:[['PRCH_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRCH_FIELD','VARCHAR2(30)','','Field changed'],['PRCH_OLD','VARCHAR2(100)','','Old value'],['PRCH_NEW','VARCHAR2(100)','','New value'],['PRCH_DT','TIMESTAMP','','Timestamp'],['PRCH_USER','VARCHAR2(40)','','User']]},
+      {name:'PRPT', full:'Provider Tax', desc:'Tax ID, TIN type (EIN vs SSN), 1099 reporting flag, W-9 status',
+       cols:[['PRPT_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRPT_TIN','VARCHAR2(15)','','Tax Identification Number — encrypted'],['PRPT_TYPE','VARCHAR2(3)','','EIN / SSN'],['PRPT_1099','CHAR(1)','','Y=1099 required N=Not required'],['PRPT_W9_DT','DATE','','Date W-9 was received']]},
+      {name:'PRPG', full:'Provider Group Affiliation', desc:'Links individual provider NPI to their group practice NPI — required for billing and network adequacy',
+       cols:[['PRPG_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Individual provider'],['PRPG_GRP_NPI','VARCHAR2(10)','','Group practice NPI'],['PRPG_GRP_NAME','VARCHAR2(80)','','Group practice name'],['PRPG_EFF','DATE','','Affiliation effective date'],['PRPG_TERM','DATE','','Affiliation end date']]},
+      {name:'PRHP', full:'Provider Hospital Privileges', desc:'Hospital admitting and surgical privileges — which facilities this provider can admit to and what procedures they can perform',
+       cols:[['PRHP_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRHP_HOSP_NPI','VARCHAR2(10)','','Hospital NPI'],['PRHP_HOSP_NAME','VARCHAR2(80)','','Hospital name'],['PRHP_TYPE','VARCHAR2(10)','','ADMIT / SURGICAL / CONSULT'],['PRHP_EFF','DATE','','Privilege effective date'],['PRHP_TERM','DATE','','Privilege expiration date']]},
+      {name:'PRML', full:'Provider Malpractice', desc:'Malpractice insurance coverage — carrier, policy number, coverage amounts, expiration',
+       cols:[['PRML_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRML_CARRIER','VARCHAR2(60)','','Malpractice insurance carrier'],['PRML_POL','VARCHAR2(30)','','Policy number'],['PRML_OCC','NUMBER(12,2)','','Per occurrence coverage amount'],['PRML_AGG','NUMBER(12,2)','','Aggregate coverage amount'],['PRML_EXP','DATE','','Policy expiration date']]},
+      {name:'PRSP', full:'Provider Specialty', desc:'All specialties for providers with more than one — primary and secondary specialty designations',
+       cols:[['PRSP_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRSP_SPEC','VARCHAR2(30)','','Specialty code'],['PRSP_TAX','VARCHAR2(15)','','Taxonomy code for this specialty'],['PRSP_PRIMARY','CHAR(1)','','Y=Primary specialty N=Secondary'],['PRSP_BOARD','CHAR(1)','','Y=Board certified N=Not certified']]},
+      {name:'PRLG', full:'Provider Language', desc:'Languages spoken by the provider — used for member-to-provider language matching in HMO plans',
+       cols:[['PRLG_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR'],['PRLG_LANG','VARCHAR2(30)','','Language — Spanish / Mandarin / Vietnamese'],['PRLG_FLUENCY','VARCHAR2(10)','','FLUENT / CONVERSATIONAL / INTERPRETER_NEEDED']]},
+    ]
+  },
+  {
+    prefix:'CLCL — Full', name:'Claims — All Sub-Tables', color:'#fb923c',
+    desc:'Claim diagnosis codes, NetworX rule applied, subrogation, reconciliation, adjudication detail, manual overrides, and duplicate detection.',
+    tables:[
+      {name:'CLCD', full:'Claim Code Detail', desc:'All diagnosis codes on the claim — primary, secondary, and up to 25 additional ICD-10 codes',
+       cols:[['CLCD_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to CLCL'],['CLCD_SEQ','NUMBER(3)','','Diagnosis sequence — 1=primary 2=secondary'],['DGDG_CK','NUMBER','FK','Links to DGDG diagnosis code'],['CLCD_POA','CHAR(1)','','Y=Present on admission N=Not present U=Unknown']]},
+      {name:'CLNX', full:'Claim NetworX Record', desc:'Records which NetworX pricing rule was applied to price this claim and the resulting allowed amount calculation',
+       cols:[['CLNX_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to CLCL'],['NWNW_CK','NUMBER','FK','Links to NWNW rule applied'],['CLNX_RULE','VARCHAR2(20)','','Rule code applied — NX-INN-RBRVS'],['CLNX_ALLOW','NUMBER(10,2)','','Allowed amount produced by this rule'],['CLNX_RATE','NUMBER(6,4)','','Contract rate applied — 1.10 = 110%']]},
+      {name:'CLDX', full:'Claim Diagnosis Line', desc:'Diagnosis code assignments at the claim line level — which diagnoses apply to which CPT code',
+       cols:[['CLDX_CK','NUMBER','PK',''],['CLIN_CK','NUMBER','FK','Links to CLIN claim line'],['DGDG_CK','NUMBER','FK','Links to DGDG diagnosis'],['CLDX_SEQ','NUMBER(3)','','Diagnosis sequence for this line']]},
+      {name:'CLSB', full:'Claim Subrogation', desc:'Subrogation records when a third party is liable — auto accident, workers comp, liability',
+       cols:[['CLSB_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to CLCL'],['CLSB_TYPE','VARCHAR2(10)','','AUTO / WORKERS_COMP / LIABILITY / MALPRAC'],['CLSB_AMT','NUMBER(10,2)','','Amount recoverable from third party'],['CLSB_STATUS','VARCHAR2(10)','','OPEN / RECOVERED / CLOSED'],['CLSB_THIRD','VARCHAR2(60)','','Third party name or insurance carrier']]},
+      {name:'CLRC', full:'Claim Reconciliation', desc:'Reconciliation records when a claim is adjusted or reversed — tracks original vs adjusted payment',
+       cols:[['CLRC_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to original CLCL'],['CLRC_ORIG_AMT','NUMBER(10,2)','','Original payment amount'],['CLRC_ADJ_AMT','NUMBER(10,2)','','Adjusted payment amount'],['CLRC_DIFF','NUMBER(10,2)','','Difference — positive=additional payment negative=recovery'],['CLRC_REASON','VARCHAR2(40)','','Adjustment reason code'],['CLRC_DT','DATE','','Reconciliation date']]},
+      {name:'CLAD', full:'Claim Adjudication Detail', desc:'Step-by-step adjudication math — every calculation from billed amount to final paid amount',
+       cols:[['CLAD_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to CLCL'],['CLAD_STEP','VARCHAR2(20)','','Calculation step — BILLED / ALLOWED / WRITEOFF / DED / COINS / PAID'],['CLAD_AMT','NUMBER(10,2)','','Amount at this calculation step'],['CLAD_RULE','VARCHAR2(30)','','Rule applied at this step']]},
+      {name:'CLOS', full:'Claim Override', desc:'Manual override records when an examiner forces an adjudication result — must document reason and supervisor approval',
+       cols:[['CLOS_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Links to CLCL'],['CLOS_TYPE','VARCHAR2(20)','','ALLOW_AMT / COB / PA_BYPASS / STATUS'],['CLOS_ORIG','VARCHAR2(100)','','Original system value before override'],['CLOS_NEW','VARCHAR2(100)','','Override value entered by examiner'],['CLOS_USER','VARCHAR2(40)','','Examiner who applied override'],['CLOS_SUPV','VARCHAR2(40)','','Supervisor who approved override'],['CLOS_DT','TIMESTAMP','','Override timestamp']]},
+      {name:'CLDP', full:'Claim Duplicate', desc:'Duplicate detection record — links duplicate claim to original paid claim',
+       cols:[['CLDP_CK','NUMBER','PK',''],['CLCL_CK','NUMBER','FK','Duplicate claim'],['CLDP_ORIG_CK','NUMBER','FK','Original paid claim CLCL_CK'],['CLDP_MATCH','VARCHAR2(30)','','Match criteria — MEMBER_DOS_CPT / MEMBER_DOS_REV'],['CLDP_DT','DATE','','Date duplicate was detected'],['CLDP_ACTION','VARCHAR2(10)','','DENIED / OVERRIDE']]},
+    ]
+  },
+  {
+    prefix:'UMUM — Full', name:'Authorizations — All Sub-Tables', color:'#e879f9',
+    desc:'Auth denial reasons, peer-to-peer review, clinical criteria applied, extension requests, and letter generation.',
+    tables:[
+      {name:'UMDR', full:'Auth Denial Reason', desc:'Denial reason codes and clinical criteria cited for denied authorizations — required for member appeal rights',
+       cols:[['UMDR_CK','NUMBER','PK',''],['UMUM_CK','NUMBER','FK','Links to UMUM'],['UMDR_CODE','VARCHAR2(10)','','Denial reason code'],['UMDR_CAT','VARCHAR2(20)','','MED_NECESSITY / NOT_COVERED / BENEFIT_LIMIT'],['UMDR_CRIT','VARCHAR2(100)','','Clinical criteria not met'],['UMDR_APPEAL','VARCHAR2(30)','','Appeal rights and timeframe']]},
+      {name:'UMPP', full:'Auth Peer-to-Peer Review', desc:'Peer-to-peer review record when a provider requests clinical review of a denial — physician to physician discussion',
+       cols:[['UMPP_CK','NUMBER','PK',''],['UMUM_CK','NUMBER','FK','Links to UMUM'],['UMPP_REQ_DT','DATE','','Date peer-to-peer was requested'],['UMPP_SCHED_DT','TIMESTAMP','','Scheduled call date and time'],['UMPP_PROV_MD','VARCHAR2(60)','','Requesting physician name'],['UMPP_UM_MD','VARCHAR2(60)','','UM medical director who took the call'],['UMPP_OUTCOME','VARCHAR2(10)','','UPHELD / OVERTURNED / PARTIAL'],['UMPP_NOTES','CLOB','','Summary of peer-to-peer discussion']]},
+      {name:'UMCR', full:'Auth Clinical Review', desc:'Clinical criteria applied during UM review — MCG or InterQual criteria used, criteria version, meeting status',
+       cols:[['UMCR_CK','NUMBER','PK',''],['UMUM_CK','NUMBER','FK','Links to UMUM'],['UMCR_TOOL','VARCHAR2(10)','','MCG / INTERQUAL / CUSTOM'],['UMCR_VERSION','VARCHAR2(10)','','Criteria version year'],['UMCR_CRITERIA','VARCHAR2(100)','','Specific criteria applied'],['UMCR_MET','CHAR(1)','','Y=Criteria met N=Not met'],['UMCR_REVIEWER','VARCHAR2(60)','','Clinical reviewer name']]},
+      {name:'UMEX', full:'Auth Extension', desc:'Additional units or time requested after initial approval — continuation of care requests',
+       cols:[['UMEX_CK','NUMBER','PK',''],['UMUM_CK','NUMBER','FK','Links to original UMUM auth'],['UMEX_ADD_UNITS','NUMBER(5)','','Additional units requested'],['UMEX_ADD_DAYS','NUMBER(5)','','Additional days requested'],['UMEX_DEC','VARCHAR2(10)','','approved / denied / partial'],['UMEX_DEC_DT','DATE','','Extension decision date']]},
+      {name:'UMLT', full:'Auth Letter', desc:'Approval and denial letter generation and tracking — documents when letters were sent and to whom',
+       cols:[['UMLT_CK','NUMBER','PK',''],['UMUM_CK','NUMBER','FK','Links to UMUM'],['UMLT_TYPE','VARCHAR2(10)','','APPROVAL / DENIAL / PARTIAL / EXTENSION'],['UMLT_GEN_DT','DATE','','Date letter was generated'],['UMLT_SENT_DT','DATE','','Date letter was sent'],['UMLT_RCPT','VARCHAR2(10)','','MEMBER / PROVIDER / BOTH']]},
+    ]
+  },
+  {
+    prefix:'ACAC — Full', name:'Accumulators — All Sub-Tables', color:'#fbbf24',
+    desc:'Accumulator maximum override records, accumulator event log, and cross-reference to claim lines.',
+    tables:[
+      {name:'ACMX', full:'Accumulator Max Override', desc:'Maximum limit override records when plan design changes mid-year — stores the reason and authorization for the change',
+       cols:[['ACMX_CK','NUMBER','PK',''],['ACAC_CK','NUMBER','FK','Links to ACAC'],['ACMX_OLD_MAX','NUMBER(10,2)','','Previous maximum limit'],['ACMX_NEW_MAX','NUMBER(10,2)','','New maximum limit'],['ACMX_REASON','VARCHAR2(100)','','Reason for mid-year limit change'],['ACMX_USER','VARCHAR2(40)','','User who authorized the change'],['ACMX_DT','DATE','','Date override was applied']]},
+      {name:'ACEV', full:'Accumulator Event', desc:'Event records for accumulator resets, manual adjustments, and mid-year corrections',
+       cols:[['ACEV_CK','NUMBER','PK',''],['ACAC_CK','NUMBER','FK','Links to ACAC'],['ACEV_TYPE','VARCHAR2(15)','','ANNUAL_RESET / MANUAL_ADJ / CORRECTION / TRANSFER'],['ACEV_AMT','NUMBER(10,2)','','Amount of adjustment'],['ACEV_REASON','VARCHAR2(100)','','Reason for event'],['ACEV_USER','VARCHAR2(40)','','User who triggered the event'],['ACEV_DT','TIMESTAMP','','Event timestamp']]},
+    ]
+  },
+  {
+    prefix:'AGAD — Full', name:'Benefits — All Sub-Tables', color:'#60a5fa',
+    desc:'Benefit accumulator linkage, plan cross-reference, tiered cost share, referral rules, dollar limits, and age-based rules.',
+    tables:[
+      {name:'AGAC', full:'Benefit Accumulator Linkage', desc:'Links each benefit row to the accumulator it feeds — deductible rows feed the DED accumulator, OOP rows feed the OOP accumulator',
+       cols:[['AGAC_CK','NUMBER','PK',''],['AGAD_CK','NUMBER','FK','Links to AGAD benefit row'],['ACAC_CK','NUMBER','FK','Links to ACAC accumulator'],['AGAC_INN','CHAR(1)','','I=INN accumulator O=OON accumulator B=Both']]},
+      {name:'AGAX', full:'Benefit Plan Cross-Reference', desc:'Allows multiple plan codes to share the same benefit plan structure — one benefit plan can serve many plans',
+       cols:[['AGAX_CK','NUMBER','PK',''],['AGAG_CK','NUMBER','FK','Source benefit plan'],['CSCS_CK','NUMBER','FK','Plan that uses this benefit plan'],['AGAX_EFF','DATE','','Effective date of linkage'],['AGAX_TERM','DATE','','End date of linkage']]},
+      {name:'BEBT', full:'Benefit Tier', desc:'Tiered benefit cost share rules — different copay or coinsurance by provider network tier',
+       cols:[['BEBT_CK','NUMBER','PK',''],['AGAD_CK','NUMBER','FK','Links to AGAD benefit row'],['BEBT_TIER','VARCHAR2(10)','','PREFERRED / INN / OON'],['BEBT_COPAY','NUMBER(8,2)','','Copay for this tier'],['BEBT_COINS','NUMBER(5,2)','','Coinsurance percent for this tier'],['BEBT_DED','CHAR(1)','','Y=Deductible applies on this tier N=No']]},
+      {name:'BEBR', full:'Benefit Referral Rule', desc:'HMO referral requirement rules — whether a referral is needed from PCP to see a specialist',
+       cols:[['BEBR_CK','NUMBER','PK',''],['AGAD_CK','NUMBER','FK','Links to AGAD benefit row'],['BEBR_REQ','CHAR(1)','','Y=Referral required N=No referral needed'],['BEBR_PCP_ONLY','CHAR(1)','','Y=Only PCP referral accepted N=Any provider can refer'],['BEBR_SELF_REF','VARCHAR2(30)','','List of specialties that can self-refer — OB / OPTOMETRY']]},
+      {name:'BEBL', full:'Benefit Dollar Limit', desc:'Dollar amount limits per service category — inpatient day limits, DME annual maximum, home health dollar cap',
+       cols:[['BEBL_CK','NUMBER','PK',''],['AGAD_CK','NUMBER','FK','Links to AGAD benefit row'],['BEBL_LIMIT','NUMBER(10,2)','','Dollar limit amount'],['BEBL_PERIOD','VARCHAR2(10)','','YEAR / LIFETIME / EPISODE'],['BEBL_TYPE','VARCHAR2(10)','','PLAN_PAY / TOTAL_CHARGES']]},
+      {name:'BEBA', full:'Benefit Age Rule', desc:'Age-based benefit rules — pediatric dental age cutoff, EPSDT coverage for under 21, adult preventive age bands',
+       cols:[['BEBA_CK','NUMBER','PK',''],['AGAD_CK','NUMBER','FK','Links to AGAD benefit row'],['BEBA_AGE_FROM','NUMBER(3)','','Minimum age for this benefit rule'],['BEBA_AGE_TO','NUMBER(3)','','Maximum age — 21 for EPSDT 19 for DHMO ortho'],['BEBA_ACTION','VARCHAR2(10)','','COVER / EXCLUDE / REDUCE'],['BEBA_REASON','VARCHAR2(30)','','EPSDT / PEDIATRIC / ADULT_ONLY']]},
+    ]
+  },
+  {
+    prefix:'PRRC — Full', name:'Pricing — All Sub-Tables', color:'#2ed573',
+    desc:'Premium rate history, rate schedule, and broker commission rate records.',
+    tables:[
+      {name:'PRRH', full:'Premium Rate History', desc:'History of all premium rate changes — prior year rates, mid-year adjustments with effective dates',
+       cols:[['PRRH_CK','NUMBER','PK',''],['PRRC_CK','NUMBER','FK','Links to PRRC rate master'],['PRRH_OLD_RATE','NUMBER(10,2)','','Rate before change'],['PRRH_NEW_RATE','NUMBER(10,2)','','Rate after change'],['PRRH_EFF','DATE','','Date new rate became effective'],['PRRH_REASON','VARCHAR2(40)','','Reason for rate change — RENEWAL / CORRECTION'],['PRRH_USER','VARCHAR2(40)','','User who made the change']]},
+      {name:'PRRS', full:'Premium Rate Schedule', desc:'Rate schedule effective dates — associates rate records with plan year renewal cycles',
+       cols:[['PRRS_CK','NUMBER','PK',''],['PRRC_CK','NUMBER','FK','Links to PRRC'],['PRRS_PLAN_YR','NUMBER(4)','','Plan year — 2026'],['PRRS_EFF','DATE','','Rate effective date'],['PRRS_TERM','DATE','','Rate end date'],['PRRS_APPROVED','CHAR(1)','','Y=Rate schedule approved and finalized']]},
+      {name:'PRRB', full:'Premium Rate Broker', desc:'Broker commission rates tied to the group premium — percentage earned by the broker of record',
+       cols:[['PRRB_CK','NUMBER','PK',''],['PRRC_CK','NUMBER','FK','Links to PRRC'],['PRRB_BROKER_NPN','VARCHAR2(15)','','National Producer Number'],['PRRB_PCT','NUMBER(5,2)','','Commission percent of premium'],['PRRB_AMT','NUMBER(10,2)','','Fixed dollar commission if flat fee'],['PRRB_EFF','DATE','','Commission effective date']]},
+    ]
+  },
+  {
+    prefix:'FSFN — Full', name:'Fee Schedule — All Sub-Tables', color:'#34d399',
+    desc:'Fee schedule pricing rules, modifier adjustments, history, tier-based rates, and audit trail.',
+    tables:[
+      {name:'FSFR', full:'Fee Schedule Rule', desc:'Pricing rules applied at the fee schedule level — modifier impact on allowed amount, POS price adjustment',
+       cols:[['FSFR_CK','NUMBER','PK',''],['FSFN_CK','NUMBER','FK','Links to FSFN fee schedule'],['FSFR_TYPE','VARCHAR2(10)','','MOD_ADJ / POS_ADJ / GLOBAL_DAYS / ASA'],['FSFR_CODE','VARCHAR2(10)','','Modifier or POS code the rule applies to'],['FSFR_PCT','NUMBER(6,4)','','Adjustment percent — 0.50 = reduce by 50%'],['FSFR_EFF','DATE','','Rule effective date']]},
+      {name:'FSFM', full:'Fee Schedule Modifier', desc:'Modifier-specific allowed amount adjustments per fee schedule — same modifier can have different impact on different fee schedules',
+       cols:[['FSFM_CK','NUMBER','PK',''],['FSFN_CK','NUMBER','FK','Links to FSFN'],['PDMOD_CK','NUMBER','FK','Links to PDMOD modifier definition'],['FSFM_PCT','NUMBER(6,4)','','Percent change to allowed — 0.80 = reduce to 80%'],['FSFM_ACTION','VARCHAR2(10)','','REDUCE / INCREASE / BYPASS / PRICE_AT']]},
+      {name:'FSFH', full:'Fee Schedule History', desc:'History of fee schedule changes — prior year allowed amounts, annual updates, correction records',
+       cols:[['FSFH_CK','NUMBER','PK',''],['FSFN_CK','NUMBER','FK','Links to FSFN'],['FSFH_CODE','VARCHAR2(10)','','CPT or DRG code that changed'],['FSFH_OLD_AMT','NUMBER(10,2)','','Old allowed amount'],['FSFH_NEW_AMT','NUMBER(10,2)','','New allowed amount'],['FSFH_EFF','DATE','','Effective date of change'],['FSFH_REASON','VARCHAR2(40)','','ANNUAL_UPDATE / CORRECTION / CMS_CHANGE']]},
+      {name:'FSFT', full:'Fee Schedule Tier', desc:'Tiered fee schedule rates — different allowed amounts for Preferred vs In-Network vs Out-of-Network providers',
+       cols:[['FSFT_CK','NUMBER','PK',''],['FSFN_CK','NUMBER','FK','Links to FSFN'],['FSFT_TIER','VARCHAR2(10)','','PREFERRED / INN / OON'],['FSFT_CODE','VARCHAR2(10)','','CPT or DRG code'],['FSFT_AMT','NUMBER(10,2)','','Allowed amount for this tier'],['FSFT_EFF','DATE','','Tier rate effective date']]},
+      {name:'FSFAU', full:'Fee Schedule Audit', desc:'Audit trail for all fee table changes — required for CMS compliance and payment accuracy documentation',
+       cols:[['FSFAU_CK','NUMBER','PK',''],['FSFN_CK','NUMBER','FK','Links to FSFN'],['FSFAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['FSFAU_CODE','VARCHAR2(10)','','CPT code that changed'],['FSFAU_OLD','VARCHAR2(50)','','Old value'],['FSFAU_NEW','VARCHAR2(50)','','New value'],['FSFAU_USER','VARCHAR2(40)','','User'],['FSFAU_TS','TIMESTAMP','','Timestamp']]},
+    ]
+  },
+  {
+    prefix:'NWNW — Full', name:'NetworX — All Sub-Tables', color:'#a78bfa',
+    desc:'NetworX rate tables, specialty and POS qualifiers, contract crosswalk, history, and audit.',
+    tables:[
+      {name:'NWNR', full:'NetworX Rate Table', desc:'Rate entries for tiered pricing within a NetworX rule — different rates by specialty or service type within the same rule',
+       cols:[['NWNR_CK','NUMBER','PK',''],['NWNW_CK','NUMBER','FK','Links to NWNW rule'],['NWNR_SPEC','VARCHAR2(30)','','Specialty this rate applies to'],['NWNR_CPT_FROM','VARCHAR2(10)','','CPT range start'],['NWNR_CPT_TO','VARCHAR2(10)','','CPT range end'],['NWNR_PCT','NUMBER(6,4)','','Rate for this sub-category within the rule']]},
+      {name:'NWNA', full:'NetworX Attribute', desc:'Specialty and place-of-service qualifiers that restrict when a NetworX rule fires',
+       cols:[['NWNA_CK','NUMBER','PK',''],['NWNW_CK','NUMBER','FK','Links to NWNW'],['NWNA_TYPE','VARCHAR2(10)','','SPECIALTY / POS / LOB / PLAN'],['NWNA_VAL','VARCHAR2(30)','','Value — primary_care / 11 / COMM'],['NWNA_INCLUDE','CHAR(1)','','I=Rule fires for this value E=Rule excludes this value']]},
+      {name:'NWNX', full:'NetworX Contract Cross-Reference', desc:'Links NetworX rule to specific provider contracts — ensures correct rule fires for each contract type',
+       cols:[['NWNX_CK','NUMBER','PK',''],['NWNW_CK','NUMBER','FK','Links to NWNW rule'],['PRCN_CK','NUMBER','FK','Links to PRCN provider contract'],['NWNX_EFF','DATE','','Linkage effective date'],['NWNX_TERM','DATE','','Linkage end date']]},
+      {name:'NWNH', full:'NetworX History', desc:'History of pricing rule changes — rate adjustments, qualifier changes, annual updates',
+       cols:[['NWNH_CK','NUMBER','PK',''],['NWNW_CK','NUMBER','FK','Links to NWNW'],['NWNH_FIELD','VARCHAR2(30)','','Field changed'],['NWNH_OLD','VARCHAR2(50)','','Old value'],['NWNH_NEW','VARCHAR2(50)','','New value'],['NWNH_DT','TIMESTAMP','','Timestamp'],['NWNH_USER','VARCHAR2(40)','','User']]},
+      {name:'NWNAU', full:'NetworX Audit', desc:'Audit trail for all NetworX configuration changes — critical for payment accuracy audits',
+       cols:[['NWNAU_CK','NUMBER','PK',''],['NWNW_CK','NUMBER','FK','Links to NWNW'],['NWNAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['NWNAU_USER','VARCHAR2(40)','','User'],['NWNAU_TS','TIMESTAMP','','Timestamp'],['NWNAU_OLD','VARCHAR2(100)','','Old value'],['NWNAU_NEW','VARCHAR2(100)','','New value']]},
+    ]
+  },
+  {
+    prefix:'SVSV — Full', name:'Service Groups — All Sub-Tables', color:'#f59e0b',
+    desc:'Service group place-of-service restrictions, LOB-specific routing rules, and audit trail.',
+    tables:[
+      {name:'SVSP', full:'Service Group POS', desc:'Place of service restrictions per service group — some CPT codes route differently depending on where the service was performed',
+       cols:[['SVSP_CK','NUMBER','PK',''],['SVSV_CK','NUMBER','FK','Links to SVSV'],['SVSP_POS','VARCHAR2(2)','','Place of service code — 11=Office 21=Inpatient 22=Outpatient'],['SVSP_BENEFIT','VARCHAR2(20)','','Benefit row to use for this POS combination']]},
+      {name:'SVSL', full:'Service Group LOB', desc:'LOB-specific routing — the same CPT code can route to a different benefit category on Medicare vs commercial',
+       cols:[['SVSL_CK','NUMBER','PK',''],['SVSV_CK','NUMBER','FK','Links to SVSV'],['SVSL_LOB','VARCHAR2(10)','','COMM / MCAR / MCAD / CHIP'],['SVSL_BENEFIT','VARCHAR2(20)','','Benefit row override for this LOB']]},
+      {name:'SVSAU', full:'Service Group Audit', desc:'Audit trail for service group configuration changes',
+       cols:[['SVSAU_CK','NUMBER','PK',''],['SVSV_CK','NUMBER','FK','Links to SVSV'],['SVSAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['SVSAU_USER','VARCHAR2(40)','','User'],['SVSAU_TS','TIMESTAMP','','Timestamp']]},
+    ]
+  },
+  {
+    prefix:'CBCB — Full', name:'COB — All Sub-Tables', color:'#f87171',
+    desc:'COB audit trail and subrogation recovery records.',
+    tables:[
+      {name:'CBCAU', full:'COB Audit', desc:'Audit trail for all changes to member COB records — critical for dual eligible compliance documentation',
+       cols:[['CBCAU_CK','NUMBER','PK',''],['CBCB_CK','NUMBER','FK','Links to CBCB'],['CBCAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['CBCAU_FIELD','VARCHAR2(30)','','Field changed'],['CBCAU_OLD','VARCHAR2(100)','','Old value'],['CBCAU_NEW','VARCHAR2(100)','','New value'],['CBCAU_USER','VARCHAR2(40)','','User'],['CBCAU_TS','TIMESTAMP','','Timestamp']]},
+      {name:'CBCP', full:'COB Recovery', desc:'Subrogation and recovery records when the primary payer reimburses the plan after paying as secondary',
+       cols:[['CBCP_CK','NUMBER','PK',''],['CBCB_CK','NUMBER','FK','Links to CBCB'],['CBCP_AMT','NUMBER(10,2)','','Amount recovered from primary payer'],['CBCP_DT','DATE','','Recovery date'],['CBCP_STATUS','VARCHAR2(10)','','PENDING / RECOVERED / WRITTEN_OFF'],['CBCP_REF','VARCHAR2(30)','','Reference number from primary payer']]},
+    ]
+  },
+  {
+    prefix:'ELEL — Full', name:'Enrollment — All Sub-Tables', color:'#34d399',
+    desc:'Open enrollment elections, qualifying life events, and waiting period tracking.',
+    tables:[
+      {name:'ELOE', full:'Open Enrollment Election', desc:'Annual open enrollment elections — plan selection, coverage tier, HSA contribution, dental and vision add-ons',
+       cols:[['ELOE_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['ELOE_YEAR','NUMBER(4)','','Plan year of this enrollment election'],['ELOE_CSCS_CK','NUMBER','FK','Plan elected CSCS_CK'],['ELOE_TIER','VARCHAR2(10)','','Coverage tier elected — EE / ES / EC / FAM'],['ELOE_EFF','DATE','','Effective date of new election'],['ELOE_HSA','NUMBER(8,2)','','HSA contribution election if CDH plan']]},
+      {name:'ELLE', full:'Life Event', desc:'Qualifying life events — marriage, birth, adoption, divorce, loss of other coverage — triggers special enrollment',
+       cols:[['ELLE_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['ELLE_TYPE','VARCHAR2(15)','','MARRIAGE / BIRTH / ADOPTION / DIVORCE / LOSS_COV'],['ELLE_DT','DATE','','Date of qualifying life event'],['ELLE_DOC','CHAR(1)','','Y=Documentation received N=Pending'],['ELLE_EFF','DATE','','New coverage effective date triggered by event']]},
+      {name:'ELWP', full:'Waiting Period Tracking', desc:'Tracks waiting period progress from hire date to coverage eligibility date',
+       cols:[['ELWP_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to MEME'],['CSCL_CK','NUMBER','FK','Links to class defining the waiting period'],['ELWP_HIRE_DT','DATE','','Date of hire'],['ELWP_WAIT_DAYS','NUMBER(3)','','Waiting period length in days'],['ELWP_ELIG_DT','DATE','','Calculated eligibility date'],['ELWP_NOTICE_DT','DATE','','Date member was notified of eligibility']]},
+    ]
+  },
+  {
+    prefix:'PGPG — Full', name:'Government Programs — All Sub-Tables', color:'#60a5fa',
+    desc:'STARS rating history, risk score data, CMS encounter submissions, and annual bid records.',
+    tables:[
+      {name:'PGST', full:'Program STARS History', desc:'Annual STARS rating records — measure scores, quality bonus calculation, improvement from prior year',
+       cols:[['PGST_CK','NUMBER','PK',''],['PGPG_CK','NUMBER','FK','Links to PGPG program'],['PGST_YEAR','NUMBER(4)','','Rating year — 2026'],['PGST_RATING','NUMBER(3,1)','','Overall STARS rating — 4.0 / 4.5'],['PGST_BONUS','CHAR(1)','','Y=Quality bonus earned N=Below threshold'],['PGST_PREV','NUMBER(3,1)','','Prior year rating for trend tracking']]},
+      {name:'PGRI', full:'Program Risk Score', desc:'Member-level risk score data — HCC model output and RAF score used in CMS capitation calculation',
+       cols:[['PGRI_CK','NUMBER','PK',''],['PGPG_CK','NUMBER','FK','Links to PGPG program'],['MEME_CK','NUMBER','FK','Links to MEME member'],['PGRI_YEAR','NUMBER(4)','','Payment year'],['PGRI_RAF','NUMBER(8,4)','','Risk Adjustment Factor — affects capitation payment'],['PGRI_DEMO','NUMBER(8,4)','','Demographic RAF component'],['PGRI_HCC','NUMBER(8,4)','','HCC diagnosis RAF component']]},
+      {name:'PGCMS', full:'Program CMS Data', desc:'CMS encounter data submission records and plan year filing status',
+       cols:[['PGCMS_CK','NUMBER','PK',''],['PGPG_CK','NUMBER','FK','Links to PGPG'],['PGCMS_TYPE','VARCHAR2(10)','','ENCOUNTER / BID / ENROLLMENT / STARS'],['PGCMS_PERIOD','VARCHAR2(10)','','Submission period — 2026Q1 / 2026Q2'],['PGCMS_STATUS','VARCHAR2(10)','','SUBMITTED / ACCEPTED / ERROR / PENDING'],['PGCMS_COUNT','NUMBER(10)','','Record count in submission'],['PGCMS_DT','DATE','','Date submitted to CMS']]},
+      {name:'PGBID', full:'Program CMS Bid', desc:'Annual CMS bid data for Medicare Advantage — benchmark, rebate, and supplemental benefit values',
+       cols:[['PGBID_CK','NUMBER','PK',''],['PGPG_CK','NUMBER','FK','Links to PGPG'],['PGBID_YEAR','NUMBER(4)','','Plan year'],['PGBID_BENCHMARK','NUMBER(10,2)','','CMS county benchmark PMPM'],['PGBID_BID','NUMBER(10,2)','','Plan bid amount PMPM'],['PGBID_REBATE','NUMBER(10,2)','','Rebate amount — benchmark minus bid if bid below benchmark'],['PGBID_SUPP','NUMBER(10,2)','','Supplemental benefit value PMPM']]},
+    ]
+  },
+  {
+    prefix:'DTDT — Full', name:'Dental — All Sub-Tables', color:'#e879f9',
+    desc:'Dental plan detail, orthodontia case records, missing tooth tracking, and frequency counters.',
+    tables:[
+      {name:'DTDD', full:'Dental Plan Detail', desc:'Extended dental plan configuration — DHMO copay schedule assignment, frequency override, fluoride age limit',
+       cols:[['DTDD_CK','NUMBER','PK',''],['DTDT_CK','NUMBER','FK','Links to DTDT'],['DTDD_DHMO_COPAY','VARCHAR2(20)','','DHMO copay schedule code — if plan type is DHMO'],['DTDD_FLUOR_AGE','NUMBER(3)','','Maximum age for fluoride treatment coverage'],['DTDD_SEALANT_AGE','NUMBER(3)','','Maximum age for sealant coverage'],['DTDD_OON_PCT','NUMBER(5,2)','','OON reimbursement percent for DPPO']]},
+      {name:'DTOR', full:'Dental Orthodontia Case', desc:'Orthodontia case record per member — banding date, treatment plan, estimated total fee, case status',
+       cols:[['DTOR_CK','NUMBER','PK',''],['DTDT_CK','NUMBER','FK','Links to dental plan'],['MEME_CK','NUMBER','FK','Links to member'],['DTOR_BAND_DT','DATE','','Initial banding date'],['DTOR_PLAN_FEE','NUMBER(10,2)','','Estimated total fee from treatment plan'],['DTOR_PLAN_DUR','NUMBER(3)','','Estimated treatment duration in months'],['DTOR_STS','VARCHAR2(10)','','ACTIVE / COMPLETE / ABANDONED'],['DTOR_PAID','NUMBER(10,2)','','Amount plan has paid to date on this case']]},
+      {name:'DTMTC', full:'Dental Missing Tooth Record', desc:'Missing tooth record per member — documents which tooth positions were absent at enrollment date for missing tooth clause enforcement',
+       cols:[['DTMTC_CK','NUMBER','PK',''],['DTDT_CK','NUMBER','FK','Links to dental plan'],['MEME_CK','NUMBER','FK','Links to member'],['DTMTC_TOOTH','VARCHAR2(5)','','Tooth number — 1 through 32 or A through T for primary'],['DTMTC_ABSENT_DT','DATE','','Date tooth was confirmed absent at enrollment'],['DTMTC_SOURCE','VARCHAR2(10)','','XRAY / EXAM / ATTESTATION'],['DTMTC_WAIVED','CHAR(1)','','Y=MTC waived for this tooth on this plan N=MTC enforced']]},
+      {name:'DTFQ', full:'Dental Frequency Tracker', desc:'Per-member per-CDT-code frequency counter — tracks how many times a frequency-limited service has been used this year',
+       cols:[['DTFQ_CK','NUMBER','PK',''],['MEME_CK','NUMBER','FK','Links to member'],['DTDT_CK','NUMBER','FK','Links to dental plan'],['DTFQ_CDT','VARCHAR2(5)','','CDT code being tracked'],['DTFQ_YEAR','NUMBER(4)','','Benefit year'],['DTFQ_USED','NUMBER(3)','','Number of times used this year'],['DTFQ_LIMIT','NUMBER(3)','','Frequency limit for this code'],['DTFQ_LAST_DT','DATE','','Date of most recent use']]},
+    ]
+  },
+  {
+    prefix:'NTNK — Full', name:'Network Adequacy — All Sub-Tables', color:'#60a5fa',
+    desc:'Network cross-reference to plans, audit trail, service area geography, and GPS coordinates for drive-time calculations.',
+    tables:[
+      {name:'NTKX', full:'Network Cross-Reference', desc:'Links network to plan and to geographic service area — one network can serve multiple plans',
+       cols:[['NTKX_CK','NUMBER','PK',''],['NTNK_CK','NUMBER','FK','Links to NTNK network'],['CSCS_CK','NUMBER','FK','Links to CSCS plan using this network'],['NTKX_EFF','DATE','','Assignment effective date'],['NTKX_TERM','DATE','','Assignment end date']]},
+      {name:'NTKAU', full:'Network Audit', desc:'Audit trail for network assignment changes and adequacy configuration updates',
+       cols:[['NTKAU_CK','NUMBER','PK',''],['NTNK_CK','NUMBER','FK','Links to NTNK'],['NTKAU_ACTION','VARCHAR2(20)','','CREATE / UPDATE / DELETE'],['NTKAU_USER','VARCHAR2(40)','','User'],['NTKAU_TS','TIMESTAMP','','Timestamp'],['NTKAU_NOTES','VARCHAR2(200)','','Reason for change']]},
+      {name:'NTKSA', full:'Network Service Area', desc:'Geographic service area definition — counties, ZIP codes, and states covered by this network',
+       cols:[['NTKSA_CK','NUMBER','PK',''],['NTNK_CK','NUMBER','FK','Links to NTNK'],['NTKSA_TYPE','VARCHAR2(5)','','ZIP / COUNTY / STATE'],['NTKSA_VALUE','VARCHAR2(10)','','ZIP code, FIPS county code, or state abbreviation'],['NTKSA_EFF','DATE','','Service area effective date'],['NTKSA_TERM','DATE','','Service area end date']]},
+      {name:'NTKGP', full:'Network Geographic Point', desc:'Latitude and longitude for drive-time adequacy calculations — used in CMS MA network adequacy analysis',
+       cols:[['NTKGP_CK','NUMBER','PK',''],['PRPR_CK','NUMBER','FK','Links to PRPR provider'],['NTNK_CK','NUMBER','FK','Links to NTNK network'],['NTKGP_LAT','NUMBER(10,6)','','Latitude coordinate'],['NTKGP_LON','NUMBER(10,6)','','Longitude coordinate'],['NTKGP_ADDR_CK','NUMBER','FK','Links to specific PRPA practice address']]},
+    ]
+  },
+  {
+    prefix:'AUAU — Full', name:'Audit Log — All Sub-Tables', color:'#94a3b8',
+    desc:'Audit detail records with old and new values, user session tracking, and scheduled compliance reports.',
+    tables:[
+      {name:'AUAD', full:'Audit Detail', desc:'Field-level change detail for each audit entry — stores the exact old value and new value for every changed field',
+       cols:[['AUAD_CK','NUMBER','PK',''],['AUAU_CK','NUMBER','FK','Links to AUAU audit master'],['AUAD_FIELD','VARCHAR2(30)','','Column name that changed'],['AUAD_OLD','VARCHAR2(500)','','Old value before the change'],['AUAD_NEW','VARCHAR2(500)','','New value after the change']]},
+      {name:'AUUS', full:'Audit User Session', desc:'User session record — login time, logout, IP address, user role active during the session',
+       cols:[['AUUS_CK','NUMBER','PK',''],['AUAU_CK','NUMBER','FK','Links to AUAU'],['AUUS_USER','VARCHAR2(40)','','Username'],['AUUS_ROLE','VARCHAR2(30)','','Role at time of action — EXAMINER / SUPERVISOR / CONFIG'],['AUUS_IP','VARCHAR2(15)','','IP address'],['AUUS_LOGIN','TIMESTAMP','','Session login time'],['AUUS_LOGOUT','TIMESTAMP','','Session logout time']]},
+      {name:'AURP', full:'Audit Report', desc:'Generated compliance reports for CMS submission and internal audit review — scheduled automatically or generated on demand',
+       cols:[['AURP_CK','NUMBER','PK',''],['AURP_TYPE','VARCHAR2(20)','','CMS_ENCOUNTER / PAYMENT_ACC / CONFIG_CHG / PROV_SANCTION'],['AURP_PERIOD','VARCHAR2(10)','','Report period — 2026Q1 / 2026-ANNUAL'],['AURP_GEN_DT','DATE','','Date report was generated'],['AURP_STATUS','VARCHAR2(10)','','GENERATED / SUBMITTED / ACCEPTED'],['AURP_ROWS','NUMBER(10)','','Record count in report']]},
+    ]
+  },
+  {
+    prefix:'LKLK — Full', name:'Reference / Lookup — All Sub-Tables', color:'#94a3b8',
+    desc:'Individual lookup code entries, full description text, and lookup table audit records.',
+    tables:[
+      {name:'LKCD', full:'Lookup Code', desc:'Individual code entries within each lookup domain — the actual values that populate every dropdown list in Facets',
+       cols:[['LKCD_CK','NUMBER','PK',''],['LKLK_CK','NUMBER','FK','Links to LKLK lookup master'],['LKCD_CODE','VARCHAR2(10)','IDX','Code value — A / ACTIVE / PA-001'],['LKCD_SHORT','VARCHAR2(20)','','Short description shown in narrow dropdowns'],['LKCD_LONG','VARCHAR2(80)','','Full description shown in detailed screens'],['LKCD_ORD','NUMBER(3)','','Display order in dropdown — 1=first'],['LKCD_STS','CHAR(1)','','A=Active I=Inactive — inactive codes hidden from UI']]},
+      {name:'LKDS', full:'Lookup Description', desc:'Extended description text for lookup codes — full explanation shown in help text and tooltips',
+       cols:[['LKDS_CK','NUMBER','PK',''],['LKLK_CK','NUMBER','FK','Links to LKLK'],['LKDS_CODE','VARCHAR2(10)','','Code value'],['LKDS_DESC','CLOB','','Full explanation text used in help and tooltips']]},
+      {name:'LKAU', full:'Lookup Audit', desc:'Audit trail for changes to lookup table values — adding new codes, deactivating old codes, changing descriptions',
+       cols:[['LKAU_CK','NUMBER','PK',''],['LKLK_CK','NUMBER','FK','Links to LKLK'],['LKAU_CODE','VARCHAR2(10)','','Code that changed'],['LKAU_ACTION','VARCHAR2(20)','','ADD / DEACTIVATE / UPDATE_DESC'],['LKAU_USER','VARCHAR2(40)','','User'],['LKAU_TS','TIMESTAMP','','Timestamp']]},
+    ]
+  },
+];
+
 // ══════════════════════════════════════════════════════════════════════════════
 // DATA — SQL VALIDATION QUERIES
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1235,8 +1580,9 @@ function initSQL() {
 
 // TABLE BROWSER
 function initModules() {
+  var ALL_MODULES = MODULES.concat(EXTRA_MODULES);
   var grid = document.getElementById('module-grid');
-  grid.innerHTML = MODULES.map(function(m,i) {
+  grid.innerHTML = ALL_MODULES.map(function(m,i) {
     return '<div class="module-card" id="mc-'+i+'" onclick="selectModule('+i+',this)">'+
       '<div class="module-prefix" style="color:'+m.color+';background:'+m.color+'18;border-color:'+m.color+'40">'+m.prefix+'</div>'+
       '<div class="module-name">'+m.name+'</div>'+
@@ -1247,9 +1593,10 @@ function initModules() {
 }
 
 function selectModule(idx, el) {
+  var ALL_MODULES = MODULES.concat(EXTRA_MODULES);
   document.querySelectorAll('.module-card').forEach(function(c){c.classList.remove('selected');});
   el.classList.add('selected');
-  var m = MODULES[idx];
+  var m = ALL_MODULES[idx];
   var panel = document.getElementById('table-detail-panel');
   panel.innerHTML = '<div class="fsl">'+m.name+' Module — '+m.prefix+' Tables</div>'+
     m.tables.map(function(t) {
